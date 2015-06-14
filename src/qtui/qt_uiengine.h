@@ -13,8 +13,6 @@
 #include "snail/i_uiengine.h"
 #include "snail/signal_slot_impl.h"
 
-class SnailGenericView;
-
 /**
  * NOTE: must construct a QtUiEngine instance before create any Qt widgets,
  * and must destroy any widgets before destruct the QtUiEngine instance
@@ -26,7 +24,7 @@ class QtUiEngine : public QObject, public snailcore::IUiEngine {
   QtUiEngine();
   ~QtUiEngine() = default;
 
-  int run(snailcore::SnailGenericView* mainWindow) override;
+  int run() override;
   void quit() override;
 
  private slots:
@@ -36,7 +34,6 @@ class QtUiEngine : public QObject, public snailcore::IUiEngine {
  private:
   int dummy_argc { 0 };
   std::unique_ptr<QApplication> qtApplication;
-  snailcore::SnailGenericView* mainWindow_ { nullptr };
 
  private:
   SNAIL_SIGSLOT_IMPL(AboutToQuit)

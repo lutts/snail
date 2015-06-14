@@ -16,10 +16,7 @@ QtUiEngine::QtUiEngine()
           this, SLOT(aboutToQuitApp()));
 }
 
-int QtUiEngine::run(snailcore::SnailGenericView* mainWindow) {
-  mainWindow_ = mainWindow;
-
-  mainWindow_->showView();
+int QtUiEngine::run() {
   return qtApplication->exec();
 }
 
@@ -28,10 +25,5 @@ void QtUiEngine::quit() {
 }
 
 void QtUiEngine::aboutToQuitApp() {
-  if (mainWindow_) {
-    mainWindow_->destroyView();
-    mainWindow_ = nullptr;
-  }
-
   AboutToQuit();
 }

@@ -12,13 +12,11 @@
 
 namespace snailcore {
 
-class SnailGenericView;
-
 class IUiEngine {
  public:
   virtual ~IUiEngine() = default;
 
-  virtual int run(SnailGenericView* mainWindow) = 0;
+  virtual int run() = 0;
   virtual void quit() = 0;
 
   SNAIL_SIGSLOT2(AboutToQuit, void());

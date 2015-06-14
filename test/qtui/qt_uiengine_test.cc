@@ -16,7 +16,6 @@
 #include "test/testutils/slot_catcher.h"
 #include "test/testutils/generic_mock_listener.h"
 #include "src/qtui/qt_uiengine.h"
-#include "snail/snail_generic_view.h"
 
 class QtUiEngineTest : public QObject, public ::testing::Test {
   Q_OBJECT
@@ -44,12 +43,6 @@ class QtUiEngineTest : public QObject, public ::testing::Test {
 };
 
 #include "moc_qt_uiengine_test.cpp"
-
-class MockSnailGenericView : public snailcore::SnailGenericView {
- public:
-  MOCK_METHOD0(showView, void());
-  SNAIL_GENERIC_VIEW_MOCKS
-};
 
 class MockListener : public GenericMockListener<MockListener,
                                                 snailcore::IUiEngine> {
@@ -80,14 +73,10 @@ TEST_F(QtUiEngineTest, should_work_as_expected_large_testcase_because_qt_bug) { 
 
   // Test2:
   {
-    MockSnailGenericView view;
-    EXPECT_CALL(view, showView());
-    EXPECT_CALL(view, destroyView());
-
     auto mockListener = MockListener::attachTo(uiEngine.get());
     EXPECT_CALL(*mockListener, AboutToQuit());
 
     QTimer::singleShot(300, this, SLOT(quitApp()));
-    uiEngine->run(&view);
+    uiEngine->run();
   }
 }

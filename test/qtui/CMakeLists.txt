@@ -19,10 +19,10 @@ configure_file (
 
 # set(UITEST_COMMON_LIBS Qt5::Widgets qtuicore qttestutils)
 
-#qt5_wrap_cpp(qt_uiengine_test_mocs qt_uiengine_test.cc)
-#add_custom_target(moc_qt_uiengine_test DEPENDS ${qt_uiengine_test_mocs})
-#add_gmock_test(qt_uiengine_test
-#  LIBS Qt5::Widgets qtuicore)
-#add_dependencies(qt_uiengine_test moc_qt_uiengine_test)
+qt5_wrap_cpp(qt_uiengine_test_mocs qt_uiengine_test.cc)
+add_custom_target(moc_qt_uiengine_test DEPENDS ${qt_uiengine_test_mocs})
+add_gmock_test(qt_uiengine_test
+  LIBS Qt5::Widgets qtuicore)
+add_dependencies(qt_uiengine_test moc_qt_uiengine_test)
 
 add_subdirectory(preview)
