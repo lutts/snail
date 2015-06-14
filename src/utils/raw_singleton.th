@@ -1,0 +1,68 @@
+// Copyright (c) 2015
+// All rights reserved.
+//
+// Author: Lutts Cao <<lutts.cao@gmail.com>>
+//
+// DO NOT use this file directly, there's no define guard here
+// if you do not use explicit instantiation, use utils/singleton.h
+// if you want to use explicit instantiation, wrapper this file in you own header file
+// for example:
+//
+//  #ifndef XXX_H_
+//  #define XXX_H_
+//
+//  namespace xxx {
+//  #include <src/utils/raw_singleton.th>
+//  }
+//
+//  #endif  // XXX_H_
+//
+//
+
+template <typename TYPE>
+class Singleton {
+ public:
+  static TYPE& getInstance() {
+    // TODO(lutts): scope lock here
+    TYPE* instance = sInstance;
+    if (instance == nullptr) {
+      instance = new TYPE();
+      sInstance = instance;
+    }
+
+    return *instance;
+  }
+
+  static void resetInstance() {
+    // TODO(lutts): scope lock here
+    TYPE* tempInstance = sInstance;
+    sInstance = nullptr;
+    delete tempInstance;
+  }
+
+  static bool hasInstance() {
+    // TODO(lutts): scope lock here
+    return sInstance != nullptr;
+  }
+
+ protected:
+  Singleton() { }
+  ~Singleton() { }
+
+ private:
+  Singleton(const Singleton& other) = delete;
+  Singleton& operator=(const Singleton& other) = delete;
+
+  static TYPE* sInstance;
+};
+
+/*
+ * use SINGLETON_STATIC_INSTANCE(TYPE) in your implementation file
+ * (eg: <TYPE>.cpp) to create the static instance of Singleton<>'s attributes,
+ * and avoid to have a copy of them in each compilation units Singleton<TYPE>
+ * is used.
+ */
+#undef SINGLETON_STATIC_INSTANCE
+#define SINGLETON_STATIC_INSTANCE(TYPE)                         \
+  template<> TYPE* Singleton< TYPE >::sInstance(nullptr);       \
+  template class Singleton< TYPE >;

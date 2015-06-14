@@ -1,0 +1,4 @@
+
+// the configured options and settings
+
+#define SNAIL_VERSION @SNAIL_VERSION@

@@ -1,0 +1,100 @@
+#define INIT_RESOURCES do{ @qt_RCS@ } while(0)
+
+//#define GTEST_USE_EXCEPTION_REPORT_FAIL
+
+#ifndef GTEST_USE_EXCEPTION_REPORT_FAIL
+#include <stdio.h>
+
+using ::testing::EmptyTestEventListener;
+using ::testing::InitGoogleTest;
+using ::testing::Test;
+using ::testing::TestCase;
+using ::testing::TestEventListeners;
+using ::testing::TestInfo;
+using ::testing::TestPartResult;
+using ::testing::UnitTest;
+
+class QtFailAdapter : public EmptyTestEventListener {
+private:
+  virtual void OnTestPartResult(const TestPartResult& test_part_result) {
+    if (test_part_result.failed()) {
+      snprintf(msg_buffer, msg_buf_size,
+            "*** Failure in %s:%d\n%s\n",
+            test_part_result.file_name(),
+            test_part_result.line_number(),
+            test_part_result.summary());
+      QFAIL(msg_buffer);
+    }
+  }
+
+  static const int msg_buf_size = 1024;
+  char msg_buffer[msg_buf_size];
+};
+
+inline void beforeInitGMock() { }
+inline void afterInitGMock() {
+  TestEventListeners& listeners = UnitTest::GetInstance()->listeners();
+  listeners.Append(new QtFailAdapter);
+}
+#else
+inline void beforeInitGMock() {
+  ::testing::GTEST_FLAG(throw_on_failure) = true;
+}
+inline void afterInitGMock() { }
+#endif
+
+// The following line GTEST_FLAG causes Google Mock to throw an exception on failure,
+// which will be interpreted by your testing framework as a test failure.
+//
+// Qt stuffs are copyed from QTEST_MAIN definition
+
+#if defined(QT_WIDGETS_LIB)
+
+#define QTEST_GMOCK_MAIN(TestObject)                    \
+  int main(int argc, char *argv[])                      \
+  {                                                     \
+    beforeInitGMock();                                  \
+    ::testing::InitGoogleMock(&argc, argv);             \
+    afterInitGMock();                                   \
+                                                        \
+    INIT_RESOURCES;                                     \
+    QApplication app(argc, argv);                       \
+    app.setAttribute(Qt::AA_Use96Dpi, true);            \
+    QTEST_DISABLE_KEYPAD_NAVIGATION                     \
+        TestObject tc;                                  \
+    return QTest::qExec(&tc, argc, argv);               \
+  }
+
+#elif defined(QT_GUI_LIB)
+
+#define QTEST_GMOCK_MAIN(TestObject)                    \
+  int main(int argc, char *argv[])                      \
+  {                                                     \
+    beforeInitGMock();                                  \
+    ::testing::InitGoogleMock(&argc, argv);             \
+    afterInitGMock();                                   \
+                                                        \
+    INIT_RESOURCES;                                     \
+    QGuiApplication app(argc, argv);                    \
+    app.setAttribute(Qt::AA_Use96Dpi, true);            \
+    TestObject tc;                                      \
+    return QTest::qExec(&tc, argc, argv);               \
+  }
+
+#else
+
+#define QTEST_GMOCK_MAIN(TestObject)                    \
+  int main(int argc, char *argv[])                      \
+  {                                                     \
+    beforeInitGMock();                                  \
+    ::testing::InitGoogleMock(&argc, argv);             \
+    afterInitGMock();                                   \
+                                                        \
+    INIT_RESOURCES;                                     \
+    QCoreApplication app(argc, argv);                   \
+    app.setAttribute(Qt::AA_Use96Dpi, true);            \
+    TestObject tc;                                      \
+    return QTest::qExec(&tc, argc, argv);               \
+  }
+
+#endif
