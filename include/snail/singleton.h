@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_SINGLETON_H_
-#define SRC_CORE_SINGLETON_H_
+#ifndef INCLUDE_SNAIL_SINGLETON_H_
+#define INCLUDE_SNAIL_SINGLETON_H_
 
 namespace snailcore {
 
@@ -14,4 +14,4 @@ namespace snailcore {
 
 }  // namespace snailcore
 
-#endif  // SRC_CORE_SINGLETON_H_
+#endif  // INCLUDE_SNAIL_SINGLETON_H_

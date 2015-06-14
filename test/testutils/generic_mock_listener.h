@@ -40,6 +40,31 @@ class GenericMockListener : public snailcore::ITrackable {
     return attachTo_<StrictMock<ListenerType> >(subject);
   }
 
+  template <typename MockType, typename ... Args>
+  static std::shared_ptr<MockType>
+  attachTo_(SubjectType* subject, Args&& ... args) {
+    auto listener = std::make_shared<MockType>(std::forward<Args> (args) ...);
+
+    listener->bindListenerMethods(listener, subject);
+
+    return listener;
+  }
+
+  template <typename ... Args>
+  static std::shared_ptr<ListenerType>
+  attachTo(SubjectType* subject, Args&& ... args) {
+    return attachTo_<ListenerType, Args...>(subject,
+                                            std::forward<Args> (args) ...);
+  }
+
+  template <typename ... Args>
+  static std::shared_ptr<StrictMock<ListenerType>>
+  attachStrictTo(SubjectType* subject, Args&& ... args) {
+    return attachTo_<StrictMock<ListenerType>, Args... >(
+        subject,
+        std::forward<Args> (args) ...);
+  }
+
   virtual void bindListenerMethods(
       std::shared_ptr<snailcore::ITrackable> trackObject,
       SubjectType* subject) = 0;

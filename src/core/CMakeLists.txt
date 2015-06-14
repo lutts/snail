@@ -11,6 +11,8 @@ foreach (_subdir ${SUBDIRS})
 endforeach()
 
 set(core_SRCS ${core_SRCS}
+  pf_view_factory_manager.cc
+  pf_triad_manager.cc
   )
 
 add_library(snailcore ${core_SRCS})
