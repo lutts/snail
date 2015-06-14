@@ -152,10 +152,9 @@ bool PfTriadManager::requestRemoveTriadByView(IPfView* view) {
 
     if (allow_remove) {
       removeTriadBy(view);
-      return true;
-    } else {
-      return false;
     }
+
+    return allow_remove;
   } else {
     // TODO(lutts): throw exception?????
     return false;
