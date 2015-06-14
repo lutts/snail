@@ -85,7 +85,10 @@ class TestXXXViewFactory : public IPfViewFactory {
     auto my_model = std::dynamic_pointer_cast<TestXXXModel>(model);
     if (my_model) {
       auto view = createTestXXXView();
-      return TestXXXPresenter::create(my_model, view);
+      auto presenter = TestXXXPresenter::create(my_model, view);
+      last_presenter = presenter.get();
+
+      return presenter;
     }
 
     return nullptr;
@@ -94,6 +97,8 @@ class TestXXXViewFactory : public IPfViewFactory {
   virtual std::shared_ptr<ITestXXXView> createTestXXXView() const {
     return std::make_shared<TestXXXView>();
   }
+
+  TestXXXPresenter* last_presenter;
 
  private:
   TestXXXViewFactory(const TestXXXViewFactory& other) = delete;
@@ -160,6 +165,9 @@ TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_tria
   ASSERT_EQ(old_model_use_count + 1, model.use_count());
   // NOTE: 2 = one by triad manager + one by actual_view
   ASSERT_EQ(old_view_use_count + 2, expect_view.use_count());
+
+  // for convenience, we will store the triad in presenter
+  ASSERT_EQ(triad_manager.get(), view_factory.last_presenter->triad_manager());
 }
 
 // TODO(lutts): use TestYYYModel to ensure it working

@@ -28,7 +28,14 @@ class PfPresenter : public ITrackable {
   std::shared_ptr<IPfModel> getModel() { return model_; }
   std::shared_ptr<IPfView> getView() { return view_; }
 
-#if 0
+  void set_triad_manager(IPfTriadManager* triad_manager) {
+    triad_manager_ = triad_manager;
+  }
+
+  IPfTriadManager* triad_manager() {
+    return triad_manager_;
+  }
+
   std::shared_ptr<IPfView> createViewFor(std::shared_ptr<IPfModel> model) {
     if (triad_manager_) {
       return triad_manager_->createViewFor(model);
@@ -36,7 +43,26 @@ class PfPresenter : public ITrackable {
       return nullptr;
     }
   }
-#endif
+
+  void removeTriadBy(IPfModel* model) {
+    if (triad_manager_) {
+      triad_manager_->removeTriadBy(model);
+    }
+  }
+
+  void removeTriadBy(IPfView* view) {
+    if (triad_manager_) {
+      triad_manager_->removeTriadBy(view);
+    }
+  }
+
+  bool requestRemoveTriadByView(IPfView* view) {
+    if (triad_manager_) {
+      triad_manager_->requestRemoveTriadByView(view);
+    } else {
+      return false;
+    }
+  }
 
  private:
   PfPresenter(const PfPresenter& other) = delete;
@@ -44,7 +70,7 @@ class PfPresenter : public ITrackable {
 
   std::shared_ptr<IPfModel> model_;
   std::shared_ptr<IPfView> view_;
-  //  IPfTriadManager* triad_manager_ { nullptr };
+  IPfTriadManager* triad_manager_ { nullptr };
 };
 
 
