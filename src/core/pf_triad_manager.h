@@ -27,6 +27,8 @@ class PfTriadManager : public IPfTriadManager {
   void removeTriadBy(IPfModel* model) override;
   void removeTriadBy(IPfView* view) override;
   bool requestRemoveTriadByView(IPfView* view) override;
+  IPfView* findViewByModel(IPfModel* model) const override;
+  IPfModel* findModelByView(IPfView* view) const override;
 
  private:
   PfTriadManager(const PfTriadManager& other) = delete;

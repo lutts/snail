@@ -460,5 +460,27 @@ TEST_F(PfTriadManagerTest, should_remove_subscriber_when_remove_triad) { // NOLI
   ASSERT_TRUE(triad_manager->requestRemoveTriadByView(view.get()));
 }
 
+TEST_F(PfTriadManagerTest, should_be_able_to_find_view_by_model) { // NOLINT
+  // Setup fixture
+  auto model = std::make_shared<MockTestXXXModel>();
+  auto view = std::make_shared<MockTestXXXView>();
+
+  createTestXXXTriad(model, view);
+
+  // Verify results
+  ASSERT_EQ(view.get(), triad_manager->findViewByModel(model.get()));
+}
+
+TEST_F(PfTriadManagerTest, should_be_able_to_find_model_by_view) { // NOLINT
+  // Setup fixture
+  auto model = std::make_shared<MockTestXXXModel>();
+  auto view = std::make_shared<MockTestXXXView>();
+
+  createTestXXXTriad(model, view);
+
+  // Verify results
+  ASSERT_EQ(model.get(), triad_manager->findModelByView(view.get()));
+}
+
 }  // namespace tests
 }  // namespace snailcore

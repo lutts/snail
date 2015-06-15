@@ -57,6 +57,8 @@ class IPfTriadManager {
   virtual void removeTriadBy(IPfModel* model) = 0;
   virtual void removeTriadBy(IPfView* view) = 0;
   virtual bool requestRemoveTriadByView(IPfView* view) = 0;
+  virtual IPfView* findViewByModel(IPfModel* model) const = 0;
+  virtual IPfModel* findModelByView(IPfView* view) const = 0;
 };
 
 }  // namespace snailcore

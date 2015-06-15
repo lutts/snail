@@ -162,4 +162,36 @@ bool PfTriadManager::requestRemoveTriadByView(IPfView* view) {
   }
 }
 
+IPfView* PfTriadManager::findViewByModel(IPfModel* model) const {
+  auto iter = std::find_if(
+      impl->presenterStore.begin(),
+      impl->presenterStore.end(),
+      [model](const std::shared_ptr<PfPresenter>& item) -> bool {
+        return item->getModel().get() == model;
+      });
+
+  if (iter != impl->presenterStore.end()) {
+    auto p = *iter;
+    return p->getView().get();
+  }
+
+  return nullptr;
+}
+
+IPfModel* PfTriadManager::findModelByView(IPfView* view) const {
+  auto iter = std::find_if(
+      impl->presenterStore.begin(),
+      impl->presenterStore.end(),
+      [view](const std::shared_ptr<PfPresenter>& item) -> bool {
+        return item->getView().get() == view;
+      });
+
+  if (iter != impl->presenterStore.end()) {
+    auto p = *iter;
+    return p->getModel().get();
+  }
+
+  return nullptr;
+}
+
 }  // namespace snailcore

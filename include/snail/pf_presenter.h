@@ -64,6 +64,22 @@ class PfPresenter : public ITrackable {
     }
   }
 
+  IPfView* findViewByModel(IPfModel* model) const {
+    if (triad_manager_) {
+      return triad_manager_->findViewByModel(model);
+    } else {
+      return nullptr;
+    }
+  }
+
+  IPfModel* findModelByView(IPfView* view) const {
+    if (triad_manager_) {
+      return triad_manager_->findModelByView(view);
+    } else {
+      return nullptr;
+    }
+  }
+
  private:
   PfPresenter(const PfPresenter& other) = delete;
   PfPresenter& operator=(const PfPresenter& other) = delete;
