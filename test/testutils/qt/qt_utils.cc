@@ -9,7 +9,7 @@
 #include <QString>
 #include <ostream>  // NOLINT
 
-#include "src/utils/u8string.h"
+#include "utils/u8string.h"
 #include "test/testutils/qt/qt_utils.h"
 
 namespace xtestutils {

@@ -6,7 +6,7 @@
 // [Desc]
 
 #include "src/qtui/qt_uiengine.h"
-#include "src/utils/basic_utils.h"
+#include "utils/basic_utils.h"
 
 QtUiEngine::QtUiEngine()
     : qtApplication(utils::make_unique<QApplication>(dummy_argc, nullptr)) {

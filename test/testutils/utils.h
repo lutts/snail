@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "src/utils/u8string.h"
+#include "utils/u8string.h"
 
 #define CUSTOM_ASSERT(...)                      \
   do {                                          \

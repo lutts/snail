@@ -8,7 +8,7 @@
 #ifndef INCLUDE_SNAIL_I_UIENGINE_H_
 #define INCLUDE_SNAIL_I_UIENGINE_H_
 
-#include "snail/signal_slot.h"
+#include "utils/signal_slot.h"
 
 namespace snailcore {
 

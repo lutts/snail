@@ -12,7 +12,7 @@
 
 #include "test/testutils/gmock_common.h"
 
-#include "src/utils/basic_utils.h"  // make_unique, <memory>
+#include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/slot_catcher.h"
 #include "test/testutils/generic_mock_listener.h"
 #include "src/qtui/qt_uiengine.h"
@@ -49,7 +49,7 @@ class MockListener : public GenericMockListener<MockListener,
  public:
   MOCK_METHOD0(AboutToQuit, void());
 
-  void bindListenerMethods(std::shared_ptr<ITrackable> trackObject,
+  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
                            snailcore::IUiEngine* uiEngine) {
     uiEngine->whenAboutToQuit(
         [this]() {

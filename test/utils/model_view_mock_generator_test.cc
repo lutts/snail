@@ -7,7 +7,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "src/utils/basic_utils.h"  // make_unique, <memory>
+#include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/model_view_mock_generator.h"
 
 class IDummyView {

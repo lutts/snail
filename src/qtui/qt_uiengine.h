@@ -11,7 +11,7 @@
 #include <QApplication>
 
 #include "snail/i_uiengine.h"
-#include "snail/signal_slot_impl.h"
+#include "utils/signal_slot_impl.h"
 
 /**
  * NOTE: must construct a QtUiEngine instance before create any Qt widgets,

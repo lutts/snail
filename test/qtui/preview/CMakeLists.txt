@@ -8,5 +8,5 @@ set(COMMON_LIBS snailcore qtuicore Qt5::Widgets)
 #add_executable(undo_redo_preview undo_redo_preview.cc)
 #target_link_libraries(undo_redo_preview ${COMMON_LIBS})
 
-#add_executable(main_window_preview main_window_preview.cc)
-#target_link_libraries(main_window_preview ${COMMON_LIBS})
+add_executable(main_window_preview main_window_preview.cc)
+target_link_libraries(main_window_preview ${COMMON_LIBS})

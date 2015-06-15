@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "src/utils/singleton.h"
+#include "utils/singleton.h"
 
 using ::testing::GMOCK_FLAG(verbose);
 using ::testing::internal::kErrorVerbosity;

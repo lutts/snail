@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>  // std::move
 
-#include "src/utils/u8string.h"
+#include "utils/u8string.h"
 #include "test/testutils/utils.h"
 
 namespace xtestutils {

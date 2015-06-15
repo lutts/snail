@@ -7,7 +7,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "src/utils/basic_utils.h"  // make_unique, <memory>
+#include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/generic_mock_listener.h"
 #include "test/testutils/slot_catcher.h"
 

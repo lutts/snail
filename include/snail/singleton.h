@@ -10,7 +10,7 @@
 
 namespace snailcore {
 
-#include "src/utils/raw_singleton.th"
+#include "utils/raw_singleton.th"
 
 }  // namespace snailcore
 

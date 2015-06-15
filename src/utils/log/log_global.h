@@ -8,7 +8,7 @@
 #ifndef SRC_UTILS_LOG_LOG_GLOBAL_H_
 #define SRC_UTILS_LOG_LOG_GLOBAL_H_
 
-#include "src/utils/u8string.h"
+#include "utils/u8string.h"
 
 #define MYLOGGER_PRIV_DATA_SIZE 512
 

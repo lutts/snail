@@ -1,0 +1,39 @@
+// Copyright (c) 2015
+// All rights reserved.
+//
+// Author: Lutts Cao <<lutts.cao@gmail.com>>
+//
+// [Desc]
+
+#ifndef INCLUDE_SNAIL_MOCK_PF_TRIAD_MANAGER_H_
+#define INCLUDE_SNAIL_MOCK_PF_TRIAD_MANAGER_H_
+
+#include "snail/i_pf_triad_manager.h"
+
+namespace pfmvp {
+namespace tests {
+
+#define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)                       \
+  MOCK_METHOD2(when##sigName,                                           \
+               void(ObjType*, sigName##SlotType,                        \
+                    std::shared_ptr<utils::ITrackable>))
+
+class MockPfTriadManager : public IPfTriadManager {
+ public:
+  SNAIL_PFTRIAD_MOCK_SLOT(RequestRemoveModel);
+  SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel);
+  SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView);
+
+  MOCK_METHOD1(createViewFor,
+               std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model));
+  MOCK_METHOD1(removeTriadBy, void(IPfModel* model));
+  MOCK_METHOD1(removeTriadBy, void(IPfView* view));
+  MOCK_METHOD1(requestRemoveTriadByView, bool(IPfView* view));
+  MOCK_CONST_METHOD1(findViewByModel, IPfView*(IPfModel* model));
+  MOCK_CONST_METHOD1(findModelByView, IPfModel*(IPfView* view));
+};
+
+}  // namespace tests
+}  // namespace pfmvp
+
+#endif  // INCLUDE_SNAIL_MOCK_PF_TRIAD_MANAGER_H_

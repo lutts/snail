@@ -8,7 +8,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "src/utils/utils.h"
+#include "utils/utils.h"
 
 using ::testing::GMOCK_FLAG(verbose);
 using ::testing::internal::kErrorVerbosity;

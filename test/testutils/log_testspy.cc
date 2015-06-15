@@ -17,7 +17,7 @@
 #include "test/testutils/log_testspy.h"
 #include "src/utils/log/log.h"
 
-#include "src/utils/u8string.h"
+#include "utils/u8string.h"
 
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;

@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "test/testutils/log_testspy.h"
-#include "src/utils/u8string.h"
+#include "utils/u8string.h"
 
 class UserLogTestSpy : public LogTestSpy {
  public:

@@ -13,12 +13,12 @@
 
 #include <memory>  // std::shared_ptr
 
-#include "snail/i_trackable.h"  // ITrackable
+#include "utils/i_trackable.h"  // ITrackable
 
 using ::testing::StrictMock;
 
 template <typename ListenerType, typename SubjectType>
-class GenericMockListener : public snailcore::ITrackable {
+class GenericMockListener : public utils::ITrackable {
  public:
   template <typename MockType>
   static std::shared_ptr<MockType>
@@ -66,7 +66,7 @@ class GenericMockListener : public snailcore::ITrackable {
   }
 
   virtual void bindListenerMethods(
-      std::shared_ptr<snailcore::ITrackable> trackObject,
+      std::shared_ptr<utils::ITrackable> trackObject,
       SubjectType* subject) = 0;
 };
 

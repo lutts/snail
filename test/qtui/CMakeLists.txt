@@ -25,4 +25,7 @@ add_gmock_test(qt_uiengine_test
   LIBS Qt5::Widgets qtuicore)
 add_dependencies(qt_uiengine_test moc_qt_uiengine_test)
 
+add_gmock_test(main_window_presenter_test
+  LIBS qtuicore testutils)
+
 add_subdirectory(preview)

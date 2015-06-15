@@ -12,7 +12,7 @@
 #include <memory>
 #include <list>
 
-#include "src/utils/basic_utils.h"  // make_unique
+#include "utils/basic_utils.h"  // make_unique
 
 class IModelViewPair {
  public:

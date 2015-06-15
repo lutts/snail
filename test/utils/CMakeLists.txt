@@ -19,3 +19,4 @@ add_gmock_test(model_view_mock_generator_test)
 add_gmock_test(mock_object_generator_test)
 
 add_subdirectory(log)
+add_subdirectory(command)

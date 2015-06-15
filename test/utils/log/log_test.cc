@@ -11,8 +11,8 @@
 #include <vector>
 #include <ios>
 
-#include "src/utils/utils.h"
-#include "src/utils/u8string.h"
+#include "utils/utils.h"
+#include "utils/u8string.h"
 
 #include "test/testutils/log_testspy.h"
 #include "test/testutils/user_log_testspy.h"

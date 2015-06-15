@@ -7,6 +7,7 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII)
 
 set(qtui_MOC_HDRS
   qt_uiengine.h
+  main_window.h
   )
 
 set(qtui_RESOURCES
@@ -18,6 +19,8 @@ qt5_wrap_cpp(qtui_GEN_MOC_SRCS ${qtui_MOC_HDRS})
 
 SET(qtui_SRCS
   qt_uiengine.cc
+  main_window.cc
+  main_window_view_factory.cc
   )
 
 set(SUBDIRS)
@@ -29,6 +32,6 @@ foreach (_subdir ${SUBDIRS})
   endforeach()
 endforeach()
 
-add_library(qtuicore ${qtui_SRCS} ${qtui_GEN_MOC_SRCS} ${qtui_GEN_RCS})
-target_link_libraries(qtuicore Qt5::Widgets ${Boost_LIBRARIES} pthread)
+add_library(qtuicore SHARED ${qtui_SRCS} ${qtui_GEN_MOC_SRCS} ${qtui_GEN_RCS})
+target_link_libraries(qtuicore Qt5::Widgets pfmvp ${Boost_LIBRARIES} pthread)
 set_target_properties(qtuicore PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")
