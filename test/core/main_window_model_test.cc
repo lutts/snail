@@ -25,13 +25,13 @@ class MainWindowModelTest : public ::testing::Test {
   }
   // ~MainWindowModelTest() { }
   virtual void SetUp() {
-    model = utils::make_unique<MainWindowModel>();
+    model = makeMainWindowModel();
 
     ASSERT_EQ(expect_init_title, model->windowTitle());
   }
   // virtual void TearDown() { }
 
-  std::unique_ptr<MainWindowModel> model;
+  std::shared_ptr<MainWindowModel> model;
   utils::U8String expect_init_title { _("Snail") };
 };
 

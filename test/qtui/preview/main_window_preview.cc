@@ -32,9 +32,11 @@ int main() {
   QtUiEngine qtUiEngine;
   PfTriadManager triad_manager(PfViewFactoryManager::getInstance());
 
-  auto main_window_model = std::make_shared<MainWindowModel>();
-  auto main_window_view = triad_manager.createViewFor(main_window_model);
-  main_window_view->showView();
+  {
+    auto main_window_model = makeMainWindowModel();
+    auto main_window_view = triad_manager.createViewFor(main_window_model);
+    main_window_view->showView();
+  }
 
 #if 0
   ((snailcore::IUiEngine*)&qtUiEngine)->whenAboutToQuit(

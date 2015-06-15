@@ -8,6 +8,8 @@
 #ifndef SRC_CORE_MAIN_WINDOW_MODEL_H_
 #define SRC_CORE_MAIN_WINDOW_MODEL_H_
 
+#include <memory>  // std::shared_ptr;
+
 #include "snail/i_main_window_model.h"
 #include "utils/signal_slot.h"
 #include "utils/signal_slot_impl.h"
@@ -25,6 +27,7 @@ class MainWindowModel : public IMainWindowModel {
   bool requestClose() const override;
 
  private:
+
   MainWindowModel(const MainWindowModel& other) = delete;
   MainWindowModel& operator=(const MainWindowModel& other) = delete;
 
@@ -34,6 +37,8 @@ class MainWindowModel : public IMainWindowModel {
   SNAIL_SIGSLOT_IMPL(WindowTitleChanged)
   SNAIL_SIGSLOT_COMBINER_IMPL(RequestClose, and_slot_bool_result_combiner)
 };
+
+std::shared_ptr<MainWindowModel> makeMainWindowModel();
 
 }  // namespace snailcore
 

@@ -12,6 +12,18 @@
 
 namespace snailcore {
 
+std::shared_ptr<MainWindowModel> makeMainWindowModel() {
+  static std::weak_ptr<MainWindowModel> cache;
+
+  auto model = cache.lock();
+  if (!model) {
+    model = std::make_shared<MainWindowModel>();
+    cache = model;
+  }
+
+  return model;
+}
+
 MainWindowModel::MainWindowModel()
     : windowTitle_(_("Snail")) {
 }
