@@ -89,6 +89,22 @@ class PfPresenter : public ITrackable {
   IPfTriadManager* triad_manager_ { nullptr };
 };
 
+template <typename MT, typename VT>
+class PfPresenterT : public PfPresenter {
+ public:
+  PfPresenterT(std::shared_ptr<MT> model, std::shared_ptr<VT> view)
+      : PfPresenter(model, view)
+      , model_(dynamic_cast<MT*>(model.get()))
+      , view_(dynamic_cast<VT*>(view.get())){ }
+
+  MT* model() { return model_; }
+  VT* view() { return view_; }
+
+ private:
+  MT* model_;
+  VT* view_;
+};
+
 
 }  // namespace snailcore
 

@@ -56,7 +56,7 @@ class MockTestXXXView : public TestXXXView {
   MOCK_METHOD0(destruct, void());
 };
 
-class TestXXXPresenter : public PfPresenter {
+class TestXXXPresenter : public PfPresenterT<TestXXXModel, ITestXXXView> {
  public:
   static std::shared_ptr<TestXXXPresenter>
   create(std::shared_ptr<TestXXXModel> model,
@@ -67,7 +67,7 @@ class TestXXXPresenter : public PfPresenter {
 
   TestXXXPresenter(std::shared_ptr<TestXXXModel> model,
                    std::shared_ptr<ITestXXXView> view)
-      : PfPresenter(model, view) {
+      : PfPresenterT<TestXXXModel, ITestXXXView>(model, view) {
   }
 
  private:
