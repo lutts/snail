@@ -12,8 +12,8 @@
 
 namespace snailcore {
 
-std::shared_ptr<MainWindowModel> makeMainWindowModel() {
-  static std::weak_ptr<MainWindowModel> cache;
+std::shared_ptr<IMainWindowModel> makeMainWindowModel() {
+  static std::weak_ptr<IMainWindowModel> cache;
 
   auto model = cache.lock();
   if (!model) {

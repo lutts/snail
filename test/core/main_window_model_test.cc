@@ -31,7 +31,7 @@ class MainWindowModelTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  std::shared_ptr<MainWindowModel> model;
+  std::shared_ptr<IMainWindowModel> model;
   utils::U8String expect_init_title { _("Snail") };
 };
 
