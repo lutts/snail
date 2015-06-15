@@ -13,6 +13,8 @@ namespace snailcore {
 class IPfView {
  public:
   virtual ~IPfView() = default;
+
+  virtual void showView(bool modal = false) { (void)modal; }
 };
 
 }  // namespace snailcore
