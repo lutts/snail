@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_UTILS_UTILS_H_
-#define SRC_UTILS_UTILS_H_
+#ifndef INCLUDE_UTILS_UTILS_H_
+#define INCLUDE_UTILS_UTILS_H_
 
 #include <type_traits>
 #include <iterator>  // std::iterator, std::input_iterator_tag
@@ -90,4 +90,4 @@ range<IterType> make_range(std::pair<IterType, IterType> const& equal_rng) {
 
 }  // namespace utils
 
-#endif  // SRC_UTILS_UTILS_H_
+#endif  // INCLUDE_UTILS_UTILS_H_

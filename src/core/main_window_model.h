@@ -27,7 +27,6 @@ class MainWindowModel : public IMainWindowModel {
   bool requestClose() const override;
 
  private:
-
   MainWindowModel(const MainWindowModel& other) = delete;
   MainWindowModel& operator=(const MainWindowModel& other) = delete;
 

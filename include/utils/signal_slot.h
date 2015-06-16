@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_SIGNAL_SLOT_H_
-#define INCLUDE_SNAIL_SIGNAL_SLOT_H_
+#ifndef INCLUDE_UTILS_SIGNAL_SLOT_H_
+#define INCLUDE_UTILS_SIGNAL_SLOT_H_
 
 #include <functional>  // std::function
 #include <memory>      // std::shared_ptr
@@ -50,4 +50,4 @@ std::shared_ptr<T> make_trackable(Args&&... args) {
 
 }  // namespace utils
 
-#endif  // INCLUDE_SNAIL_SIGNAL_SLOT_H_
+#endif  // INCLUDE_UTILS_SIGNAL_SLOT_H_

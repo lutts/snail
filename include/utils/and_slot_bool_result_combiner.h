@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_AND_SLOT_BOOL_RESULT_COMBINER_H_
-#define INCLUDE_SNAIL_AND_SLOT_BOOL_RESULT_COMBINER_H_
+#ifndef INCLUDE_UTILS_AND_SLOT_BOOL_RESULT_COMBINER_H_
+#define INCLUDE_UTILS_AND_SLOT_BOOL_RESULT_COMBINER_H_
 
 // and slot bool result, stop on first false
 struct and_slot_bool_result_combiner {
@@ -34,4 +34,4 @@ struct and_slot_bool_result_combiner {
   }
 };
 
-#endif  // INCLUDE_SNAIL_AND_SLOT_BOOL_RESULT_COMBINER_H_
+#endif  // INCLUDE_UTILS_AND_SLOT_BOOL_RESULT_COMBINER_H_

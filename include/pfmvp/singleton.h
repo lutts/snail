@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_SINGLETON_H_
-#define INCLUDE_SNAIL_SINGLETON_H_
+#ifndef INCLUDE_PFMVP_SINGLETON_H_
+#define INCLUDE_PFMVP_SINGLETON_H_
 
 namespace pfmvp {
 
@@ -14,4 +14,4 @@ namespace pfmvp {
 
 }  // namespace pfmvp
 
-#endif  // INCLUDE_SNAIL_SINGLETON_H_
+#endif  // INCLUDE_PFMVP_SINGLETON_H_

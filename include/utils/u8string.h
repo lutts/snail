@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_UTILS_U8STRING_H_
-#define SRC_UTILS_U8STRING_H_
+#ifndef INCLUDE_UTILS_U8STRING_H_
+#define INCLUDE_UTILS_U8STRING_H_
 
 #include <string>
 
@@ -30,4 +30,4 @@ using U8String = ::std::string;
 
 }  // namespace utils
 
-#endif  // SRC_UTILS_U8STRING_H_
+#endif  // INCLUDE_UTILS_U8STRING_H_

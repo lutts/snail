@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_UTILS_SINGLETON_H_
-#define SRC_UTILS_SINGLETON_H_
+#ifndef INCLUDE_UTILS_SINGLETON_H_
+#define INCLUDE_UTILS_SINGLETON_H_
 
 namespace utils {
 
@@ -14,4 +14,4 @@ namespace utils {
 
 }  // namespace utils
 
-#endif  // SRC_UTILS_SINGLETON_H_
+#endif  // INCLUDE_UTILS_SINGLETON_H_

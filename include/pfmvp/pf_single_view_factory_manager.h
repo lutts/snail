@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef PF_VIEW_FACTORY_MANAGER_H_
-#define PF_VIEW_FACTORY_MANAGER_H_
+#ifndef INCLUDE_PFMVP_PF_SINGLE_VIEW_FACTORY_MANAGER_H_
+#define INCLUDE_PFMVP_PF_SINGLE_VIEW_FACTORY_MANAGER_H_
 
 #include <unordered_map>
 
@@ -28,7 +28,8 @@ class PfSingleViewFactoryManager :
   PfSingleViewFactoryManager() = default;
   ~PfSingleViewFactoryManager() = default;
   PfSingleViewFactoryManager(const PfSingleViewFactoryManager& other) = delete;
-  PfSingleViewFactoryManager& operator=(const PfSingleViewFactoryManager& other) = delete;
+  PfSingleViewFactoryManager& operator=(
+      const PfSingleViewFactoryManager&) = delete;
 
   friend class Singleton<PfSingleViewFactoryManager>;
 
@@ -52,4 +53,4 @@ class view_factory_single_t {
 
 }  // namespace pfmvp
 
-#endif  // PF_VIEW_FACTORY_MANAGER_H_
+#endif  // INCLUDE_PFMVP_PF_SINGLE_VIEW_FACTORY_MANAGER_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_COMMAND_PROCESSOR_H_
-#define INCLUDE_SNAIL_I_COMMAND_PROCESSOR_H_
+#ifndef INCLUDE_UTILS_I_COMMAND_PROCESSOR_H_
+#define INCLUDE_UTILS_I_COMMAND_PROCESSOR_H_
 
 #include "utils/signal_slot.h"
 
@@ -32,4 +32,4 @@ class ICommandProcessor {
 
 }  // namespace utils
 
-#endif  // INCLUDE_SNAIL_I_COMMAND_PROCESSOR_H_
+#endif  // INCLUDE_UTILS_I_COMMAND_PROCESSOR_H_

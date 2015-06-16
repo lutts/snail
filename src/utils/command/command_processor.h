@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_COMMAND_COMMAND_PROCESSOR_H_
-#define SRC_CORE_COMMAND_COMMAND_PROCESSOR_H_
+#ifndef SRC_UTILS_COMMAND_COMMAND_PROCESSOR_H_
+#define SRC_UTILS_COMMAND_COMMAND_PROCESSOR_H_
 
 #include <list>
 #include <memory>
@@ -82,4 +82,4 @@ class CommandProcessor : public ICommandProcessor {
 
 }  // namespace utils
 
-#endif  // SRC_CORE_COMMAND_COMMAND_PROCESSOR_H_
+#endif  // SRC_UTILS_COMMAND_COMMAND_PROCESSOR_H_

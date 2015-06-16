@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_PF_VIEW_FACTORY_H_
-#define INCLUDE_SNAIL_I_PF_VIEW_FACTORY_H_
+#ifndef INCLUDE_PFMVP_I_PF_VIEW_FACTORY_H_
+#define INCLUDE_PFMVP_I_PF_VIEW_FACTORY_H_
 
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/pf_presenter.h"
@@ -31,4 +31,4 @@ class IPfViewFactoryManager {
 
 }  // namespace pfmvp
 
-#endif  // INCLUDE_SNAIL_I_PF_VIEW_FACTORY_H_
+#endif  // INCLUDE_PFMVP_I_PF_VIEW_FACTORY_H_

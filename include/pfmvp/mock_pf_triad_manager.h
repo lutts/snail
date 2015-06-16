@@ -5,9 +5,10 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_MOCK_PF_TRIAD_MANAGER_H_
-#define INCLUDE_SNAIL_MOCK_PF_TRIAD_MANAGER_H_
+#ifndef INCLUDE_PFMVP_MOCK_PF_TRIAD_MANAGER_H_
+#define INCLUDE_PFMVP_MOCK_PF_TRIAD_MANAGER_H_
 
+#include <vector>
 #include "snail/i_pf_triad_manager.h"
 
 namespace pfmvp {
@@ -40,4 +41,4 @@ class MockPfTriadManager : public IPfTriadManager {
 }  // namespace tests
 }  // namespace pfmvp
 
-#endif  // INCLUDE_SNAIL_MOCK_PF_TRIAD_MANAGER_H_
+#endif  // INCLUDE_PFMVP_MOCK_PF_TRIAD_MANAGER_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_TRACKABLE_H_
-#define INCLUDE_SNAIL_I_TRACKABLE_H_
+#ifndef INCLUDE_UTILS_I_TRACKABLE_H_
+#define INCLUDE_UTILS_I_TRACKABLE_H_
 
 namespace utils {
 
@@ -18,4 +18,4 @@ class ITrackable {
 
 }  // namespace utils
 
-#endif  // INCLUDE_SNAIL_I_TRACKABLE_H_
+#endif  // INCLUDE_UTILS_I_TRACKABLE_H_

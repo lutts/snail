@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_PF_PRESENTER_H_
-#define INCLUDE_SNAIL_PF_PRESENTER_H_
+#ifndef INCLUDE_PFMVP_PF_PRESENTER_H_
+#define INCLUDE_PFMVP_PF_PRESENTER_H_
 
 #include <vector>
 #include <memory>
@@ -102,7 +102,7 @@ class PfPresenterT : public PfPresenter {
   PfPresenterT(std::shared_ptr<MT> model, std::shared_ptr<VT> view)
       : PfPresenter(model, view)
       , model_(dynamic_cast<MT*>(model.get()))
-      , view_(dynamic_cast<VT*>(view.get())){ }
+      , view_(dynamic_cast<VT*>(view.get())) { }
 
   MT* model() { return model_; }
   VT* view() { return view_; }
@@ -115,4 +115,4 @@ class PfPresenterT : public PfPresenter {
 
 }  // namespace pfmvp
 
-#endif  // INCLUDE_SNAIL_PF_PRESENTER_H_
+#endif  // INCLUDE_PFMVP_PF_PRESENTER_H_

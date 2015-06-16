@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_UTILS_I18N_H_
-#define SRC_UTILS_I18N_H_
+#ifndef INCLUDE_UTILS_I18N_H_
+#define INCLUDE_UTILS_I18N_H_
 
 #include <libintl.h>
 
@@ -17,4 +17,4 @@
 #define N_(String) (String)
 #endif
 
-#endif  // SRC_UTILS_I18N_H_
+#endif  // INCLUDE_UTILS_I18N_H_

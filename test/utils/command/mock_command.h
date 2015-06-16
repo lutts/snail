@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TEST_CORE_COMMAND_MOCK_COMMAND_H_
-#define TEST_CORE_COMMAND_MOCK_COMMAND_H_
+#ifndef TEST_UTILS_COMMAND_MOCK_COMMAND_H_
+#define TEST_UTILS_COMMAND_MOCK_COMMAND_H_
 
 #include "src/utils/command/command.h"
 
@@ -35,4 +35,4 @@ class DummyCommand : public Command {
 }  // namespace tests
 }  // namespace utils
 
-#endif  // TEST_CORE_COMMAND_MOCK_COMMAND_H_
+#endif  // TEST_UTILS_COMMAND_MOCK_COMMAND_H_

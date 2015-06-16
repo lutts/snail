@@ -5,9 +5,10 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_PF_TRIAD_MANAGER_H_
-#define SRC_CORE_PF_TRIAD_MANAGER_H_
+#ifndef SRC_PFMVP_PF_TRIAD_MANAGER_H_
+#define SRC_PFMVP_PF_TRIAD_MANAGER_H_
 
+#include <vector>
 #include <memory>  // std::unique_ptr
 
 #include "pfmvp/i_pf_triad_manager.h"
@@ -19,7 +20,7 @@ namespace pfmvp {
 
 class PfTriadManager : public IPfTriadManager {
  public:
-  PfTriadManager(const IPfViewFactoryManager& view_factory_mgr);
+  explicit PfTriadManager(const IPfViewFactoryManager& view_factory_mgr);
   virtual ~PfTriadManager();
 
   std::shared_ptr<IPfView>
@@ -53,4 +54,4 @@ class PfTriadManager : public IPfTriadManager {
 
 }  // namespace pfmvp
 
-#endif  // SRC_CORE_PF_TRIAD_MANAGER_H_
+#endif  // SRC_PFMVP_PF_TRIAD_MANAGER_H_

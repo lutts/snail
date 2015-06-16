@@ -1,4 +1,4 @@
- // Copyright (c) 2015
+// Copyright (c) 2015
 // All rights reserved.
 //
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
@@ -6,6 +6,7 @@
 // [Desc]
 #include "src/pfmvp/pf_triad_manager.h"
 
+#include <vector>
 #include <unordered_map>
 #include <forward_list>
 
@@ -16,7 +17,7 @@ namespace pfmvp {
 
 class PfTriadManager::PfTriadManagerImpl {
  public:
-  PfTriadManagerImpl(const IPfViewFactoryManager& view_factory_mgr)
+  explicit PfTriadManagerImpl(const IPfViewFactoryManager& view_factory_mgr)
       : view_factory_mgr_(view_factory_mgr) { }
   virtual ~PfTriadManagerImpl() = default;
 
@@ -76,10 +77,11 @@ PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model) {
       presenter->initialize();
 
       // TODO(lutts): LOCK
-      // we use FILO policy, because pop-up windows are close before their parents,
-      // and MainWindow is the first created and last destroyed
+      // we use FILO policy, because pop-up windows are close
+      // before their parents, and MainWindow is the first created
+      // and last destroyed
       impl->presenterStore.push_front(presenter);
-      impl->model_view_count[presenter->getModel().get()] ++;
+      ++impl->model_view_count[presenter->getModel().get()];
 
       return presenter->getView();
     }
@@ -113,7 +115,7 @@ void PfTriadManager::emitAboutToDestroySignal(IPfModel* model, IPfView* view) {
   view_destroy_sig(view);
   impl->view_destroy_sig_map_.erase(view);
 
-  -- impl->model_view_count[model];
+  --impl->model_view_count[model];
   assert(impl->model_view_count[model] >= 0);
   if (impl->model_view_count[model] == 0) {
     auto& model_destroy_sig = impl->AboutToDestroyModelSignalOf(model);

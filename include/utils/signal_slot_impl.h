@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_SIGNAL_SLOT_IMPL_H_
-#define INCLUDE_SNAIL_SIGNAL_SLOT_IMPL_H_
+#ifndef INCLUDE_UTILS_SIGNAL_SLOT_IMPL_H_
+#define INCLUDE_UTILS_SIGNAL_SLOT_IMPL_H_
 
 #include <boost/signals2.hpp>
 #include <memory>      // std::shared_ptr
@@ -107,4 +107,4 @@
     pimpl->when##sigName(handler, trackObject);                         \
   }
 
-#endif  // INCLUDE_SNAIL_SIGNAL_SLOT_IMPL_H_
+#endif  // INCLUDE_UTILS_SIGNAL_SLOT_IMPL_H_

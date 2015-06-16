@@ -12,7 +12,7 @@
 #include <QPushButton>
 #include <QDebug>
 
-//#include "src/qtui/work_name_input_dialog.h"
+// #include "src/qtui/work_name_input_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -32,7 +32,8 @@ MainWindow::~MainWindow() {
   setCentralWidget(nullptr);
 }
 
-void MainWindow::showView(bool) {
+void MainWindow::showView(bool modal) {
+  (void)modal;
   show();
 }
 

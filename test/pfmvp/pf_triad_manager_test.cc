@@ -31,98 +31,97 @@ namespace tests {
 #define DEFINE_TEST_CLASSES(name)                                       \
   class Test##name##Model : public IPfModel {                           \
    public:                                                              \
-   virtual ~Test##name##Model() = default;                              \
-                                                                        \
-   DEF_MODEL_ID(Test##name##Model);                                     \
+     virtual ~Test##name##Model() = default;                              \
+     DEF_MODEL_ID(Test##name##Model);                                     \
   };                                                                    \
                                                                         \
   class MockTest##name##Model : public Test##name##Model {              \
    public:                                                              \
-   virtual ~MockTest##name##Model() { destruct(); }                     \
+     virtual ~MockTest##name##Model() { destruct(); }                     \
                                                                         \
-   MOCK_METHOD0(destruct, void());                                      \
+     MOCK_METHOD0(destruct, void());                                      \
   };                                                                    \
                                                                         \
   class ITest##name##View : public IPfView {                            \
    public:                                                              \
-   virtual ~ITest##name##View() = default;                              \
+     virtual ~ITest##name##View() = default;                              \
   };                                                                    \
                                                                         \
   class Test##name##View : public ITest##name##View {                   \
    public:                                                              \
-   virtual ~Test##name##View() = default;                               \
+     virtual ~Test##name##View() = default;                               \
   };                                                                    \
                                                                         \
   class MockTest##name##View : public Test##name##View {                \
    public:                                                              \
-   virtual ~MockTest##name##View() { destruct(); }                      \
+     virtual ~MockTest##name##View() { destruct(); }                      \
                                                                         \
-   MOCK_METHOD0(destruct, void());                                      \
+     MOCK_METHOD0(destruct, void());                                      \
   };                                                                    \
                                                                         \
   class Test##name##Presenter : public PfPresenterT<Test##name##Model,  \
                                                     ITest##name##View> { \
    public:                                                              \
-   static std::shared_ptr<Test##name##Presenter>                        \
-   create(std::shared_ptr<Test##name##Model> model,                     \
-          std::shared_ptr<ITest##name##View> view) {                    \
-     auto presenter = std::make_shared<Test##name##Presenter>(model, view); \
-     return presenter;                                                  \
-   }                                                                    \
+     static std::shared_ptr<Test##name##Presenter>                        \
+     create(std::shared_ptr<Test##name##Model> model,                     \
+            std::shared_ptr<ITest##name##View> view) {                  \
+       auto presenter = std::make_shared<Test##name##Presenter>(model, view); \
+       return presenter;                                                \
+     }                                                                  \
                                                                         \
-   Test##name##Presenter(std::shared_ptr<Test##name##Model> model,      \
-                         std::shared_ptr<ITest##name##View> view)       \
-   : PfPresenterT<Test##name##Model, ITest##name##View>(model, view) {  \
-   }                                                                    \
+     Test##name##Presenter(std::shared_ptr<Test##name##Model> model,    \
+                           std::shared_ptr<ITest##name##View> view)     \
+     : PfPresenterT<Test##name##Model, ITest##name##View>(model, view) { \
+     }                                                                  \
                                                                         \
-   bool initialized { false };                                           \
+     bool initialized { false };                                        \
                                                                         \
    private:                                                             \
-   Test##name##Presenter(const Test##name##Presenter&) = delete;        \
-   Test##name##Presenter& operator=(const Test##name##Presenter&) = delete; \
+     Test##name##Presenter(const Test##name##Presenter&) = delete;        \
+     Test##name##Presenter& operator=(const Test##name##Presenter&) = delete; \
                                                                         \
-   void initialize() override {                                         \
-     if (triad_manager()) {                                             \
-       initialized = true;                                              \
+     void initialize() override {                                       \
+       if (triad_manager()) {                                           \
+         initialized = true;                                            \
+       }                                                                \
      }                                                                  \
-   }                                                                    \
   };                                                                    \
                                                                         \
   class Test##name##ViewFactory : public IPfViewFactory {               \
    public:                                                              \
-   Test##name##ViewFactory() = default;                                 \
-   virtual ~Test##name##ViewFactory() = default;                        \
+     Test##name##ViewFactory() = default;                                 \
+     virtual ~Test##name##ViewFactory() = default;                      \
                                                                         \
-   std::shared_ptr<PfPresenter>                                         \
-   createView(std::shared_ptr<IPfModel> model) override {               \
-     auto my_model = std::dynamic_pointer_cast<Test##name##Model>(model); \
-     if (my_model) {                                                    \
-       auto view = createTestView();                                    \
-       auto presenter = Test##name##Presenter::create(my_model, view);  \
-       last_presenter = presenter.get();                                \
+     std::shared_ptr<PfPresenter>                                       \
+     createView(std::shared_ptr<IPfModel> model) override {             \
+       auto my_model = std::dynamic_pointer_cast<Test##name##Model>(model); \
+       if (my_model) {                                                  \
+         auto view = createTestView();                                  \
+         auto presenter = Test##name##Presenter::create(my_model, view); \
+         last_presenter = presenter.get();                              \
                                                                         \
-       return presenter;                                                \
+         return presenter;                                              \
+       }                                                                \
+                                                                        \
+       return nullptr;                                                  \
      }                                                                  \
                                                                         \
-     return nullptr;                                                    \
-   }                                                                    \
+     virtual std::shared_ptr<ITest##name##View> createTestView() const { \
+       return std::make_shared<Test##name##View>();                     \
+     }                                                                  \
                                                                         \
-   virtual std::shared_ptr<ITest##name##View> createTestView() const {  \
-     return std::make_shared<Test##name##View>();                       \
-   }                                                                    \
-                                                                        \
-   Test##name##Presenter* last_presenter;                               \
+     Test##name##Presenter* last_presenter;                             \
                                                                         \
    private:                                                             \
-   Test##name##ViewFactory(const Test##name##ViewFactory&) = delete;    \
-   Test##name##ViewFactory& operator=(                                  \
-       const Test##name##ViewFactory&) = delete;                        \
+     Test##name##ViewFactory(const Test##name##ViewFactory&) = delete;    \
+     Test##name##ViewFactory& operator=(                                \
+         const Test##name##ViewFactory&) = delete;                      \
   };                                                                    \
                                                                         \
   class MockTest##name##ViewFactory : public Test##name##ViewFactory {  \
    public:                                                              \
-   MOCK_CONST_METHOD0(createTestView,                                   \
-                      std::shared_ptr<ITest##name##View>());            \
+     MOCK_CONST_METHOD0(createTestView,                                   \
+                        std::shared_ptr<ITest##name##View>());          \
   };
 
 DEFINE_TEST_CLASSES(XXX)

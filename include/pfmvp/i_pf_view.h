@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_PF_VIEW_H_
-#define INCLUDE_SNAIL_I_PF_VIEW_H_
+#ifndef INCLUDE_PFMVP_I_PF_VIEW_H_
+#define INCLUDE_PFMVP_I_PF_VIEW_H_
 
 namespace pfmvp {
 
@@ -19,4 +19,4 @@ class IPfView {
 
 }  // namespace pfmvp
 
-#endif  // INCLUDE_SNAIL_I_PF_VIEW_H_
+#endif  // INCLUDE_PFMVP_I_PF_VIEW_H_

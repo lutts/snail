@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_COMMAND_COMMAND_H_
-#define SRC_CORE_COMMAND_COMMAND_H_
+#ifndef SRC_UTILS_COMMAND_COMMAND_H_
+#define SRC_UTILS_COMMAND_COMMAND_H_
 
 namespace utils {
 
@@ -24,4 +24,4 @@ class Command {
 
 }  // namespace utils
 
-#endif  // SRC_CORE_COMMAND_COMMAND_H_
+#endif  // SRC_UTILS_COMMAND_COMMAND_H_

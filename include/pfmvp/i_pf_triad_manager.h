@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_PF_TRIAD_MANAGER_H_
-#define INCLUDE_SNAIL_I_PF_TRIAD_MANAGER_H_
+#ifndef INCLUDE_PFMVP_I_PF_TRIAD_MANAGER_H_
+#define INCLUDE_PFMVP_I_PF_TRIAD_MANAGER_H_
 
 #include <memory>
 #include <vector>
@@ -66,4 +66,4 @@ class IPfTriadManager {
 
 }  // namespace pfmvp
 
-#endif  // INCLUDE_SNAIL_I_PF_TRIAD_MANAGER_H_
+#endif  // INCLUDE_PFMVP_I_PF_TRIAD_MANAGER_H_
