@@ -18,7 +18,8 @@
 
 namespace pfmvp {
 
-class PfPresenter : public utils::ITrackable {
+class PfPresenter : public utils::ITrackable
+                  , public std::enable_shared_from_this<PfPresenter> {
  public:
   PfPresenter(std::shared_ptr<IPfModel> model,
               std::shared_ptr<IPfView> view)
@@ -29,6 +30,10 @@ class PfPresenter : public utils::ITrackable {
   std::shared_ptr<IPfModel> getModel() { return model_; }
   std::shared_ptr<IPfView> getView() { return view_; }
 
+  // NOTE: should be called after set_triad_manager()
+  virtual void initialize() { }
+
+  ////////////////////// triad manager helpers begin //////////////////
   void set_triad_manager(IPfTriadManager* triad_manager) {
     triad_manager_ = triad_manager;
   }
@@ -80,6 +85,7 @@ class PfPresenter : public utils::ITrackable {
       return nullptr;
     }
   }
+  ////////////////////// triad manager helpers end //////////////////
 
  private:
   PfPresenter(const PfPresenter& other) = delete;

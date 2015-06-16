@@ -73,6 +73,7 @@ PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model) {
 
     if (presenter) {
       presenter->set_triad_manager(this);
+      presenter->initialize();
 
       // TODO(lutts): LOCK
       // we use FILO policy, because pop-up windows are close before their parents,

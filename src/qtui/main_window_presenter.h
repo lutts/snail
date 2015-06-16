@@ -23,9 +23,7 @@ class MainWindowPresenter : public MainWindowPresenterBase {
   static std::shared_ptr<MainWindowPresenter>
   create(std::shared_ptr<snailcore::IMainWindowModel> model,
          std::shared_ptr<IMainWindowView> view) {
-    auto presenter = std::make_shared<MainWindowPresenter>(model, view);
-    presenter->initialize(presenter);
-    return presenter;
+    return std::make_shared<MainWindowPresenter>(model, view);
   }
 
   MainWindowPresenter(std::shared_ptr<snailcore::IMainWindowModel> model,
@@ -33,23 +31,24 @@ class MainWindowPresenter : public MainWindowPresenterBase {
       : MainWindowPresenterBase(model, view) {
   }
 
- private:
-  MainWindowPresenter(const MainWindowPresenter& other) = delete;
-  MainWindowPresenter& operator=(const MainWindowPresenter& other) = delete;
-
-  void initialize(std::shared_ptr<MainWindowPresenter> self) {
+  void initialize() override {
+    // assert(this == shared_from_this().get());
     view()->setWindowTitle2(model()->windowTitle());
 
     model()->whenWindowTitleChanged(
         [this](const utils::U8String& newTitle) {
           view()->setWindowTitle2(newTitle);
-        }, self);
+        }, shared_from_this());
 
     view()->whenRequestClose(
         [this]() -> bool {
           return model()->requestClose();
-        }, self);
+        }, shared_from_this());
   }
+
+ private:
+  MainWindowPresenter(const MainWindowPresenter& other) = delete;
+  MainWindowPresenter& operator=(const MainWindowPresenter& other) = delete;
 };
 
 #endif  // SRC_QTUI_MAIN_WINDOW_PRESENTER_H_

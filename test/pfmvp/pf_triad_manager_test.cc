@@ -75,9 +75,17 @@ namespace tests {
    : PfPresenterT<Test##name##Model, ITest##name##View>(model, view) {  \
    }                                                                    \
                                                                         \
+   bool initialized { false };                                           \
+                                                                        \
    private:                                                             \
    Test##name##Presenter(const Test##name##Presenter&) = delete;        \
    Test##name##Presenter& operator=(const Test##name##Presenter&) = delete; \
+                                                                        \
+   void initialize() override {                                         \
+     if (triad_manager()) {                                             \
+       initialized = true;                                              \
+     }                                                                  \
+   }                                                                    \
   };                                                                    \
                                                                         \
   class Test##name##ViewFactory : public IPfViewFactory {               \
@@ -90,10 +98,10 @@ namespace tests {
      auto my_model = std::dynamic_pointer_cast<Test##name##Model>(model); \
      if (my_model) {                                                    \
        auto view = createTestView();                                    \
-  auto presenter = Test##name##Presenter::create(my_model, view);       \
-  last_presenter = presenter.get();                                     \
+       auto presenter = Test##name##Presenter::create(my_model, view);  \
+       last_presenter = presenter.get();                                \
                                                                         \
-  return presenter;                                                     \
+       return presenter;                                                \
      }                                                                  \
                                                                         \
      return nullptr;                                                    \
@@ -182,7 +190,9 @@ void PfTriadManagerTest::createTestTriad(
     ASSERT_EQ(view, actual_view);
 
     // for convenience, we will store the triad in presenter
-    ASSERT_EQ(triad_manager.get(), view_factory->last_presenter->triad_manager());
+    ASSERT_EQ(triad_manager.get(),
+              view_factory->last_presenter->triad_manager());
+    ASSERT_TRUE(view_factory->last_presenter->initialized);
   }
 
   ASSERT_EQ(old_model_use_count + 1, model.use_count());

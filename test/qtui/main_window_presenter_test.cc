@@ -44,6 +44,7 @@ class MainWindowPresenterTest : public ::testing::Test {
         .WillOnce(SaveArg<0>(&userCloseWindow));
 
     presenter = MainWindowPresenter::create(model, view);
+    presenter->initialize();
   }
   // virtual void TearDown() { }
 
