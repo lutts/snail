@@ -9,6 +9,7 @@
 #define INCLUDE_SNAIL_I_PF_TRIAD_MANAGER_H_
 
 #include <memory>
+#include <vector>
 
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/i_pf_view.h"
@@ -58,6 +59,8 @@ class IPfTriadManager {
   virtual void removeTriadBy(IPfView* view) = 0;
   virtual bool requestRemoveTriadByView(IPfView* view) = 0;
   virtual IPfView* findViewByModel(IPfModel* model) const = 0;
+  virtual std::vector<IPfView*>
+  findViewsByModelId(const IPfModel::ModelIdType& model_id) const = 0;
   virtual IPfModel* findModelByView(IPfView* view) const = 0;
 };
 

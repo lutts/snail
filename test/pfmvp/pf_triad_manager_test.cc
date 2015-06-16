@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <algorithm>  // std::sort
+
 #include "test/testutils/gmock_common.h"
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
@@ -26,90 +28,97 @@
 namespace pfmvp {
 namespace tests {
 
-class TestXXXModel : public IPfModel {
- public:
-  virtual ~TestXXXModel() = default;
+#define DEFINE_TEST_CLASSES(name)                                       \
+  class Test##name##Model : public IPfModel {                           \
+   public:                                                              \
+   virtual ~Test##name##Model() = default;                              \
+                                                                        \
+   DEF_MODEL_ID(Test##name##Model);                                     \
+  };                                                                    \
+                                                                        \
+  class MockTest##name##Model : public Test##name##Model {              \
+   public:                                                              \
+   virtual ~MockTest##name##Model() { destruct(); }                     \
+                                                                        \
+   MOCK_METHOD0(destruct, void());                                      \
+  };                                                                    \
+                                                                        \
+  class ITest##name##View : public IPfView {                            \
+   public:                                                              \
+   virtual ~ITest##name##View() = default;                              \
+  };                                                                    \
+                                                                        \
+  class Test##name##View : public ITest##name##View {                   \
+   public:                                                              \
+   virtual ~Test##name##View() = default;                               \
+  };                                                                    \
+                                                                        \
+  class MockTest##name##View : public Test##name##View {                \
+   public:                                                              \
+   virtual ~MockTest##name##View() { destruct(); }                      \
+                                                                        \
+   MOCK_METHOD0(destruct, void());                                      \
+  };                                                                    \
+                                                                        \
+  class Test##name##Presenter : public PfPresenterT<Test##name##Model,  \
+                                                    ITest##name##View> { \
+   public:                                                              \
+   static std::shared_ptr<Test##name##Presenter>                        \
+   create(std::shared_ptr<Test##name##Model> model,                     \
+          std::shared_ptr<ITest##name##View> view) {                    \
+     auto presenter = std::make_shared<Test##name##Presenter>(model, view); \
+     return presenter;                                                  \
+   }                                                                    \
+                                                                        \
+   Test##name##Presenter(std::shared_ptr<Test##name##Model> model,      \
+                         std::shared_ptr<ITest##name##View> view)       \
+   : PfPresenterT<Test##name##Model, ITest##name##View>(model, view) {  \
+   }                                                                    \
+                                                                        \
+   private:                                                             \
+   Test##name##Presenter(const Test##name##Presenter&) = delete;        \
+   Test##name##Presenter& operator=(const Test##name##Presenter&) = delete; \
+  };                                                                    \
+                                                                        \
+  class Test##name##ViewFactory : public IPfViewFactory {               \
+   public:                                                              \
+   Test##name##ViewFactory() = default;                                 \
+   virtual ~Test##name##ViewFactory() = default;                        \
+                                                                        \
+   std::shared_ptr<PfPresenter>                                         \
+   createView(std::shared_ptr<IPfModel> model) override {               \
+     auto my_model = std::dynamic_pointer_cast<Test##name##Model>(model); \
+     if (my_model) {                                                    \
+       auto view = createTestView();                                    \
+  auto presenter = Test##name##Presenter::create(my_model, view);       \
+  last_presenter = presenter.get();                                     \
+                                                                        \
+  return presenter;                                                     \
+     }                                                                  \
+                                                                        \
+     return nullptr;                                                    \
+   }                                                                    \
+                                                                        \
+   virtual std::shared_ptr<ITest##name##View> createTestView() const {  \
+     return std::make_shared<Test##name##View>();                       \
+   }                                                                    \
+                                                                        \
+   Test##name##Presenter* last_presenter;                               \
+                                                                        \
+   private:                                                             \
+   Test##name##ViewFactory(const Test##name##ViewFactory&) = delete;    \
+   Test##name##ViewFactory& operator=(                                  \
+       const Test##name##ViewFactory&) = delete;                        \
+  };                                                                    \
+                                                                        \
+  class MockTest##name##ViewFactory : public Test##name##ViewFactory {  \
+   public:                                                              \
+   MOCK_CONST_METHOD0(createTestView,                                   \
+                      std::shared_ptr<ITest##name##View>());            \
+  };
 
-  DEF_MODEL_ID(TestXXXModel);
-};
-
-class MockTestXXXModel : public TestXXXModel {
- public:
-  virtual ~MockTestXXXModel() { destruct(); }
-
-  MOCK_METHOD0(destruct, void());
-};
-
-class ITestXXXView : public IPfView {
- public:
-  virtual ~ITestXXXView() = default;
-};
-
-class TestXXXView : public ITestXXXView {
- public:
-  virtual ~TestXXXView() = default;
-};
-
-class MockTestXXXView : public TestXXXView {
- public:
-  virtual ~MockTestXXXView() { destruct(); }
-
-  MOCK_METHOD0(destruct, void());
-};
-
-class TestXXXPresenter : public PfPresenterT<TestXXXModel, ITestXXXView> {
- public:
-  static std::shared_ptr<TestXXXPresenter>
-  create(std::shared_ptr<TestXXXModel> model,
-         std::shared_ptr<ITestXXXView> view) {
-    auto presenter = std::make_shared<TestXXXPresenter>(model, view);
-    return presenter;
-  }
-
-  TestXXXPresenter(std::shared_ptr<TestXXXModel> model,
-                   std::shared_ptr<ITestXXXView> view)
-      : PfPresenterT<TestXXXModel, ITestXXXView>(model, view) {
-  }
-
- private:
-  TestXXXPresenter(const TestXXXPresenter& other) = delete;
-  TestXXXPresenter& operator=(const TestXXXPresenter& other) = delete;
-};
-
-class TestXXXViewFactory : public IPfViewFactory {
- public:
-  TestXXXViewFactory() = default;
-  virtual ~TestXXXViewFactory() = default;
-
-  std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model) override {
-    auto my_model = std::dynamic_pointer_cast<TestXXXModel>(model);
-    if (my_model) {
-      auto view = createTestXXXView();
-      auto presenter = TestXXXPresenter::create(my_model, view);
-      last_presenter = presenter.get();
-
-      return presenter;
-    }
-
-    return nullptr;
-  }
-
-  virtual std::shared_ptr<ITestXXXView> createTestXXXView() const {
-    return std::make_shared<TestXXXView>();
-  }
-
-  TestXXXPresenter* last_presenter;
-
- private:
-  TestXXXViewFactory(const TestXXXViewFactory& other) = delete;
-  TestXXXViewFactory& operator=(const TestXXXViewFactory& other) = delete;
-};
-
-class MockTestXXXViewFactory : public TestXXXViewFactory {
- public:
-  MOCK_CONST_METHOD0(createTestXXXView, std::shared_ptr<ITestXXXView>());
-};
+DEFINE_TEST_CLASSES(XXX)
+DEFINE_TEST_CLASSES(YYY)
 
 class PfTriadManagerTest : public ::testing::Test {
  protected:
@@ -124,11 +133,21 @@ class PfTriadManagerTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
+  template <typename VF, typename M, typename V>
+  void createTestTriad(std::shared_ptr<M> model,
+                       std::shared_ptr<V> view);
+
   using TestXXX_MVPair = std::pair<MockTestXXXModel*, MockTestXXXView*>;
   void createTestXXXTriads(TestXXX_MVPair* mvpair,
                            std::vector<TestXXX_MVPair>* all_mvpair);
   void createTestXXXTriad(std::shared_ptr<MockTestXXXModel> model,
                           std::shared_ptr<MockTestXXXView> view);
+
+  using TestYYY_MVPair = std::pair<MockTestYYYModel*, MockTestYYYView*>;
+  void createTestYYYTriads(TestYYY_MVPair* mvpair,
+                           std::vector<TestYYY_MVPair>* all_mvpair);
+  void createTestYYYTriad(std::shared_ptr<MockTestYYYModel> model,
+                          std::shared_ptr<MockTestYYYView> view);
 
 
   // region: objects test subject depends on
@@ -142,52 +161,57 @@ class PfTriadManagerTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_triad_reference) { // NOLINT
-  // Setup fixture
-  auto model = std::make_shared<TestXXXModel>();
-  auto expect_view = std::make_shared<TestXXXView>();
+template <typename VF, typename M, typename V>
+void PfTriadManagerTest::createTestTriad(
+    std::shared_ptr<M> model,
+    std::shared_ptr<V> view) {
+  {  // working scope
+    view_factory_single_t<M, VF> view_factory_wrapper;
+    auto& view_factory = view_factory_wrapper.FTO_getFactory();
+    ON_CALL(view_factory, createTestView())
+        .WillByDefault(Return(view));
 
-  auto old_model_use_count = model.use_count();
+    auto actual_view = triad_manager->createViewFor(model);
+    ASSERT_EQ(view, actual_view);
 
-  view_factory_single_t<TestXXXModel, MockTestXXXViewFactory> view_factory_wrapper;
-  auto& view_factory = view_factory_wrapper.FTO_getFactory();
-  ON_CALL(view_factory, createTestXXXView())
-      .WillByDefault(Return(expect_view));
+    // for convenience, we will store the triad in presenter
+    ASSERT_EQ(triad_manager.get(), view_factory.last_presenter->triad_manager());
+  }
 
-  auto old_view_use_count = expect_view.use_count();
-
-  // Expectations
-
-  // Exercise system
-  auto actual_view = triad_manager->createViewFor(model);
-
-  // Verify results
-  ASSERT_EQ(expect_view, actual_view);
-  // should hold reference
-  ASSERT_EQ(old_model_use_count + 1, model.use_count());
-  // NOTE: 2 = one by triad manager + one by actual_view
-  ASSERT_EQ(old_view_use_count + 2, expect_view.use_count());
-
-  // for convenience, we will store the triad in presenter
-  ASSERT_EQ(triad_manager.get(), view_factory.last_presenter->triad_manager());
+  ASSERT_EQ(4, model.use_count());
+  ASSERT_EQ(4, view.use_count());
 }
-
-// TODO(lutts): use TestYYYModel to ensure it working
 
 void PfTriadManagerTest::createTestXXXTriad(
     std::shared_ptr<MockTestXXXModel> model,
     std::shared_ptr<MockTestXXXView> view) {
-  {
-    view_factory_single_t<TestXXXModel, MockTestXXXViewFactory> view_factory_wrapper;
-    auto& view_factory = view_factory_wrapper.FTO_getFactory();
-    ON_CALL(view_factory, createTestXXXView())
-        .WillByDefault(Return(view));
+  createTestTriad<MockTestXXXViewFactory>(model, view);
+}
 
-    triad_manager->createViewFor(model);
-  }
+void PfTriadManagerTest::createTestYYYTriad(
+    std::shared_ptr<MockTestYYYModel> model,
+    std::shared_ptr<MockTestYYYView> view) {
+  createTestTriad<MockTestYYYViewFactory>(model, view);
+}
 
-  ASSERT_EQ(3, model.use_count());
-  ASSERT_EQ(3, view.use_count());
+TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_triad_reference) { // NOLINT
+  // Setup fixture
+  auto xxx_model = std::make_shared<MockTestXXXModel>();
+  auto xxx_view = std::make_shared<MockTestXXXView>();
+
+  // Exercise system
+  createTestXXXTriad(xxx_model, xxx_view);
+
+  // Verify results: should hold reference
+  ASSERT_EQ(2, xxx_model.use_count());
+  ASSERT_EQ(2, xxx_view.use_count());
+
+  // Trianglation test
+  auto yyy_model = std::make_shared<MockTestYYYModel>();
+  auto yyy_view = std::make_shared<MockTestYYYView>();
+  createTestYYYTriad(yyy_model, yyy_view);
+  ASSERT_EQ(2, yyy_model.use_count());
+  ASSERT_EQ(2, yyy_view.use_count());
 }
 
 void PfTriadManagerTest::createTestXXXTriads(
@@ -205,6 +229,30 @@ void PfTriadManagerTest::createTestXXXTriads(
     auto view = std::make_shared<MockTestXXXView>();
 
     createTestXXXTriad(model, view);
+
+    all.push_back(std::make_pair(model.get(), view.get()));
+  }
+
+  *mvpair_to_test = all[triad_to_test];
+  if (all_mvpair)
+    *all_mvpair = all;
+}
+
+void PfTriadManagerTest::createTestYYYTriads(
+    TestYYY_MVPair* mvpair_to_test,
+    std::vector<TestYYY_MVPair>* all_mvpair = nullptr) {
+  std::vector<TestYYY_MVPair> all;
+
+  const int TEST_TRIAD_COUNT = 10;
+
+  std::srand(std::time(0));
+  int triad_to_test = std::rand() % TEST_TRIAD_COUNT;
+
+  for (int i = 0; i < TEST_TRIAD_COUNT; ++i) {
+    auto model = std::make_shared<MockTestYYYModel>();
+    auto view = std::make_shared<MockTestYYYView>();
+
+    createTestYYYTriad(model, view);
 
     all.push_back(std::make_pair(model.get(), view.get()));
   }
@@ -464,24 +512,51 @@ TEST_F(PfTriadManagerTest, should_remove_subscriber_when_remove_triad) { // NOLI
 
 TEST_F(PfTriadManagerTest, should_be_able_to_find_view_by_model) { // NOLINT
   // Setup fixture
-  auto model = std::make_shared<MockTestXXXModel>();
-  auto view = std::make_shared<MockTestXXXView>();
-
-  createTestXXXTriad(model, view);
+  TestXXX_MVPair mvpair;
+  CUSTOM_ASSERT(createTestXXXTriads(&mvpair));
+  auto model = mvpair.first;
+  auto view = mvpair.second;
 
   // Verify results
-  ASSERT_EQ(view.get(), triad_manager->findViewByModel(model.get()));
+  ASSERT_EQ(view, triad_manager->findViewByModel(model));
+}
+
+TEST_F(PfTriadManagerTest, should_be_able_to_find_view_by_model_id) { // NOLINT
+  // Setup fixture
+  TestXXX_MVPair xxx_mvpair;
+  std::vector<TestXXX_MVPair> all_xxx_mvpair;
+  CUSTOM_ASSERT(createTestXXXTriads(&xxx_mvpair, &all_xxx_mvpair));
+
+  TestYYY_MVPair yyy_mvpair;
+  std::vector<TestYYY_MVPair> all_yyy_mvpair;
+  CUSTOM_ASSERT(createTestYYYTriads(&yyy_mvpair, &all_yyy_mvpair));
+
+  // Expectations
+  std::vector<IPfView*> expect_views;
+  for (auto mvpair : all_xxx_mvpair) {
+    expect_views.push_back(mvpair.second);
+  }
+
+  std::sort(expect_views.begin(), expect_views.end());
+
+  // Exercise system
+  auto actual_views =
+      triad_manager->findViewsByModelId(TestXXXModel::modelId());
+
+  // Verify results
+  std::sort(actual_views.begin(), actual_views.end());
+  ASSERT_EQ(expect_views, actual_views);
 }
 
 TEST_F(PfTriadManagerTest, should_be_able_to_find_model_by_view) { // NOLINT
   // Setup fixture
-  auto model = std::make_shared<MockTestXXXModel>();
-  auto view = std::make_shared<MockTestXXXView>();
-
-  createTestXXXTriad(model, view);
+  TestXXX_MVPair mvpair;
+  CUSTOM_ASSERT(createTestXXXTriads(&mvpair));
+  auto model = mvpair.first;
+  auto view = mvpair.second;
 
   // Verify results
-  ASSERT_EQ(model.get(), triad_manager->findModelByView(view.get()));
+  ASSERT_EQ(model, triad_manager->findModelByView(view));
 }
 
 }  // namespace tests

@@ -189,6 +189,20 @@ IPfView* PfTriadManager::findViewByModel(IPfModel* model) const {
   return nullptr;
 }
 
+std::vector<IPfView*> PfTriadManager:: findViewsByModelId(
+    const IPfModel::ModelIdType& model_id) const {
+  std::vector<IPfView*> matched_views;
+
+  for (auto& presenter : impl->presenterStore) {
+    auto id = presenter->getModel()->getModelId();
+    if (model_id == id) {
+      matched_views.push_back(presenter->getView().get());
+    }
+  }
+
+  return matched_views;
+}
+
 IPfModel* PfTriadManager::findModelByView(IPfView* view) const {
   auto iter = std::find_if(
       impl->presenterStore.begin(),
