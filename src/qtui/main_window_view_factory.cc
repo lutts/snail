@@ -7,7 +7,7 @@
 #include "snail/i_main_window_model.h"
 #include "src/qtui/main_window_presenter.h"
 #include "src/qtui/main_window.h"
-#include "pfmvp/i_pf_view_factory.h"
+#include "pfmvp/pf_single_view_factory_manager.h"
 
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
@@ -33,5 +33,5 @@ class MainWindowViewFactory : public IPfViewFactory {
   MainWindowViewFactory& operator=(const MainWindowViewFactory& other) = delete;
 };
 
-static view_factory_t<IMainWindowModel, MainWindowViewFactory>
+static view_factory_single_t<IMainWindowModel, MainWindowViewFactory>
 g_main_window_view_factory;

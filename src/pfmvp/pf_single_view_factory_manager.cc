@@ -4,11 +4,11 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "pfmvp/i_pf_view_factory.h"
+#include "pfmvp/pf_single_view_factory_manager.h"
 
 namespace pfmvp {
 
-SINGLETON_STATIC_INSTANCE(PfViewFactoryManager)
+SINGLETON_STATIC_INSTANCE(PfSingleViewFactoryManager)
 
 class NullViewFactory : public IPfViewFactory {
  public:
@@ -23,14 +23,14 @@ class NullViewFactory : public IPfViewFactory {
 
 static NullViewFactory g_null_view_factory;
 
-void PfViewFactoryManager::addViewFactory(
+void PfSingleViewFactoryManager::addViewFactory(
     const IPfModel::ModelIdType& model_id,
     IPfViewFactory* view_factory) {
-  auto& self = PfViewFactoryManager::getInstance();
+  auto& self = PfSingleViewFactoryManager::getInstance();
   self.model_viewfactory_map_[model_id] = view_factory;
 }
 
-IPfViewFactory* PfViewFactoryManager::getViewFactory(
+IPfViewFactory* PfSingleViewFactoryManager::getViewFactory(
     const IPfModel::ModelIdType& model_id) const {
   try {
     return model_viewfactory_map_.at(model_id);

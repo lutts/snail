@@ -21,6 +21,7 @@
 #include "pfmvp/pf_presenter.h"
 #include "pfmvp/i_pf_view.h"
 #include "pfmvp/i_pf_view_factory.h"
+#include "pfmvp/pf_single_view_factory_manager.h"
 
 namespace pfmvp {
 namespace tests {
@@ -119,7 +120,7 @@ class PfTriadManagerTest : public ::testing::Test {
   // ~PfTriadManagerTest() { }
   virtual void SetUp() {
     triad_manager = utils::make_unique<PfTriadManager>(
-        PfViewFactoryManager::getInstance());
+        PfSingleViewFactoryManager::getInstance());
   }
   // virtual void TearDown() { }
 
@@ -148,7 +149,7 @@ TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_tria
 
   auto old_model_use_count = model.use_count();
 
-  view_factory_t<TestXXXModel, MockTestXXXViewFactory> view_factory_wrapper;
+  view_factory_single_t<TestXXXModel, MockTestXXXViewFactory> view_factory_wrapper;
   auto& view_factory = view_factory_wrapper.FTO_getFactory();
   ON_CALL(view_factory, createTestXXXView())
       .WillByDefault(Return(expect_view));
@@ -177,7 +178,7 @@ void PfTriadManagerTest::createTestXXXTriad(
     std::shared_ptr<MockTestXXXModel> model,
     std::shared_ptr<MockTestXXXView> view) {
   {
-    view_factory_t<TestXXXModel, MockTestXXXViewFactory> view_factory_wrapper;
+    view_factory_single_t<TestXXXModel, MockTestXXXViewFactory> view_factory_wrapper;
     auto& view_factory = view_factory_wrapper.FTO_getFactory();
     ON_CALL(view_factory, createTestXXXView())
         .WillByDefault(Return(view));

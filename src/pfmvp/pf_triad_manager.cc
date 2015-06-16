@@ -6,6 +6,7 @@
 // [Desc]
 #include "src/pfmvp/pf_triad_manager.h"
 
+#include <unordered_map>
 #include <forward_list>
 
 #include "utils/basic_utils.h"  // utils::make_unique
