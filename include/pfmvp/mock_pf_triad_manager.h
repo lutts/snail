@@ -9,21 +9,21 @@
 #define INCLUDE_PFMVP_MOCK_PF_TRIAD_MANAGER_H_
 
 #include <vector>
-#include "snail/i_pf_triad_manager.h"
+#include "pfmvp/i_pf_triad_manager.h"
 
 namespace pfmvp {
 namespace tests {
 
-#define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)                       \
-  MOCK_METHOD2(when##sigName,                                           \
-               void(ObjType*, sigName##SlotType,                        \
+#define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)               \
+  MOCK_METHOD3(when##sigName,                                   \
+               void(ObjType*, sigName##SlotType,                \
                     std::shared_ptr<utils::ITrackable>))
 
 class MockPfTriadManager : public IPfTriadManager {
  public:
-  SNAIL_PFTRIAD_MOCK_SLOT(RequestRemoveModel);
-  SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel);
-  SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView);
+  SNAIL_PFTRIAD_MOCK_SLOT(RequestRemoveModel, IPfModel);
+  SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel, IPfModel);
+  SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView, IPfView);
 
   MOCK_METHOD1(createViewFor,
                std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model));
@@ -34,7 +34,7 @@ class MockPfTriadManager : public IPfTriadManager {
                      std::vector<IPfView*>(IPfModel* model));
   MOCK_CONST_METHOD1(
       findViewsByModelId,
-      std::vector<IPfView*>(const IPfModel::ModelIdType& model_id);
+      std::vector<IPfView*>(const IPfModel::ModelIdType& model_id));
   MOCK_CONST_METHOD1(findModelByView, IPfModel*(IPfView* view));
 };
 
