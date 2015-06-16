@@ -167,15 +167,19 @@ void PfTriadManagerTest::createTestTriad(
     std::shared_ptr<V> view) {
   {  // working scope
     view_factory_single_t<M, VF> view_factory_wrapper;
-    auto& view_factory = view_factory_wrapper.FTO_getFactory();
-    ON_CALL(view_factory, createTestView())
+    IPfViewFactory* view_factory_b =
+        PfSingleViewFactoryManager::getInstance().getViewFactory(M::modelId());
+    auto view_factory = dynamic_cast<VF*>(view_factory_b);
+    ASSERT_NE(nullptr, view_factory);
+
+    ON_CALL(*view_factory, createTestView())
         .WillByDefault(Return(view));
 
     auto actual_view = triad_manager->createViewFor(model);
     ASSERT_EQ(view, actual_view);
 
     // for convenience, we will store the triad in presenter
-    ASSERT_EQ(triad_manager.get(), view_factory.last_presenter->triad_manager());
+    ASSERT_EQ(triad_manager.get(), view_factory->last_presenter->triad_manager());
   }
 
   ASSERT_EQ(4, model.use_count());

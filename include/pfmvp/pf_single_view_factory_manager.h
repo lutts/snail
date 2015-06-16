@@ -44,10 +44,6 @@ class view_factory_single_t {
     addToViewFactoryManager();
   }
 
-  F& FTO_getFactory() {
-    return factory;
-  }
-
  private:
   void addToViewFactoryManager() {
     PfSingleViewFactoryManager::addViewFactory(M::modelId(), &factory);
