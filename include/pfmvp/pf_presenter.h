@@ -78,6 +78,15 @@ class PfPresenter : public utils::ITrackable
     }
   }
 
+  std::vector<IPfView*>
+  findViewByModelId(const IPfModel::ModelIdType& model_id) {
+    if (triad_manager_) {
+      return triad_manager_->findViewsByModelId(model_id);
+    } else {
+      return std::vector<IPfView*>();
+    }
+  }
+
   IPfModel* findModelByView(IPfView* view) const {
     if (triad_manager_) {
       return triad_manager_->findModelByView(view);
@@ -85,7 +94,46 @@ class PfPresenter : public utils::ITrackable
       return nullptr;
     }
   }
+
+  void moniterModelRemoveRequest(IPfModel* model) {
+    if (triad_manager_) {
+      triad_manager_->whenRequestRemoveModel(
+          model,
+          [this](IPfModel* model) -> bool {
+            return onRequestRemoveModel(model);
+          },
+          shared_from_this());
+    }
+  }
+
+  void moniterModelDestroy(IPfModel* model) {
+    if (triad_manager_) {
+      triad_manager_->whenAboutToDestroyModel(
+          model,
+          [this](IPfModel* model) {
+            onAboutToDestroyModel(model);
+          },
+          shared_from_this());
+    }
+  }
+
+  void moniterViewDestroy(IPfView* view) {
+    if (triad_manager_) {
+      triad_manager_->whenAboutToDestroyView(
+          view,
+          [this](IPfView* view) {
+            onAboutToDestroyView(view);
+          },
+          shared_from_this());
+    }
+  }
   ////////////////////// triad manager helpers end //////////////////
+
+  virtual bool onRequestRemoveModel(IPfModel* model) {
+    (void)model; return false;
+  }
+  virtual void onAboutToDestroyModel(IPfModel* model) { (void)model; }
+  virtual void onAboutToDestroyView(IPfView* view) { (void)view; }
 
  private:
   PfPresenter(const PfPresenter& other) = delete;
