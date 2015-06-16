@@ -8,6 +8,7 @@
 #ifndef INCLUDE_SNAIL_PF_PRESENTER_H_
 #define INCLUDE_SNAIL_PF_PRESENTER_H_
 
+#include <vector>
 #include <memory>
 
 #include "utils/i_trackable.h"
@@ -64,11 +65,11 @@ class PfPresenter : public utils::ITrackable {
     }
   }
 
-  IPfView* findViewByModel(IPfModel* model) const {
+  std::vector<IPfView*> findViewByModel(IPfModel* model) const {
     if (triad_manager_) {
       return triad_manager_->findViewByModel(model);
     } else {
-      return nullptr;
+      return std::vector<IPfView*>();
     }
   }
 

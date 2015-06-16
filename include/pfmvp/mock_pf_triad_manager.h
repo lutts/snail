@@ -29,7 +29,8 @@ class MockPfTriadManager : public IPfTriadManager {
   MOCK_METHOD1(removeTriadBy, void(IPfModel* model));
   MOCK_METHOD1(removeTriadBy, void(IPfView* view));
   MOCK_METHOD1(requestRemoveTriadByView, bool(IPfView* view));
-  MOCK_CONST_METHOD1(findViewByModel, IPfView*(IPfModel* model));
+  MOCK_CONST_METHOD1(findViewByModel,
+                     std::vector<IPfView*>(IPfModel* model));
   MOCK_CONST_METHOD1(
       findViewsByModelId,
       std::vector<IPfView*>(const IPfModel::ModelIdType& model_id);

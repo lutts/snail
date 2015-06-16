@@ -1,4 +1,4 @@
-// Copyright (c) 2015
+ // Copyright (c) 2015
 // All rights reserved.
 //
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
@@ -44,6 +44,8 @@ class PfTriadManager::PfTriadManagerImpl {
   using PresenterStoreType = std::forward_list<std::shared_ptr<PfPresenter> >;
   PresenterStoreType presenterStore;
 
+  std::unordered_map<IPfModel*, int> model_view_count;
+
   std::unordered_map<IPfModel*, PfTriadManager::RequestRemoveModelSignalType>
   model_remove_sig_map_;
 
@@ -76,6 +78,7 @@ PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model) {
       // we use FILO policy, because pop-up windows are close before their parents,
       // and MainWindow is the first created and last destroyed
       impl->presenterStore.push_front(presenter);
+      impl->model_view_count[presenter->getModel().get()] ++;
 
       return presenter->getView();
     }
@@ -107,14 +110,18 @@ void PfTriadManager::emitAboutToDestroySignal(IPfModel* model, IPfView* view) {
   //  AboutToDestroyModel(model);
   auto& view_destroy_sig = impl->AboutToDestroyViewSignalOf(view);
   view_destroy_sig(view);
-
-  auto& model_destroy_sig = impl->AboutToDestroyModelSignalOf(model);
-  model_destroy_sig(model);
-
-
   impl->view_destroy_sig_map_.erase(view);
-  impl->model_remove_sig_map_.erase(model);
-  impl->model_destroy_sig_map_.erase(model);
+
+  -- impl->model_view_count[model];
+  assert(impl->model_view_count[model] >= 0);
+  if (impl->model_view_count[model] == 0) {
+    auto& model_destroy_sig = impl->AboutToDestroyModelSignalOf(model);
+    model_destroy_sig(model);
+
+    impl->model_remove_sig_map_.erase(model);
+    impl->model_destroy_sig_map_.erase(model);
+    impl->model_view_count.erase(model);
+  }
 }
 
 void PfTriadManager::removeTriadBy(IPfModel* model) {
@@ -173,20 +180,16 @@ bool PfTriadManager::requestRemoveTriadByView(IPfView* view) {
   }
 }
 
-IPfView* PfTriadManager::findViewByModel(IPfModel* model) const {
-  auto iter = std::find_if(
-      impl->presenterStore.begin(),
-      impl->presenterStore.end(),
-      [model](const std::shared_ptr<PfPresenter>& item) -> bool {
-        return item->getModel().get() == model;
-      });
+std::vector<IPfView*> PfTriadManager::findViewByModel(IPfModel* model) const {
+  std::vector<IPfView*> matched_views;
 
-  if (iter != impl->presenterStore.end()) {
-    auto p = *iter;
-    return p->getView().get();
+  for (auto& presenter : impl->presenterStore) {
+    if (model == presenter->getModel().get()) {
+      matched_views.push_back(presenter->getView().get());
+    }
   }
 
-  return nullptr;
+  return matched_views;
 }
 
 std::vector<IPfView*> PfTriadManager:: findViewsByModelId(
