@@ -42,14 +42,6 @@ class PfPresenter : public utils::ITrackable
     return triad_manager_;
   }
 
-  std::shared_ptr<IPfView> createViewFor(std::shared_ptr<IPfModel> model) {
-    if (triad_manager_) {
-      return triad_manager_->createViewFor(model);
-    } else {
-      return nullptr;
-    }
-  }
-
   void removeTriadBy(IPfModel* model) {
     if (triad_manager_) {
       triad_manager_->removeTriadBy(model);
@@ -63,69 +55,68 @@ class PfPresenter : public utils::ITrackable
   }
 
   bool requestRemoveTriadByView(IPfView* view) {
-    if (triad_manager_) {
-      triad_manager_->requestRemoveTriadByView(view);
-    } else {
+    if (!triad_manager_)
       return false;
-    }
+
+    triad_manager_->requestRemoveTriadByView(view);
   }
 
   std::vector<IPfView*> findViewByModel(IPfModel* model) const {
-    if (triad_manager_) {
-      return triad_manager_->findViewByModel(model);
-    } else {
+    if (!triad_manager_)
       return std::vector<IPfView*>();
-    }
+
+    return triad_manager_->findViewByModel(model);
   }
 
   std::vector<IPfView*>
   findViewByModelId(const IPfModel::ModelIdType& model_id) {
-    if (triad_manager_) {
-      return triad_manager_->findViewsByModelId(model_id);
-    } else {
+    if (!triad_manager_)
       return std::vector<IPfView*>();
-    }
+
+    return triad_manager_->findViewsByModelId(model_id);
   }
 
   IPfModel* findModelByView(IPfView* view) const {
-    if (triad_manager_) {
-      return triad_manager_->findModelByView(view);
-    } else {
+    if (!triad_manager_)
       return nullptr;
-    }
+
+    return triad_manager_->findModelByView(view);
   }
 
-  void moniterModelRemoveRequest(IPfModel* model) {
-    if (triad_manager_) {
-      triad_manager_->whenRequestRemoveModel(
-          model,
-          [this](IPfModel* model) -> bool {
-            return onRequestRemoveModel(model);
-          },
-          shared_from_this());
-    }
+  bool moniterModelRemoveRequest(IPfModel* model) {
+    if (!triad_manager_)
+      return false;
+
+    return triad_manager_->whenRequestRemoveModel(
+        model,
+        [this](IPfModel* model) -> bool {
+          return onRequestRemoveModel(model);
+        },
+        shared_from_this());
   }
 
-  void moniterModelDestroy(IPfModel* model) {
-    if (triad_manager_) {
-      triad_manager_->whenAboutToDestroyModel(
-          model,
-          [this](IPfModel* model) {
-            onAboutToDestroyModel(model);
-          },
-          shared_from_this());
-    }
+  bool moniterModelDestroy(IPfModel* model) {
+    if (!triad_manager_)
+      return false;
+
+    return triad_manager_->whenAboutToDestroyModel(
+        model,
+        [this](IPfModel* model) {
+          onAboutToDestroyModel(model);
+        },
+        shared_from_this());
   }
 
-  void moniterViewDestroy(IPfView* view) {
-    if (triad_manager_) {
-      triad_manager_->whenAboutToDestroyView(
-          view,
-          [this](IPfView* view) {
-            onAboutToDestroyView(view);
-          },
-          shared_from_this());
-    }
+  bool moniterViewDestroy(IPfView* view) {
+    if (!triad_manager_)
+      return false;
+
+    return triad_manager_->whenAboutToDestroyView(
+        view,
+        [this](IPfView* view) {
+          onAboutToDestroyView(view);
+        },
+        shared_from_this());
   }
   ////////////////////// triad manager helpers end //////////////////
 
@@ -155,11 +146,31 @@ class PfPresenterT : public PfPresenter {
   MT* model() { return model_; }
   VT* view() { return view_; }
 
+  //////////////// Triad Manager Helpers begin ///////////////////
+  template <typename SubVT>
+  std::shared_ptr<SubVT> createViewFor(std::shared_ptr<IPfModel> model) {
+    if (!triad_manager())
+      return nullptr;
+
+    auto v = triad_manager()->createViewFor(model);
+    return std::dynamic_pointer_cast<SubVT>(v);
+  }
+
+  template <typename SubVT>
+  SubVT* createRawViewFor(std::shared_ptr<IPfModel> model) {
+    if (!triad_manager())
+      return nullptr;
+
+    auto v = triad_manager()->createViewFor(model);
+    return dynamic_cast<SubVT*>(v.get());
+  }
+
+  //////////////// Triad Manager Helpers end  ////////////////////
+
  private:
   MT* model_;
   VT* view_;
 };
-
 
 }  // namespace pfmvp
 
