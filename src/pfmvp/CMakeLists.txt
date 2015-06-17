@@ -11,7 +11,7 @@ foreach (_subdir ${SUBDIRS})
 endforeach()
 
 set(pfmvp_SRCS ${pfmvp_SRCS}
-  pf_single_view_factory_manager.cc
+  pf_view_factory_manager.cc
   pf_triad_manager.cc
   )
 

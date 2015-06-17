@@ -27,6 +27,10 @@ class MockPfTriadManager : public IPfTriadManager {
 
   MOCK_METHOD1(createViewFor,
                std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model));
+  MOCK_METHOD2(createViewFor,
+               std::shared_ptr<IPfView>(
+                   std::shared_ptr<IPfModel> model,
+                   const IPfViewFactory::ViewFactoryIdType& vf_id) = 0;
   MOCK_METHOD1(removeTriadBy, void(IPfModel* model));
   MOCK_METHOD1(removeTriadBy, void(IPfView* view));
   MOCK_METHOD1(requestRemoveTriadByView, bool(IPfView* view));

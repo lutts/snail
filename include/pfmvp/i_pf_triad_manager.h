@@ -13,6 +13,7 @@
 
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/i_pf_view.h"
+#include "pfmvp/i_pf_view_factory.h"
 #include "utils/signal_slot.h"
 
 namespace pfmvp {
@@ -20,7 +21,7 @@ namespace pfmvp {
 #define SNAIL_PFTRIAD_SIGSLOT(sigName, ObjType, ...)            \
   using sigName##Signature = __VA_ARGS__;                       \
   using sigName##SlotType = std::function<sigName##Signature>;  \
-  virtual void when##sigName(                                   \
+  virtual bool when##sigName(                                   \
       ObjType* obj,                                             \
       sigName##SlotType handler,                                \
       std::shared_ptr<utils::ITrackable> trackObject) = 0
@@ -29,7 +30,7 @@ namespace pfmvp {
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE_(sigName, ObjType)           \
   sigName##SignalType sigName;                                          \
                                                                         \
-  void when##sigName(                                                   \
+  bool when##sigName(                                                   \
       ObjType* obj,                                                     \
       sigName##SlotType handler,                                        \
       std::shared_ptr<utils::ITrackable> trackObject) override
@@ -54,6 +55,10 @@ class IPfTriadManager {
 
   virtual std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model) = 0;
+
+  virtual std::shared_ptr<IPfView>
+  createViewFor(std::shared_ptr<IPfModel> model,
+                const IPfViewFactory::ViewFactoryIdType& view_factory_id) = 0;
 
   virtual void removeTriadBy(IPfModel* model) = 0;
   virtual void removeTriadBy(IPfView* view) = 0;

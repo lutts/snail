@@ -9,7 +9,7 @@
 
 #include "utils/basic_utils.h"
 #include "src/pfmvp/pf_triad_manager.h"
-#include "pfmvp/pf_single_view_factory_manager.h"
+#include "pfmvp/pf_view_factory_manager.h"
 #include "src/core/main_window_model.h"
 //#include "snail/i_command_processor.h"
 
@@ -31,7 +31,7 @@ using namespace pfmvp;  // NOLINT
 
 int main() {
   QtUiEngine qtUiEngine;
-  PfTriadManager triad_manager(PfSingleViewFactoryManager::getInstance());
+  PfTriadManager triad_manager(PfViewFactoryManager::getInstance());
 
   {
     auto main_window_model = makeMainWindowModel();

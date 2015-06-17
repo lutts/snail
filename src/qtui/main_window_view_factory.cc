@@ -7,7 +7,7 @@
 #include "snail/i_main_window_model.h"
 #include "src/qtui/main_window_presenter.h"
 #include "src/qtui/main_window.h"
-#include "pfmvp/pf_single_view_factory_manager.h"
+#include "pfmvp/pf_view_factory_manager.h"
 
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
@@ -16,6 +16,8 @@ class MainWindowViewFactory : public IPfViewFactory {
  public:
   MainWindowViewFactory() = default;
   virtual ~MainWindowViewFactory() = default;
+
+  DEF_VIEW_FACTORY_ID(MainWindowViewFactory)
 
   std::shared_ptr<PfPresenter>
   createView(std::shared_ptr<IPfModel> model) override {

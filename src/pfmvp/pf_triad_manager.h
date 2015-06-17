@@ -26,6 +26,11 @@ class PfTriadManager : public IPfTriadManager {
   std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model) override;
 
+  std::shared_ptr<IPfView>
+  createViewFor(
+      std::shared_ptr<IPfModel> model,
+      const IPfViewFactory::ViewFactoryIdType& view_factory_id) override;
+
   void removeTriadBy(IPfModel* model) override;
   void removeTriadBy(IPfView* view) override;
   bool requestRemoveTriadByView(IPfView* view) override;
@@ -38,6 +43,12 @@ class PfTriadManager : public IPfTriadManager {
   PfTriadManager(const PfTriadManager& other) = delete;
   PfTriadManager& operator=(const PfTriadManager& other) = delete;
 
+  std::shared_ptr<IPfView>
+  createViewWithFactory(
+      std::shared_ptr<IPfModel> model,
+      IPfViewFactory* view_factory);
+  bool isModelExist(IPfModel* model) const;
+  bool isViewExist(IPfView* view) const;
   void emitAboutToDestroySignal(IPfModel* model, IPfView* view);
 
   class PfTriadManagerImpl;

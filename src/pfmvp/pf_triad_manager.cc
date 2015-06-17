@@ -12,6 +12,7 @@
 
 #include "utils/basic_utils.h"  // utils::make_unique
 #include "pfmvp/i_pf_view_factory.h"
+#include "pfmvp/pf_presenter.h"
 
 namespace pfmvp {
 
@@ -66,10 +67,10 @@ PfTriadManager::PfTriadManager(const IPfViewFactoryManager& view_factory_mgr)
 PfTriadManager::~PfTriadManager() = default;
 
 std::shared_ptr<IPfView>
-PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model) {
-  IPfViewFactory* view_factory =
-      impl->view_factory_mgr_.getViewFactory(model->getModelId());
-  if (view_factory) {
+PfTriadManager::createViewWithFactory(
+    std::shared_ptr<IPfModel> model,
+    IPfViewFactory* view_factory) {
+  if (model && view_factory) {
     auto presenter = view_factory->createView(model);
 
     if (presenter) {
@@ -90,23 +91,67 @@ PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model) {
   return nullptr;
 }
 
-#define SNAIL_PFTRIAD_SIGSLOT_IMPL(THISCLASS, sigName, ObjType)         \
-  void THISCLASS::when##sigName(                                        \
+std::shared_ptr<IPfView>
+PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model) {
+  IPfViewFactory* view_factory =
+      impl->view_factory_mgr_.getViewFactory(model->getModelId());
+  return createViewWithFactory(model, view_factory);
+}
+
+std::shared_ptr<IPfView> PfTriadManager::createViewFor(
+    std::shared_ptr<IPfModel> model,
+    const IPfViewFactory::ViewFactoryIdType& view_factory_id) {
+  IPfViewFactory* view_factory =
+      impl->view_factory_mgr_.getViewFactory(model->getModelId(),
+                                             view_factory_id);
+  return createViewWithFactory(model, view_factory);
+}
+
+bool PfTriadManager::isModelExist(IPfModel* model) const {
+  auto iter = std::find_if(impl->presenterStore.begin(),
+                           impl->presenterStore.end(),
+                           [model](const std::shared_ptr<PfPresenter>& item) {
+                             return model == item->getModel().get();
+                           });
+
+  return (iter != impl->presenterStore.end());
+}
+
+bool PfTriadManager::isViewExist(IPfView* view) const {
+  auto iter = std::find_if(impl->presenterStore.begin(),
+                           impl->presenterStore.end(),
+                           [view](const std::shared_ptr<PfPresenter>& item) {
+                             return view == item->getView().get();
+                           });
+
+  return (iter != impl->presenterStore.end());
+}
+
+#define SNAIL_PFTRIAD_SIGSLOT_IMPL(THISCLASS, sigName, ObjType, ExistChecker) \
+  bool THISCLASS::when##sigName(                                        \
       ObjType* obj,                                                     \
       sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) {             \
+      std::shared_ptr<utils::ITrackable> trackObject) {                 \
     if (obj == nullptr) {                                               \
-      return;                                                           \
+      return false;                                                     \
+    }                                                                   \
+                                                                        \
+    if (!ExistChecker(obj)) {                                           \
+      return false;                                                     \
     }                                                                   \
                                                                         \
     auto& sig = impl->sigName##SignalOf(obj);                           \
-                sigName##SignalType::slot_type subscriber(handler);     \
-                    sig.connect(subscriber.track_foreign(trackObject)); \
+    sigName##SignalType::slot_type subscriber(handler);                 \
+    sig.connect(subscriber.track_foreign(trackObject));                 \
+    return true;                                                        \
   }
 
-SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager, RequestRemoveModel, IPfModel);
-SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager, AboutToDestroyModel, IPfModel);
-SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager, AboutToDestroyView, IPfView);
+SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
+                           RequestRemoveModel, IPfModel, isModelExist);
+SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
+                           AboutToDestroyModel, IPfModel, isModelExist);
+SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
+                           AboutToDestroyView, IPfView, isViewExist);
 
 void PfTriadManager::emitAboutToDestroySignal(IPfModel* model, IPfView* view) {
   //  AboutToDestroyView(view);
@@ -131,7 +176,7 @@ void PfTriadManager::removeTriadBy(IPfModel* model) {
   // TODO(lutts): LOCK
   impl->presenterStore.remove_if(
       [this, model](const std::shared_ptr<PfPresenter> item) -> bool {
-        auto matched = item->getModel().get() == model;
+        bool matched = item->getModel().get() == model;
         if (matched) {
           emitAboutToDestroySignal(
               item->getModel().get(),
@@ -146,7 +191,7 @@ void PfTriadManager::removeTriadBy(IPfView* view) {
   // TODO(lutts): LOCK
   impl->presenterStore.remove_if(
       [this, view](const std::shared_ptr<PfPresenter> item) -> bool {
-        auto matched = item->getView().get() == view;
+        bool matched = item->getView().get() == view;
         if (matched) {
           emitAboutToDestroySignal(
               item->getModel().get(),
@@ -166,7 +211,7 @@ bool PfTriadManager::requestRemoveTriadByView(IPfView* view) {
       });
 
   if (iter != impl->presenterStore.end()) {
-    auto presenter = *iter;
+    auto& presenter = *iter;
     IPfModel* model = presenter->getModel().get();
     auto& sig = impl->RequestRemoveModelSignalOf(model);
 
@@ -218,7 +263,7 @@ IPfModel* PfTriadManager::findModelByView(IPfView* view) const {
       });
 
   if (iter != impl->presenterStore.end()) {
-    auto p = *iter;
+    auto& p = *iter;
     return p->getModel().get();
   }
 
