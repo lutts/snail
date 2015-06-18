@@ -847,13 +847,17 @@ TEST_F(PfTriadManagerTest, should_remove_subscriber_only_when_subject_removed) {
   view1 = v1.get();
   view2 = v2.get();
 
-  auto mockListener1 = MockListener::attachTo(triad_manager.get(),
+  auto mockListener1 = MockListener::attachStrictTo(triad_manager.get(),
                                               model, view1);
-  auto mockListener2 = MockListener::attachTo(triad_manager.get(),
-                                              model, view2);
+  auto mockListener2 = MockListener::attachStrictTo(triad_manager.get(),
+                                                    model, view2);
+
+  EXPECT_CALL(*mockListener1, AboutToDestroyView(view1));
 
   // only remove one view
   triad_manager->removeTriadBy(view1);
+
+  ::Mock::VerifyAndClear(mockListener1.get());
 
   // Expectations: these methods will still be called
   EXPECT_CALL(*mockListener1, RequestRemoveModel(model))
