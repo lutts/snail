@@ -494,6 +494,9 @@ static void expectationsOnModelViewDestroy(
     seq = new Sequence();
   }
 
+  // NOTE: view1 and view2's destroy order may be not important, but
+  // we use FILO policy here, please see comments on createViewFor() in
+  // PfTriadManager.cc
   if (view2) {
     if (listener2) {
       EXPECT_CALL(*listener2, AboutToDestroyView(view2))
@@ -512,6 +515,7 @@ static void expectationsOnModelViewDestroy(
     }
   }
 
+  // NOTE: listener order is the bind order
   if (model) {
     if (listener1) {
       EXPECT_CALL(*listener1, AboutToDestroyModel(model))
