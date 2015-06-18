@@ -246,6 +246,63 @@ class PfTriadManagerTest : public ::testing::Test {
   // endregion
 };
 
+class MockListener : public GenericMockListener<MockListener,
+                                                IPfTriadManager> {
+ public:
+  MockListener(IPfModel* model, IPfView* view,
+               bool monitor_request_remove = true)
+      : model_(model)
+      , view_(view)
+      , monitor_request_remove_(monitor_request_remove) { }
+
+  MOCK_METHOD1(RequestRemoveModel, bool(IPfModel* model));
+  MOCK_METHOD1(AboutToDestroyModel, void(IPfModel* model));
+  MOCK_METHOD1(AboutToDestroyView, void(IPfView* view));
+
+  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
+                           IPfTriadManager* triad_manager) {
+    if (model_) {
+      if (monitor_request_remove_) {
+        requestRemoveModelBinded =
+            triad_manager->whenRequestRemoveModel(
+                model_,
+                [this](IPfModel* model) -> bool {
+                  return RequestRemoveModel(model);
+                },
+                trackObject);
+      }
+
+      aboutToDestroyModelBinded =
+          triad_manager->whenAboutToDestroyModel(
+              model_,
+              [this](IPfModel* model) {
+                AboutToDestroyModel(model);
+              },
+              trackObject);
+    }
+
+    if (view_) {
+      aboutToDestroyViewBinded =
+          triad_manager->whenAboutToDestroyView(
+              view_,
+              [this](IPfView* view) {
+                AboutToDestroyView(view);
+              },
+              trackObject);
+    }
+  }
+
+ public:
+  bool requestRemoveModelBinded { false };
+  bool aboutToDestroyModelBinded { false };
+  bool aboutToDestroyViewBinded { false };
+
+ private:
+  IPfModel* model_ { nullptr };
+  IPfView* view_ { nullptr };
+  bool monitor_request_remove_;
+};
+
 template <typename VF, typename M, typename V>
 void PfTriadManagerTest::createTestTriad(
     std::shared_ptr<M> model,
@@ -255,21 +312,18 @@ void PfTriadManagerTest::createTestTriad(
 
   {  // working scope
     view_factory_t<M, VF> view_factory_wrapper;
-    IPfViewFactory* view_factory_b =
-        PfViewFactoryManager::getInstance().getViewFactory(M::modelId());
-    auto view_factory = dynamic_cast<VF*>(view_factory_b);
-    ASSERT_NE(nullptr, view_factory);
+    auto& view_factory = view_factory_wrapper.FTO_getFactory();
 
-    ON_CALL(*view_factory, createTestView())
+    ON_CALL(view_factory, createTestView())
         .WillByDefault(Return(view));
 
     auto actual_view = triad_manager->createViewFor(model);
     ASSERT_EQ(view, actual_view);
 
-    // for convenience, we will store the triad in presenter
+    // for convenience, we will store the triad manager in presenter
     ASSERT_EQ(triad_manager.get(),
-              view_factory->last_presenter->triad_manager());
-    ASSERT_TRUE(view_factory->last_presenter->initialized_ok);
+              view_factory.last_presenter->triad_manager());
+    ASSERT_TRUE(view_factory.last_presenter->initialized_ok);
   }
 
   ASSERT_EQ(old_model_use_count + 1, model.use_count());
@@ -293,21 +347,15 @@ TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_tria
   auto xxx_model = std::make_shared<MockTestXXXModel>();
   auto xxx_view = std::make_shared<MockTestXXXView>();
 
-  // Exercise system
-  createTestXXXTriad(xxx_model, xxx_view);
-
-  // Verify results: should hold reference
-  ASSERT_EQ(2, xxx_model.use_count());
-  ASSERT_EQ(2, xxx_view.use_count());
-
-  // Trianglation test
   auto yyy_model = std::make_shared<MockTestYYYModel>();
   auto yyy_view = std::make_shared<MockTestYYYView>();
-  createTestYYYTriad(yyy_model, yyy_view);
-  ASSERT_EQ(2, yyy_model.use_count());
-  ASSERT_EQ(2, yyy_view.use_count());
+
+  // Exercise system
+  CUSTOM_ASSERT(createTestXXXTriad(xxx_model, xxx_view));
+  CUSTOM_ASSERT(createTestYYYTriad(yyy_model, yyy_view));
 }
 
+// TODO(lutts): checking not complete!!! see createTestTriad()
 TEST_F(PfTriadManagerTest,
        should_be_able_to_create_view_for_model_with_specified_view_factory_id) { // NOLINT
   // Setup fixture
@@ -337,7 +385,16 @@ TEST_F(PfTriadManagerTest,
                                    factory2.getViewFactoryId());
 
   // Verify results
+  // TODO(lutts): refractor, code duplicated with createTestTriad()
   ASSERT_EQ(view1, actual_view1);
+  ASSERT_EQ(triad_manager.get(),
+            factory1.last_presenter->triad_manager());
+  ASSERT_TRUE(factory1.last_presenter->initialized_ok);
+
+  ASSERT_EQ(view2, actual_view2);
+  ASSERT_EQ(triad_manager.get(),
+            factory2.last_presenter->triad_manager());
+  ASSERT_TRUE(factory2.last_presenter->initialized_ok);
 }
 
 TEST_F(PfTriadManagerTest, should_return_null_when_view_factory_failed_create_view) { // NOLINT
@@ -405,6 +462,7 @@ void PfTriadManagerTest::createTestYYYTriads(
     *all_mvpair = all;
 }
 
+// TODO(lutts)
 TEST_F(PfTriadManagerTest, should_destroy_triads_when_triad_manager_destroyed) { // NOLINT
   // Setup fixture
   TestXXX_MVPair mvpair;
@@ -412,8 +470,6 @@ TEST_F(PfTriadManagerTest, should_destroy_triads_when_triad_manager_destroyed) {
   CUSTOM_ASSERT(createTestXXXTriads(&mvpair, &all_mvpair));
 
   // Expectations
-  MockFunction<void(string check_point_name)> check;
-
   for (auto mv : all_mvpair) {
     EXPECT_CALL(*mv.first, destruct());
     EXPECT_CALL(*mv.second, destruct());
@@ -423,7 +479,103 @@ TEST_F(PfTriadManagerTest, should_destroy_triads_when_triad_manager_destroyed) {
   triad_manager.reset();
 }
 
-TEST_F(PfTriadManagerTest, should_be_able_to_destroy_triad_by_model) { // NOLINT
+using CheckPointType = MockFunction<void(string check_point_name)>;
+
+static void expectationsOnModelViewDestroy(
+    MockTestXXXModel* model,
+    MockTestXXXView* view1,
+    MockListener* listener1,
+    CheckPointType* checker = nullptr,
+    Sequence* seq = nullptr,
+    int times = 1,
+    MockTestXXXView* view2 = nullptr,
+    MockListener* listener2 = nullptr) {
+  if (!seq) {
+    seq = new Sequence();
+  }
+
+  if (view2) {
+    if (listener2) {
+      EXPECT_CALL(*listener2, AboutToDestroyView(view2))
+          .InSequence(*seq);
+    }
+
+    EXPECT_CALL(*view2, destruct())
+        .InSequence(*seq);
+  }
+
+  if (view1) {
+    if (listener1) {
+      EXPECT_CALL(*listener1, AboutToDestroyView(view1))
+          .Times(times)
+          .InSequence(*seq);
+    }
+  }
+
+  if (model) {
+    if (listener1) {
+      EXPECT_CALL(*listener1, AboutToDestroyModel(model))
+          .Times(times)
+          .InSequence(*seq);
+    }
+
+    if (listener2) {
+      EXPECT_CALL(*listener2, AboutToDestroyModel(model))
+          .Times(times)
+          .InSequence(*seq);
+    }
+  }
+
+  if (view1) {
+    EXPECT_CALL(*view1, destruct())
+        .Times(times)
+        .InSequence(*seq);
+  }
+
+  if (model){
+    EXPECT_CALL(*model, destruct())
+        .Times(times)
+        .InSequence(*seq);
+  }
+
+  if (checker) {
+    EXPECT_CALL(*checker, Call("barrier"))
+        .Times(times)
+        .InSequence(*seq);
+  }
+}
+
+static void expectationsOnModelView1View2Destroy(
+    MockTestXXXModel* model,
+    MockTestXXXView* view1,
+    MockListener* listener1,
+    MockTestXXXView* view2,
+    MockListener* listener2,
+    CheckPointType* checker = nullptr) {
+  expectationsOnModelViewDestroy(model,
+                                 view1,
+                                 listener1,
+                                 checker,
+                                 nullptr /* seq */,
+                                 1 /* times */,
+                                 view2,
+                                 listener2);
+}
+
+static void expectationsOnNotDestroyModelView(
+    MockTestXXXModel* model,
+    MockTestXXXView* view,
+    MockListener* listener) {
+  expectationsOnModelViewDestroy(model,
+                                 view,
+                                 listener,
+                                 nullptr /* checker */,
+                                 nullptr /* seq */,
+                                 0 /* times */);
+}
+
+TEST_F(PfTriadManagerTest,
+       should_be_able_to_destroy_triad_by_model_and_fire_AboutToDestory_signals) { // NOLINT
   // Setup fixture
   TestXXX_MVPair mvpair;
   CUSTOM_ASSERT(createTestXXXTriads(&mvpair));
@@ -431,22 +583,20 @@ TEST_F(PfTriadManagerTest, should_be_able_to_destroy_triad_by_model) { // NOLINT
   auto view = mvpair.second;
 
   // Expectations
-  MockFunction<void(string check_point_name)> check;
-  {
-    InSequence seq;
+  auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
+  CheckPointType check;
 
-    EXPECT_CALL(*view, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
-  }
+  expectationsOnModelViewDestroy(model, view,
+                                 mockListener.get(),
+                                 &check);
 
   // Exercise system
   triad_manager->removeTriadBy(model);
-
   check.Call("barrier");
 }
 
-TEST_F(PfTriadManagerTest, should_be_able_to_destroy_triad_by_view) { // NOLINT
+TEST_F(PfTriadManagerTest,
+       should_be_able_to_destroy_triad_by_view_and_fire_AboutToDestory_signals) { // NOLINT
   // Setup fixture
   TestXXX_MVPair mvpair;
   CUSTOM_ASSERT(createTestXXXTriads(&mvpair));
@@ -454,72 +604,18 @@ TEST_F(PfTriadManagerTest, should_be_able_to_destroy_triad_by_view) { // NOLINT
   auto view = mvpair.second;
 
   // Expectations
-  MockFunction<void(string check_point_name)> check;
-  {
-    InSequence seq;
+  auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
+  CheckPointType check;
 
-    EXPECT_CALL(*view, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
-  }
+  expectationsOnModelViewDestroy(model,
+                                 view,
+                                 mockListener.get(),
+                                 &check);
 
   // Exercise system
   triad_manager->removeTriadBy(view);
-
   check.Call("barrier");
 }
-
-class MockListener : public GenericMockListener<MockListener,
-                                                IPfTriadManager> {
- public:
-  MockListener(IPfModel* model, IPfView* view)
-      : model_(model)
-      , view_(view) { }
-
-  MOCK_METHOD1(RequestRemoveModel, bool(IPfModel* model));
-  MOCK_METHOD1(AboutToDestroyModel, void(IPfModel* model));
-  MOCK_METHOD1(AboutToDestroyView, void(IPfView* view));
-
-  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           IPfTriadManager* triad_manager) {
-    if (model_) {
-      requestRemoveModelBinded =
-          triad_manager->whenRequestRemoveModel(
-              model_,
-              [this](IPfModel* model) -> bool {
-                return RequestRemoveModel(model);
-              },
-              trackObject);
-
-      aboutToDestroyModelBinded =
-          triad_manager->whenAboutToDestroyModel(
-              model_,
-              [this](IPfModel* model) {
-                AboutToDestroyModel(model);
-              },
-              trackObject);
-    }
-
-    if (view_) {
-      aboutToDestroyViewBinded =
-          triad_manager->whenAboutToDestroyView(
-              view_,
-              [this](IPfView* view) {
-                AboutToDestroyView(view);
-              },
-              trackObject);
-    }
-  }
-
- public:
-  bool requestRemoveModelBinded { false };
-  bool aboutToDestroyModelBinded { false };
-  bool aboutToDestroyViewBinded { false };
-
- private:
-  IPfModel* model_ { nullptr };
-  IPfView* view_ { nullptr };
-};
 
 TEST_F(PfTriadManagerTest, should_be_able_to_monitor_managed_model_and_view) { // NOLINT
   // Setup fixture
@@ -561,14 +657,14 @@ TEST_F(PfTriadManagerTest, should_destruct_triad_if_no_one_insterest_in_request_
   auto view = mvpair.second;
 
   // Expectations
-  MockFunction<void(string check_point_name)> check;
-  {
-    InSequence seq;
-
-    EXPECT_CALL(*view, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
-  }
+  #define dont_monitor_request_remove false
+  auto mockListener = MockListener::attachTo(triad_manager.get(), model, view,
+                                             dont_monitor_request_remove);
+  CheckPointType check;
+  expectationsOnModelViewDestroy(model,
+                                 view,
+                                 mockListener.get(),
+                                 &check);
 
   // Exercise system
   ASSERT_TRUE(triad_manager->requestRemoveTriadByView(view));
@@ -586,18 +682,19 @@ TEST_F(PfTriadManagerTest, should_destruct_triad_if_request_remove_by_view_retur
 
   // Expectations
   auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
-
-  MockFunction<void(string check_point_name)> check;
+  CheckPointType check;
   {
-    InSequence seq;
+    Sequence s1;
 
     EXPECT_CALL(*mockListener, RequestRemoveModel(model))
+        .InSequence(s1)
         .WillOnce(Return(expect_result));
-    EXPECT_CALL(*mockListener, AboutToDestroyView(view));
-    EXPECT_CALL(*mockListener, AboutToDestroyModel(model));
-    EXPECT_CALL(*view, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
+
+    expectationsOnModelViewDestroy(model,
+                                   view,
+                                   mockListener.get(),
+                                   &check,
+                                   &s1);
   }
 
   // Exercise system
@@ -618,12 +715,14 @@ TEST_F(PfTriadManagerTest, should_not_destruct_triad_if_request_remove_by_view_r
   bool expect_result = false;
 
   // Expectations
-  auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
+  auto mockListener = MockListener::attachStrictTo(triad_manager.get(), model, view);
 
   EXPECT_CALL(*mockListener, RequestRemoveModel(model))
       .WillOnce(Return(expect_result));
-  EXPECT_CALL(*view, destruct()).Times(0);
-  EXPECT_CALL(*model, destruct()).Times(0);
+
+  expectationsOnNotDestroyModelView(model,
+                                    view,
+                                    mockListener.get());
 
   // Exercise system
   auto actual_result = triad_manager->requestRemoveTriadByView(view);
@@ -633,32 +732,6 @@ TEST_F(PfTriadManagerTest, should_not_destruct_triad_if_request_remove_by_view_r
 
   ::Mock::VerifyAndClear(model);
   ::Mock::VerifyAndClear(view);
-}
-
-TEST_F(PfTriadManagerTest, should_fire_model_view_AboutToDestroy_when_remove_triad) { // NOLINT
-  // Setup fixture
-  TestXXX_MVPair mvpair;
-  CUSTOM_ASSERT(createTestXXXTriads(&mvpair));
-  auto model = mvpair.first;
-  auto view = mvpair.second;
-
-  // Expectations
-  auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
-
-  MockFunction<void(string check_point_name)> check;
-  {
-    InSequence seq;
-
-    EXPECT_CALL(*mockListener, AboutToDestroyView(view));
-    EXPECT_CALL(*mockListener, AboutToDestroyModel(model));
-    EXPECT_CALL(*view, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
-  }
-
-  // Exercise system
-  triad_manager->removeTriadBy(model);
-  check.Call("barrier");
 }
 
 TEST_F(PfTriadManagerTest, should_remove_model_only_when_all_views_are_removed) { // NOLINT
@@ -681,26 +754,19 @@ TEST_F(PfTriadManagerTest, should_remove_model_only_when_all_views_are_removed) 
   }
 
 
-  auto mockListener1 = MockListener::attachTo(triad_manager.get(),
+  auto mockListener1 = MockListener::attachStrictTo(triad_manager.get(),
                                               model, view1);
-  auto mockListener2 = MockListener::attachTo(triad_manager.get(),
+  auto mockListener2 = MockListener::attachStrictTo(triad_manager.get(),
                                               model, view2);
 
   // Expectations on remove view1
-  {
-    InSequence seq;
+  expectationsOnModelViewDestroy(nullptr /* model */,
+                                 view1,
+                                 mockListener1.get());
 
-    EXPECT_CALL(*mockListener1, AboutToDestroyView(view1));
-    EXPECT_CALL(*view1, destruct());
-  }
-
-  EXPECT_CALL(*mockListener2, AboutToDestroyView(view2)).Times(0);
-  EXPECT_CALL(*mockListener1, AboutToDestroyModel(model)).Times(0);
-  EXPECT_CALL(*mockListener2, AboutToDestroyModel(model)).Times(0);
-
-  EXPECT_CALL(*model, destruct()).Times(0);
-  EXPECT_CALL(*view2, destruct()).Times(0);
-
+  expectationsOnNotDestroyModelView(model,
+                                    view2,
+                                    mockListener2.get());
 
   // Exercise system: remove view1
   triad_manager->removeTriadBy(view1);
@@ -712,19 +778,14 @@ TEST_F(PfTriadManagerTest, should_remove_model_only_when_all_views_are_removed) 
   ::Mock::VerifyAndClear(mockListener1.get());
   ::Mock::VerifyAndClear(mockListener2.get());
 
-  MockFunction<void(string check_point_name)> check;
+  CheckPointType check;
   // Expectations on remove view2
-  {
-    InSequence seq;
+  expectationsOnModelViewDestroy(model,
+                                 view2,
+                                 mockListener2.get(),
+                                 &check);
 
-    EXPECT_CALL(*mockListener2, AboutToDestroyView(view2));
-    EXPECT_CALL(*mockListener1, AboutToDestroyModel(model));
-    EXPECT_CALL(*mockListener2, AboutToDestroyModel(model));
-    EXPECT_CALL(*view2, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
-  }
-  EXPECT_CALL(*mockListener1, AboutToDestroyView(view1)).Times(0);
+  EXPECT_CALL(*mockListener1, AboutToDestroyModel(model));
 
   // Excercise system:: remove view1
   triad_manager->removeTriadBy(view2);
@@ -750,25 +811,19 @@ TEST_F(PfTriadManagerTest, should_remove_all_triads_of_a_model_when_the_model_re
     view2 = v2.get();
   }
 
-  auto mockListener1 = MockListener::attachTo(triad_manager.get(),
+  auto mockListener1 = MockListener::attachStrictTo(triad_manager.get(),
                                               model, view1);
-  auto mockListener2 = MockListener::attachTo(triad_manager.get(),
+  auto mockListener2 = MockListener::attachStrictTo(triad_manager.get(),
                                               model, view2);
 
-  MockFunction<void(string check_point_name)> check;
+  CheckPointType check;
   // Expectations
-  {
-    InSequence seq;
-
-    EXPECT_CALL(*mockListener2, AboutToDestroyView(view2));
-    EXPECT_CALL(*view2, destruct());
-    EXPECT_CALL(*mockListener1, AboutToDestroyView(view1));
-    EXPECT_CALL(*mockListener1, AboutToDestroyModel(model));
-    EXPECT_CALL(*mockListener2, AboutToDestroyModel(model));
-    EXPECT_CALL(*view1, destruct());
-    EXPECT_CALL(*model, destruct());
-    EXPECT_CALL(check, Call("barrier"));
-  }
+  expectationsOnModelView1View2Destroy(model,
+                                       view1,
+                                       mockListener1.get(),
+                                       view2,
+                                       mockListener2.get(),
+                                       &check);
 
   // Exercise system
   triad_manager->removeTriadBy(model);
@@ -806,9 +861,11 @@ TEST_F(PfTriadManagerTest, should_remove_subscriber_only_when_subject_removed) {
   EXPECT_CALL(*mockListener2, RequestRemoveModel(model))
       .WillOnce(Return(true));
   EXPECT_CALL(*mockListener1, AboutToDestroyModel(model));
-  EXPECT_CALL(*mockListener1, AboutToDestroyView(view1)).Times(0);
   EXPECT_CALL(*mockListener2, AboutToDestroyModel(model));
   EXPECT_CALL(*mockListener2, AboutToDestroyView(view2));
+
+  // except this one!
+  EXPECT_CALL(*mockListener1, AboutToDestroyView(view1)).Times(0);
 
   // Exercise system: remove the last view
   ASSERT_TRUE(triad_manager->requestRemoveTriadByView(view2));
