@@ -15,6 +15,8 @@
 
 namespace snailcore {
 
+class IWorkSpaceModel;
+
 class IMainWindowModel : public pfmvp::IPfModel {
  public:
   virtual ~IMainWindowModel() { }
@@ -26,6 +28,8 @@ class IMainWindowModel : public pfmvp::IPfModel {
 
   virtual const utils::U8String& windowTitle() const = 0;
   virtual void setWindowTitle(const utils::U8String& newTitle) = 0;
+
+  virtual std::shared_ptr<IWorkSpaceModel> getWorkSpaceModel() = 0;
 
   virtual bool requestClose() const = 0;
 };

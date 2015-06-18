@@ -14,6 +14,9 @@
 #include "snail/i_main_window_model.h"
 #include "qtui/i_main_window_view.h"
 
+#include "snail/i_workspace_model.h"
+#include "qtui/i_workspace_view.h"
+
 using MainWindowPresenterBase =
     pfmvp::PfPresenterT<snailcore::IMainWindowModel,
                             IMainWindowView>;
@@ -34,6 +37,10 @@ class MainWindowPresenter : public MainWindowPresenterBase {
   void initialize() override {
     // assert(this == shared_from_this().get());
     view()->setWindowTitle2(model()->windowTitle());
+
+    auto workspace_model = model()->getWorkSpaceModel();
+    auto workspace_view = createRawViewFor<IWorkSpaceView>(workspace_model);
+    view()->setWorkSpaceView(workspace_view);
 
     model()->whenWindowTitleChanged(
         [this](const utils::U8String& newTitle) {

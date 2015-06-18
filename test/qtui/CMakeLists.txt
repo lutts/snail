@@ -28,4 +28,7 @@ add_dependencies(qt_uiengine_test moc_qt_uiengine_test)
 add_gmock_test(main_window_presenter_test
   LIBS qtuicore testutils)
 
+add_gmock_test(workspace_presenter_test
+  LIBS qtuicore testutils)
+
 add_subdirectory(preview)

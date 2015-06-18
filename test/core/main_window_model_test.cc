@@ -1,3 +1,4 @@
+//-*- TestCaseName: MainWindowModelTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -14,6 +15,8 @@
 #include "test/testutils/generic_mock_listener.h"
 #include "src/core/main_window_model.h"
 
+#include "snail/mock_workspace_model.h"
+
 namespace snailcore {
 namespace tests {
 
@@ -25,11 +28,15 @@ class MainWindowModelTest : public ::testing::Test {
   }
   // ~MainWindowModelTest() { }
   virtual void SetUp() {
-    model = makeMainWindowModel();
+    workspace_model = std::make_shared<MockWorkSpaceModel>();
+
+    model = std::make_shared<MainWindowModel>(workspace_model);
 
     ASSERT_EQ(expect_init_title, model->windowTitle());
   }
   // virtual void TearDown() { }
+
+  std::shared_ptr<IWorkSpaceModel> workspace_model;
 
   std::shared_ptr<IMainWindowModel> model;
   utils::U8String expect_init_title { _("Snail") };
@@ -130,6 +137,10 @@ TEST_F(MainWindowModelTest, should_and_all_listener_response_when_fire_RequestCl
   tester(true,  false, true  & false);
   tester(false, true,  false & true);
   tester(false, false, false & false);
+}
+
+TEST_F(MainWindowModelTest, should_be_able_to_get_workspace_model) { // NOLINT
+  ASSERT_EQ(workspace_model, model->getWorkSpaceModel());
 }
 
 }  // namespace tests

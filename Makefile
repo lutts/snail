@@ -8,9 +8,10 @@ build: FORCE
 
 prepare:
 	-mkdir build
-	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
 
-#	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
+#	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+
 
 cpplint: FORCE
 	make -C build cpplint

@@ -10,6 +10,9 @@
 #include "utils/basic_utils.h"
 #include "utils/i18n.h"
 
+#include "src/core/workspace_model.h"
+#include "src/core/work_model_factory.h"
+
 namespace snailcore {
 
 std::shared_ptr<IMainWindowModel> makeMainWindowModel() {
@@ -17,15 +20,20 @@ std::shared_ptr<IMainWindowModel> makeMainWindowModel() {
 
   auto model = cache.lock();
   if (!model) {
-    model = std::make_shared<MainWindowModel>();
+    // TODO(lutts): who will delete work_model_factory?or do not need to delete?
+    auto work_model_factory = new WorkModelFactory();
+    auto workspace_model = std::make_shared<WorkSpaceModel>(work_model_factory);
+    model = std::make_shared<MainWindowModel>(workspace_model);
     cache = model;
   }
 
   return model;
 }
 
-MainWindowModel::MainWindowModel()
-    : windowTitle_(_("Snail")) {
+MainWindowModel::MainWindowModel(
+    std::shared_ptr<IWorkSpaceModel> workspace_model)
+    : windowTitle_(_("Snail"))
+    , workspace_model_(workspace_model) {
 }
 
 MainWindowModel::~MainWindowModel() = default;
@@ -42,6 +50,10 @@ void MainWindowModel::setWindowTitle(const utils::U8String& newTitle) {
 
   if (oldTitle != windowTitle_)
     WindowTitleChanged(windowTitle_);
+}
+
+std::shared_ptr<IWorkSpaceModel> MainWindowModel::getWorkSpaceModel() {
+  return workspace_model_;
 }
 
 bool MainWindowModel::requestClose() const {

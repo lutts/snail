@@ -17,6 +17,8 @@ class MockMainWindowView : public IMainWindowView {
   MOCK_METHOD1(showView, void(bool modal));
   MOCK_METHOD1(setWindowTitle2, void(const utils::U8String& title));
   MOCK_METHOD2(setGeometry, void(int w, int h));
+
+  MOCK_METHOD1(setWorkSpaceView, void(IWorkSpaceView* workspace_view));
 };
 
 

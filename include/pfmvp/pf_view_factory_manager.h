@@ -51,10 +51,10 @@ class PfViewFactoryManager :
 };
 
 template <typename M, typename F>
-class view_factory_single_t {
+class view_factory_t {
   F factory;
  public:
-  view_factory_single_t() {
+  view_factory_t() {
     addToViewFactoryManager();
   }
 

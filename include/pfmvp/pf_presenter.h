@@ -83,7 +83,7 @@ class PfPresenter : public utils::ITrackable
     return triad_manager_->findModelByView(view);
   }
 
-  bool moniterModelRemoveRequest(IPfModel* model) {
+  bool monitorModelRemoveRequest(IPfModel* model) {
     if (!triad_manager_)
       return false;
 
@@ -95,7 +95,7 @@ class PfPresenter : public utils::ITrackable
         shared_from_this());
   }
 
-  bool moniterModelDestroy(IPfModel* model) {
+  bool monitorModelDestroy(IPfModel* model) {
     if (!triad_manager_)
       return false;
 
@@ -107,7 +107,7 @@ class PfPresenter : public utils::ITrackable
         shared_from_this());
   }
 
-  bool moniterViewDestroy(IPfView* view) {
+  bool monitorViewDestroy(IPfView* view) {
     if (!triad_manager_)
       return false;
 
@@ -163,6 +163,17 @@ class PfPresenterT : public PfPresenter {
 
     auto v = triad_manager()->createViewFor(model);
     return dynamic_cast<SubVT*>(v.get());
+  }
+
+  template <typename SubVT>
+  SubVT* findSingleViewByModel(IPfModel* model) {
+    auto view_vec = findViewByModel(model);
+
+    if (view_vec.empty())
+      return nullptr;
+
+    // TODO(lutts): do we need to warn user if multi views returned?
+    return dynamic_cast<SubVT*>(view_vec[0]);
   }
 
   //////////////// Triad Manager Helpers end  ////////////////////

@@ -14,13 +14,23 @@
 #include "pfmvp/i_pf_view_factory.h"
 #include "pfmvp/pf_presenter.h"
 
+#include "src/utils/log/log.h"
+
 namespace pfmvp {
 
 class PfTriadManager::PfTriadManagerImpl {
  public:
   explicit PfTriadManagerImpl(const IPfViewFactoryManager& view_factory_mgr)
       : view_factory_mgr_(view_factory_mgr) { }
-  virtual ~PfTriadManagerImpl() = default;
+  virtual ~PfTriadManagerImpl() {
+    if (!presenterStore.empty()) {
+      ALOGW << "****** presenter not empty when destroy triad manager ******";
+      for (auto p : presenterStore) {
+        ALOGW << "\t" << p->getModel()->getModelId();
+      }
+      ALOGW << "************************************************************";
+    }
+  }
 
   PfTriadManager::RequestRemoveModelSignalType&
   RequestRemoveModelSignalOf(IPfModel* model) {
@@ -66,16 +76,17 @@ PfTriadManager::PfTriadManager(const IPfViewFactoryManager& view_factory_mgr)
 
 PfTriadManager::~PfTriadManager() = default;
 
+// NOTE: createViewXXX maybe recursively called
 std::shared_ptr<IPfView>
 PfTriadManager::createViewWithFactory(
     std::shared_ptr<IPfModel> model,
     IPfViewFactory* view_factory) {
   if (model && view_factory) {
+    ALOGI << "create view for model " << model->getModelId();
     auto presenter = view_factory->createView(model);
 
     if (presenter) {
       presenter->set_triad_manager(this);
-      presenter->initialize();
 
       // TODO(lutts): LOCK
       // we use FILO policy, because pop-up windows are close
@@ -83,6 +94,10 @@ PfTriadManager::createViewWithFactory(
       // and last destroyed
       impl->presenterStore.push_front(presenter);
       ++impl->model_view_count[presenter->getModel().get()];
+
+      // initialize may create sub-triads, so we need to
+      // call initialize() after push parent-triad (this-triad) first
+      presenter->initialize();
 
       return presenter->getView();
     }

@@ -12,8 +12,6 @@
 #include <memory>
 #include <list>
 
-#include "utils/basic_utils.h"  // make_unique
-
 class IModelViewPair {
  public:
   virtual ~IModelViewPair() = default;
@@ -27,19 +25,23 @@ class ModelViewPair : public IModelViewPair {
   }
 
   TModel* model() {
-    if (!model_) {
-      model_ = utils::make_unique<TModel>();
-    }
-
+    createModelIfNotExist();
     return model_.get();
   }
 
-  TView* view() {
-    if (!view_) {
-      view_ = utils::make_unique<TView>();
-    }
+  std::shared_ptr<TModel> shared_model() {
+    createModelIfNotExist();
+    return model_;
+  }
 
+  TView* view() {
+    createViewIfNotExist();
     return view_.get();
+  }
+
+  std::shared_ptr<TView> shared_view() {
+    createViewIfNotExist();
+    return view_;
   }
 
   std::pair<TModel*, TView*> toStdPair() {
@@ -52,8 +54,18 @@ class ModelViewPair : public IModelViewPair {
   }
 
  private:
-  std::unique_ptr<TModel> model_;
-  std::unique_ptr<TView> view_;
+  void createModelIfNotExist() {
+    if (!model_)
+      model_ = std::make_shared<TModel>();
+  }
+
+  void createViewIfNotExist() {
+    if (!view_)
+      view_ = std::make_shared<TView>();
+  }
+
+  std::shared_ptr<TModel> model_;
+  std::shared_ptr<TView> view_;
 };
 
 template <typename TModel, typename TView,

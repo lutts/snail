@@ -21,6 +21,9 @@ SET(qtui_SRCS
   qt_uiengine.cc
   main_window.cc
   main_window_view_factory.cc
+  workspace_presenter.cc
+  workspace_view.cc
+  workspace_view_factory.cc
   )
 
 set(SUBDIRS)

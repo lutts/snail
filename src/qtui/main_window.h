@@ -31,6 +31,8 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   void setWindowTitle2(const utils::U8String& title) override;
   void setGeometry(int w, int h) override;
 
+  void setWorkSpaceView(IWorkSpaceView* workspace_view) override;
+
  protected:
   void closeEvent(QCloseEvent *event) override;
 

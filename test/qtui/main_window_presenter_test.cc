@@ -1,3 +1,4 @@
+//-*- TestCaseName: MainWindowPresenterTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -10,14 +11,20 @@
 #include "utils/u8string.h"
 #include "test/testutils/utils.h"
 #include "test/testutils/slot_catcher.h"
+#include "pfmvp/mock_pf_triad_manager.h"
 
 #include "snail/mock_main_window_model.h"
 #include "qtui/mock_main_window_view.h"
 #include "src/qtui/main_window_presenter.h"
 
+#include "snail/mock_workspace_model.h"
+#include "qtui/mock_workspace_view.h"
+
 using utils::U8String;
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
+using namespace pfmvp;  // NOLINT
+using namespace pfmvp::tests;  // NOLINT
 
 class MainWindowPresenterTest : public ::testing::Test {
  protected:
@@ -32,11 +39,23 @@ class MainWindowPresenterTest : public ::testing::Test {
 
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
+    // init window title
     utils::U8String dummyTitle = xtestutils::genRandomString();
     R_EXPECT_CALL(*model, windowTitle())
         .WillOnce(ReturnRef(dummyTitle));
     R_EXPECT_CALL(*view, setWindowTitle2(dummyTitle));
 
+    // build central widget
+    R_EXPECT_CALL(*model, getWorkSpaceModel())
+        .WillOnce(Return(workspace_model));
+
+    std::shared_ptr<IPfModel> workspace_pfmodel = workspace_model;
+    R_EXPECT_CALL(triad_manager, createViewFor(workspace_pfmodel))
+        .WillOnce(Return(workspace_view));
+
+    R_EXPECT_CALL(*view, setWorkSpaceView(workspace_view.get()));
+
+    // bind event handlers
     R_EXPECT_CALL(*model, whenWindowTitleChanged(_, _))
         .WillOnce(SaveArg<0>(&windowTitleChanged));
 
@@ -44,20 +63,32 @@ class MainWindowPresenterTest : public ::testing::Test {
         .WillOnce(SaveArg<0>(&userCloseWindow));
 
     presenter = MainWindowPresenter::create(model, view);
+    presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
   }
   // virtual void TearDown() { }
 
+  // region: objects test subject depends on
   std::shared_ptr<MockMainWindowModel> model;
   std::shared_ptr<MockMainWindowView> view;
 
-  std::shared_ptr<MainWindowPresenter> presenter;
+  std::shared_ptr<MockWorkSpaceModel> workspace_model;
+  std::shared_ptr<MockWorkSpaceView> workspace_view;
 
+  MockPfTriadManager triad_manager;
+  // endregion
+
+  // region: test subject
+  std::shared_ptr<MainWindowPresenter> presenter;
+  // endregion
+
+  // region: object depends on test subject
   using WindowTitleChangedSlotType =
       snailcore::IMainWindowModel::WindowTitleChangedSlotType;
   SlotCatcher<WindowTitleChangedSlotType> windowTitleChanged;
 
   SlotCatcher<IMainWindowView::RequestCloseSlotType> userCloseWindow;
+  // endregion
 };
 
 TEST_F(MainWindowPresenterTest, should_update_window_title_when_model_title_changed) { // NOLINT

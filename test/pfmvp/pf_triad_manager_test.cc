@@ -82,7 +82,7 @@ class MockPfViewFactory : public IPfViewFactory {
      : PfPresenterT<Test##name##Model, ITest##name##View>(model, view) { \
      }                                                                  \
                                                                         \
-     bool initialized { false };                                        \
+     bool initialized_ok { false };                                        \
                                                                         \
    private:                                                             \
      Test##name##Presenter(const Test##name##Presenter&) = delete;        \
@@ -90,7 +90,10 @@ class MockPfViewFactory : public IPfViewFactory {
                                                                         \
      void initialize() override {                                       \
        if (triad_manager()) {                                           \
-         initialized = true;                                            \
+         /* check ourself is in triad manager when initialize() called */ \
+         auto model_exist = findModelByView(view());                    \
+         if (model_exist)                                               \
+           initialized_ok = true;                                       \
        }                                                                \
      }                                                                  \
   };                                                                    \
@@ -251,7 +254,7 @@ void PfTriadManagerTest::createTestTriad(
   auto old_view_use_count = view.use_count();
 
   {  // working scope
-    view_factory_single_t<M, VF> view_factory_wrapper;
+    view_factory_t<M, VF> view_factory_wrapper;
     IPfViewFactory* view_factory_b =
         PfViewFactoryManager::getInstance().getViewFactory(M::modelId());
     auto view_factory = dynamic_cast<VF*>(view_factory_b);
@@ -266,7 +269,7 @@ void PfTriadManagerTest::createTestTriad(
     // for convenience, we will store the triad in presenter
     ASSERT_EQ(triad_manager.get(),
               view_factory->last_presenter->triad_manager());
-    ASSERT_TRUE(view_factory->last_presenter->initialized);
+    ASSERT_TRUE(view_factory->last_presenter->initialized_ok);
   }
 
   ASSERT_EQ(old_model_use_count + 1, model.use_count());
@@ -312,10 +315,10 @@ TEST_F(PfTriadManagerTest,
   auto view1 = std::make_shared<MockTestXXXView>();
   auto view2 = std::make_shared<MockTestXXXView>();
 
-  view_factory_single_t<TestXXXModel,
-                        MockTestXXXViewFactory> view_factory_wrapper1;
-  view_factory_single_t<TestXXXModel,
-                        MockTestXXXViewFactory2> view_factory_wrapper2;
+  view_factory_t<TestXXXModel,
+                 MockTestXXXViewFactory> view_factory_wrapper1;
+  view_factory_t<TestXXXModel,
+                 MockTestXXXViewFactory2> view_factory_wrapper2;
 
   auto& factory1 = view_factory_wrapper1.FTO_getFactory();
   auto& factory2 = view_factory_wrapper2.FTO_getFactory();
@@ -339,8 +342,8 @@ TEST_F(PfTriadManagerTest,
 
 TEST_F(PfTriadManagerTest, should_return_null_when_view_factory_failed_create_view) { // NOLINT
   // Setup fixture
-  view_factory_single_t<TestXXXModel,
-                        MockPfViewFactory> view_factory_wrapper;
+  view_factory_t<TestXXXModel,
+                 MockPfViewFactory> view_factory_wrapper;
   auto& factory = view_factory_wrapper.FTO_getFactory();
 
   std::shared_ptr<IPfModel> model = std::make_shared<TestXXXModel>();

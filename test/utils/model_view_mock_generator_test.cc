@@ -57,6 +57,21 @@ TEST_F(ModelViewMockGeneratorTest, should_be_able_to_generator_specificed_class_
   ASSERT_NE(nullptr, view);
 }
 
+TEST_F(ModelViewMockGeneratorTest, should_be_able_to_return_std_shared_ptr_pointers) { // NOLINT
+  // Setup fixture
+  auto mvpair = mvmock_generator.make_mvpair();
+  auto model = mvpair->model();
+  auto view = mvpair->view();
+
+  // Exercise system
+  auto shared_model = mvpair->shared_model();
+  auto shared_view = mvpair->shared_view();
+
+  // Verify results
+  ASSERT_EQ(model, shared_model.get());
+  ASSERT_EQ(view, shared_view.get());
+}
+
 TEST_F(ModelViewMockGeneratorTest, should_be_able_to_return_as_std_pair) { // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();

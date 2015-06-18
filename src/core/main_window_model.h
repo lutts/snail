@@ -17,13 +17,18 @@
 
 namespace snailcore {
 
+class IWorkSpaceModel;
+
 class MainWindowModel : public IMainWindowModel {
  public:
-  MainWindowModel();
+  MainWindowModel(std::shared_ptr<IWorkSpaceModel> workspace_model);
   ~MainWindowModel();
 
   const utils::U8String& windowTitle() const override;
   void setWindowTitle(const utils::U8String& newTitle) override;
+
+  std::shared_ptr<IWorkSpaceModel> getWorkSpaceModel() override;
+
   bool requestClose() const override;
 
  private:
@@ -31,6 +36,7 @@ class MainWindowModel : public IMainWindowModel {
   MainWindowModel& operator=(const MainWindowModel& other) = delete;
 
   utils::U8String windowTitle_;
+  std::shared_ptr<IWorkSpaceModel> workspace_model_;
 
  private:
   SNAIL_SIGSLOT_IMPL(WindowTitleChanged)

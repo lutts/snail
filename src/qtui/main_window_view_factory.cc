@@ -35,5 +35,5 @@ class MainWindowViewFactory : public IPfViewFactory {
   MainWindowViewFactory& operator=(const MainWindowViewFactory& other) = delete;
 };
 
-static view_factory_single_t<IMainWindowModel, MainWindowViewFactory>
+static view_factory_t<IMainWindowModel, MainWindowViewFactory>
 g_main_window_view_factory;

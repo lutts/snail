@@ -7,6 +7,8 @@
 
 #include "src/qtui/qt_uiengine.h"
 
+#include "src/utils/log/log.h"
+
 #include "utils/basic_utils.h"
 #include "src/pfmvp/pf_triad_manager.h"
 #include "pfmvp/pf_view_factory_manager.h"
@@ -30,6 +32,7 @@ using namespace snailcore;  // NOLINT
 using namespace pfmvp;  // NOLINT
 
 int main() {
+  initLog();
   QtUiEngine qtUiEngine;
   PfTriadManager triad_manager(PfViewFactoryManager::getInstance());
 

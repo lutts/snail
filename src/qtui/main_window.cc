@@ -12,6 +12,8 @@
 #include <QPushButton>
 #include <QDebug>
 
+#include "qtui/i_workspace_view.h"
+
 // #include "src/qtui/work_name_input_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -43,6 +45,16 @@ void MainWindow::setGeometry(int w, int h) {
 
 void MainWindow::setWindowTitle2(const utils::U8String& title) {
   setWindowTitle(U8StringToQString(title));
+}
+
+void MainWindow::setWorkSpaceView(IWorkSpaceView* workspace_view) {
+  QWidget* central_widget = nullptr;
+
+  if (workspace_view) {
+    central_widget = workspace_view->getWidget();
+  }
+
+  setCentralWidget(central_widget);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
