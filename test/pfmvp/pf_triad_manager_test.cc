@@ -227,6 +227,9 @@ class PfTriadManagerTest : public ::testing::Test {
       TriadT* mvp_triad_to_test,
       std::vector<TriadT>* all_mvp_triad = nullptr);
 
+  template <typename M, typename V, typename P>
+  void verifyTriad(M* model, V* view, P* presenter);
+
   void createTestXXXTriad(std::shared_ptr<MockXXXModel> model,
                           std::shared_ptr<MockXXXView> view,
                           MockXXXPresenter** presenter = nullptr);
@@ -309,6 +312,15 @@ class MockListener : public GenericMockListener<MockListener,
   bool monitor_request_remove_;
 };
 
+template <typename M, typename V, typename P>
+void PfTriadManagerTest::verifyTriad(M* model, V* view, P* presenter) {
+  ASSERT_NE(nullptr, presenter);
+  ASSERT_EQ(model, presenter->getModel().get());
+  ASSERT_EQ(view, presenter->getView().get());
+  ASSERT_EQ(triad_manager.get(), presenter->triad_manager());
+  ASSERT_TRUE(presenter->initialized_ok);
+}
+
 template <typename VF, typename M, typename V, typename P>
 void PfTriadManagerTest::createTestTriad(
     std::shared_ptr<M> model,
@@ -329,11 +341,7 @@ void PfTriadManagerTest::createTestTriad(
 
     // for convenience, we will store the triad manager in presenter
     auto presenter = view_factory.last_presenter;
-    ASSERT_NE(nullptr, presenter);
-    ASSERT_EQ(model, presenter->getModel());
-    ASSERT_EQ(view, presenter->getView());
-    ASSERT_EQ(triad_manager.get(), presenter->triad_manager());
-    ASSERT_TRUE(presenter->initialized_ok);
+    verifyTriad(model.get(), view.get(), presenter);
 
     if (presenter_ret)
       *presenter_ret = presenter;
@@ -399,16 +407,9 @@ TEST_F(PfTriadManagerTest,
                                    factory2.getViewFactoryId());
 
   // Verify results
-  // TODO(lutts): refractor, code duplicated with createTestTriad()
   ASSERT_EQ(view1, actual_view1);
-  ASSERT_EQ(triad_manager.get(),
-            factory1.last_presenter->triad_manager());
-  ASSERT_TRUE(factory1.last_presenter->initialized_ok);
-
-  ASSERT_EQ(view2, actual_view2);
-  ASSERT_EQ(triad_manager.get(),
-            factory2.last_presenter->triad_manager());
-  ASSERT_TRUE(factory2.last_presenter->initialized_ok);
+  verifyTriad(model.get(), view1.get(), factory1.last_presenter);
+  verifyTriad(model.get(), view2.get(), factory2.last_presenter);
 }
 
 TEST_F(PfTriadManagerTest, should_return_null_when_view_factory_failed_create_view) { // NOLINT
@@ -473,17 +474,25 @@ void PfTriadManagerTest::createTestYYYTriads(
   createTestTriads<MockYYYViewFactory>(mvp_triad_to_test, all_mvp_triad);
 }
 
-// TODO(lutts): should enforce destruction order
-TEST_F(PfTriadManagerTest, should_destroy_triads_when_triad_manager_destroyed) { // NOLINT
+TEST_F(PfTriadManagerTest, should_destroy_triads_in_FILO_order_when_triad_manager_destroyed) { // NOLINT
   // Setup fixture
   TestXXX_MVP_Triad mvp_triad;
   std::vector<TestXXX_MVP_Triad> all_mvp_triad;
   CUSTOM_ASSERT(createTestXXXTriads(&mvp_triad, &all_mvp_triad));
 
   // Expectations
-  for (auto mvp : all_mvp_triad) {
-    EXPECT_CALL(*std::get<0>(mvp), destruct());
-    EXPECT_CALL(*std::get<1>(mvp), destruct());
+  {
+    InSequence seq;
+
+    for (auto iter = all_mvp_triad.rbegin();
+         iter != all_mvp_triad.rend();
+         ++iter) {
+      auto model = std::get<0>(*iter);
+      auto view = std::get<1>(*iter);
+
+      EXPECT_CALL(*view, destruct());
+      EXPECT_CALL(*model, destruct());
+    }
   }
 
   // Exercise system
@@ -501,8 +510,10 @@ static void expectationsOnSingleTriadDestroy(
   auto view = std::get<1>(triad);
   //  auto presenter = std::get<2>(triad);
 
+  std::unique_ptr<Sequence> lSeq;
   if (seq == nullptr) {
-    seq = new Sequence();
+    lSeq = utils::make_unique<Sequence>();
+    seq = lSeq.get();
   }
 
   if (listener) {
@@ -552,8 +563,10 @@ static void expectationsOnTwoTriadDestroy(
   auto view2 = std::get<1>(triad2);
   //  auto presenter2 = std::get<2>(triad2);
 
+  std::unique_ptr<Sequence> lSeq;
   if (!seq) {
-    seq = new Sequence();  // TODO(lutts): memory leak
+    lSeq = utils::make_unique<Sequence>();
+    seq = lSeq.get();
   }
 
   if (model1 != model2) {
