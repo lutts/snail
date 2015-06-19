@@ -28,8 +28,6 @@ class PfViewFactoryManager :
                       IPfViewFactory* view_factory) override;
 
   IPfViewFactory* getViewFactory(
-      const IPfModel::ModelIdType& model_id) const override;
-  IPfViewFactory* getViewFactory(
       const IPfModel::ModelIdType& model_id,
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) const override;
   std::vector<IPfViewFactory*>

@@ -31,6 +31,9 @@ class IPfViewFactory {
   createView(std::shared_ptr<IPfModel> model) = 0;
 };
 
+#define INVALID_PF_VIEW_FACTORY_ID utils::U8String{""}
+#define isViewFactoryIdValid(id) (id != INVALID_PF_VIEW_FACTORY_ID)
+
 #define DEF_VIEW_FACTORY_ID(id)                                 \
   const ViewFactoryIdType& getViewFactoryId() const override {  \
     return viewFactoryId();                                     \
@@ -49,13 +52,12 @@ class IPfViewFactoryManager {
                               IPfViewFactory* view_factory) = 0;
 
   // return a view factory for this model_id, if the model has multiple
-  // view factories, which one will return is not undefined
-  virtual IPfViewFactory*
-  getViewFactory(const IPfModel::ModelIdType& model_id) const = 0;
-
+  // view factories and factroy id is not specified, which one will return
+  // is not undefined
   virtual IPfViewFactory* getViewFactory(
       const IPfModel::ModelIdType& model_id,
-      const IPfViewFactory::ViewFactoryIdType& view_factory_id) const = 0;
+      const IPfViewFactory::ViewFactoryIdType&
+      view_factory_id = INVALID_PF_VIEW_FACTORY_ID) const = 0;
 
   virtual std::vector<IPfViewFactory*>
   getAllViewFactory(const IPfModel::ModelIdType& model_id) const = 0;

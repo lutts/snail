@@ -19,24 +19,17 @@ void PfViewFactoryManager::addViewFactory(
 }
 
 IPfViewFactory* PfViewFactoryManager::getViewFactory(
-    const IPfModel::ModelIdType& model_id) const {
-  try {
-    auto& factories = model_viewfactory_map_.at(model_id);
-    if (factories.size() > 0) {
-      return factories.begin()->second;
-    }
-  } catch (...) {
-  }
-
-  return nullptr;
-}
-
-IPfViewFactory* PfViewFactoryManager::getViewFactory(
     const IPfModel::ModelIdType& model_id,
     const IPfViewFactory::ViewFactoryIdType& view_factory_id) const {
   try {
     auto& factories = model_viewfactory_map_.at(model_id);
-    return factories.at(view_factory_id);
+    if (isViewFactoryIdValid(view_factory_id)) {
+      return factories.at(view_factory_id);
+    } else {
+      if (factories.size() > 0) {
+        return factories.begin()->second;
+      }
+    }
   } catch (...) {
   }
 
