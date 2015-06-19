@@ -24,7 +24,7 @@ class MainWindowViewFactory : public IPfViewFactory {
     auto the_model = std::dynamic_pointer_cast<IMainWindowModel>(model);
     if (the_model) {
       auto view = std::make_shared<MainWindow>();
-      return MainWindowPresenter::create(the_model, view);
+      return std::make_shared<MainWindowPresenter>(the_model, view);
     }
 
     return nullptr;

@@ -62,7 +62,7 @@ class MainWindowPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*view, whenRequestClose(_, _))
         .WillOnce(SaveArg<0>(&userCloseWindow));
 
-    presenter = MainWindowPresenter::create(model, view);
+    presenter = std::make_shared<MainWindowPresenter>(model, view);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
   }

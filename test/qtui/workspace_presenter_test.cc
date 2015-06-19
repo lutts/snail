@@ -61,7 +61,7 @@ class WorkSpacePresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*model, whenWorkModelActivelyRemoved(_, _))
         .WillOnce(SaveArg<0>(&workModelActivelyRemoved));
 
-    presenter = WorkSpacePresenter::create(model, view);
+    presenter = std::make_shared<WorkSpacePresenter>(model, view);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
   }

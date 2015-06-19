@@ -23,12 +23,6 @@ using MainWindowPresenterBase =
 
 class MainWindowPresenter : public MainWindowPresenterBase {
  public:
-  static std::shared_ptr<MainWindowPresenter>
-  create(std::shared_ptr<snailcore::IMainWindowModel> model,
-         std::shared_ptr<IMainWindowView> view) {
-    return std::make_shared<MainWindowPresenter>(model, view);
-  }
-
   MainWindowPresenter(std::shared_ptr<snailcore::IMainWindowModel> model,
                 std::shared_ptr<IMainWindowView> view)
       : MainWindowPresenterBase(model, view) {

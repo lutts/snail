@@ -24,7 +24,7 @@ class WorkSpaceViewFactory : public IPfViewFactory {
     auto the_model = std::dynamic_pointer_cast<IWorkSpaceModel>(model);
     if (the_model) {
       auto view = std::make_shared<WorkSpaceView>();
-      return WorkSpacePresenter::create(the_model, view);
+      return std::make_shared<WorkSpacePresenter>(the_model, view);
     }
 
     return nullptr;
