@@ -538,7 +538,7 @@ static void expectationsOnSingleTriadDestroy(
   }
 }
 
-static void expectationsOnTriadDestroy(
+static void expectationsOnTwoTriadDestroy(
     TestXXX_MVP_Triad triad1, MockListener* listener1,
     TestXXX_MVP_Triad triad2, MockListener* listener2,
     CheckPointType* checker = nullptr,
@@ -620,16 +620,6 @@ static void expectationsOnTriadDestroy(
         .Times(times)
         .InSequence(*seq);
   }
-}
-
-static void expectationsOnModelView1View2Destroy(
-    TestXXX_MVP_Triad triad1, MockListener* listener1,
-    TestXXX_MVP_Triad triad2, MockListener* listener2,
-    CheckPointType* checker = nullptr) {
-  expectationsOnTriadDestroy(
-      triad1, listener1,
-      triad2, listener2,
-      checker);
 }
 
 static void expectationsOnNotDestroyModelView(
@@ -887,7 +877,7 @@ TEST_F(PfTriadManagerTest, should_remove_all_triads_of_a_model_when_the_model_re
 
   CheckPointType check;
   // Expectations
-  expectationsOnModelView1View2Destroy(
+  expectationsOnTwoTriadDestroy(
       make_xxx_triad(model, view1, presenter1),
       mockListener1.get(),
       make_xxx_triad(model, view2, presenter2),
