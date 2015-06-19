@@ -49,7 +49,7 @@ class PfTriadManager : public IPfTriadManager {
       IPfViewFactory* view_factory);
   bool isModelExist(IPfModel* model) const;
   bool isViewExist(IPfView* view) const;
-  void emitAboutToDestroySignal(IPfModel* model, IPfView* view);
+  void doAboutToDestroyTriad(PfPresenter* presenter);
 
   class PfTriadManagerImpl;
   std::unique_ptr<PfTriadManagerImpl> impl;

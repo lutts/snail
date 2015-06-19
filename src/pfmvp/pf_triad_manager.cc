@@ -168,22 +168,43 @@ SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
 SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
                            AboutToDestroyView, IPfView, isViewExist);
 
-void PfTriadManager::emitAboutToDestroySignal(IPfModel* model, IPfView* view) {
-  //  AboutToDestroyView(view);
-  //  AboutToDestroyModel(model);
+void PfTriadManager::doAboutToDestroyTriad(PfPresenter* presenter) {
+  auto model = presenter->getModel().get();
+  auto view = presenter->getView().get();
+
+  // first notify the listeners on this triad
+  // 1. view
   auto& view_destroy_sig = impl->AboutToDestroyViewSignalOf(view);
   view_destroy_sig(view);
+  // 1.1 remove signal slots
   impl->view_destroy_sig_map_.erase(view);
 
+  // 2. model
+  // 2.1. decrease view count of the model
   --impl->model_view_count[model];
   assert(impl->model_view_count[model] >= 0);
+  // 2.2 if there's no views left, destroy the model
   if (impl->model_view_count[model] == 0) {
+    // 2.2.1. send AboutToDestroy to listeners
     auto& model_destroy_sig = impl->AboutToDestroyModelSignalOf(model);
     model_destroy_sig(model);
 
+    // 2.2.2. remove signal slots
     impl->model_remove_sig_map_.erase(model);
     impl->model_destroy_sig_map_.erase(model);
     impl->model_view_count.erase(model);
+  }
+
+  // then notify the triad itself
+  // 1. notify the presenter
+  presenter->onDestroy();
+
+  // 2. view,
+  view->onDestroy();
+
+  // 3. model
+  if (impl->model_view_count[model] == 0) {
+    model->onDestroy();
   }
 }
 
@@ -193,9 +214,7 @@ void PfTriadManager::removeTriadBy(IPfModel* model) {
       [this, model](const std::shared_ptr<PfPresenter> item) -> bool {
         bool matched = item->getModel().get() == model;
         if (matched) {
-          emitAboutToDestroySignal(
-              item->getModel().get(),
-              item->getView().get());
+          doAboutToDestroyTriad(item.get());
         }
 
         return matched;
@@ -208,9 +227,7 @@ void PfTriadManager::removeTriadBy(IPfView* view) {
       [this, view](const std::shared_ptr<PfPresenter> item) -> bool {
         bool matched = item->getView().get() == view;
         if (matched) {
-          emitAboutToDestroySignal(
-              item->getModel().get(),
-              item->getView().get());
+          doAboutToDestroyTriad(item.get());
         }
 
         return matched;

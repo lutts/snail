@@ -32,6 +32,7 @@ class PfPresenter : public utils::ITrackable
 
   // NOTE: should be called after set_triad_manager()
   virtual void initialize() { }
+  virtual void onDestroy() { }
 
   ////////////////////// triad manager helpers begin //////////////////
   void set_triad_manager(IPfTriadManager* triad_manager) {

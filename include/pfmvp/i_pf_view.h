@@ -15,6 +15,7 @@ class IPfView {
   virtual ~IPfView() = default;
 
   virtual void showView(bool modal = false) { (void)modal; }
+  virtual void onDestroy() { }
 };
 
 }  // namespace pfmvp

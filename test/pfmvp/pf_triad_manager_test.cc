@@ -40,9 +40,10 @@ class MockPfViewFactory : public IPfViewFactory {
 #define DEFINE_TEST_CLASSES(name)                                       \
   class Mock##name##Model : public IPfModel {                       \
    public:                                                              \
-   virtual ~Mock##name##Model() { destruct(); }                     \
-   DEF_MODEL_ID(Mock##name##Model);                                 \
+     virtual ~Mock##name##Model() { destruct(); }                     \
+     DEF_MODEL_ID(Mock##name##Model);                                   \
                                                                         \
+     MOCK_METHOD0(onDestroy, void());                                   \
      MOCK_METHOD0(destruct, void());                                    \
   };                                                                    \
                                                                         \
@@ -55,6 +56,7 @@ class MockPfViewFactory : public IPfViewFactory {
    public:                                                              \
      virtual ~Mock##name##View() { destruct(); }                          \
                                                                         \
+     MOCK_METHOD0(onDestroy, void());                                   \
      MOCK_METHOD0(destruct, void());                                    \
   };                                                                    \
                                                                         \
@@ -72,6 +74,11 @@ class MockPfViewFactory : public IPfViewFactory {
                            std::shared_ptr<ITest##name##View> view)     \
      : PfPresenterT<Mock##name##Model, ITest##name##View>(model, view) { \
      }                                                                  \
+                                                                        \
+     ~Mock##name##Presenter() { destruct(); }                           \
+                                                                        \
+     MOCK_METHOD0(onDestroy, void());                                   \
+     MOCK_METHOD0(destruct, void());                                    \
                                                                         \
      bool initialized_ok { false };                                     \
                                                                         \
@@ -508,7 +515,7 @@ static void expectationsOnSingleTriadDestroy(
     int times = 1) {
   auto model = std::get<0>(triad);
   auto view = std::get<1>(triad);
-  //  auto presenter = std::get<2>(triad);
+  auto presenter = std::get<2>(triad);
 
   std::unique_ptr<Sequence> lSeq;
   if (seq == nullptr) {
@@ -528,6 +535,30 @@ static void expectationsOnSingleTriadDestroy(
           .Times(times)
           .InSequence(*seq);
     }
+  }
+
+  if (presenter) {
+    EXPECT_CALL(*presenter, onDestroy())
+        .Times(times)
+        .InSequence(*seq);
+  }
+
+  if (view) {
+    EXPECT_CALL(*view, onDestroy())
+        .Times(times)
+        .InSequence(*seq);
+  }
+
+  if (model) {
+    EXPECT_CALL(*model, onDestroy())
+        .Times(times)
+        .InSequence(*seq);
+  }
+
+  if (presenter) {
+    EXPECT_CALL(*presenter, destruct())
+        .Times(times)
+        .InSequence(*seq);
   }
 
   if (view) {
@@ -777,6 +808,7 @@ TEST_F(PfTriadManagerTest, should_not_destruct_triad_if_request_remove_by_view_r
   CUSTOM_ASSERT(createTestXXXTriads(&mvp_triad));
   auto model = std::get<0>(mvp_triad);
   auto view = get<1>(mvp_triad);
+  auto presenter = get<2>(mvp_triad);
 
   bool expect_result = false;
 
@@ -797,6 +829,7 @@ TEST_F(PfTriadManagerTest, should_not_destruct_triad_if_request_remove_by_view_r
 
   ::Mock::VerifyAndClear(model);
   ::Mock::VerifyAndClear(view);
+  ::Mock::VerifyAndClear(presenter);
 }
 
 TEST_F(PfTriadManagerTest, should_remove_model_only_when_all_views_are_removed) { // NOLINT
@@ -842,7 +875,9 @@ TEST_F(PfTriadManagerTest, should_remove_model_only_when_all_views_are_removed) 
   // Verify result
   ::Mock::VerifyAndClear(model);
   ::Mock::VerifyAndClear(view1);
+  ::Mock::VerifyAndClear(presenter1);
   ::Mock::VerifyAndClear(view2);
+  ::Mock::VerifyAndClear(presenter2);
   ::Mock::VerifyAndClear(mockListener1.get());
   ::Mock::VerifyAndClear(mockListener2.get());
 

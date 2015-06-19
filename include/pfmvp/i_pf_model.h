@@ -19,6 +19,7 @@ class IPfModel {
   virtual ~IPfModel() = default;
 
   virtual const ModelIdType& getModelId() const = 0;
+  virtual void onDestroy() { }
 };
 
 #define DEF_MODEL_ID(id)                                        \
