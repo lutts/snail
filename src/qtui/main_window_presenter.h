@@ -41,6 +41,12 @@ class MainWindowPresenter : public MainWindowPresenterBase {
           view()->setWindowTitle2(newTitle);
         }, shared_from_this());
 
+    view()->whenUserClickAddWork(
+        [this](const utils::U8String& work_name) {
+          model()->createWork(work_name);
+        },
+        shared_from_this());
+
     view()->whenRequestClose(
         [this]() -> bool {
           return model()->requestClose();

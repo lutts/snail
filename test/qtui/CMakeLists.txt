@@ -31,4 +31,10 @@ add_gmock_test(main_window_presenter_test
 add_gmock_test(workspace_presenter_test
   LIBS qtuicore testutils)
 
+add_gmock_test(work_basic_info_qmodel_test
+  LIBS qtuicore testutils Qt5::Test)
+
+add_gmock_test(work_presenter_test
+  LIBS qtuicore testutils)
+
 add_subdirectory(preview)

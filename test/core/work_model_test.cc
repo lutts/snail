@@ -27,14 +27,12 @@ class WorkModelTest : public ::testing::Test {
   }
   // ~WorkModelTest() { }
   virtual void SetUp() {
-    // Setup fixture
+    EXPECT_CALL(work, whenBasicInfoChanged(_, _))
+        .WillOnce(SaveArg<0>(&workBasicInfoChanged));
 
-    // Expectations which only need run once
-
-    // Expectations which need run every test case
-
-    // Excercise system
-    work_model = utils::make_unique<WorkModel>(&work);
+    auto model = std::make_shared<WorkModel>();
+    model->set_work(&work);
+    work_model = std::move(model);
   }
   // virtual void TearDown() { }
 
@@ -43,16 +41,28 @@ class WorkModelTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<IWorkModel> work_model;
+  std::shared_ptr<IWorkModel> work_model;
   // endregion
 
   // region: object depends on test subject
+  SlotCatcher<IWork::BasicInfoChangedSlotType> workBasicInfoChanged;
   // endregion
 };
 
-TEST_F(WorkModelTest, should_be_able_to_get_back_the_backing_work) { // NOLINT
-  ASSERT_EQ(&work, work_model->getWork());
-}
+class MockListener : public GenericMockListener<MockListener,
+                                                IWorkModel> {
+ public:
+  MOCK_METHOD0(BasicInfoChanged, void());
+
+  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
+                           IWorkModel* model) {
+    model->whenBasicInfoChanged(
+        [this]() {
+          BasicInfoChanged();
+        },
+        trackObject);
+  }
+};
 
 TEST_F(WorkModelTest, should_name_be_the_backing_work_name) { // NOLINT
   // Setup fixture
@@ -62,6 +72,32 @@ TEST_F(WorkModelTest, should_name_be_the_backing_work_name) { // NOLINT
 
   // Verify results
   ASSERT_EQ(work_name, work_model->name());
+}
+
+TEST_F(WorkModelTest, should_relay_set_name_to_backing_work) { // NOLINT
+  // Setup fixture
+  auto tester = [this](bool expect_result) {
+    auto new_name = xtestutils::genRandomString();
+
+    // Expectations
+    EXPECT_CALL(work, set_name(new_name))
+    .WillOnce(Return(expect_result));
+
+    // Verify results
+    ASSERT_EQ(expect_result, work_model->set_name(new_name));
+  };
+
+  tester(true);
+  tester(false);
+}
+
+TEST_F(WorkModelTest, should_relay_BasicInfoChanged_signal_fired_by_backing_work) { // NOLINT
+  // Expectations
+  auto mockListener = MockListener::attachTo(work_model.get());
+  EXPECT_CALL(*mockListener, BasicInfoChanged());
+
+  // Exercise system
+  workBasicInfoChanged();
 }
 
 }  // namespace tests

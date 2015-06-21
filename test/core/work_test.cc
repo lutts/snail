@@ -42,6 +42,21 @@ class WorkTest : public ::testing::Test {
   // endregion
 };
 
+class MockListener : public GenericMockListener<MockListener,
+                                                IWork> {
+ public:
+  MOCK_METHOD0(BasicInfoChanged, void());
+
+  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
+                           IWork* work) {
+    work->whenBasicInfoChanged(
+        [this]() {
+          BasicInfoChanged();
+        },
+        trackObject);
+  }
+};
+
 TEST_F(WorkTest, should_be_able_to_set_and_get_name) { // NOLINT
   // Setup fixture
   auto work_name = xtestutils::genRandomString();
@@ -53,6 +68,27 @@ TEST_F(WorkTest, should_be_able_to_set_and_get_name) { // NOLINT
 
   // Verify results
   ASSERT_EQ(work_name, work->name());
+}
+
+TEST_F(WorkTest, should_fire_BasicInfoChanged_when_set_a_different_name) { // NOLINT
+  // Setup fixture
+  auto new_name = xtestutils::genRandomDifferentString(work->name());
+
+  // Expectations
+  auto mockListener = MockListener::attachTo(work.get());
+  EXPECT_CALL(*mockListener, BasicInfoChanged());
+
+  // Exercise system
+  ASSERT_TRUE(work->set_name(new_name));
+}
+
+TEST_F(WorkTest, should_not_fire_BasicInfoChnaged_when_set_a_same_name) { // NOLINT
+  // Expectations
+  auto mockListener = MockListener::attachTo(work.get());
+  EXPECT_CALL(*mockListener, BasicInfoChanged()).Times(0);
+
+  // Exercise system
+  ASSERT_FALSE(work->set_name(work->name()));
 }
 
 }  // namespace tests

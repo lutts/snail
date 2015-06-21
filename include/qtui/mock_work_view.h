@@ -12,6 +12,7 @@
 
 class MockWorkView : public IWorkView {
  public:
+  MOCK_METHOD1(setBasicInfoQModel, void(IWorkBasicInfoQModel* model));
 };
 
 #endif  // INCLUDE_QTUI_MOCK_WORK_VIEW_H_

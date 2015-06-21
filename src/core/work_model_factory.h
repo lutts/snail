@@ -17,6 +17,8 @@
 
 namespace snailcore {
 
+// TODO(lutts): move impl to .cc
+
 class WorkModelFactory : public IWorkModelFactory {
  public:
   WorkModelFactory() = default;
@@ -25,8 +27,10 @@ class WorkModelFactory : public IWorkModelFactory {
   std::shared_ptr<IWorkModel> createWorkModel(
       const utils::U8String& work_name) {
     auto work = new Work;
-    work->set_name(work_name);
-    return std::make_shared<WorkModel>(work);
+    work->set_name(work_name);  // TODO(lutts):
+    auto model = std::make_shared<WorkModel>();
+    model->set_work(work);
+    return model;
   }
 
  private:

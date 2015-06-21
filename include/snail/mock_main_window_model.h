@@ -21,6 +21,7 @@ class MockMainWindowModel : public IMainWindowModel {
   MOCK_CONST_METHOD0(windowTitle, const utils::U8String& ());
   MOCK_METHOD1(setWindowTitle, void(const utils::U8String& newTitle));
   MOCK_METHOD0(getWorkSpaceModel, std::shared_ptr<IWorkSpaceModel>());
+  MOCK_METHOD1(createWork, void(const utils::U8String& work_name));
   MOCK_CONST_METHOD0(requestClose, bool());
 };
 

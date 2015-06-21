@@ -9,6 +9,7 @@
 #define INCLUDE_SNAIL_I_WORK_H_
 
 #include "utils/u8string.h"
+#include "utils/signal_slot.h"
 
 namespace snailcore {
 
@@ -16,7 +17,9 @@ class IWork {
  public:
   virtual ~IWork() = default;
 
-  virtual void set_name(const utils::U8String& name) = 0;
+  SNAIL_SIGSLOT2(BasicInfoChanged, void());
+
+  virtual bool set_name(const utils::U8String& name) = 0;
   virtual const utils::U8String& name() const = 0;
 };
 

@@ -30,6 +30,7 @@ class IMainWindowModel : public pfmvp::IPfModel {
   virtual void setWindowTitle(const utils::U8String& newTitle) = 0;
 
   virtual std::shared_ptr<IWorkSpaceModel> getWorkSpaceModel() = 0;
+  virtual void createWork(const utils::U8String& work_name) = 0;
 
   virtual bool requestClose() const = 0;
 };

@@ -59,6 +59,9 @@ class MainWindowPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*model, whenWindowTitleChanged(_, _))
         .WillOnce(SaveArg<0>(&windowTitleChanged));
 
+    R_EXPECT_CALL(*view, whenUserClickAddWork(_, _))
+        .WillOnce(SaveArg<0>(&userClickAddWork));
+
     R_EXPECT_CALL(*view, whenRequestClose(_, _))
         .WillOnce(SaveArg<0>(&userCloseWindow));
 
@@ -87,6 +90,7 @@ class MainWindowPresenterTest : public ::testing::Test {
       snailcore::IMainWindowModel::WindowTitleChangedSlotType;
   SlotCatcher<WindowTitleChangedSlotType> windowTitleChanged;
 
+  SlotCatcher<IMainWindowView::UserClickAddWorkSlotType> userClickAddWork;
   SlotCatcher<IMainWindowView::RequestCloseSlotType> userCloseWindow;
   // endregion
 };
@@ -113,4 +117,15 @@ TEST_F(MainWindowPresenterTest, should_request_close_when_use_close_window) { //
 
   tester(true);
   tester(false);
+}
+
+TEST_F(MainWindowPresenterTest, should_createWork_when_UserClickAddWork) { // NOLINT
+  // Setup fixture
+  auto work_name = xtestutils::genRandomString();
+
+  // Expectations
+  EXPECT_CALL(*model, createWork(work_name));
+
+  // Exercise system
+  userClickAddWork(work_name);
 }

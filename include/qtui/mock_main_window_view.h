@@ -12,6 +12,7 @@
 
 class MockMainWindowView : public IMainWindowView {
  public:
+  SNAIL_MOCK_SLOT(UserClickAddWork);
   SNAIL_MOCK_SLOT(RequestClose);
 
   MOCK_METHOD1(showView, void(bool modal));

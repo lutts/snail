@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   void createToolbars();
 
  private:
+  SNAIL_SIGSLOT_IMPL(UserClickAddWork)
   SNAIL_SIGSLOT_COMBINER_IMPL(RequestClose, and_slot_bool_result_combiner)
 };
 

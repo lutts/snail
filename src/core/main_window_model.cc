@@ -56,6 +56,10 @@ std::shared_ptr<IWorkSpaceModel> MainWindowModel::getWorkSpaceModel() {
   return workspace_model_;
 }
 
+void MainWindowModel::createWork(const utils::U8String& work_name) {
+  workspace_model_->createWork(work_name);
+}
+
 bool MainWindowModel::requestClose() const {
   return RequestClose();
 }

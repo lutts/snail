@@ -28,6 +28,7 @@ class MainWindowModel : public IMainWindowModel {
   void setWindowTitle(const utils::U8String& newTitle) override;
 
   std::shared_ptr<IWorkSpaceModel> getWorkSpaceModel() override;
+  void createWork(const utils::U8String& work_name) override;
 
   bool requestClose() const override;
 

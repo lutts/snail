@@ -10,6 +10,7 @@
 
 #include "snail/i_work.h"
 #include "utils/u8string.h"
+#include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
@@ -18,8 +19,14 @@ class Work : public IWork {
   Work() = default;
   virtual ~Work() = default;
 
-  void set_name(const utils::U8String& name) {
-    name_ = name;
+  bool set_name(const utils::U8String& new_name) {
+    if (this->name_ != new_name) {
+      name_ = new_name;
+      BasicInfoChanged();
+      return true;
+    }
+
+    return false;
   }
   const utils::U8String& name() const {
     return name_;
@@ -30,6 +37,9 @@ class Work : public IWork {
   Work& operator=(const Work& other) = delete;
 
   utils::U8String name_;
+
+ private:
+  SNAIL_SIGSLOT_IMPL(BasicInfoChanged);
 };
 
 

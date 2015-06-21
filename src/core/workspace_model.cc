@@ -19,10 +19,7 @@ void WorkSpaceModel::createWork(const utils::U8String& work_name) {
 }
 
 void WorkSpaceModel::removeWorkModel(IWorkModel* model) {
-  // TODO(lutts): delete work is not our responsibility,
-  // remove these codes some day
-  auto work = model->getWork();
-  delete work;
+  (void)model;
 }
 
 }  // namespace snailcore

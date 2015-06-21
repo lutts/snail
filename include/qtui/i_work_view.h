@@ -11,9 +11,13 @@
 #include "src/qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
 
+class IWorkBasicInfoQModel;
+
 class IWorkView : public GenericViewBase {
  public:
   virtual ~IWorkView() = default;
+
+  virtual void setBasicInfoQModel(IWorkBasicInfoQModel* model) = 0;
 };
 
 

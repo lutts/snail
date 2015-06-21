@@ -18,6 +18,7 @@ class IMainWindowView : public GenericViewBase {
  public:
   virtual ~IMainWindowView() = default;
 
+  SNAIL_SIGSLOT2(UserClickAddWork, void(const utils::U8String& work_name));
   SNAIL_SIGSLOT2(RequestClose, bool());
 
   virtual void setWindowTitle2(const utils::U8String& title) = 0;

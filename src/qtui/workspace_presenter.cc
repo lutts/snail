@@ -61,6 +61,7 @@ void WorkSpacePresenter::onWorkModelAdded(
   auto work_view = createRawViewFor<IWorkView>(work_model);
   if (work_view) {
     view()->addWorkView(work_view, work_model->name());
+    view()->setActiveWorkView(work_view);
     monitorModelDestroy(work_model.get());
     monitorViewDestroy(work_view);
 

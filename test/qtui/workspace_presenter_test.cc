@@ -131,6 +131,7 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
   EXPECT_CALL(triad_manager, createViewFor(work_pfmodel, _, _))
       .WillOnce(Return(work_view));
   EXPECT_CALL(*view, addWorkView(work_view.get(), work_name));
+  EXPECT_CALL(*view, setActiveWorkView(work_view.get()));
 
   EXPECT_CALL(triad_manager, whenAboutToDestroyModel(work_pfmodel.get(), _, _))
       .WillOnce(SaveArg<1>(aboutToDestroyModel.get()));

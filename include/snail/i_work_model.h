@@ -25,7 +25,7 @@ class IWorkModel : public pfmvp::IPfModel {
   SNAIL_SIGSLOT2(BasicInfoChanged, void());
 
   virtual utils::U8String name() const = 0;
-  virtual IWork* getWork() const = 0;
+  virtual bool set_name(const utils::U8String& new_name) = 0;
 };
 
 }  // namespace snailcore

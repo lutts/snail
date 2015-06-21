@@ -8,24 +8,31 @@
 #ifndef SRC_CORE_WORK_MODEL_H_
 #define SRC_CORE_WORK_MODEL_H_
 
+#include <memory>
+
+#include "utils/i_trackable.h"
 #include "snail/i_work_model.h"
 #include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
-class WorkModel : public IWorkModel {
+class WorkModel : public IWorkModel
+                , public utils::ITrackable
+                , public std::enable_shared_from_this<WorkModel> {
  public:
-  explicit WorkModel(IWork* work) : work_(work) { }
-  virtual ~WorkModel() = default;
+  WorkModel() = default;
+  virtual ~WorkModel();
+
+  void set_work(IWork* work);
 
   utils::U8String name() const override;
-  IWork* getWork() const override;
+  bool set_name(const utils::U8String& new_name) override;
 
  private:
   WorkModel(const WorkModel& other) = delete;
   WorkModel& operator=(const WorkModel& other) = delete;
 
-  IWork* work_;
+  IWork* work_ { nullptr };
 
  private:
   SNAIL_SIGSLOT_IMPL(BasicInfoChanged);

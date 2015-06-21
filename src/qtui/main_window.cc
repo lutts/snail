@@ -14,7 +14,7 @@
 
 #include "qtui/i_workspace_view.h"
 
-// #include "src/qtui/work_name_input_dialog.h"
+ #include "src/qtui/work_name_input_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -65,12 +65,14 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::createToolbars() {
-#if 0
   QToolBar *toolbar;
 
   toolbar = addToolBar(tr(""));
+
+#if 0
   toolbar->addAction(undoRedoView_->getUndoAction());
   toolbar->addAction(undoRedoView_->getRedoAction());
+#endif
 
   QPushButton *newWorkBtn = new QPushButton(tr("New Work"));
   newWorkBtn->setObjectName(QStringLiteral("newWorkButton"));
@@ -79,10 +81,9 @@ void MainWindow::createToolbars() {
             [this]() {
             WorkNameInputDialog workNameDlg(this);
             if (workNameDlg.exec() == QDialog::Accepted) {
-              workSpaceView_->userAddNewWork(workNameDlg.name());
+              UserClickAddWork(QStringToU8String(workNameDlg.name()));
             }
           });
 
   toolbar->addWidget(newWorkBtn);
-#endif
 }

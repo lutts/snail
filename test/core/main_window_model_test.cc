@@ -36,7 +36,7 @@ class MainWindowModelTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  std::shared_ptr<IWorkSpaceModel> workspace_model;
+  std::shared_ptr<MockWorkSpaceModel> workspace_model;
 
   std::shared_ptr<IMainWindowModel> model;
   utils::U8String expect_init_title { _("Snail") };
@@ -141,6 +141,17 @@ TEST_F(MainWindowModelTest, should_and_all_listener_response_when_fire_RequestCl
 
 TEST_F(MainWindowModelTest, should_be_able_to_get_workspace_model) { // NOLINT
   ASSERT_EQ(workspace_model, model->getWorkSpaceModel());
+}
+
+TEST_F(MainWindowModelTest, DISABLED_should_relay_createWork_to_workspace_model) { // NOLINT
+  // Setup fixture
+  auto work_name = xtestutils::genRandomString();
+
+  // Expectations
+  EXPECT_CALL(*workspace_model, createWork(work_name));
+
+  // Exercise system
+  model->createWork(work_name);
 }
 
 }  // namespace tests
