@@ -13,8 +13,7 @@
 #include <QDebug>
 
 #include "qtui/i_workspace_view.h"
-
- #include "src/qtui/work_name_input_dialog.h"
+#include "src/qtui/work_name_input_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {

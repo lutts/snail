@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WORK_PRESENTER_H_
-#define WORK_PRESENTER_H_
+#ifndef SRC_QTUI_WORK_PRESENTER_H_
+#define SRC_QTUI_WORK_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -40,4 +40,4 @@ class WorkPresenter : public WorkPresenterBase {
   std::unique_ptr<IWorkBasicInfoQModel> basicInfoQModel_;
 };
 
-#endif  // WORK_PRESENTER_H_
+#endif  // SRC_QTUI_WORK_PRESENTER_H_
