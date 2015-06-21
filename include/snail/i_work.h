@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_WORK_H_
-#define I_WORK_H_
+#ifndef INCLUDE_SNAIL_I_WORK_H_
+#define INCLUDE_SNAIL_I_WORK_H_
 
 #include "utils/u8string.h"
 
@@ -22,4 +22,4 @@ class IWork {
 
 }  // namespace snailcore
 
-#endif  // I_WORK_H_
+#endif  // INCLUDE_SNAIL_I_WORK_H_

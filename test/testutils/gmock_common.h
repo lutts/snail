@@ -12,6 +12,8 @@
 #include <gmock/gmock.h>
 
 #include <vector>
+#include <iostream>  // NOLINT
+#include <string>
 
 #if 0
 using ::testing::GMOCK_FLAG(verbose);
@@ -25,6 +27,8 @@ using ::testing::_;
 
 using namespace testing;  // NOLINT
 using namespace testing::internal;  // NOLINT
+
+using CheckPointType = MockFunction<void(std::string check_point_name)>;
 
 class MockObjectRecorder {
  public:

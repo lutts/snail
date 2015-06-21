@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WORK_H_
-#define WORK_H_
+#ifndef SRC_CORE_WORK_H_
+#define SRC_CORE_WORK_H_
 
 #include "snail/i_work.h"
 #include "utils/u8string.h"
@@ -35,4 +35,4 @@ class Work : public IWork {
 
 }  // namespace snailcore
 
-#endif  // WORK_H_
+#endif  // SRC_CORE_WORK_H_

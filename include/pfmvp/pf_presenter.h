@@ -153,7 +153,7 @@ class PfPresenterT : public PfPresenter {
     if (!triad_manager())
       return nullptr;
 
-    auto v = triad_manager()->createViewFor(model);
+    auto v = triad_manager()->createViewFor(model, this);
     return std::dynamic_pointer_cast<SubVT>(v);
   }
 
@@ -162,7 +162,7 @@ class PfPresenterT : public PfPresenter {
     if (!triad_manager())
       return nullptr;
 
-    auto v = triad_manager()->createViewFor(model);
+    auto v = triad_manager()->createViewFor(model, this);
     return dynamic_cast<SubVT*>(v.get());
   }
 

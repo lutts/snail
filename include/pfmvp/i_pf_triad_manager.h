@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 
+#include "utils/i_trackable.h"
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/i_pf_view.h"
 #include "pfmvp/i_pf_view_factory.h"
@@ -44,7 +45,7 @@ namespace pfmvp {
                                                       CombT>;           \
   SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE_(sigName, ObjType)
 
-class IPfTriadManager {
+class IPfTriadManager : public utils::ITrackable {
  public:
   virtual ~IPfTriadManager() = default;
 
@@ -54,11 +55,15 @@ class IPfTriadManager {
   SNAIL_PFTRIAD_SIGSLOT(AboutToDestroyView, IPfView, void(IPfView* view));
 
   virtual std::shared_ptr<IPfView>
-  createViewFor(std::shared_ptr<IPfModel> model) = 0;
+  createViewFor(std::shared_ptr<IPfModel> model,
+                PfPresenter* parent_presenter = nullptr,
+                bool auto_remove_child = true) = 0;
 
   virtual std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model,
-                const IPfViewFactory::ViewFactoryIdType& view_factory_id) = 0;
+                const IPfViewFactory::ViewFactoryIdType& view_factory_id,
+                PfPresenter* parent_presenter = nullptr,
+                bool auto_remove_child = true) = 0;
 
   virtual void removeTriadBy(IPfModel* model) = 0;
   virtual void removeTriadBy(IPfView* view) = 0;

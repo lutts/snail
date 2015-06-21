@@ -15,9 +15,8 @@ namespace pfmvp {
 namespace tests {
 
 #define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)               \
-  MOCK_METHOD3(when##sigName,                                   \
-               bool(ObjType*, sigName##SlotType,                \
-                    std::shared_ptr<utils::ITrackable>))
+  MOCK_METHOD3(when##sigName, bool(ObjType*, sigName##SlotType, \
+                                   std::shared_ptr<utils::ITrackable>))
 
 class MockPfTriadManager : public IPfTriadManager {
  public:
@@ -25,12 +24,16 @@ class MockPfTriadManager : public IPfTriadManager {
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel, IPfModel);
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView, IPfView);
 
-  MOCK_METHOD1(createViewFor,
-               std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model));
-  MOCK_METHOD2(createViewFor,
+  MOCK_METHOD3(createViewFor,
+               std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model,
+                                        PfPresenter* parent_presenter,
+                                        bool auto_remove_child));
+  MOCK_METHOD4(createViewFor,
                std::shared_ptr<IPfView>(
                    std::shared_ptr<IPfModel> model,
-                   const IPfViewFactory::ViewFactoryIdType& vf_id));
+                   const IPfViewFactory::ViewFactoryIdType& vf_id,
+                   PfPresenter* parent_presenter,
+                   bool auto_remove_child));
   MOCK_METHOD1(removeTriadBy, void(IPfModel* model));
   MOCK_METHOD1(removeTriadBy, void(IPfView* view));
   MOCK_METHOD1(requestRemoveTriadByView, bool(IPfView* view));

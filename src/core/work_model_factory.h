@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WORK_MODEL_FACTORY_H_
-#define WORK_MODEL_FACTORY_H_
+#ifndef SRC_CORE_WORK_MODEL_FACTORY_H_
+#define SRC_CORE_WORK_MODEL_FACTORY_H_
 
 #include <memory>
 
@@ -37,4 +37,4 @@ class WorkModelFactory : public IWorkModelFactory {
 
 }  // namespace snailcore
 
-#endif  // WORK_MODEL_FACTORY_H_
+#endif  // SRC_CORE_WORK_MODEL_FACTORY_H_

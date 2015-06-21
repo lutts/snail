@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_WORK_VIEW_H_
-#define MOCK_WORK_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_WORK_VIEW_H_
+#define INCLUDE_QTUI_MOCK_WORK_VIEW_H_
 
 #include "qtui/i_work_view.h"
 
@@ -14,4 +14,4 @@ class MockWorkView : public IWorkView {
  public:
 };
 
-#endif  // MOCK_WORK_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_WORK_VIEW_H_

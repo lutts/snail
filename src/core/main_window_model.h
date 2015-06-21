@@ -21,7 +21,7 @@ class IWorkSpaceModel;
 
 class MainWindowModel : public IMainWindowModel {
  public:
-  MainWindowModel(std::shared_ptr<IWorkSpaceModel> workspace_model);
+  explicit MainWindowModel(std::shared_ptr<IWorkSpaceModel> workspace_model);
   ~MainWindowModel();
 
   const utils::U8String& windowTitle() const override;

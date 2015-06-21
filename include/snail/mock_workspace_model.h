@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_WORKSPACE_MODEL_H_
-#define MOCK_WORKSPACE_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_WORKSPACE_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_WORKSPACE_MODEL_H_
 
 #include "snail/i_workspace_model.h"
 
@@ -26,4 +26,4 @@ class MockWorkSpaceModel : public IWorkSpaceModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_WORKSPACE_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_WORKSPACE_MODEL_H_

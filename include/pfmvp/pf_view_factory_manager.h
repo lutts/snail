@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_PFMVP_PF_SINGLE_VIEW_FACTORY_MANAGER_H_
-#define INCLUDE_PFMVP_PF_SINGLE_VIEW_FACTORY_MANAGER_H_
+#ifndef INCLUDE_PFMVP_PF_VIEW_FACTORY_MANAGER_H_
+#define INCLUDE_PFMVP_PF_VIEW_FACTORY_MANAGER_H_
 
 #include <vector>
 #include <unordered_map>
@@ -68,4 +68,4 @@ class view_factory_t {
 
 }  // namespace pfmvp
 
-#endif  // INCLUDE_PFMVP_PF_SINGLE_VIEW_FACTORY_MANAGER_H_
+#endif  // INCLUDE_PFMVP_PF_VIEW_FACTORY_MANAGER_H_

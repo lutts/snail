@@ -100,14 +100,17 @@ class PfViewFactoryManagerTest : public ::testing::Test {
 
       ASSERT_EQ(nullptr, vf_manager_->getViewFactory(TestBobModel::modelId()));
       ASSERT_EQ(nullptr,
-                vf_manager_->getViewFactory(TestBobModel::modelId(),
-                                            TestXXXViewFactory::viewFactoryId()));
+                vf_manager_->getViewFactory(
+                    TestBobModel::modelId(),
+                    TestXXXViewFactory::viewFactoryId()));
       ASSERT_EQ(nullptr,
-                vf_manager_->getViewFactory(TestBobModel::modelId(),
-                                            TestYYYViewFactory::viewFactoryId()));
+                vf_manager_->getViewFactory(
+                    TestBobModel::modelId(),
+                    TestYYYViewFactory::viewFactoryId()));
       ASSERT_EQ(nullptr,
-                vf_manager_->getViewFactory(TestBobModel::modelId(),
-                                            TestZZZViewFactory::viewFactoryId()));
+                vf_manager_->getViewFactory(
+                    TestBobModel::modelId(),
+                    TestZZZViewFactory::viewFactoryId()));
     }
 
     vf_manager_->addViewFactory(TestBobModel::modelId(),

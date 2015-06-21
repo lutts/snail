@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_WORKSPACE_VIEW_H_
-#define MOCK_WORKSPACE_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_WORKSPACE_VIEW_H_
+#define INCLUDE_QTUI_MOCK_WORKSPACE_VIEW_H_
 
 #include "qtui/i_workspace_view.h"
 
@@ -22,4 +22,4 @@ class MockWorkSpaceView : public IWorkSpaceView {
                                          const utils::U8String& new_title));
 };
 
-#endif  // MOCK_WORKSPACE_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_WORKSPACE_VIEW_H_

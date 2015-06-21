@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WORKSPACE_MODEL_H_
-#define WORKSPACE_MODEL_H_
+#ifndef SRC_CORE_WORKSPACE_MODEL_H_
+#define SRC_CORE_WORKSPACE_MODEL_H_
 
 #include "snail/i_workspace_model.h"
 #include "utils/signal_slot_impl.h"
@@ -17,7 +17,7 @@ class IWorkModelFactory;
 
 class WorkSpaceModel : public IWorkSpaceModel {
  public:
-  WorkSpaceModel(IWorkModelFactory* work_model_factory)
+  explicit WorkSpaceModel(IWorkModelFactory* work_model_factory)
       : work_model_factory_(work_model_factory) { }
   virtual ~WorkSpaceModel() = default;
 
@@ -38,4 +38,4 @@ class WorkSpaceModel : public IWorkSpaceModel {
 
 }  // namespace snailcore
 
-#endif  // WORKSPACE_MODEL_H_
+#endif  // SRC_CORE_WORKSPACE_MODEL_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_WORKSPACE_MODEL_H_
-#define I_WORKSPACE_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_WORKSPACE_MODEL_H_
+#define INCLUDE_SNAIL_I_WORKSPACE_MODEL_H_
 
 #include <memory>
 
@@ -33,4 +33,4 @@ class IWorkSpaceModel : public pfmvp::IPfModel {
 
 }  // namespace snailcore
 
-#endif  // I_WORKSPACE_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_WORKSPACE_MODEL_H_

@@ -8,6 +8,7 @@
 #ifndef INCLUDE_PFMVP_I_PF_VIEW_FACTORY_H_
 #define INCLUDE_PFMVP_I_PF_VIEW_FACTORY_H_
 
+#include <vector>
 #include <memory>
 
 #include "pfmvp/i_pf_model.h"
@@ -31,7 +32,7 @@ class IPfViewFactory {
   createView(std::shared_ptr<IPfModel> model) = 0;
 };
 
-#define INVALID_PF_VIEW_FACTORY_ID utils::U8String{""}
+#define INVALID_PF_VIEW_FACTORY_ID utils::U8String { "" }
 #define isViewFactoryIdValid(id) (id != INVALID_PF_VIEW_FACTORY_ID)
 
 #define DEF_VIEW_FACTORY_ID(id)                                 \

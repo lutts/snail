@@ -128,7 +128,7 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
   auto workBasicInfoChanged = utils::make_unique<WorkBasicInfoChangedSlot>();
 
   // Expectations
-  EXPECT_CALL(triad_manager, createViewFor(work_pfmodel))
+  EXPECT_CALL(triad_manager, createViewFor(work_pfmodel, _, _))
       .WillOnce(Return(work_view));
   EXPECT_CALL(*view, addWorkView(work_view.get(), work_name));
 

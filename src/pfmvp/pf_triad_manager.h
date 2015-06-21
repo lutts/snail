@@ -18,18 +18,24 @@
 
 namespace pfmvp {
 
+class PfTriadManagerImpl;
+
 class PfTriadManager : public IPfTriadManager {
  public:
   explicit PfTriadManager(const IPfViewFactoryManager& view_factory_mgr);
   virtual ~PfTriadManager();
 
   std::shared_ptr<IPfView>
-  createViewFor(std::shared_ptr<IPfModel> model) override;
+  createViewFor(std::shared_ptr<IPfModel> model,
+                PfPresenter* parent_presenter,
+                bool auto_remove_child) override;
 
   std::shared_ptr<IPfView>
   createViewFor(
       std::shared_ptr<IPfModel> model,
-      const IPfViewFactory::ViewFactoryIdType& view_factory_id) override;
+      const IPfViewFactory::ViewFactoryIdType& view_factory_id,
+      PfPresenter* parent_presenter,
+      bool auto_remove_child) override;
 
   void removeTriadBy(IPfModel* model) override;
   void removeTriadBy(IPfView* view) override;
@@ -43,15 +49,7 @@ class PfTriadManager : public IPfTriadManager {
   PfTriadManager(const PfTriadManager& other) = delete;
   PfTriadManager& operator=(const PfTriadManager& other) = delete;
 
-  std::shared_ptr<IPfView>
-  createViewWithFactory(
-      std::shared_ptr<IPfModel> model,
-      IPfViewFactory* view_factory);
-  bool isModelExist(IPfModel* model) const;
-  bool isViewExist(IPfView* view) const;
-  void doAboutToDestroyTriad(PfPresenter* presenter);
-
-  class PfTriadManagerImpl;
+  friend class PfTriadManagerImpl;
   std::unique_ptr<PfTriadManagerImpl> impl;
 
  private:

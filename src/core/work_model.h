@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WORK_MODEL_H_
-#define WORK_MODEL_H_
+#ifndef SRC_CORE_WORK_MODEL_H_
+#define SRC_CORE_WORK_MODEL_H_
 
 #include "snail/i_work_model.h"
 #include "utils/signal_slot_impl.h"
@@ -15,7 +15,7 @@ namespace snailcore {
 
 class WorkModel : public IWorkModel {
  public:
-  WorkModel(IWork* work) : work_(work) { }
+  explicit WorkModel(IWork* work) : work_(work) { }
   virtual ~WorkModel() = default;
 
   utils::U8String name() const override;
@@ -33,4 +33,4 @@ class WorkModel : public IWorkModel {
 
 }  // namespace snailcore
 
-#endif  // WORK_MODEL_H_
+#endif  // SRC_CORE_WORK_MODEL_H_
