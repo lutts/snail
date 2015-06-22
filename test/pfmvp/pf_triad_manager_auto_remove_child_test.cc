@@ -29,13 +29,6 @@ class PfTriadManagerAutoRemoveChildTest
     initialize();
   }
 
-  template <typename VF, typename MVPLTuple>
-  void createTestTriadAndListener(
-      MVPLTuple* tuple,
-      ViewCreatationFunction* viewCreatationFunc = nullptr,
-      PfPresenter* parent_presenter = nullptr,
-      bool auto_remove_child = true);
-
   std::vector<TestXXX_MVPL_Tuple> createTestTriadHierachy(
       bool use_view_factory_id = false,
       bool root_enable_auto_remove_child = true,
@@ -43,36 +36,6 @@ class PfTriadManagerAutoRemoveChildTest
 
   // virtual void TearDown() { }
 };
-
-template <typename VF, typename MVPLTuple>
-void PfTriadManagerAutoRemoveChildTest::createTestTriadAndListener(
-    MVPLTuple* tuple,
-    ViewCreatationFunction* viewCreatationFunc,
-    PfPresenter* parent_presenter,
-    bool auto_remove_child) {
-  using MT = typename std::remove_pointer<
-    typename std::tuple_element<0, MVPLTuple>::type>::type;
-  using VT = typename std::remove_pointer<
-    typename std::tuple_element<1, MVPLTuple>::type>::type;
-  using PT = typename std::remove_pointer<
-    typename std::tuple_element<2, MVPLTuple>::type>::type;
-
-  auto model = std::make_shared<MT>();
-  auto view = std::make_shared<VT>();
-  PT* presenter = nullptr;
-
-  createTestTriad<VF>(model, view, &presenter,
-                      viewCreatationFunc,
-                      parent_presenter,
-                      auto_remove_child);
-
-  auto listener = MockListener::attachTo(triad_manager.get(),
-                                         model.get(),
-                                         view.get(),
-                                         false);
-
-  *tuple = std::make_tuple(model.get(), view.get(), presenter, listener);
-}
 
 static DestroyMethodFunc remove_by_model =
     [](IPfTriadManager* triad_manager,

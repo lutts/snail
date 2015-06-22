@@ -80,6 +80,8 @@ class MockPfViewFactory : public IPfViewFactory {
                                                                         \
      ~Mock##name##Presenter() { destruct(); }                           \
                                                                         \
+     void destroySelfTriad() { triad_manager()->removeTriadBy(model()); } \
+                                                                        \
      MOCK_METHOD0(onDestroy, void());                                   \
      MOCK_METHOD0(destruct, void());                                    \
                                                                         \
@@ -306,6 +308,13 @@ class PfTriadManagerTestBase {
                        PfPresenter* parent_presenter = nullptr,
                        bool auto_remove_child = true);
 
+  template <typename VF, typename MVPLTuple>
+  void createTestTriadAndListener(
+      MVPLTuple* tuple,
+      ViewCreatationFunction* viewCreatationFunc = nullptr,
+      PfPresenter* parent_presenter = nullptr,
+      bool auto_remove_child = true);
+
   template <typename VF, typename TriadT>
   void createTestTriads(
       TriadT* mvp_triad_to_test,
@@ -423,6 +432,36 @@ void PfTriadManagerTestBase::createTestYYYTriad(
     std::shared_ptr<MockYYYView> view,
     MockYYYPresenter** presenter) {
   createTestTriad<MockYYYViewFactory>(model, view, presenter);
+}
+
+template <typename VF, typename MVPLTuple>
+void PfTriadManagerTestBase::createTestTriadAndListener(
+    MVPLTuple* tuple,
+    ViewCreatationFunction* viewCreatationFunc,
+    PfPresenter* parent_presenter,
+    bool auto_remove_child) {
+  using MT = typename std::remove_pointer<
+    typename std::tuple_element<0, MVPLTuple>::type>::type;
+  using VT = typename std::remove_pointer<
+    typename std::tuple_element<1, MVPLTuple>::type>::type;
+  using PT = typename std::remove_pointer<
+    typename std::tuple_element<2, MVPLTuple>::type>::type;
+
+  auto model = std::make_shared<MT>();
+  auto view = std::make_shared<VT>();
+  PT* presenter = nullptr;
+
+  createTestTriad<VF>(model, view, &presenter,
+                      viewCreatationFunc,
+                      parent_presenter,
+                      auto_remove_child);
+
+  auto listener = MockListener::attachTo(triad_manager.get(),
+                                         model.get(),
+                                         view.get(),
+                                         false);
+
+  *tuple = std::make_tuple(model.get(), view.get(), presenter, listener);
 }
 
 template <typename VF, typename TriadT>

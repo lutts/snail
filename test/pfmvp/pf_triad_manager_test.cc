@@ -504,5 +504,20 @@ TEST_F(PfTriadManagerTest, should_be_able_to_find_model_by_view) { // NOLINT
   ASSERT_EQ(model, triad_manager->findModelByView(view));
 }
 
+TEST_F(PfTriadManagerTest, should_be_able_to_delete_by_triad_self) { // NOLINT
+  // Setup fixture
+  TestXXX_MVPL_Tuple mvpl_tuple;
+  createTestTriadAndListener<MockXXXViewFactory>(&mvpl_tuple);
+
+  // Expectations
+  CheckPointType check;
+  expectationsOnSingleTriadDestroy(&mvpl_tuple, &check);
+
+  // Exercise system
+  auto presenter = std::get<2>(mvpl_tuple);
+  presenter->destroySelfTriad();
+  check.Call("barrier");
+}
+
 }  // namespace tests
 }  // namespace pfmvp
