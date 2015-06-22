@@ -10,6 +10,7 @@
 #include "src/utils/log/log.h"
 
 #include "utils/basic_utils.h"
+#include "src/core/application_factory.h"
 #include "src/pfmvp/pf_triad_manager.h"
 #include "pfmvp/pf_view_factory_manager.h"
 #include "src/core/main_window_model.h"
@@ -38,13 +39,14 @@ using namespace pfmvp;  // NOLINT
 int main() {
   initLog();
   QtUiEngine qtUiEngine;
+  auto app_factory = ApplicationFactory::create();
   std::shared_ptr<IPfTriadManager> triad_manager =
       std::make_shared<PfTriadManager>(PfViewFactoryManager::getInstance());
 
   auto dummyTrackObj = std::make_shared<DummyTracker>();
 
   {
-    auto main_window_model = makeMainWindowModel();
+    auto main_window_model = app_factory->makeMainWindowModel();
     auto main_window_view = triad_manager->createViewFor(main_window_model);
 
     main_window_model->setWindowTitle("hahaaaa, that's the title");

@@ -14,6 +14,7 @@ set(core_SRCS ${core_SRCS}
   main_window_model.cc
   workspace_model.cc
   work_model.cc
+  application_factory.cc
   )
 
 add_library(snailcore ${core_SRCS})

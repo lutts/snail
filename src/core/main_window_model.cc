@@ -10,25 +10,9 @@
 #include "utils/basic_utils.h"
 #include "utils/i18n.h"
 
-#include "src/core/workspace_model.h"
-#include "src/core/work_model_factory.h"
+#include "snail/i_workspace_model.h"
 
 namespace snailcore {
-
-std::shared_ptr<IMainWindowModel> makeMainWindowModel() {
-  static std::weak_ptr<IMainWindowModel> cache;
-
-  auto model = cache.lock();
-  if (!model) {
-    // TODO(lutts): who will delete work_model_factory?or do not need to delete?
-    auto work_model_factory = new WorkModelFactory();
-    auto workspace_model = std::make_shared<WorkSpaceModel>(work_model_factory);
-    model = std::make_shared<MainWindowModel>(workspace_model);
-    cache = model;
-  }
-
-  return model;
-}
 
 MainWindowModel::MainWindowModel(
     std::shared_ptr<IWorkSpaceModel> workspace_model)

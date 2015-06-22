@@ -44,8 +44,6 @@ class MainWindowModel : public IMainWindowModel {
   SNAIL_SIGSLOT_COMBINER_IMPL(RequestClose, and_slot_bool_result_combiner)
 };
 
-std::shared_ptr<IMainWindowModel> makeMainWindowModel();
-
 }  // namespace snailcore
 
 #endif  // SRC_CORE_MAIN_WINDOW_MODEL_H_
