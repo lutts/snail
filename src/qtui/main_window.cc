@@ -33,9 +33,11 @@ MainWindow::~MainWindow() {
   setCentralWidget(nullptr);
 }
 
-void MainWindow::showView(bool modal) {
+bool MainWindow::showView(bool modal) {
   (void)modal;
   show();
+
+  return true;
 }
 
 void MainWindow::setGeometry(int w, int h) {

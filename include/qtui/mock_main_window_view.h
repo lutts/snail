@@ -15,7 +15,7 @@ class MockMainWindowView : public IMainWindowView {
   SNAIL_MOCK_SLOT(UserClickAddWork);
   SNAIL_MOCK_SLOT(RequestClose);
 
-  MOCK_METHOD1(showView, void(bool modal));
+  MOCK_METHOD1(showView, bool(bool modal));
   MOCK_METHOD1(setWindowTitle2, void(const utils::U8String& title));
   MOCK_METHOD2(setGeometry, void(int w, int h));
 

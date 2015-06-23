@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
 
-  void showView(bool modal) override;
+  bool showView(bool modal) override;
 
   void setWindowTitle2(const utils::U8String& title) override;
   void setGeometry(int w, int h) override;

@@ -16,6 +16,8 @@
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/i_pf_view.h"
 
+#include "snail/i_attribute_adder_model.h"
+
 namespace pfmvp {
 
 class PfPresenter : public utils::ITrackable
@@ -118,6 +120,20 @@ class PfPresenter : public utils::ITrackable
           onAboutToDestroyView(view);
         },
         shared_from_this());
+  }
+
+  // TODO(lutts): may add monitor support
+  bool showDialog(std::shared_ptr<IPfModel> model,
+                  bool modal = true) {
+    if (!triad_manager_)
+      return false;
+
+    auto view = triad_manager_->createViewFor(model);
+    if (view) {
+      return view->showView(modal);
+    }
+
+    return false;
   }
   ////////////////////// triad manager helpers end //////////////////
 

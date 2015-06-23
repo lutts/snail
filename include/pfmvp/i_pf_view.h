@@ -14,7 +14,9 @@ class IPfView {
  public:
   virtual ~IPfView() = default;
 
-  virtual void showView(bool modal = false) { (void)modal; }
+  // @return: for dialog views, true for user accepted, false for rejected
+  //          for other views, the meaning of the result is undefined
+  virtual bool showView(bool modal = false) { (void)modal; return false; }
   virtual void onDestroy() { }
 };
 
