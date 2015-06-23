@@ -16,8 +16,6 @@
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/i_pf_view.h"
 
-#include "snail/i_attribute_adder_model.h"
-
 namespace pfmvp {
 
 class PfPresenter : public utils::ITrackable
