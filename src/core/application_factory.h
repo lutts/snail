@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef APPLICATION_FACTORY_H_
-#define APPLICATION_FACTORY_H_
+#ifndef SRC_CORE_APPLICATION_FACTORY_H_
+#define SRC_CORE_APPLICATION_FACTORY_H_
 
 #include <memory>
 
@@ -34,4 +34,4 @@ class ApplicationFactory {
 
 }  // namespace snailcore
 
-#endif  // APPLICATION_FACTORY_H_
+#endif  // SRC_CORE_APPLICATION_FACTORY_H_
