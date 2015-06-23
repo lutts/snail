@@ -12,12 +12,15 @@
 #include <memory>      // std::shared_ptr
 #include "utils/i_trackable.h"  // ITrackable
 
+// NOTE: should ignore trackObject param only when you can ensure the subscriber
+// has a longer lifetime than the subject.
+
 #define SNAIL_SIGSLOT2(sigName, ...)                                    \
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   virtual void when##sigName(                                           \
       sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) = 0
+      std::shared_ptr<utils::ITrackable> trackObject = nullptr) = 0
 
 #define SNAIL_MOCK_SLOT(sigName)                                        \
   MOCK_METHOD2(when##sigName,                                           \
@@ -27,14 +30,14 @@
 // a default implementation for the whenXXX connection point, so you do not
 // have to modify a derived class of an interface just because you added a new
 // signal
-#define SNAIL_SIGSLOT_FTO(sigName, ...)                         \
-  using sigName##Signature = __VA_ARGS__;                       \
-  using sigName##SlotType = std::function<sigName##Signature>;  \
-  virtual void when##sigName(                                   \
-      sigName##SlotType handler,                                \
-      std::shared_ptr<utils::ITrackable> trackObject) {     \
-    (void)handler;                                              \
-    (void)trackObject;                                          \
+#define SNAIL_SIGSLOT_FTO(sigName, ...)                                 \
+  using sigName##Signature = __VA_ARGS__;                               \
+  using sigName##SlotType = std::function<sigName##Signature>;          \
+  virtual void when##sigName(                                           \
+      sigName##SlotType handler,                                        \
+      std::shared_ptr<utils::ITrackable> trackObject = nullptr) {       \
+    (void)handler;                                                      \
+    (void)trackObject;                                                  \
   }
 
 namespace utils {
