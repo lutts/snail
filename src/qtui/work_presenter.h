@@ -14,6 +14,8 @@
 #include "snail/i_work_model.h"
 #include "qtui/i_work_view.h"
 
+#include "snail/i_attribute_adder_model.h"
+
 class IWorkBasicInfoQModel;
 
 using WorkPresenterBase =
@@ -31,6 +33,12 @@ class WorkPresenter : public WorkPresenterBase {
 
   void initialize() override {
     view()->setBasicInfoQModel(basicInfoQModel_.get());
+
+    view()->whenUserClickAddAttribute(
+        [this]() {
+          showDialog(model()->createAttributeAdderModel());
+        },
+        shared_from_this());
   }
 
  private:

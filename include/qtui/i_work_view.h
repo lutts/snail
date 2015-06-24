@@ -17,6 +17,8 @@ class IWorkView : public GenericViewBase {
  public:
   virtual ~IWorkView() = default;
 
+  SNAIL_SIGSLOT_FTO(UserClickAddAttribute, void());
+
   virtual void setBasicInfoQModel(IWorkBasicInfoQModel* model) = 0;
 };
 

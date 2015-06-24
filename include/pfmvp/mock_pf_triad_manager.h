@@ -8,6 +8,7 @@
 #ifndef INCLUDE_PFMVP_MOCK_PF_TRIAD_MANAGER_H_
 #define INCLUDE_PFMVP_MOCK_PF_TRIAD_MANAGER_H_
 
+#include <memory>
 #include <vector>
 #include "pfmvp/i_pf_triad_manager.h"
 

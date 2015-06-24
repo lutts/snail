@@ -68,6 +68,8 @@ class MainWindowPresenterTest : public ::testing::Test {
     presenter = std::make_shared<MainWindowPresenter>(model, view);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
+
+    VERIFY_RECORDED_MOCK_OBJECTS;
   }
   // virtual void TearDown() { }
 

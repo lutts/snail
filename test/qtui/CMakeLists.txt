@@ -37,4 +37,7 @@ add_gmock_test(work_basic_info_qmodel_test
 add_gmock_test(work_presenter_test
   LIBS qtuicore testutils)
 
+add_gmock_test(attribute_adder_presenter_test
+  LIBS qtuicore testutils)
+
 add_subdirectory(preview)

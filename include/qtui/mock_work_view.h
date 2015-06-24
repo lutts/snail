@@ -12,6 +12,8 @@
 
 class MockWorkView : public IWorkView {
  public:
+  SNAIL_MOCK_SLOT(UserClickAddAttribute);
+
   MOCK_METHOD1(setBasicInfoQModel, void(IWorkBasicInfoQModel* model));
 };
 

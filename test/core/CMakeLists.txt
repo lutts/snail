@@ -15,3 +15,6 @@ add_gmock_test(work_model_test
 
 add_gmock_test(work_test
   LIBS ${COMMON_LIBS})
+
+add_gmock_test(attribute_adder_model_test
+  LIBS ${COMMON_LIBS})

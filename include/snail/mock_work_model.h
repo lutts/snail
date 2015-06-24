@@ -19,6 +19,9 @@ class MockWorkModel : public IWorkModel {
 
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(set_name, bool(const utils::U8String& new_name));
+
+  MOCK_CONST_METHOD0(createAttributeAdderModel,
+                     std::shared_ptr<IAttributeAdderModel>());
 };
 
 }  // namespace tests
