@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_H_
-#define I_ATTRIBUTE_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_H_
 
 namespace snailcore {
 
@@ -19,4 +19,4 @@ class IAttribute {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_H_

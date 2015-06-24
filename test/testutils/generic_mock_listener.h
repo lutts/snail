@@ -98,13 +98,11 @@ class GenericMockListener : public utils::ITrackable {
 #define BIND_SIGNAL3(sigName, RetType,          \
                      Arg1Type, Arg1Var,         \
                      Arg2Type, Arg2Var,         \
-                     Arg3Type, Arg3Var          \
-                     )                          \
+                     Arg3Type, Arg3Var)         \
   subject->when##sigName(                       \
       [this](Arg1Type Arg1Var,                  \
              Arg2Type Arg2Var,                  \
-             Arg3Type Arg3Var                   \
-             ) -> RetType {                     \
+             Arg3Type Arg3Var) -> RetType {     \
         return sigName(Arg1Var,                 \
                        Arg2Var,                 \
                        Arg3Var);                \
@@ -112,15 +110,16 @@ class GenericMockListener : public utils::ITrackable {
       trackObject)
 
 #define BEGIN_MOCK_LISTENER_DEF(ClassName, SubjectType)         \
-  class ClassName : public GenericMockListener<ClassName,       \
-                                               SubjectType> {   \
-public:
+  struct ClassName : public GenericMockListener<ClassName,      \
+                                                SubjectType> {
+// }
 
 #define END_MOCK_LISTENER_DEF() };
 
 #define BEGIN_BIND_SIGNAL(SubjectType)                                  \
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject, \
-                           SubjectType* subject) {                      \
+                           SubjectType* subject) {
+// }
 
 #define END_BIND_SIGNAL() }
 

@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_ADDER_MODEL_H_
-#define ATTRIBUTE_ADDER_MODEL_H_
+#ifndef SRC_CORE_ATTRIBUTE_ADDER_MODEL_H_
+#define SRC_CORE_ATTRIBUTE_ADDER_MODEL_H_
+
+#include <vector>
 
 #include "snail/i_attribute_adder_model.h"
 #include "utils/signal_slot_impl.h"
@@ -15,15 +17,15 @@
 namespace snailcore {
 
 class IAttributeContainer;
-class IAttributeModelFactory;
-class IAttributeModel;
+class IAttributeEditorModelFactory;
+class IAttributeEditorModel;
 
 class AttributeAdderModel : public IAttributeAdderModel {
  public:
   static const char* prompt_format_str;
 
   AttributeAdderModel(IAttributeContainer* attr_container,
-                      IAttributeModelFactory* attr_model_factory)
+                      IAttributeEditorModelFactory* attr_model_factory)
       : attr_container_(attr_container)
       , attr_model_factory_(attr_model_factory) { }
   virtual ~AttributeAdderModel();
@@ -32,7 +34,9 @@ class AttributeAdderModel : public IAttributeAdderModel {
   std::vector<IAttribute*> getAllowedAttributeList() const override;
   int getCurrentAttributeIndex() const override;
   void setCurrentAttributeIndex(int index) override;
-  std::shared_ptr<IAttributeModel> getCurrentAttributeModel() override;
+
+  std::shared_ptr<IAttributeEditorModel>
+  getCurrentAttributeEditorModel() override;
 
   void doAddAttribute() override;
 
@@ -40,22 +44,23 @@ class AttributeAdderModel : public IAttributeAdderModel {
   AttributeAdderModel(const AttributeAdderModel& other) = delete;
   AttributeAdderModel& operator=(const AttributeAdderModel& other) = delete;
 
-  void updateCurrentAttributeModel(int attr_index, bool initial_create = false);
+  void updateCurrentAttributeEditorModel(int attr_index,
+                                         bool initial_create = false);
 
   IAttributeContainer* attr_container_;
-  IAttributeModelFactory* attr_model_factory_;
+  IAttributeEditorModelFactory* attr_model_factory_;
 
-  std::shared_ptr<IAttributeModel> curr_attr_model_;
+  std::shared_ptr<IAttributeEditorModel> curr_attr_model_;
 
   mutable int curr_attr_index_ { -1 };
 
  private:
   SNAIL_SIGSLOT_IMPL(ValidateComplete)
-  SNAIL_SIGSLOT_IMPL(DiscardAttributeModel)
-  SNAIL_SIGSLOT_IMPL(CurrentAttributeModelChanged)
+  SNAIL_SIGSLOT_IMPL(DiscardAttributeEditorModel)
+  SNAIL_SIGSLOT_IMPL(CurrentAttributeEditorModelChanged)
 };
 
 
 }  // namespace snailcore
 
-#endif  // ATTRIBUTE_ADDER_MODEL_H_
+#endif  // SRC_CORE_ATTRIBUTE_ADDER_MODEL_H_

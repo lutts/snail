@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_ADDER_PRESENTER_H_
-#define ATTRIBUTE_ADDER_PRESENTER_H_
+#ifndef SRC_QTUI_ATTRIBUTE_ADDER_PRESENTER_H_
+#define SRC_QTUI_ATTRIBUTE_ADDER_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -33,8 +33,8 @@ class AttributeAdderPresenter : public AttributeAdderPresenterBase {
   void initialize() override;
 
  private:
-  AttributeAdderPresenter(const AttributeAdderPresenter& other) = delete;
-  AttributeAdderPresenter& operator=(const AttributeAdderPresenter& other) = delete;
+  AttributeAdderPresenter(const AttributeAdderPresenter&) = delete;
+  AttributeAdderPresenter& operator=(const AttributeAdderPresenter&) = delete;
 
   std::unique_ptr<IAttributeListQModel> attrListQModel_;
 
@@ -42,4 +42,4 @@ class AttributeAdderPresenter : public AttributeAdderPresenterBase {
   std::unique_ptr<AttributeAdderPresenterImpl> impl_;
 };
 
-#endif  // ATTRIBUTE_ADDER_PRESENTER_H_
+#endif  // SRC_QTUI_ATTRIBUTE_ADDER_PRESENTER_H_

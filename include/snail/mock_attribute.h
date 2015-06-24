@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_H_
-#define MOCK_ATTRIBUTE_H_
+#ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_H_
+#define INCLUDE_SNAIL_MOCK_ATTRIBUTE_H_
 
 #include "snail/i_attribute.h"
 
@@ -21,4 +21,4 @@ class MockAttribute : public IAttribute {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_H_
+#endif  // INCLUDE_SNAIL_MOCK_ATTRIBUTE_H_

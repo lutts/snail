@@ -5,9 +5,10 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_CONTAINER_H_
-#define MOCK_ATTRIBUTE_CONTAINER_H_
+#ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_CONTAINER_H_
+#define INCLUDE_SNAIL_MOCK_ATTRIBUTE_CONTAINER_H_
 
+#include <vector>
 #include "snail/i_attribute_container.h"
 
 namespace snailcore {
@@ -24,4 +25,4 @@ class MockAttributeContainer : public IAttributeContainer {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_CONTAINER_H_
+#endif  // INCLUDE_SNAIL_MOCK_ATTRIBUTE_CONTAINER_H_

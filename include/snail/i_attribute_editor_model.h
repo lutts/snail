@@ -5,19 +5,19 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_MODEL_H_
-#define I_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_EDITOR_MODEL_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_EDITOR_MODEL_H_
 
 #include "pfmvp/i_pf_model.h"
 #include "utils/signal_slot.h"
 
 namespace snailcore {
 
-class IAttributeModel : public pfmvp::IPfModel {
+class IAttributeEditorModel : public pfmvp::IPfModel {
  public:
-  virtual ~IAttributeModel() = default;
+  virtual ~IAttributeEditorModel() = default;
 
-  DEF_MODEL_ID(AttributeModel);
+  DEF_MODEL_ID(AttributeEditorModel);
 
   SNAIL_SIGSLOT2(ValidateComplete, void(bool result));
 
@@ -26,4 +26,4 @@ class IAttributeModel : public pfmvp::IPfModel {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_EDITOR_MODEL_H_

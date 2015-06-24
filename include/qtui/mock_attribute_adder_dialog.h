@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_ADDER_DIALOG_H_
-#define MOCK_ATTRIBUTE_ADDER_DIALOG_H_
+#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_ADDER_DIALOG_H_
+#define INCLUDE_QTUI_MOCK_ATTRIBUTE_ADDER_DIALOG_H_
 
 #include "qtui/i_attribute_adder_dialog.h"
 
@@ -21,10 +21,10 @@ class MockAttributeAdderDialog : public IAttributeAdderDialog {
   MOCK_METHOD1(setAttributeListQModel,
                void(IAttributeListQModel* attr_list_qmodel));
   MOCK_METHOD1(setCurrentAttributeIndex, void(int index));
-  MOCK_METHOD1(setAttributeEditor, void(IAttributeEditor* attr_editor));
-  MOCK_METHOD1(removeAttributeEditor, void(IAttributeEditor* attr_editor));
+  MOCK_METHOD1(setAttributeEditor, void(IAttributeEditorView* attr_editor));
+  MOCK_METHOD1(removeAttributeEditor, void(IAttributeEditorView* attr_editor));
   MOCK_METHOD1(setDoneButtonEnabled, void(bool enabled));
   MOCK_METHOD1(setAddButtonEnabled, void(bool enabled));
 };
 
-#endif  // MOCK_ATTRIBUTE_ADDER_DIALOG_H_
+#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_ADDER_DIALOG_H_

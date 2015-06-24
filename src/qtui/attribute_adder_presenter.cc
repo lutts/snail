@@ -10,20 +10,21 @@
 
 #include "utils/basic_utils.h"
 #include "qtui/i_attribute_list_qmodel.h"
-#include "snail/i_attribute_model.h"
-#include "qtui/i_attribute_editor.h"
+#include "snail/i_attribute_editor_model.h"
+#include "qtui/i_attribute_editor_view.h"
 
 using namespace snailcore;  // NOLINT
 
 class AttributeAdderPresenterImpl {
  public:
-  AttributeAdderPresenterImpl(AttributeAdderPresenter* presenter)
+  explicit AttributeAdderPresenterImpl(AttributeAdderPresenter* presenter)
       : presenter_(presenter) { }
   ~AttributeAdderPresenterImpl() = default;
 
-  void buildAttributeEditor(std::shared_ptr<IAttributeModel> attr_model) {
+  void buildAttributeEditorView(
+      std::shared_ptr<IAttributeEditorModel> attr_model) {
     auto attr_editor =
-        presenter_->createRawViewFor<IAttributeEditor>(attr_model);
+        presenter_->createRawViewFor<IAttributeEditorView>(attr_model);
     presenter_->view()->setAttributeEditor(attr_editor);
     presenter_->view()->setAddButtonEnabled(false);
   }
@@ -57,7 +58,7 @@ void AttributeAdderPresenter::initialize() {
 
   view()->setCurrentAttributeIndex(model()->getCurrentAttributeIndex());
 
-  impl_->buildAttributeEditor(model()->getCurrentAttributeModel());
+  impl_->buildAttributeEditorView(model()->getCurrentAttributeEditorModel());
 
   view()->setDoneButtonEnabled(true);
 
@@ -79,17 +80,17 @@ void AttributeAdderPresenter::initialize() {
       },
       shared_from_this());
 
-  model()->whenDiscardAttributeModel(
-      [this](IAttributeModel* model) {
-        auto attr_editor = findSingleViewByModel<IAttributeEditor>(model);
+  model()->whenDiscardAttributeEditorModel(
+      [this](IAttributeEditorModel* model) {
+        auto attr_editor = findSingleViewByModel<IAttributeEditorView>(model);
         view()->removeAttributeEditor(attr_editor);
         removeTriadBy(model);
       },
       shared_from_this());
 
-  model()->whenCurrentAttributeModelChanged(
-      [this](std::shared_ptr<IAttributeModel> attr_model) {
-        impl_->buildAttributeEditor(attr_model);
+  model()->whenCurrentAttributeEditorModelChanged(
+      [this](std::shared_ptr<IAttributeEditorModel> attr_model) {
+        impl_->buildAttributeEditorView(attr_model);
       },
       shared_from_this());
 }

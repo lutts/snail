@@ -5,9 +5,10 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_CONTAINER_H_
-#define I_ATTRIBUTE_CONTAINER_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_CONTAINER_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_CONTAINER_H_
 
+#include <vector>
 #include "utils/u8string.h"
 
 namespace snailcore {
@@ -26,4 +27,4 @@ class IAttributeContainer {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_CONTAINER_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_CONTAINER_H_

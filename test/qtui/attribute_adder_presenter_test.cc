@@ -23,8 +23,8 @@
 #include "src/qtui/attribute_adder_presenter.h"
 
 #include "snail/mock_attribute.h"
-#include "snail/mock_attribute_model.h"
-#include "qtui/mock_attribute_editor.h"
+#include "snail/mock_attribute_editor_model.h"
+#include "qtui/mock_attribute_editor_view.h"
 #include "qtui/mock_attribute_list_qmodel.h"
 
 using namespace snailcore;  // NOLINT
@@ -78,10 +78,10 @@ class AttributeAdderPresenterTest : public ::testing::Test {
     }
 
     // create attribute editor for the current selected attribute
-    auto attr_model = std::make_shared<MockAttributeModel>();
-    R_EXPECT_CALL(*model, getCurrentAttributeModel())
+    auto attr_model = std::make_shared<MockAttributeEditorModel>();
+    R_EXPECT_CALL(*model, getCurrentAttributeEditorModel())
         .WillOnce(Return(attr_model));
-    expectationsOnBuildAttributeEditor(attr_model);
+    expectationsOnBuildAttributeEditorView(attr_model);
 
     // enable done button
     R_EXPECT_CALL(*view, setDoneButtonEnabled(true));
@@ -95,10 +95,10 @@ class AttributeAdderPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*model, whenValidateComplete(_, _))
         .WillOnce(SaveArg<0>(&validateComplete));
 
-    R_EXPECT_CALL(*model, whenDiscardAttributeModel(_, _))
-        .WillOnce(SaveArg<0>(&discardAttributeModel));
+    R_EXPECT_CALL(*model, whenDiscardAttributeEditorModel(_, _))
+        .WillOnce(SaveArg<0>(&discardAttributeEditorModel));
 
-    R_EXPECT_CALL(*model, whenCurrentAttributeModelChanged(_, _))
+    R_EXPECT_CALL(*model, whenCurrentAttributeEditorModelChanged(_, _))
         .WillOnce(SaveArg<0>(&currAttrModelChanged));
 
     presenter = std::make_shared<AttributeAdderPresenter>(
@@ -113,8 +113,8 @@ class AttributeAdderPresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  void expectationsOnBuildAttributeEditor(
-      std::shared_ptr<IAttributeModel> attr_model);
+  void expectationsOnBuildAttributeEditorView(
+      std::shared_ptr<IAttributeEditorModel> attr_model);
 
   // region: objects test subject depends on
   std::shared_ptr<MockAttributeAdderModel> model;
@@ -138,17 +138,17 @@ class AttributeAdderPresenterTest : public ::testing::Test {
   SlotCatcher<IAttributeAdderDialog::AddButtonClickedSlotType> addButtonClicked;
 
   SlotCatcher<IAttributeAdderModel::ValidateCompleteSlotType> validateComplete;
-  SlotCatcher<IAttributeAdderModel::DiscardAttributeModelSlotType>
-  discardAttributeModel;
+  SlotCatcher<IAttributeAdderModel::DiscardAttributeEditorModelSlotType>
+  discardAttributeEditorModel;
 
-  SlotCatcher<IAttributeAdderModel::CurrentAttributeModelChangedSlotType>
+  SlotCatcher<IAttributeAdderModel::CurrentAttributeEditorModelChangedSlotType>
   currAttrModelChanged;
   // endregion
 };
 
-void AttributeAdderPresenterTest::expectationsOnBuildAttributeEditor(
-    std::shared_ptr<IAttributeModel> attr_model) {
-  auto attr_editor = std::make_shared<MockAttributeEditor>();
+void AttributeAdderPresenterTest::expectationsOnBuildAttributeEditorView(
+    std::shared_ptr<IAttributeEditorModel> attr_model) {
+  auto attr_editor = std::make_shared<MockAttributeEditorView>();
 
   // reset presenter recorder
   attr_editor_triad_parent_presenter = nullptr;
@@ -193,8 +193,8 @@ TEST_F(AttributeAdderPresenterTest,
 TEST_F(AttributeAdderPresenterTest,
        should_remove_attr_editor_triad_when_discard_attr_model) { // NOLINT
   // Setup fixture
-  MockAttributeModel attr_model;
-  MockAttributeEditor attr_editor;
+  MockAttributeEditorModel attr_model;
+  MockAttributeEditorView attr_editor;
 
   std::vector<IPfView*> attr_editor_vec;
   attr_editor_vec.push_back(&attr_editor);
@@ -206,16 +206,16 @@ TEST_F(AttributeAdderPresenterTest,
   EXPECT_CALL(triad_manager, removeTriadBy(&attr_model));
 
   // Exercise system
-  discardAttributeModel(&attr_model);
+  discardAttributeEditorModel(&attr_model);
 }
 
 TEST_F(AttributeAdderPresenterTest,
-       should_build_attr_editor_triad_and_update_view_when_CurrentAttributeModelChanged) { // NOLINT
+       should_build_attr_editor_triad_and_update_view_when_CurrentAttributeEditorModelChanged) { // NOLINT
   // Setup fixture
-  auto attr_model = std::make_shared<MockAttributeModel>();
+  auto attr_model = std::make_shared<MockAttributeEditorModel>();
 
   // Expectations
-  expectationsOnBuildAttributeEditor(attr_model);
+  expectationsOnBuildAttributeEditorView(attr_model);
 
   // Exercise system
   currAttrModelChanged(attr_model);

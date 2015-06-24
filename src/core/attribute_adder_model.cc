@@ -6,12 +6,14 @@
 // [Desc]
 #include "src/core/attribute_adder_model.h"
 
+#include <vector>
+
 #include "src/utils/utils.h"
 #include "utils/i18n.h"
 #include "snail/i_attribute_container.h"
 #include "snail/i_attribute.h"
-#include "snail/i_attribute_model.h"
-#include "snail/i_attribute_model_factory.h"
+#include "snail/i_attribute_editor_model.h"
+#include "snail/i_attribute_editor_model_factory.h"
 
 namespace snailcore {
 
@@ -44,12 +46,12 @@ int AttributeAdderModel::getCurrentAttributeIndex() const {
   return curr_attr_index_;
 }
 
-void AttributeAdderModel::updateCurrentAttributeModel(
+void AttributeAdderModel::updateCurrentAttributeEditorModel(
     int attr_index, bool initial_create) {
   auto allowed_attr_list = getAllowedAttributeList();
   auto attr_prototype = allowed_attr_list[attr_index];
   auto new_attr = attr_prototype->clone();
-  auto new_model = attr_model_factory_->createAttributeModel(new_attr);
+  auto new_model = attr_model_factory_->createAttributeEditorModel(new_attr);
 
   if (new_model) {
     auto old_attr_model = curr_attr_model_.get();
@@ -63,10 +65,9 @@ void AttributeAdderModel::updateCurrentAttributeModel(
         });
 
     if (!initial_create) {
-      DiscardAttributeModel(old_attr_model);
-      CurrentAttributeModelChanged(curr_attr_model_);
+      DiscardAttributeEditorModel(old_attr_model);
+      CurrentAttributeEditorModelChanged(curr_attr_model_);
     }
-
   }
 }
 
@@ -79,13 +80,13 @@ void AttributeAdderModel::setCurrentAttributeIndex(int index) {
   if ((index < 0) || (index > static_cast<int>(allowed_attr_list.size())))
     return;
 
-  updateCurrentAttributeModel(index);
+  updateCurrentAttributeEditorModel(index);
 }
 
-std::shared_ptr<IAttributeModel>
-AttributeAdderModel::getCurrentAttributeModel() {
+std::shared_ptr<IAttributeEditorModel>
+AttributeAdderModel::getCurrentAttributeEditorModel() {
   if (!curr_attr_model_) {
-    updateCurrentAttributeModel(getCurrentAttributeIndex(), true);
+    updateCurrentAttributeEditorModel(getCurrentAttributeIndex(), true);
   }
 
   return curr_attr_model_;
@@ -93,7 +94,7 @@ AttributeAdderModel::getCurrentAttributeModel() {
 
 void AttributeAdderModel::doAddAttribute() {
   attr_container_->addAttribute(curr_attr_model_->getAttribute());
-  updateCurrentAttributeModel(getCurrentAttributeIndex());
+  updateCurrentAttributeEditorModel(getCurrentAttributeIndex());
 }
 
 }  // namespace snailcore

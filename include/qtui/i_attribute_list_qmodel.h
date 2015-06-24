@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_LIST_QMODEL_H_
-#define I_ATTRIBUTE_LIST_QMODEL_H_
+#ifndef INCLUDE_QTUI_I_ATTRIBUTE_LIST_QMODEL_H_
+#define INCLUDE_QTUI_I_ATTRIBUTE_LIST_QMODEL_H_
 
 #include <vector>
 
@@ -22,4 +22,4 @@ class IAttributeListQModel {
       std::vector<snailcore::IAttribute*> attr_list) = 0;
 };
 
-#endif  // I_ATTRIBUTE_LIST_QMODEL_H_
+#endif  // INCLUDE_QTUI_I_ATTRIBUTE_LIST_QMODEL_H_

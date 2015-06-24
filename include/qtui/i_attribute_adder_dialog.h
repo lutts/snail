@@ -5,15 +5,15 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_ADDER_DIALOG_H_
-#define I_ATTRIBUTE_ADDER_DIALOG_H_
+#ifndef INCLUDE_QTUI_I_ATTRIBUTE_ADDER_DIALOG_H_
+#define INCLUDE_QTUI_I_ATTRIBUTE_ADDER_DIALOG_H_
 
 #include "src/qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
 #include "utils/u8string.h"
 
 class IAttributeListQModel;
-class IAttributeEditor;
+class IAttributeEditorView;
 
 class IAttributeAdderDialog : public GenericViewBase {
  public:
@@ -26,11 +26,11 @@ class IAttributeAdderDialog : public GenericViewBase {
   virtual void setAttributeListQModel(
       IAttributeListQModel* attr_list_qmodel) = 0;
   virtual void setCurrentAttributeIndex(int index) = 0;
-  virtual void setAttributeEditor(IAttributeEditor* attr_editor) = 0;
-  virtual void removeAttributeEditor(IAttributeEditor* attr_editor) = 0;
+  virtual void setAttributeEditor(IAttributeEditorView* attr_editor) = 0;
+  virtual void removeAttributeEditor(IAttributeEditorView* attr_editor) = 0;
   virtual void setDoneButtonEnabled(bool enabled) = 0;
   virtual void setAddButtonEnabled(bool enabled) = 0;
 };
 
 
-#endif  // I_ATTRIBUTE_ADDER_DIALOG_H_
+#endif  // INCLUDE_QTUI_I_ATTRIBUTE_ADDER_DIALOG_H_
