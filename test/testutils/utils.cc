@@ -40,4 +40,10 @@ utils::U8String genRandomDifferentString(const utils::U8String& refStr,
   return newStr;
 }
 
+bool randomBool() {
+  auto a = std::rand();
+  auto b = std::rand();
+  return a < b;
+}
+
 }  // namespace xtestutils

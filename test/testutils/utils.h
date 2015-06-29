@@ -26,6 +26,7 @@ namespace xtestutils {
 utils::U8String genRandomString(const int len = 16);
 utils::U8String genRandomDifferentString(const utils::U8String& refStr,
                                          const int len = 16);
+bool randomBool();
 
 template <typename T>
 T* genDummyPointer() {
