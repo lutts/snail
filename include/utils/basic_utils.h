@@ -20,6 +20,10 @@
               << std::endl;                     \
   } while (0)
 
+#define SNAIL_DISABLE_COPY(Class)              \
+  Class(const Class&) = delete;                \
+  Class& operator=(const Class&) = delete;
+
 namespace utils {
 // default deleter version
 template<typename T, typename... Args>

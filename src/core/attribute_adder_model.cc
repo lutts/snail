@@ -92,9 +92,18 @@ AttributeAdderModel::getCurrentAttributeEditorModel() {
   return curr_attr_model_;
 }
 
+bool AttributeAdderModel::validateResult() const {
+  if (!curr_attr_model_)
+    return false;
+
+  return curr_attr_model_->validateResult();
+}
+
 void AttributeAdderModel::doAddAttribute() {
-  attr_container_->addAttribute(curr_attr_model_->getAttribute());
-  updateCurrentAttributeEditorModel(getCurrentAttributeIndex());
+  if (curr_attr_model_) {
+    attr_container_->addAttribute(curr_attr_model_->getAttribute());
+    updateCurrentAttributeEditorModel(getCurrentAttributeIndex());
+  }
 }
 
 }  // namespace snailcore

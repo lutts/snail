@@ -14,9 +14,9 @@ namespace snailcore {
 class IAttribute;
 }  // namespace snailcore
 
-class IAttributeListQModel {
+class IAttributeSelectorQModel {
  public:
-  virtual ~IAttributeListQModel() = default;
+  virtual ~IAttributeSelectorQModel() = default;
 
   virtual void setAttributeList(
       std::vector<snailcore::IAttribute*> attr_list) = 0;

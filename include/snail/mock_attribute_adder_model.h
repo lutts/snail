@@ -26,6 +26,7 @@ class MockAttributeAdderModel : public IAttributeAdderModel {
   MOCK_METHOD1(setCurrentAttributeIndex, void(int index));
   MOCK_METHOD0(getCurrentAttributeEditorModel,
                std::shared_ptr<IAttributeEditorModel>());
+  MOCK_CONST_METHOD0(validateResult, bool());
 
   MOCK_METHOD0(doAddAttribute, void());
 };

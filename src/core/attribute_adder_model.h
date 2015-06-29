@@ -37,6 +37,7 @@ class AttributeAdderModel : public IAttributeAdderModel {
 
   std::shared_ptr<IAttributeEditorModel>
   getCurrentAttributeEditorModel() override;
+  bool validateResult() const override;
 
   void doAddAttribute() override;
 

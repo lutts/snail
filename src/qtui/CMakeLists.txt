@@ -29,6 +29,7 @@ SET(qtui_SRCS
   work_view_factory.cc
   work_name_input_dialog.cc
   attribute_adder_presenter.cc
+  few_entity_candidates_adapter.cc
   )
 
 set(SUBDIRS)

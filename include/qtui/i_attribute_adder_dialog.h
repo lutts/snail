@@ -12,7 +12,7 @@
 #include "utils/signal_slot.h"
 #include "utils/u8string.h"
 
-class IAttributeListQModel;
+class IAttributeSelectorQModel;
 class IAttributeEditorView;
 
 class IAttributeAdderDialog : public GenericViewBase {
@@ -23,8 +23,8 @@ class IAttributeAdderDialog : public GenericViewBase {
   SNAIL_SIGSLOT2(AddButtonClicked, void());
 
   virtual void setPrompt(const utils::U8String& prompt) = 0;
-  virtual void setAttributeListQModel(
-      IAttributeListQModel* attr_list_qmodel) = 0;
+  virtual void setAttributeSelectorQModel(
+      IAttributeSelectorQModel* attr_list_qmodel) = 0;
   virtual void setCurrentAttributeIndex(int index) = 0;
   virtual void setAttributeEditor(IAttributeEditorView* attr_editor) = 0;
   virtual void removeAttributeEditor(IAttributeEditorView* attr_editor) = 0;

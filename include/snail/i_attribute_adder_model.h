@@ -39,6 +39,8 @@ class IAttributeAdderModel : public pfmvp::IPfModel {
   virtual std::shared_ptr<IAttributeEditorModel>
   getCurrentAttributeEditorModel() = 0;
 
+  virtual bool validateResult() const = 0;
+
   virtual void doAddAttribute() = 0;
 };
 

@@ -25,7 +25,7 @@
 #include "snail/mock_attribute.h"
 #include "snail/mock_attribute_editor_model.h"
 #include "qtui/mock_attribute_editor_view.h"
-#include "qtui/mock_attribute_list_qmodel.h"
+#include "qtui/mock_attribute_selector_qmodel.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -43,7 +43,7 @@ class AttributeAdderPresenterTest : public ::testing::Test {
     model = std::make_shared<MockAttributeAdderModel>();
     view = std::make_shared<MockAttributeAdderDialog>();
 
-    auto attrListQModel = utils::make_unique<MockAttributeListQModel>();
+    auto attrSelectorQModel = utils::make_unique<MockAttributeSelectorQModel>();
 
     // expectations
     // set prompt
@@ -68,8 +68,8 @@ class AttributeAdderPresenterTest : public ::testing::Test {
 
       // TODO(lutts): this means the presenter is directly access layer under
       // pmodel, is this what we want?
-      R_EXPECT_CALL(*attrListQModel, setAttributeList(allowed_attr_list));
-      R_EXPECT_CALL(*view, setAttributeListQModel(attrListQModel.get()));
+      R_EXPECT_CALL(*attrSelectorQModel, setAttributeList(allowed_attr_list));
+      R_EXPECT_CALL(*view, setAttributeSelectorQModel(attrSelectorQModel.get()));
       // 2. set the default selection
       int index = 0xbeaf;
       R_EXPECT_CALL(*model, getCurrentAttributeIndex())
@@ -103,7 +103,7 @@ class AttributeAdderPresenterTest : public ::testing::Test {
 
     presenter = std::make_shared<AttributeAdderPresenter>(
         model, view,
-        std::move(attrListQModel));
+        std::move(attrSelectorQModel));
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -159,8 +159,12 @@ void AttributeAdderPresenterTest::expectationsOnBuildAttributeEditorView(
                       Return(attr_editor)));
   R_EXPECT_CALL(*view, setAttributeEditor(attr_editor.get()));
 
+  bool attr_valid = xtestutils::randomBool();
+
+  R_EXPECT_CALL(*model, validateResult()).WillOnce(Return(attr_valid));
+
   // disable add button on refresh editor view
-  R_EXPECT_CALL(*view, setAddButtonEnabled(false));
+  R_EXPECT_CALL(*view, setAddButtonEnabled(attr_valid));
 }
 
 TEST_F(AttributeAdderPresenterTest,

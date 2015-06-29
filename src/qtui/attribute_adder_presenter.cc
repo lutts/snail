@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "utils/basic_utils.h"
-#include "qtui/i_attribute_list_qmodel.h"
+#include "qtui/i_attribute_selector_qmodel.h"
 #include "snail/i_attribute_editor_model.h"
 #include "qtui/i_attribute_editor_view.h"
 
@@ -25,8 +25,12 @@ class AttributeAdderPresenterImpl {
       std::shared_ptr<IAttributeEditorModel> attr_model) {
     auto attr_editor =
         presenter_->createRawViewFor<IAttributeEditorView>(attr_model);
-    presenter_->view()->setAttributeEditor(attr_editor);
-    presenter_->view()->setAddButtonEnabled(false);
+
+    auto view = presenter_->view();
+    auto model = presenter_->model();
+
+    view->setAttributeEditor(attr_editor);
+    view->setAddButtonEnabled(model->validateResult());
   }
 
  private:
@@ -42,7 +46,7 @@ class AttributeAdderPresenterImpl {
 AttributeAdderPresenter::AttributeAdderPresenter(
     std::shared_ptr<IAttributeAdderModel> model,
     std::shared_ptr<IAttributeAdderDialog> view,
-    std::unique_ptr<IAttributeListQModel> attrListQModel)
+    std::unique_ptr<IAttributeSelectorQModel> attrListQModel)
     : AttributeAdderPresenterBase(model, view)
     , attrListQModel_(std::move(attrListQModel))
     , impl_(utils::make_unique<AttributeAdderPresenterImpl>(this)) {
@@ -54,7 +58,7 @@ void AttributeAdderPresenter::initialize() {
   view()->setPrompt(model()->getPrompt());
 
   attrListQModel_->setAttributeList(model()->getAllowedAttributeList());
-  view()->setAttributeListQModel(attrListQModel_.get());
+  view()->setAttributeSelectorQModel(attrListQModel_.get());
 
   view()->setCurrentAttributeIndex(model()->getCurrentAttributeIndex());
 

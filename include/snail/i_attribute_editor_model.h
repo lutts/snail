@@ -13,6 +13,8 @@
 
 namespace snailcore {
 
+class IAttribute;
+
 class IAttributeEditorModel : public pfmvp::IPfModel {
  public:
   virtual ~IAttributeEditorModel() = default;
@@ -21,6 +23,7 @@ class IAttributeEditorModel : public pfmvp::IPfModel {
 
   SNAIL_SIGSLOT2(ValidateComplete, void(bool result));
 
+  virtual bool validateResult() const = 0;
   virtual IAttribute* getAttribute() const = 0;
 };
 

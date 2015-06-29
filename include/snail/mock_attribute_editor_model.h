@@ -13,14 +13,15 @@
 namespace snailcore {
 namespace tests {
 
-#define ATTRIBUTE_MODEL_COMMON_MOCKS                         \
+#define ATTRIBUTE_EDITOR_MODEL_COMMON_MOCKS             \
   SNAIL_MOCK_SLOT(ValidateComplete);                    \
                                                         \
+  MOCK_CONST_METHOD0(validateResult, bool());           \
   MOCK_CONST_METHOD0(getAttribute, IAttribute*());
 
 class MockAttributeEditorModel : public IAttributeEditorModel {
  public:
-  ATTRIBUTE_MODEL_COMMON_MOCKS
+  ATTRIBUTE_EDITOR_MODEL_COMMON_MOCKS
 };
 
 }  // namespace tests

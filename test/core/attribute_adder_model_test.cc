@@ -265,5 +265,32 @@ TEST_F(AttributeAdderModelTest,
     false);
 }
 
+TEST_F(AttributeAdderModelTest,
+       attribute_validate_is_retrieved_from_AttributeEditorModel) { // NOLINT
+  // Setup fixture
+  CUSTOM_ASSERT(initDefaultAttributeEditorModel());
+
+  auto curr_attr_model = model->getCurrentAttributeEditorModel();
+  auto curr_mock_attr_model =
+      std::dynamic_pointer_cast<MockAttributeEditorModel>(curr_attr_model);
+  auto raw_attr_model = curr_mock_attr_model.get();
+
+  auto tester = [this, raw_attr_model](bool expect_result) {
+    // Expectations
+    EXPECT_CALL(*raw_attr_model, validateResult())
+    .WillOnce(Return(expect_result));
+
+    // Excercise system
+    bool actual_result = model->validateResult();
+
+    // Verify results
+    ::Mock::VerifyAndClear(raw_attr_model);
+    ASSERT_EQ(expect_result, actual_result);
+  };
+
+  tester(true);
+  tester(false);
+}
+
 }  // namespace tests
 }  // namespace snailcore

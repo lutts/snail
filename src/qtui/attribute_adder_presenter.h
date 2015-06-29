@@ -18,7 +18,7 @@ using AttributeAdderPresenterBase =
     pfmvp::PfPresenterT<snailcore::IAttributeAdderModel,
                         IAttributeAdderDialog>;
 
-class IAttributeListQModel;
+class IAttributeSelectorQModel;
 
 class AttributeAdderPresenterImpl;
 
@@ -27,7 +27,7 @@ class AttributeAdderPresenter : public AttributeAdderPresenterBase {
   AttributeAdderPresenter(
       std::shared_ptr<snailcore::IAttributeAdderModel> model,
       std::shared_ptr<IAttributeAdderDialog> view,
-      std::unique_ptr<IAttributeListQModel> attrListQModel);
+      std::unique_ptr<IAttributeSelectorQModel> attrListQModel);
   ~AttributeAdderPresenter();
 
   void initialize() override;
@@ -36,7 +36,7 @@ class AttributeAdderPresenter : public AttributeAdderPresenterBase {
   AttributeAdderPresenter(const AttributeAdderPresenter&) = delete;
   AttributeAdderPresenter& operator=(const AttributeAdderPresenter&) = delete;
 
-  std::unique_ptr<IAttributeListQModel> attrListQModel_;
+  std::unique_ptr<IAttributeSelectorQModel> attrListQModel_;
 
   friend class AttributeAdderPresenterImpl;
   std::unique_ptr<AttributeAdderPresenterImpl> impl_;

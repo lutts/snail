@@ -9,9 +9,9 @@
 #define INCLUDE_QTUI_MOCK_ATTRIBUTE_LIST_QMODEL_H_
 
 #include <vector>
-#include "qtui/i_attribute_list_qmodel.h"
+#include "qtui/i_attribute_selector_qmodel.h"
 
-class MockAttributeListQModel : public IAttributeListQModel {
+class MockAttributeSelectorQModel : public IAttributeSelectorQModel {
  public:
   MOCK_METHOD1(setAttributeList,
                void(std::vector<snailcore::IAttribute*> attr_list));
