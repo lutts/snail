@@ -20,7 +20,6 @@ enum class LogSeverityLevel {
     num_level,
 };
 
-
 extern void initLog();
 extern void cleanupLog();
 extern LogSeverityLevel getLogLevel();

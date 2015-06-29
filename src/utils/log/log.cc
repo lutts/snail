@@ -50,6 +50,10 @@ class LoggerClient::LoggerClientPrivate {
   LoggerClientPrivate(LogSeverityLevel sev, const std::string& channel_name)
       : lrec(my_logger::get().open_record((keywords::channel = channel_name,
                                            keywords::severity = sev))) {
+    static_assert(sizeof(*this) < MYLOGGER_PRIV_DATA_SIZE,
+                  "LoggerClientPrivate's size is larger that reserved space, "
+                  "please increase MYLOGGER_PRIV_DATE_SIZE");
+
     if (!!lrec)
       strm.attach_record(lrec);
   }
