@@ -72,7 +72,7 @@ class MockObjectRecorder {
 
 #define R_ON_CALL(obj, ...)                     \
   mock_obj_recorder.addMockObj(&(obj));         \
-  EXPECT_CALL(obj, __VA_ARGS__)
+  ON_CALL(obj, __VA_ARGS__)
 
 // #define OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
 
