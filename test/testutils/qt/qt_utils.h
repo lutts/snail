@@ -10,6 +10,8 @@
 
 #include "test/testutils/utils.h"
 
+#include <QString>
+
 namespace xtestutils {
 
 QString genRandomQString(const int len = 16);

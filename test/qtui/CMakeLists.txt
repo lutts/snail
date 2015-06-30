@@ -46,4 +46,7 @@ add_gmock_test(few_entity_attr_editor_presenter_test
 add_gmock_test(few_entity_candidates_adapter_test
   LIBS qtuicore testutils)
 
+add_gmock_test(candidate_item_qmodel_adapter_test
+  LIBS qtuicore testutils qttestutils)
+
 add_subdirectory(preview)

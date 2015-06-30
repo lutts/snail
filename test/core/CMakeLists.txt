@@ -21,3 +21,6 @@ add_gmock_test(attribute_adder_model_test
 
 add_gmock_test(few_entity_attr_editor_model_test
   LIBS ${COMMON_LIBS})
+
+add_gmock_test(candidate_item_test
+  LIBS testutils utils)

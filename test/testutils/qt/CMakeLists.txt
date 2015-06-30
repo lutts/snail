@@ -17,5 +17,5 @@ add_custom_target(moc_qttestutils_target DEPENDS
   )
 
 add_library(qttestutils gui_tester.cc qt_utils.cc ${qttestutils_GEN_MOC_SRCS})
-target_link_libraries(qttestutils testutils Qt5::Core Qt5::Widgets)
+target_link_libraries(qttestutils testutils Qt5::Core Qt5::Widgets Qt5::Test)
 add_dependencies(qttestutils moc_qttestutils_target)
