@@ -125,6 +125,21 @@ class CandidateItem {
   std::vector<CandidateItem*> children_;
 };
 
+template <typename DataType>
+class CandidateItemData : public CandidateItem {
+ public:
+  void setData(DataType data) {
+    data_ = data;
+  }
+
+  DataType& getData() {
+    return data_;
+  }
+
+ private:
+  DataType data_;
+};
+
 }  // namespace snailcore
 
 #endif  // I_CANDIDATE_ITEM_H_
