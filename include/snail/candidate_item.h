@@ -128,11 +128,11 @@ class CandidateItem {
 template <typename DataType>
 class CandidateItemData : public CandidateItem {
  public:
-  void setData(DataType data) {
+  void set_data(DataType data) {
     data_ = data;
   }
 
-  DataType& getData() {
+  DataType& data() {
     return data_;
   }
 

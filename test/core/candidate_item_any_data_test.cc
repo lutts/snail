@@ -28,16 +28,6 @@ class CandidateItemAnyDataTest : public ::testing::Test {
   virtual void SetUp() {
   }
   // virtual void TearDown() { }
-
-  // region: objects test subject depends on
-  // endregion
-
-  // region: test subject
-  CandidateItemAnyData item;
-  // endregion
-
-  // region: object depends on test subject
-  // endregion
 };
 
 class CustomData {
@@ -60,6 +50,8 @@ class CustomData {
 
 TEST_F(CandidateItemAnyDataTest,
        should_be_able_to_set_and_get_back_any_data) { // NOLINT
+  CandidateItemAnyData item;
+
   // string
   auto expect_str = xtestutils::genRandomString();
   item.set_data(expect_str);
@@ -76,6 +68,30 @@ TEST_F(CandidateItemAnyDataTest,
   item.set_data(expect_sp);
   // verify results
   auto actual_sp = item.data<std::shared_ptr<CustomData> >();
+  ASSERT_EQ(expect_sp, actual_sp);
+}
+
+TEST_F(CandidateItemAnyDataTest,
+       test_CandidateItemData_with_str) { // NOLINT
+  // string
+  CandidateItemData<utils::U8String> item;
+
+  auto expect_str = xtestutils::genRandomString();
+  item.set_data(expect_str);
+
+  // Verify results
+  auto actual_str = item.data();
+  ASSERT_EQ(expect_str, actual_str);
+}
+TEST_F(CandidateItemAnyDataTest,
+       test_CandiateItemData_with_shared_ptr) { // NOLINT
+  CandidateItemData<std::shared_ptr<CustomData> > item;
+  auto expect_sp = std::make_shared<CustomData>(std::rand(),
+                                                std::rand(),
+                                                std::rand());
+  item.set_data(expect_sp);
+  // verify results
+  auto actual_sp = item.data();
   ASSERT_EQ(expect_sp, actual_sp);
 }
 
