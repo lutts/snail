@@ -31,7 +31,7 @@ class CandidateItem {
     if (parent_)
       parent_->removeChild(this);
 
-    removeAllChilddren();
+    removeAllChildren();
   }
 
   utils::U8String text() const {
@@ -101,7 +101,7 @@ class CandidateItem {
     }
   }
 
-  void removeAllChilddren() {
+  void removeAllChildren() {
     // TODO(lutts): Lock
     while(!children_.empty()) {
       auto item = *children_.begin();
