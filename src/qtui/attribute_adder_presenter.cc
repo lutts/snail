@@ -44,8 +44,8 @@ class AttributeAdderPresenterImpl {
 
 
 AttributeAdderPresenter::AttributeAdderPresenter(
-    std::shared_ptr<IAttributeAdderModel> model,
-    std::shared_ptr<IAttributeAdderDialog> view,
+    std::shared_ptr<model_type> model,
+    std::shared_ptr<view_type> view,
     std::unique_ptr<IAttributeSelectorQModel> attrListQModel)
     : AttributeAdderPresenterBase(model, view)
     , attrListQModel_(std::move(attrListQModel))

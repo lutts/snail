@@ -19,14 +19,13 @@ using AttributeAdderPresenterBase =
                         IAttributeAdderDialog>;
 
 class IAttributeSelectorQModel;
-
 class AttributeAdderPresenterImpl;
 
 class AttributeAdderPresenter : public AttributeAdderPresenterBase {
  public:
   AttributeAdderPresenter(
-      std::shared_ptr<snailcore::IAttributeAdderModel> model,
-      std::shared_ptr<IAttributeAdderDialog> view,
+      std::shared_ptr<model_type> model,
+      std::shared_ptr<view_type> view,
       std::unique_ptr<IAttributeSelectorQModel> attrListQModel);
   ~AttributeAdderPresenter();
 

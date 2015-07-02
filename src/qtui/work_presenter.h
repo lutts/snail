@@ -24,8 +24,8 @@ using WorkPresenterBase =
 
 class WorkPresenter : public WorkPresenterBase {
  public:
-  WorkPresenter(std::shared_ptr<snailcore::IWorkModel> model,
-                std::shared_ptr<IWorkView> view,
+  WorkPresenter(std::shared_ptr<model_type> model,
+                std::shared_ptr<view_type> view,
                 std::unique_ptr<IWorkBasicInfoQModel> basicInfoQModel)
       : WorkPresenterBase(model, view)
       , basicInfoQModel_(std::move(basicInfoQModel)) {

@@ -22,8 +22,8 @@ using FewEntityAttrEditorPresenterBase =
 class FewEntityAttrEditorPresenter : public FewEntityAttrEditorPresenterBase {
  public:
   FewEntityAttrEditorPresenter(
-      std::shared_ptr<snailcore::IFewEntityAttrEditorModel> model,
-      std::shared_ptr<IFewEntityAttrEditorView> view,
+      std::shared_ptr<model_type> model,
+      std::shared_ptr<view_type> view,
       std::unique_ptr<ICandidateItemQModelAdapter> entity_candidates_adapter)
       : FewEntityAttrEditorPresenterBase(model, view)
       , entity_candidates_adapter_(std::move(entity_candidates_adapter)) {

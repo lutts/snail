@@ -67,14 +67,14 @@ class MockPfViewFactory : public IPfViewFactory {
                                                     ITest##name##View> { \
    public:                                                              \
      static std::shared_ptr<Mock##name##Presenter>                        \
-     create(std::shared_ptr<Mock##name##Model> model,                   \
-            std::shared_ptr<ITest##name##View> view) {                  \
+     create(std::shared_ptr<model_type> model,                          \
+            std::shared_ptr<view_type> view) {                          \
        auto presenter = std::make_shared<Mock##name##Presenter>(model, view); \
        return presenter;                                                \
      }                                                                  \
                                                                         \
-     Mock##name##Presenter(std::shared_ptr<Mock##name##Model> model,    \
-                           std::shared_ptr<ITest##name##View> view)     \
+     Mock##name##Presenter(std::shared_ptr<model_type> model,           \
+                           std::shared_ptr<view_type> view)             \
      : PfPresenterT<Mock##name##Model, ITest##name##View>(model, view) { \
      }                                                                  \
                                                                         \

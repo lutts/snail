@@ -22,8 +22,8 @@ using WorkSpacePresenterBase =
 
 class WorkSpacePresenter : public WorkSpacePresenterBase {
  public:
-  WorkSpacePresenter(std::shared_ptr<snailcore::IWorkSpaceModel> model,
-                std::shared_ptr<IWorkSpaceView> view)
+  WorkSpacePresenter(std::shared_ptr<model_type> model,
+                     std::shared_ptr<view_type> view)
       : WorkSpacePresenterBase(model, view) {
   }
 

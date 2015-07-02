@@ -23,8 +23,8 @@ using MainWindowPresenterBase =
 
 class MainWindowPresenter : public MainWindowPresenterBase {
  public:
-  MainWindowPresenter(std::shared_ptr<snailcore::IMainWindowModel> model,
-                std::shared_ptr<IMainWindowView> view)
+  MainWindowPresenter(std::shared_ptr<model_type> model,
+                      std::shared_ptr<view_type> view)
       : MainWindowPresenterBase(model, view) {
   }
 

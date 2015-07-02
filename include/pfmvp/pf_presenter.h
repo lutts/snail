@@ -153,13 +153,16 @@ class PfPresenter : public utils::ITrackable
 template <typename MT, typename VT>
 class PfPresenterT : public PfPresenter {
  public:
+  using model_type = MT;
+  using view_type = VT;
+
   PfPresenterT(std::shared_ptr<MT> model, std::shared_ptr<VT> view)
       : PfPresenter(model, view)
       , model_(dynamic_cast<MT*>(model.get()))
       , view_(dynamic_cast<VT*>(view.get())) { }
 
-  MT* model() { return model_; }
-  VT* view() { return view_; }
+  model_type* model() { return model_; }
+  view_type* view() { return view_; }
 
   //////////////// Triad Manager Helpers begin ///////////////////
   template <typename SubVT>
