@@ -18,12 +18,9 @@ class MockFewEntityAttrEditorModel : public IFewEntityAttrEditorModel {
  public:
   ATTRIBUTE_EDITOR_MODEL_COMMON_MOCKS
 
-  MOCK_CONST_METHOD0(getCandidateEntities,
-                     std::vector<std::shared_ptr<const IEntity>>());
-
-  MOCK_METHOD1(setCurrentEntity,
-               void(std::shared_ptr<const IEntity> entity));
-  MOCK_CONST_METHOD0(getCurrentEntityIndex, int());
+  MOCK_CONST_METHOD0(getCandidateEntities, const CandidateItem*());
+  MOCK_METHOD1(setCurrentEntity, void(const CandidateItem& entity_item));
+  MOCK_CONST_METHOD0(getCurrentEntityName, utils::U8String());
 };
 
 }  // namespace tests

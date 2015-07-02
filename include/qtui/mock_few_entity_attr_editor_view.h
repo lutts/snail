@@ -14,8 +14,10 @@ class MockFewEntityAttrEditorView : public IFewEntityAttrEditorView {
  public:
   SNAIL_MOCK_SLOT(EntitySelectionChanged);
 
-  MOCK_METHOD1(setEntitySelectorQModel, void(QAbstractItemModel* model));
-  MOCK_METHOD1(setCurrentEntityIndex, void(int index));
+  MOCK_METHOD1(setEntitySelectorQModel,
+               void(ICandidateItemQModelAdapter* model));
+  MOCK_METHOD1(setCurrentEntityName,
+               void(const utils::U8String& entity_name));
 };
 
 #endif  // MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_

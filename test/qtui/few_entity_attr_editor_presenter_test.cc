@@ -19,9 +19,9 @@
 #include "qtui/mock_few_entity_attr_editor_view.h"
 #include "src/qtui/few_entity_attr_editor_presenter.h"
 
-#include "qtui/mock_few_entity_candidates_adapter.h"
 #include "snail/mock_entity.h"
-#include "test/core/entity_test_helper.h"
+#include "snail/candidate_item.h"
+#include "qtui/mock_candidate_item_qmodel_adapter.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -36,35 +36,37 @@ class FewEntityAttrEditorPresenterTest : public ::testing::Test {
   virtual void SetUp() {
     model = std::make_shared<MockFewEntityAttrEditorModel>();
     view = std::make_shared<MockFewEntityAttrEditorView>();
-    auto fewEntityCandidatesAdapter =
-        std::make_shared<MockFewEntityCandidatesAdapter>();
 
-    auto candidate_entities = EntityTestHelper::genEntities();
+    auto entity_candidate_adapter =
+        utils::make_unique<MockCandidateItemQModelAdapter>();
+
+    CandidateItem candidate_root_item;
 
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
     // init selection list && default
-    int default_idx = std::rand() % candidate_entities.size();
     {
       InSequence seq;
 
       R_EXPECT_CALL(*model, getCandidateEntities())
-          .WillOnce(Return(candidate_entities));
-      R_EXPECT_CALL(*fewEntityCandidatesAdapter,
-                    setCandidateEntities(candidate_entities));
+          .WillOnce(Return(&candidate_root_item));
+      R_EXPECT_CALL(*entity_candidate_adapter,
+                    setCandidates(Ref(candidate_root_item)));
+      R_EXPECT_CALL(*view,
+                    setEntitySelectorQModel(entity_candidate_adapter.get()));
 
-      R_EXPECT_CALL(*model, getCurrentEntityIndex())
-          .WillOnce(Return(default_idx));
-      R_EXPECT_CALL(*fewEntityCandidatesAdapter,
-                    setCurrentEntityIndex(default_idx));
+      auto default_entity_name = xtestutils::genRandomString();
 
-      R_EXPECT_CALL(*fewEntityCandidatesAdapter,
-                    whenEntitySelectionChanged(_, _))
-          .WillOnce(SaveArg<0>(&entitySelectionChanged));
+      R_EXPECT_CALL(*model, getCurrentEntityName())
+          .WillOnce(Return(default_entity_name));
+      R_EXPECT_CALL(*view, setCurrentEntityName(default_entity_name));
     }
 
+    R_EXPECT_CALL(*view, whenEntitySelectionChanged(_, _))
+        .WillOnce(SaveArg<0>(&entitySelectionChanged));
+
     presenter = std::make_shared<FewEntityAttrEditorPresenter>(
-        model, view, fewEntityCandidatesAdapter);
+        model, view, std::move(entity_candidate_adapter));
     presenter->initialize();
 
     VERIFY_RECORDED_MOCK_OBJECTS;
@@ -82,7 +84,7 @@ class FewEntityAttrEditorPresenterTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IFewEntityCandidatesAdapter::EntitySelectionChangedSlotType>
+  SlotCatcher<IFewEntityAttrEditorView::EntitySelectionChangedSlotType>
   entitySelectionChanged;
   // endregion
 };
@@ -90,12 +92,11 @@ class FewEntityAttrEditorPresenterTest : public ::testing::Test {
 TEST_F(FewEntityAttrEditorPresenterTest,
        should_notify_model_when_current_selection_changed) { // NOLINT
   // Setup fixture
-  auto entity = std::make_shared<MockEntity>();
-  std::shared_ptr<const IEntity> ientity = entity;
+  CandidateItem entity_item;
 
   // Expectations
-  EXPECT_CALL(*model, setCurrentEntity(ientity));
+  EXPECT_CALL(*model, setCurrentEntity(Ref(entity_item)));
 
   // Exercise system
-  entitySelectionChanged(entity);
+  entitySelectionChanged(&entity_item);
 }

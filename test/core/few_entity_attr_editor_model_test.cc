@@ -18,6 +18,8 @@
 #include "snail/mock_attribute.h"
 #include "snail/mock_entity_provider.h"
 #include "test/core/entity_test_helper.h"
+#include "core/mock_entity_candidate_item_converter.h"
+#include "snail/candidate_item.h"
 
 namespace snailcore {
 namespace tests {
@@ -32,10 +34,14 @@ class FewEntityAttrEditorModelTest : public ::testing::Test {
   virtual void SetUp() {
     setupEntityProvider();
 
-    auto default_entity = std::make_shared<MockEntity>();
-    std::shared_ptr<const IEntity> default_ientity = default_entity;
+    curr_entity = std::make_shared<MockEntity>();
+    std::shared_ptr<const IEntity> default_ientity = curr_entity;
     ON_CALL(entity_provider, getDefaultEntity())
-        .WillByDefault(Return(default_entity));
+        .WillByDefault(Return(default_ientity));
+
+    auto l_entity_item_converter =
+        utils::make_unique<MockEntityCandidateItemConverter>();
+    entity_item_converter = l_entity_item_converter.get();
 
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
@@ -44,12 +50,13 @@ class FewEntityAttrEditorModelTest : public ::testing::Test {
 
     model = std::make_shared<FewEntityAttrEditorModel>(
         &backing_attr,
-        &entity_provider);
+        &entity_provider,
+        std::move(l_entity_item_converter));
 
     VERIFY_RECORDED_MOCK_OBJECTS;
 
     ON_CALL(backing_attr, getEntity())
-        .WillByDefault(Return(default_entity));
+        .WillByDefault(Return(curr_entity));
     ASSERT_TRUE(model->validateResult());
   }
   // virtual void TearDown() { }
@@ -59,7 +66,9 @@ class FewEntityAttrEditorModelTest : public ::testing::Test {
   // region: objects test subject depends on
   MockAttribute backing_attr;
   std::vector<std::shared_ptr<const IEntity>> entities;
+  std::shared_ptr<MockEntity> curr_entity;
   MockEntityProvider entity_provider;
+  MockEntityCandidateItemConverter* entity_item_converter { nullptr };
   // endregion
 
   // region: test subject
@@ -94,7 +103,7 @@ TEST_F(FewEntityAttrEditorModelTest,
 
   // Exercise system
   auto another_model = std::make_shared<FewEntityAttrEditorModel>(
-      &backing_attr, &entity_provider);
+      &backing_attr, &entity_provider, nullptr);
 
   // Verify results
   ASSERT_FALSE(another_model->validateResult());
@@ -112,58 +121,74 @@ void FewEntityAttrEditorModelTest::setupEntityProvider() {
 }
 
 TEST_F(FewEntityAttrEditorModelTest,
-         candidate_entities_is_retrieved_from_entity_provider) { // NOLINT
-  // Exercise system
-  auto actual_entities = model->getCandidateEntities();
-
-  // Verify results
-  ASSERT_EQ(entities, actual_entities);
-}
-
-TEST_F(FewEntityAttrEditorModelTest,
-       should_setCurrentEntity_set_the_entity_to_backing_attr) { // NOLINT
+       should_be_able_to_get_candidate_entities_and_convert_to_candidte_items) { // NOLINT
   // Setup fixture
-  auto entity = std::make_shared<MockEntity>();
-  std::shared_ptr<const IEntity> ientity = entity;
+  auto expect_root_item = xtestutils::genDummyPointer<CandidateItem>();
 
   // Expectations
-  EXPECT_CALL(backing_attr, setEntity(ientity));
-  EXPECT_CALL(entity_provider, touchEntity(ientity));
+  EXPECT_CALL(*entity_item_converter, toCandidateItems(entities))
+      .WillOnce(Return(expect_root_item));
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(true));
-
-  // Exercise system
-  model->setCurrentEntity(entity);
+  // Verify results
+  auto actual_root_item = model->getCandidateEntities();
+  ASSERT_EQ(expect_root_item, actual_root_item);
 }
 
 TEST_F(FewEntityAttrEditorModelTest,
-       should_current_index_be_minus_1_when_backing_attr_has_no_entity_setted) { // NOLINT
+       should_be_able_to_get_current_entity_name) { // NOLINT
+  // Setup fixture
+  auto entity_name = xtestutils::genRandomString();
+
+  // Expectations
+  EXPECT_CALL(*curr_entity, name())
+      .WillOnce(Return(entity_name));
+
+  // Exercise system
+  auto actual_name = model->getCurrentEntityName();
+
+  // Verify results
+  ASSERT_EQ(entity_name, actual_name);
+}
+
+TEST_F(FewEntityAttrEditorModelTest,
+       should_return_empty_string_when_curr_attr_has_no_entity_setted) { // NOLINT
   // Setup fixture
   ON_CALL(backing_attr, getEntity())
       .WillByDefault(Return(nullptr));
 
-  int expect_index = -1;
+  utils::U8String empty_string { "" };
 
   // Exercise system
-  auto actual_index = model->getCurrentEntityIndex();
+  auto actual_name = model->getCurrentEntityName();
 
   // Verify results
-  ASSERT_EQ(expect_index, actual_index);
+  ASSERT_EQ(empty_string, actual_name);
 }
 
 TEST_F(FewEntityAttrEditorModelTest,
-       should_current_index_be_index_of_backing_attr_entity_in_all_entities) { // NOLINT
+       should_set_user_selected_entity_to_backing_attr) { // NOLINT
   // Setup fixture
-  int expect_index = std::rand() % entities.size();
-  ON_CALL(backing_attr, getEntity())
-      .WillByDefault(Return(entities[expect_index]));
+  auto entity = std::make_shared<MockEntity>();
+  std::shared_ptr<const IEntity> ientity = entity;
+  CandidateItem item;
+
+  // Expectations
+  EXPECT_CALL(*entity_item_converter, toEntity(Ref(item)))
+      .WillOnce(Return(entity));
+
+  auto mock_listener = MockListener::attachTo(model.get());
+  {
+    InSequence seq;
+
+    EXPECT_CALL(backing_attr, setEntity(ientity));
+
+    EXPECT_CALL(entity_provider, touchEntity(ientity));
+
+    EXPECT_CALL(*mock_listener, ValidateComplete(true));
+  }
 
   // Exercise system
-  auto actual_index = model->getCurrentEntityIndex();
-
-  // Verify results
-  ASSERT_EQ(expect_index, actual_index);
+  model->setCurrentEntity(item);
 }
 
 }  // namespace tests

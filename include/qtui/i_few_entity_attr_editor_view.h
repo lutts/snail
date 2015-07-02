@@ -10,17 +10,18 @@
 
 #include "qtui/i_attribute_editor_view.h"
 #include "utils/signal_slot.h"
+#include "utils/u8string.h"
 
-class QAbstractItemModel;
+class ICandidateItemQModelAdapter;
 
 class IFewEntityAttrEditorView : public IAttributeEditorView {
  public:
   virtual ~IFewEntityAttrEditorView() = default;
 
-  SNAIL_SIGSLOT2(EntitySelectionChanged, void(int index));
+  SNAIL_SIGSLOT2(EntitySelectionChanged, void(void* item_ptr));
 
-  virtual void setEntitySelectorQModel(QAbstractItemModel* model) = 0;
-  virtual void setCurrentEntityIndex(int index) = 0;
+  virtual void setEntitySelectorQModel(ICandidateItemQModelAdapter* model) = 0;
+  virtual void setCurrentEntityName(const utils::U8String& entity_name) = 0;
 };
 
 

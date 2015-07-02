@@ -14,7 +14,7 @@
 
 namespace snailcore {
 
-class IEntity;
+class CandidateItem;
 
 class IFewEntityAttrEditorModel : public IAttributeEditorModel {
  public:
@@ -22,11 +22,9 @@ class IFewEntityAttrEditorModel : public IAttributeEditorModel {
 
   DEF_MODEL_ID(FewEntityAttrEditorModel);
 
-  virtual std::vector<std::shared_ptr<const IEntity>>
-  getCandidateEntities() const = 0;
-
-  virtual void setCurrentEntity(std::shared_ptr<const IEntity> entity) = 0;
-  virtual int getCurrentEntityIndex() const = 0;
+  virtual const CandidateItem* getCandidateEntities() const = 0;
+  virtual void setCurrentEntity(const CandidateItem& entity_item) = 0;
+  virtual utils::U8String getCurrentEntityName() const = 0;
 };
 
 }  // namespace snailcore
