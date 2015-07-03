@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
-#define I_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_I_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_I_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
 
 #include "qtui/i_attribute_editor_view.h"
 #include "utils/signal_slot.h"
@@ -25,4 +25,4 @@ class IFewEntityAttrEditorView : public IAttributeEditorView {
 };
 
 
-#endif  // I_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_I_FEW_ENTITY_ATTR_EDITOR_VIEW_H_

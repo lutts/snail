@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef FEW_ENTITY_ATTR_EDITOR_PRESENTER_H_
-#define FEW_ENTITY_ATTR_EDITOR_PRESENTER_H_
+#ifndef SRC_QTUI_FEW_ENTITY_ATTR_EDITOR_PRESENTER_H_
+#define SRC_QTUI_FEW_ENTITY_ATTR_EDITOR_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -52,4 +52,4 @@ class FewEntityAttrEditorPresenter : public FewEntityAttrEditorPresenterBase {
   std::unique_ptr<ICandidateItemQModelAdapter> entity_candidates_adapter_;
 };
 
-#endif  // FEW_ENTITY_ATTR_EDITOR_PRESENTER_H_
+#endif  // SRC_QTUI_FEW_ENTITY_ATTR_EDITOR_PRESENTER_H_

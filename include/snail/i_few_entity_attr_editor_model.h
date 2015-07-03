@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
-#define I_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#define INCLUDE_SNAIL_I_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
 
 #include "snail/i_attribute_editor_model.h"
 #include "utils/signal_slot.h"
@@ -29,4 +29,4 @@ class IFewEntityAttrEditorModel : public IAttributeEditorModel {
 
 }  // namespace snailcore
 
-#endif  // I_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_FEW_ENTITY_ATTR_EDITOR_MODEL_H_

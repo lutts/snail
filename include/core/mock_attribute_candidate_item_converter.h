@@ -5,9 +5,10 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
-#define MOCK_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+#ifndef INCLUDE_CORE_MOCK_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+#define INCLUDE_CORE_MOCK_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
 
+#include <vector>
 #include "core/i_attribute_candidate_item_converter.h"
 
 namespace snailcore {
@@ -24,4 +25,4 @@ class MockAttrCandidateItemConverter : public IAttrCandidateItemConverter {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+#endif  // INCLUDE_CORE_MOCK_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_

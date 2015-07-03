@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef CANDIDATE_ITEM_TEST_HELPER_H_
-#define CANDIDATE_ITEM_TEST_HELPER_H_
+#ifndef TEST_CORE_CANDIDATE_ITEM_TEST_HELPER_H_
+#define TEST_CORE_CANDIDATE_ITEM_TEST_HELPER_H_
 
 #include <memory>
 
@@ -50,4 +50,4 @@ class CandidateItemTestHelper {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // CANDIDATE_ITEM_TEST_HELPER_H_
+#endif  // TEST_CORE_CANDIDATE_ITEM_TEST_HELPER_H_

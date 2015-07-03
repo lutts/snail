@@ -5,9 +5,10 @@
 //
 // [Desc]
 
-#ifndef MOCK_ENTITY_PROVIDER_H_
-#define MOCK_ENTITY_PROVIDER_H_
+#ifndef INCLUDE_SNAIL_MOCK_ENTITY_PROVIDER_H_
+#define INCLUDE_SNAIL_MOCK_ENTITY_PROVIDER_H_
 
+#include <vector>
 #include "snail/i_entity_provider.h"
 
 namespace snailcore {
@@ -26,4 +27,4 @@ class MockEntityProvider : public IEntityProvider {
 
 }  // namespace snailcore
 
-#endif  // MOCK_ENTITY_PROVIDER_H_
+#endif  // INCLUDE_SNAIL_MOCK_ENTITY_PROVIDER_H_

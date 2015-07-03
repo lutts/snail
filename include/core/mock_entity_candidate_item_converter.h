@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
-#define MOCK_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
+#ifndef INCLUDE_CORE_MOCK_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
+#define INCLUDE_CORE_MOCK_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
 
 #include "core/i_entity_candidate_item_converter.h"
 
@@ -24,4 +24,4 @@ class MockEntityCandidateItemConverter : public IEntityCandidateItemConverter {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
+#endif  // INCLUDE_CORE_MOCK_ENTITY_CANDIDATE_ITEM_CONVERTER_H_

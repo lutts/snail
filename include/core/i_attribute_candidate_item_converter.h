@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
-#define I_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+#ifndef INCLUDE_CORE_I_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+#define INCLUDE_CORE_I_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+
+#include <vector>
 
 namespace snailcore {
 
@@ -21,4 +23,4 @@ class IAttrCandidateItemConverter {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_
+#endif  // INCLUDE_CORE_I_ATTRIBUTE_CANDIDATE_ITEM_CONVERTER_H_

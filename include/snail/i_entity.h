@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ENTITY_H_
-#define I_ENTITY_H_
+#ifndef INCLUDE_SNAIL_I_ENTITY_H_
+#define INCLUDE_SNAIL_I_ENTITY_H_
 
 #include "utils/u8string.h"
 
@@ -21,4 +21,4 @@ class IEntity {
 
 }  // namespace snailcore
 
-#endif  // I_ENTITY_H_
+#endif  // INCLUDE_SNAIL_I_ENTITY_H_

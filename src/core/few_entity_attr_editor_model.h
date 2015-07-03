@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef FEW_ENTITY_ATTR_EDITOR_MODEL_H_
-#define FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#ifndef SRC_CORE_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#define SRC_CORE_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
 
 #include <memory>
 
@@ -49,4 +49,4 @@ class FewEntityAttrEditorModel : public IFewEntityAttrEditorModel {
 
 }  // namespace snailcore
 
-#endif  // FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#endif  // SRC_CORE_FEW_ENTITY_ATTR_EDITOR_MODEL_H_

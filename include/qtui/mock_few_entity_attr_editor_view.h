@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
-#define MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
 
 #include "qtui/i_few_entity_attr_editor_view.h"
 
@@ -20,4 +20,4 @@ class MockFewEntityAttrEditorView : public IFewEntityAttrEditorView {
                void(const utils::U8String& entity_name));
 };
 
-#endif  // MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_FEW_ENTITY_ATTR_EDITOR_VIEW_H_

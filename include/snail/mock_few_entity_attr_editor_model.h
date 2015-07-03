@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
-#define MOCK_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
 
 #include "snail/i_few_entity_attr_editor_model.h"
 #include "snail/mock_attribute_editor_model.h"
@@ -26,4 +26,4 @@ class MockFewEntityAttrEditorModel : public IFewEntityAttrEditorModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_FEW_ENTITY_ATTR_EDITOR_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_FEW_ENTITY_ATTR_EDITOR_MODEL_H_

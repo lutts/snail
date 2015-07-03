@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ENTITY_PROVIDER_H_
-#define I_ENTITY_PROVIDER_H_
+#ifndef INCLUDE_SNAIL_I_ENTITY_PROVIDER_H_
+#define INCLUDE_SNAIL_I_ENTITY_PROVIDER_H_
 
 #include <memory>
 #include <utility>
@@ -29,4 +29,4 @@ class IEntityProvider {
 
 }  // namespace snailcore
 
-#endif  // I_ENTITY_PROVIDER_H_
+#endif  // INCLUDE_SNAIL_I_ENTITY_PROVIDER_H_

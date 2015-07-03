@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef I_CANDIDATE_ITEM_H_
-#define I_CANDIDATE_ITEM_H_
+#ifndef INCLUDE_SNAIL_CANDIDATE_ITEM_H_
+#define INCLUDE_SNAIL_CANDIDATE_ITEM_H_
+
+#include <vector>
 
 #include "utils/u8string.h"
 
@@ -14,7 +16,7 @@ namespace snailcore {
 
 class CandidateItem {
  public:
-  explicit CandidateItem() { }
+  CandidateItem() { }
   CandidateItem(
       utils::U8String text,
       utils::U8String description,
@@ -103,7 +105,7 @@ class CandidateItem {
 
   void removeAllChildren() {
     // TODO(lutts): Lock
-    while(!children_.empty()) {
+    while (!children_.empty()) {
       auto item = *children_.begin();
       removeChild(item);
       delete item;
@@ -142,4 +144,4 @@ class CandidateItemData : public CandidateItem {
 
 }  // namespace snailcore
 
-#endif  // I_CANDIDATE_ITEM_H_
+#endif  // INCLUDE_SNAIL_CANDIDATE_ITEM_H_

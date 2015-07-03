@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
-#define I_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
+#ifndef INCLUDE_CORE_I_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
+#define INCLUDE_CORE_I_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
 
 #include <vector>
 
@@ -30,4 +30,4 @@ class IEntityCandidateItemConverter {
 
 }  // namespace snailcore
 
-#endif  // I_ENTITY_CANDIDATE_ITEM_CONVERTER_H_
+#endif  // INCLUDE_CORE_I_ENTITY_CANDIDATE_ITEM_CONVERTER_H_

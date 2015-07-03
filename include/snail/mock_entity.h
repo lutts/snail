@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ENTITY_H_
-#define MOCK_ENTITY_H_
+#ifndef INCLUDE_SNAIL_MOCK_ENTITY_H_
+#define INCLUDE_SNAIL_MOCK_ENTITY_H_
 
 #include "snail/i_entity.h"
 
@@ -21,4 +21,4 @@ class MockEntity : public IEntity {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ENTITY_H_
+#endif  // INCLUDE_SNAIL_MOCK_ENTITY_H_

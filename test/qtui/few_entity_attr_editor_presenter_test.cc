@@ -63,7 +63,6 @@ class FewEntityAttrEditorPresenterTest : public ::testing::Test {
     presenter->initialize();
 
     VERIFY_RECORDED_MOCK_OBJECTS;
-
   }
   // virtual void TearDown() { }
 

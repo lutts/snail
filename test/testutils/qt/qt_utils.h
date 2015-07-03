@@ -8,9 +8,8 @@
 #ifndef TEST_TESTUTILS_QT_QT_UTILS_H_
 #define TEST_TESTUTILS_QT_QT_UTILS_H_
 
-#include "test/testutils/utils.h"
-
 #include <QString>
+#include "test/testutils/utils.h"
 
 namespace xtestutils {
 

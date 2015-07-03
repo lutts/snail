@@ -14,7 +14,6 @@
 
 namespace snailcore {
 
-class IEntityProvider;
 class IEntity;
 
 class IAttribute {

@@ -40,7 +40,7 @@ QVariant CandidateItemQModelAdapter::data(
       return U8StringToQString(item->description());
     default:
       return QVariant();
-  };
+  }
 }
 
 Qt::ItemFlags CandidateItemQModelAdapter::flags(

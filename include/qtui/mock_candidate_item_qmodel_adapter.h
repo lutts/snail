@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
-#define MOCK_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#ifndef INCLUDE_QTUI_MOCK_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#define INCLUDE_QTUI_MOCK_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
 
 #include "qtui/i_candidate_item_qmodel_adapter.h"
 
@@ -15,4 +15,4 @@ class MockCandidateItemQModelAdapter : public ICandidateItemQModelAdapter {
   MOCK_METHOD1(setCandidates, void(const snailcore::CandidateItem& root_item));
 };
 
-#endif  // MOCK_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#endif  // INCLUDE_QTUI_MOCK_CANDIDATE_ITEM_QMODEL_ADAPTER_H_

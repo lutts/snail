@@ -5,10 +5,11 @@
 //
 // [Desc]
 
-#ifndef ENTITIES_GENERATOR_H_
-#define ENTITIES_GENERATOR_H_
+#ifndef TEST_CORE_ENTITY_TEST_HELPER_H_
+#define TEST_CORE_ENTITY_TEST_HELPER_H_
 
 #include <memory>
+#include <vector>
 
 #include "utils/basic_utils.h"
 #include "snail/mock_entity.h"
@@ -32,4 +33,4 @@ class EntityTestHelper {
   }
 };
 
-#endif  // ENTITIES_GENERATOR_H_
+#endif  // TEST_CORE_ENTITY_TEST_HELPER_H_

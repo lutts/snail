@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_LIST_QMODEL_H_
-#define INCLUDE_QTUI_MOCK_ATTRIBUTE_LIST_QMODEL_H_
+#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_SELECTOR_QMODEL_H_
+#define INCLUDE_QTUI_MOCK_ATTRIBUTE_SELECTOR_QMODEL_H_
 
 #include <vector>
 #include "qtui/i_attribute_selector_qmodel.h"
@@ -17,4 +17,4 @@ class MockAttributeSelectorQModel : public IAttributeSelectorQModel {
                void(std::vector<snailcore::IAttribute*> attr_list));
 };
 
-#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_LIST_QMODEL_H_
+#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_SELECTOR_QMODEL_H_

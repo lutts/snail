@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
-#define I_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#ifndef INCLUDE_QTUI_I_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#define INCLUDE_QTUI_I_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
 
 namespace snailcore {
 class CandidateItem;
@@ -19,4 +19,4 @@ class ICandidateItemQModelAdapter {
   virtual void setCandidates(const snailcore::CandidateItem& root_item) = 0;
 };
 
-#endif  // I_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#endif  // INCLUDE_QTUI_I_CANDIDATE_ITEM_QMODEL_ADAPTER_H_

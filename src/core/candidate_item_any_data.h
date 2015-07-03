@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef CANDIDATE_ITEM_ANY_DATA_H_
-#define CANDIDATE_ITEM_ANY_DATA_H_
+#ifndef SRC_CORE_CANDIDATE_ITEM_ANY_DATA_H_
+#define SRC_CORE_CANDIDATE_ITEM_ANY_DATA_H_
 
 #include <boost/any.hpp>
 
@@ -33,4 +33,4 @@ class CandidateItemAnyData : public CandidateItem {
 }  // namespace snailcore
 
 
-#endif  // CANDIDATE_ITEM_ANY_DATA_H_
+#endif  // SRC_CORE_CANDIDATE_ITEM_ANY_DATA_H_
