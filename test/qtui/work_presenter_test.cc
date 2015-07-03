@@ -76,7 +76,7 @@ TEST_F(WorkPresenterTest, should_popup_add_attribute_dialog_when_UserClickAddAtt
   std::shared_ptr<IPfModel> attr_adder_pfmodel = attr_adder_model;
   auto attr_adder_dialog = std::make_shared<MockAttributeAdderDialog>();
 
-  // Expectations
+    // Expectations
   EXPECT_CALL(*model, createAttributeAdderModel())
       .WillOnce(Return(attr_adder_model));
   EXPECT_CALL(triad_manager, createViewFor(attr_adder_pfmodel, _, _))

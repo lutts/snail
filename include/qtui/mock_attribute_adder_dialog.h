@@ -14,13 +14,13 @@ class MockAttributeAdderDialog : public IAttributeAdderDialog {
  public:
   MOCK_METHOD1(showView, bool(bool));
 
-  SNAIL_MOCK_SLOT(CurrentAttributeIndexChanged);
+  SNAIL_MOCK_SLOT(CurrentAttributeChanged);
   SNAIL_MOCK_SLOT(AddButtonClicked);
 
   MOCK_METHOD1(setPrompt, void(const utils::U8String& prompt));
   MOCK_METHOD1(setAttributeSelectorQModel,
-               void(IAttributeSelectorQModel* attr_list_qmodel));
-  MOCK_METHOD1(setCurrentAttributeIndex, void(int index));
+               void(ICandidateItemQModelAdapter* model));
+  MOCK_METHOD1(setCurrentAttributeName, void(const utils::U8String& attr_name));
   MOCK_METHOD1(setAttributeEditor, void(IAttributeEditorView* attr_editor));
   MOCK_METHOD1(removeAttributeEditor, void(IAttributeEditorView* attr_editor));
   MOCK_METHOD1(setDoneButtonEnabled, void(bool enabled));

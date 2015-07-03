@@ -19,21 +19,23 @@ namespace snailcore {
 class IAttributeContainer;
 class IAttributeEditorModelFactory;
 class IAttributeEditorModel;
+class IAttrCandidateItemConverter;
+class IAttribute;
 
 class AttributeAdderModel : public IAttributeAdderModel {
  public:
   static const char* prompt_format_str;
 
-  AttributeAdderModel(IAttributeContainer* attr_container,
-                      IAttributeEditorModelFactory* attr_model_factory)
-      : attr_container_(attr_container)
-      , attr_model_factory_(attr_model_factory) { }
+  AttributeAdderModel(
+      IAttributeContainer* attr_container,
+      IAttributeEditorModelFactory* attr_model_factory,
+      std::unique_ptr<IAttrCandidateItemConverter> attr_item_converter);
   virtual ~AttributeAdderModel();
 
   utils::U8String getPrompt() const override;
-  std::vector<IAttribute*> getAllowedAttributeList() const override;
-  int getCurrentAttributeIndex() const override;
-  void setCurrentAttributeIndex(int index) override;
+  const CandidateItem* getAllowedAttributes() const override;
+  utils::U8String getCurrentAttributeName() const override;
+  void setCurrentAttribute(const CandidateItem& item) override;
 
   std::shared_ptr<IAttributeEditorModel>
   getCurrentAttributeEditorModel() override;
@@ -45,15 +47,15 @@ class AttributeAdderModel : public IAttributeAdderModel {
   AttributeAdderModel(const AttributeAdderModel& other) = delete;
   AttributeAdderModel& operator=(const AttributeAdderModel& other) = delete;
 
-  void updateCurrentAttributeEditorModel(int attr_index,
+  void updateCurrentAttributeEditorModel(IAttribute* attr_prototype,
                                          bool initial_create = false);
 
   IAttributeContainer* attr_container_;
   IAttributeEditorModelFactory* attr_model_factory_;
+  std::unique_ptr<IAttrCandidateItemConverter> attr_item_converter_;
 
+  IAttribute* curr_attr_prototype_ { nullptr };
   std::shared_ptr<IAttributeEditorModel> curr_attr_model_;
-
-  mutable int curr_attr_index_ { -1 };
 
  private:
   SNAIL_SIGSLOT_IMPL(ValidateComplete)

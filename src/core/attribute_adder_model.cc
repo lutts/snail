@@ -14,8 +14,17 @@
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_editor_model.h"
 #include "snail/i_attribute_editor_model_factory.h"
+#include "core/i_attribute_candidate_item_converter.h"
 
 namespace snailcore {
+
+AttributeAdderModel::AttributeAdderModel(
+    IAttributeContainer* attr_container,
+    IAttributeEditorModelFactory* attr_model_factory,
+    std::unique_ptr<IAttrCandidateItemConverter> attr_item_converter)
+    : attr_container_(attr_container)
+    , attr_model_factory_(attr_model_factory)
+    , attr_item_converter_(std::move(attr_item_converter)) { }
 
 AttributeAdderModel::~AttributeAdderModel() = default;
 
@@ -27,29 +36,32 @@ utils::U8String AttributeAdderModel::getPrompt() const {
                              attr_container_->getDescription());
 }
 
-std::vector<IAttribute*>
-AttributeAdderModel::getAllowedAttributeList() const {
-  return attr_container_->getAllowedAttributeList();
+const CandidateItem* AttributeAdderModel::getAllowedAttributes() const {
+  return attr_item_converter_->toCandidateItems(
+      attr_container_->getAllowedAttributeList());
 }
 
-int AttributeAdderModel::getCurrentAttributeIndex() const {
-  if (curr_attr_index_ < 0) {
-    auto def_attr = attr_container_->getDefaultAllowedAttribute();
-    auto attr_vec = getAllowedAttributeList();
-    for (size_t idx = 0; idx < attr_vec.size(); ++idx) {
-      if (attr_vec[idx] == def_attr) {
-        curr_attr_index_ = static_cast<int>(idx);
-      }
-    }
+utils::U8String AttributeAdderModel::getCurrentAttributeName() const {
+  IAttribute* attr = curr_attr_prototype_;
+
+  if (!attr) {
+    attr = attr_container_->getDefaultAllowedAttribute();
   }
 
-  return curr_attr_index_;
+  if (attr)
+    return attr->name();
+  else
+    return utils::U8String{""};
 }
 
 void AttributeAdderModel::updateCurrentAttributeEditorModel(
-    int attr_index, bool initial_create) {
-  auto allowed_attr_list = getAllowedAttributeList();
-  auto attr_prototype = allowed_attr_list[attr_index];
+    IAttribute* attr_prototype, bool initial_create) {
+  if (!attr_prototype)
+    attr_prototype = attr_container_->getDefaultAllowedAttribute();
+
+  if (!attr_prototype)
+    return;
+
   auto new_attr = attr_prototype->clone();
   auto new_model = attr_model_factory_->createAttributeEditorModel(new_attr);
 
@@ -57,7 +69,7 @@ void AttributeAdderModel::updateCurrentAttributeEditorModel(
     auto old_attr_model = curr_attr_model_.get();
 
     curr_attr_model_ = new_model;
-    curr_attr_index_ = attr_index;
+    curr_attr_prototype_ = attr_prototype;
 
     new_model->whenValidateComplete(
         [this](bool result) {
@@ -71,22 +83,18 @@ void AttributeAdderModel::updateCurrentAttributeEditorModel(
   }
 }
 
-void AttributeAdderModel::setCurrentAttributeIndex(int index) {
-  if (index == getCurrentAttributeIndex())
+void AttributeAdderModel::setCurrentAttribute(const CandidateItem& item) {
+  auto attr_prototype = attr_item_converter_->toAttribute(item);
+  if (curr_attr_prototype_ == attr_prototype)
     return;
 
-  auto allowed_attr_list = getAllowedAttributeList();
-
-  if ((index < 0) || (index > static_cast<int>(allowed_attr_list.size())))
-    return;
-
-  updateCurrentAttributeEditorModel(index);
+  updateCurrentAttributeEditorModel(attr_prototype);
 }
 
 std::shared_ptr<IAttributeEditorModel>
 AttributeAdderModel::getCurrentAttributeEditorModel() {
   if (!curr_attr_model_) {
-    updateCurrentAttributeEditorModel(getCurrentAttributeIndex(), true);
+    updateCurrentAttributeEditorModel(nullptr, true);
   }
 
   return curr_attr_model_;
@@ -102,7 +110,7 @@ bool AttributeAdderModel::validateResult() const {
 void AttributeAdderModel::doAddAttribute() {
   if (curr_attr_model_) {
     attr_container_->addAttribute(curr_attr_model_->getAttribute());
-    updateCurrentAttributeEditorModel(getCurrentAttributeIndex());
+    updateCurrentAttributeEditorModel(curr_attr_prototype_);
   }
 }
 

@@ -12,6 +12,7 @@
 #include "qtui/i_attribute_selector_qmodel.h"
 #include "snail/i_attribute_editor_model.h"
 #include "qtui/i_attribute_editor_view.h"
+#include "qtui/i_candidate_item_qmodel_adapter.h"
 
 using namespace snailcore;  // NOLINT
 
@@ -46,9 +47,9 @@ class AttributeAdderPresenterImpl {
 AttributeAdderPresenter::AttributeAdderPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<IAttributeSelectorQModel> attrListQModel)
+    std::unique_ptr<ICandidateItemQModelAdapter> attr_candidate_adapter)
     : AttributeAdderPresenterBase(model, view)
-    , attrListQModel_(std::move(attrListQModel))
+    , attr_candidate_adapter_(std::move(attr_candidate_adapter))
     , impl_(utils::make_unique<AttributeAdderPresenterImpl>(this)) {
 }
 
@@ -57,18 +58,20 @@ AttributeAdderPresenter::~AttributeAdderPresenter() = default;
 void AttributeAdderPresenter::initialize() {
   view()->setPrompt(model()->getPrompt());
 
-  attrListQModel_->setAttributeList(model()->getAllowedAttributeList());
-  view()->setAttributeSelectorQModel(attrListQModel_.get());
+  auto attr_candidates_root = model()->getAllowedAttributes();
+  attr_candidate_adapter_->setCandidates(*attr_candidates_root);
+  view()->setAttributeSelectorQModel(attr_candidate_adapter_.get());
 
-  view()->setCurrentAttributeIndex(model()->getCurrentAttributeIndex());
+  view()->setCurrentAttributeName(model()->getCurrentAttributeName());
 
   impl_->buildAttributeEditorView(model()->getCurrentAttributeEditorModel());
 
   view()->setDoneButtonEnabled(true);
 
-  view()->whenCurrentAttributeIndexChanged(
-      [this](int index) {
-        model()->setCurrentAttributeIndex(index);
+  view()->whenCurrentAttributeChanged(
+      [this](void* item_ptr) {
+        auto item = static_cast<CandidateItem*>(item_ptr);
+        model()->setCurrentAttribute(*item);
       },
       shared_from_this());
 

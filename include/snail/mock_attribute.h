@@ -19,6 +19,8 @@ class MockAttribute : public IAttribute {
  public:
   MOCK_CONST_METHOD0(clone, IAttribute*());
 
+  MOCK_CONST_METHOD0(name, utils::U8String());
+
   MOCK_METHOD1(setEntity, void(std::shared_ptr<const IEntity> entity));
   MOCK_CONST_METHOD0(getEntity, std::shared_ptr<const IEntity>());
 };

@@ -20,6 +20,9 @@
 #include "qtui/mock_attribute_editor_view.h"
 #include "qtui/mock_attribute_selector_qmodel.h"
 
+#include "qtui/mock_candidate_item_qmodel_adapter.h"
+#include "snail/candidate_item.h"
+
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
 using namespace pfmvp;  // NOLINT
@@ -36,7 +39,9 @@ class AttributeAdderPresenterTest : public ::testing::Test {
     model = std::make_shared<MockAttributeAdderModel>();
     view = std::make_shared<MockAttributeAdderDialog>();
 
-    auto attrSelectorQModel = utils::make_unique<MockAttributeSelectorQModel>();
+    auto attr_candidate_adapter =
+        utils::make_unique<MockCandidateItemQModelAdapter>();
+    CandidateItem candidate_root_item;
 
     // expectations
     // set prompt
@@ -53,21 +58,20 @@ class AttributeAdderPresenterTest : public ::testing::Test {
     allowed_attr_list.push_back(&dummyAttr1);
     allowed_attr_list.push_back(&dummyAttr2);
 
-    R_EXPECT_CALL(*model, getAllowedAttributeList())
-        .WillOnce(Return(allowed_attr_list));
-
     {
       InSequence seq;
 
-      // TODO(lutts): this means the presenter is directly access layer under
-      // pmodel, is this what we want?
-      R_EXPECT_CALL(*attrSelectorQModel, setAttributeList(allowed_attr_list));
-      R_EXPECT_CALL(*view, setAttributeSelectorQModel(attrSelectorQModel.get()));
-      // 2. set the default selection
-      int index = 0xbeaf;
-      R_EXPECT_CALL(*model, getCurrentAttributeIndex())
-          .WillOnce(Return(index));
-      R_EXPECT_CALL(*view, setCurrentAttributeIndex(index));
+      R_EXPECT_CALL(*model, getAllowedAttributes())
+          .WillOnce(Return(&candidate_root_item));
+      R_EXPECT_CALL(*attr_candidate_adapter,
+                    setCandidates(Ref(candidate_root_item)));
+      R_EXPECT_CALL(*view,
+                    setAttributeSelectorQModel(attr_candidate_adapter.get()));
+
+      auto default_attr_name = xtestutils::genRandomString();
+      R_EXPECT_CALL(*model, getCurrentAttributeName())
+          .WillOnce(Return(default_attr_name));
+      R_EXPECT_CALL(*view, setCurrentAttributeName(default_attr_name));
     }
 
     // create attribute editor for the current selected attribute
@@ -76,11 +80,12 @@ class AttributeAdderPresenterTest : public ::testing::Test {
         .WillOnce(Return(attr_model));
     expectationsOnBuildAttributeEditorView(attr_model);
 
-    // enable done button
+    // always enable done button
     R_EXPECT_CALL(*view, setDoneButtonEnabled(true));
 
-    R_EXPECT_CALL(*view, whenCurrentAttributeIndexChanged(_, _))
-        .WillOnce(SaveArg<0>(&currAttrIndexChanged));
+    // catch signal handlers
+    R_EXPECT_CALL(*view, whenCurrentAttributeChanged(_, _))
+        .WillOnce(SaveArg<0>(&currAttrChanged));
 
     R_EXPECT_CALL(*view, whenAddButtonClicked(_, _))
         .WillOnce(SaveArg<0>(&addButtonClicked));
@@ -96,7 +101,7 @@ class AttributeAdderPresenterTest : public ::testing::Test {
 
     presenter = std::make_shared<AttributeAdderPresenter>(
         model, view,
-        std::move(attrSelectorQModel));
+        std::move(attr_candidate_adapter));
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -125,9 +130,9 @@ class AttributeAdderPresenterTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  using CurrAttrIndexChangedSlotType =
-      IAttributeAdderDialog::CurrentAttributeIndexChangedSlotType;
-  SlotCatcher<CurrAttrIndexChangedSlotType> currAttrIndexChanged;
+  using CurrAttrChangedSlotType =
+      IAttributeAdderDialog::CurrentAttributeChangedSlotType;
+  SlotCatcher<CurrAttrChangedSlotType> currAttrChanged;
   SlotCatcher<IAttributeAdderDialog::AddButtonClickedSlotType> addButtonClicked;
 
   SlotCatcher<IAttributeAdderModel::ValidateCompleteSlotType> validateComplete;
@@ -178,13 +183,13 @@ TEST_F(AttributeAdderPresenterTest,
 
 TEST_F(AttributeAdderPresenterTest,
        should_set_new_attr_index_to_model_when_CurrentAttributeIndexChanged) { // NOLINT
-  int index = std::rand();
+  CandidateItem item;
 
   // Expectations
-  EXPECT_CALL(*model, setCurrentAttributeIndex(index));
+  EXPECT_CALL(*model, setCurrentAttribute(Ref(item)));
 
   // Exercise system
-  currAttrIndexChanged(index);
+  currAttrChanged(&item);
 }
 
 TEST_F(AttributeAdderPresenterTest,

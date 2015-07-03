@@ -17,8 +17,8 @@
 
 namespace snailcore {
 
-class IAttribute;
 class IAttributeEditorModel;
+class CandidateItem;
 
 class IAttributeAdderModel : public pfmvp::IPfModel {
  public:
@@ -32,9 +32,9 @@ class IAttributeAdderModel : public pfmvp::IPfModel {
                  void(std::shared_ptr<IAttributeEditorModel>));
 
   virtual utils::U8String getPrompt() const = 0;
-  virtual std::vector<IAttribute*> getAllowedAttributeList() const = 0;
-  virtual int getCurrentAttributeIndex() const = 0;
-  virtual void setCurrentAttributeIndex(int index) = 0;
+  virtual const CandidateItem* getAllowedAttributes() const = 0;
+  virtual utils::U8String getCurrentAttributeName() const = 0;
+  virtual void setCurrentAttribute(const CandidateItem& item) = 0;
 
   virtual std::shared_ptr<IAttributeEditorModel>
   getCurrentAttributeEditorModel() = 0;

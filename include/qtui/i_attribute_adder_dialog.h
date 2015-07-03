@@ -14,18 +14,19 @@
 
 class IAttributeSelectorQModel;
 class IAttributeEditorView;
+class ICandidateItemQModelAdapter;
 
 class IAttributeAdderDialog : public GenericViewBase {
  public:
   virtual ~IAttributeAdderDialog() = default;
 
-  SNAIL_SIGSLOT2(CurrentAttributeIndexChanged, void(int index));
+  SNAIL_SIGSLOT2(CurrentAttributeChanged, void(void* item_ptr));
   SNAIL_SIGSLOT2(AddButtonClicked, void());
 
   virtual void setPrompt(const utils::U8String& prompt) = 0;
   virtual void setAttributeSelectorQModel(
-      IAttributeSelectorQModel* attr_list_qmodel) = 0;
-  virtual void setCurrentAttributeIndex(int index) = 0;
+      ICandidateItemQModelAdapter* model) = 0;
+  virtual void setCurrentAttributeName(const utils::U8String& attr_name) = 0;
   virtual void setAttributeEditor(IAttributeEditorView* attr_editor) = 0;
   virtual void removeAttributeEditor(IAttributeEditorView* attr_editor) = 0;
   virtual void setDoneButtonEnabled(bool enabled) = 0;

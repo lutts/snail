@@ -10,6 +10,7 @@
 
 #include <vector>
 #include "snail/i_attribute_adder_model.h"
+#include "snail/candidate_item.h"
 
 namespace snailcore {
 namespace tests {
@@ -21,9 +22,11 @@ class MockAttributeAdderModel : public IAttributeAdderModel {
   SNAIL_MOCK_SLOT(CurrentAttributeEditorModelChanged);
 
   MOCK_CONST_METHOD0(getPrompt, utils::U8String());
-  MOCK_CONST_METHOD0(getAllowedAttributeList, std::vector<IAttribute*>());
-  MOCK_CONST_METHOD0(getCurrentAttributeIndex, int());
-  MOCK_METHOD1(setCurrentAttributeIndex, void(int index));
+
+  MOCK_CONST_METHOD0(getAllowedAttributes, const CandidateItem*());
+  MOCK_CONST_METHOD0(getCurrentAttributeName, utils::U8String());
+  MOCK_METHOD1(setCurrentAttribute, void(const CandidateItem& item));
+
   MOCK_METHOD0(getCurrentAttributeEditorModel,
                std::shared_ptr<IAttributeEditorModel>());
   MOCK_CONST_METHOD0(validateResult, bool());

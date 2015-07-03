@@ -7,12 +7,6 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "utils/basic_utils.h"  // make_unique, <memory>
-#include "test/testutils/utils.h"
-#include "test/testutils/generic_mock_listener.h"
-#include "test/testutils/slot_catcher.h"
-#include "test/testutils/mock_object_generator.h"
-
 #include "src/core/attribute_adder_model.h"
 #include "snail/mock_attribute_container.h"
 #include "src/utils/utils.h"
@@ -20,6 +14,9 @@
 #include "snail/mock_attribute.h"
 #include "snail/mock_attribute_editor_model_factory.h"
 #include "snail/mock_attribute_editor_model.h"
+
+#include "core/mock_attribute_candidate_item_converter.h"
+#include "snail/candidate_item.h"
 
 namespace snailcore {
 namespace tests {
@@ -33,8 +30,15 @@ class AttributeAdderModelTest : public ::testing::Test {
   // ~AttributeAdderModelTest() { }
   virtual void SetUp() {
     setupAttributeContainer();
-    model = std::make_shared<AttributeAdderModel>(&attr_container,
-                                                  &attr_model_factory);
+
+    auto attr_item_converter =
+        utils::make_unique<MockAttrCandidateItemConverter>();
+    attr_item_converter_ = attr_item_converter.get();
+
+    model = std::make_shared<AttributeAdderModel>(
+        &attr_container,
+        &attr_model_factory,
+        std::move(attr_item_converter));
   }
   // virtual void TearDown() { }
 
@@ -42,7 +46,7 @@ class AttributeAdderModelTest : public ::testing::Test {
   void initDefaultAttributeEditorModel();
   void expectationsOnUpdateCurrentAttributeEditorModel(
       std::function<void()> updateFunc,
-      int new_attr_index,
+      MockAttribute* attr_prototype,
       bool initial_create);
   void assertCanRelayValidateCompleteSignalByAttrModel();
 
@@ -54,6 +58,8 @@ class AttributeAdderModelTest : public ::testing::Test {
 
   MockAttributeEditorModelFactory attr_model_factory;
   MockObjectGenerator<MockAttribute> mock_attr_generator;
+
+  MockAttrCandidateItemConverter* attr_item_converter_ { nullptr };
   // endregion
 
   // region: test subject
@@ -123,18 +129,31 @@ TEST_F(AttributeAdderModelTest,
 }
 
 TEST_F(AttributeAdderModelTest,
-       should_be_able_to_return_allowed_attr_list_of_attr_container) { // NOLINT
+       should_get_alalowed_attribute_list_and_convert_to_candidate_items) { // NOLINT
+  // Setup fixture
+  auto expect_root_item = xtestutils::genDummyPointer<CandidateItem>();
+
+  // Expectations
+  EXPECT_CALL(*attr_item_converter_, toCandidateItems(allowed_attr_list))
+      .WillOnce(Return(expect_root_item));
+
   // Exercise system
-  auto actual_attr_list = model->getAllowedAttributeList();
+  auto actual_root_item = model->getAllowedAttributes();
 
   // Verify results
-  ASSERT_EQ(allowed_attr_list, actual_attr_list);
+  ASSERT_EQ(expect_root_item, actual_root_item);
 }
 
 TEST_F(AttributeAdderModelTest,
-       should_intially_return_the_index_of_default_attr_of_attribute_container) { // NOLINT
+       should_return_name_of_the_default_attr_by_default) { // NOLINT
+  // Setup fixture
+  auto attr = allowed_mock_attr_list[default_attr_index];
+  auto attr_name = xtestutils::genRandomString();
+
+  ON_CALL(*attr, name()).WillByDefault(Return(attr_name));
+
   // Verify results
-  ASSERT_EQ(default_attr_index, model->getCurrentAttributeIndex());
+  ASSERT_EQ(attr_name, model->getCurrentAttributeName());
 }
 
 void
@@ -154,11 +173,14 @@ AttributeAdderModelTest::assertCanRelayValidateCompleteSignalByAttrModel() {
 
 void AttributeAdderModelTest::expectationsOnUpdateCurrentAttributeEditorModel(
     std::function<void()> updateFunc,
-    int new_attr_index, bool initial_create) {
+    MockAttribute* attr_prototype,
+    bool initial_create) {
   // Setup fixture
-  auto attr_prototype = allowed_mock_attr_list[new_attr_index];
   MockAttribute new_attr;
   auto new_attr_model = std::make_shared<MockAttributeEditorModel>();
+
+  auto prototype_attr_name = xtestutils::genRandomString();
+  ON_CALL(*attr_prototype, name()).WillByDefault(Return(prototype_attr_name));
 
   RECORD_USED_MOCK_OBJECTS_SETUP;
 
@@ -185,7 +207,7 @@ void AttributeAdderModelTest::expectationsOnUpdateCurrentAttributeEditorModel(
 
   // Verify results
   ASSERT_EQ(new_attr_model, model->getCurrentAttributeEditorModel());
-  ASSERT_EQ(new_attr_index, model->getCurrentAttributeIndex());
+  ASSERT_EQ(prototype_attr_name, model->getCurrentAttributeName());
   VERIFY_RECORDED_MOCK_OBJECTS;
   CUSTOM_ASSERT(assertCanRelayValidateCompleteSignalByAttrModel());
 }
@@ -193,7 +215,7 @@ void AttributeAdderModelTest::expectationsOnUpdateCurrentAttributeEditorModel(
 void AttributeAdderModelTest::initDefaultAttributeEditorModel() {
   expectationsOnUpdateCurrentAttributeEditorModel([this]() {
       model->getCurrentAttributeEditorModel();
-    }, default_attr_index, true);
+    }, allowed_mock_attr_list[default_attr_index], true);
 }
 
 TEST_F(AttributeAdderModelTest,
@@ -206,22 +228,25 @@ TEST_F(AttributeAdderModelTest,
   // Setup fixture
   CUSTOM_ASSERT(initDefaultAttributeEditorModel());
 
-  int new_index = (model->getCurrentAttributeIndex() + 1)
-                  % allowed_attr_list.size();
+  int new_index = (default_attr_index + 1) % allowed_mock_attr_list.size();
+  auto new_attr_prototype = allowed_mock_attr_list[new_index];
+
+  CandidateItem new_item;
+  EXPECT_CALL(*attr_item_converter_, toAttribute(Ref(new_item)))
+      .WillOnce(Return(new_attr_prototype));
 
   expectationsOnUpdateCurrentAttributeEditorModel(
-      [this, new_index]() {
-        model->setCurrentAttributeIndex(new_index);
-      }, new_index, false);
+      [this, &new_item]() {
+        model->setCurrentAttribute(new_item);
+      }, new_attr_prototype, false);
 }
 
 TEST_F(AttributeAdderModelTest,
-       should_do_nothing_if_user_select_the_same_index_stored_in_model) { // NOLINT
+       should_do_nothing_if_user_select_the_same_attr_prototype_stored_in_model) { // NOLINT
   // Setup fixture
   CUSTOM_ASSERT(initDefaultAttributeEditorModel());
 
-  auto curr_attr_index = model->getCurrentAttributeIndex();
-  auto curr_attr_prototype = allowed_mock_attr_list[curr_attr_index];
+  auto curr_attr_prototype = allowed_mock_attr_list[default_attr_index];
   auto saved_attr_model = model->getCurrentAttributeEditorModel();
   auto curr_mock_attr_model =
       std::dynamic_pointer_cast<MockAttributeEditorModel>(saved_attr_model);
@@ -235,12 +260,18 @@ TEST_F(AttributeAdderModelTest,
   EXPECT_CALL(*mock_listener, DiscardAttributeEditorModel(_)).Times(0);
   EXPECT_CALL(*mock_listener, CurrentAttributeEditorModelChanged(_)).Times(0);
 
+  CandidateItem new_item;
+  ON_CALL(*attr_item_converter_, toAttribute(Ref(new_item)))
+      .WillByDefault(Return(curr_attr_prototype));
+  auto curr_attr_name = xtestutils::genRandomString();
+  ON_CALL(*curr_attr_prototype, name()).WillByDefault(Return(curr_attr_name));
+
   // Exercise system
-  model->setCurrentAttributeIndex(curr_attr_index);
+  model->setCurrentAttribute(new_item);
 
   // Verify results
   ASSERT_EQ(saved_attr_model, model->getCurrentAttributeEditorModel());
-  ASSERT_EQ(curr_attr_index, model->getCurrentAttributeIndex());
+  ASSERT_EQ(curr_attr_name, model->getCurrentAttributeName());
 }
 
 TEST_F(AttributeAdderModelTest,
@@ -248,6 +279,7 @@ TEST_F(AttributeAdderModelTest,
   // Setup fixture
   CUSTOM_ASSERT(initDefaultAttributeEditorModel());
 
+  auto curr_attr_prototype = allowed_mock_attr_list[default_attr_index];
   auto curr_attr_model = model->getCurrentAttributeEditorModel();
   auto curr_mock_attr_model =
       std::dynamic_pointer_cast<MockAttributeEditorModel>(curr_attr_model);
@@ -261,7 +293,7 @@ TEST_F(AttributeAdderModelTest,
   expectationsOnUpdateCurrentAttributeEditorModel([this](){
       model->doAddAttribute();
     },
-    model->getCurrentAttributeIndex(),
+    curr_attr_prototype,
     false);
 }
 
