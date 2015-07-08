@@ -12,7 +12,7 @@
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
 
-class WorkSpaceViewFactory : public IPfViewFactory {
+class WorkSpaceViewFactory : public PfViewFactoryT<IWorkSpaceModel> {
  public:
   WorkSpaceViewFactory() = default;
   virtual ~WorkSpaceViewFactory() = default;
@@ -20,14 +20,9 @@ class WorkSpaceViewFactory : public IPfViewFactory {
   DEF_VIEW_FACTORY_ID(WorkSpaceViewFactory)
 
   std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model) override {
-    auto the_model = std::dynamic_pointer_cast<IWorkSpaceModel>(model);
-    if (the_model) {
-      auto view = std::make_shared<WorkSpaceView>();
-      return std::make_shared<WorkSpacePresenter>(the_model, view);
-    }
-
-    return nullptr;
+  createViewFor(std::shared_ptr<IWorkSpaceModel> model) override {
+    auto view = std::make_shared<WorkSpaceView>();
+    return std::make_shared<WorkSpacePresenter>(model, view);
   }
 
  private:

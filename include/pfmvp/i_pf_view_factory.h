@@ -32,6 +32,22 @@ class IPfViewFactory {
   createView(std::shared_ptr<IPfModel> model) = 0;
 };
 
+template <typename ModelType>
+class PfViewFactoryT : public IPfViewFactory {
+ public:
+  std::shared_ptr<PfPresenter>
+  createView(std::shared_ptr<IPfModel> model) final {
+    auto the_model = std::dynamic_pointer_cast<ModelType>(model);
+    if (!the_model)
+      return nullptr;
+
+    return createViewFor(the_model);
+  };
+
+  virtual std::shared_ptr<PfPresenter>
+  createViewFor(std::shared_ptr<ModelType> model) = 0;
+};
+
 #define INVALID_PF_VIEW_FACTORY_ID utils::U8String { "" }
 #define isViewFactoryIdValid(id) (id != INVALID_PF_VIEW_FACTORY_ID)
 
