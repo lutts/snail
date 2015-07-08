@@ -13,10 +13,6 @@
 #include "qtui/mock_work_view.h"
 #include "src/qtui/work_presenter.h"
 
-// triad headers
-#include "snail/mock_attribute_adder_model.h"
-#include "qtui/mock_attribute_adder_dialog.h"
-
 #include "qtui/mock_work_basic_info_qmodel.h"
 
 using namespace snailcore;  // NOLINT
@@ -41,9 +37,6 @@ class WorkPresenterTest : public ::testing::Test {
 
     R_EXPECT_CALL(*view, setBasicInfoQModel(basicInfoQModel.get()));
 
-    R_EXPECT_CALL(*view, whenUserClickAddAttribute(_, _))
-        .WillOnce(SaveArg<0>(&userClickAddAttr));
-
     // Excercise system
     presenter = std::make_shared<WorkPresenter>(model, view,
                                                 std::move(basicInfoQModel));
@@ -66,23 +59,5 @@ class WorkPresenterTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IWorkView::UserClickAddAttributeSlotType> userClickAddAttr;
   // endregion
 };
-
-TEST_F(WorkPresenterTest, should_popup_add_attribute_dialog_when_UserClickAddAttribute) { // NOLINT
-  // Setup fixture
-  auto attr_adder_model = std::make_shared<MockAttributeAdderModel>();
-  std::shared_ptr<IPfModel> attr_adder_pfmodel = attr_adder_model;
-  auto attr_adder_dialog = std::make_shared<MockAttributeAdderDialog>();
-
-    // Expectations
-  EXPECT_CALL(*model, createAttributeAdderModel())
-      .WillOnce(Return(attr_adder_model));
-  EXPECT_CALL(triad_manager, createViewFor(attr_adder_pfmodel, _, _))
-      .WillOnce(Return(attr_adder_dialog));
-  EXPECT_CALL(*attr_adder_dialog, showView(true));
-
-  // Exercise system
-  userClickAddAttr();
-}
