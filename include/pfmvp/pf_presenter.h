@@ -194,6 +194,15 @@ class PfPresenterT : public PfPresenter {
     return dynamic_cast<SubVT*>(view_vec[0]);
   }
 
+  template <typename SubVT>
+  SubVT* createRawViewIfNotExist(std::shared_ptr<IPfModel> model) {
+    auto view = findSingleViewByModel<SubVT>(model);
+    if (view)
+      return view;
+
+    return createRawViewFor(model);
+  }
+
   //////////////// Triad Manager Helpers end  ////////////////////
 
  private:
