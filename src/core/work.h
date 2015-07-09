@@ -22,7 +22,7 @@ class Work : public IWork {
   bool set_name(const utils::U8String& new_name) {
     if (this->name_ != new_name) {
       name_ = new_name;
-      BasicInfoChanged();
+      NameChanged(name_);
       return true;
     }
 
@@ -39,7 +39,7 @@ class Work : public IWork {
   utils::U8String name_;
 
  private:
-  SNAIL_SIGSLOT_IMPL(BasicInfoChanged);
+  SNAIL_SIGSLOT_IMPL(NameChanged);
 };
 
 

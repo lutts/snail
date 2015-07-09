@@ -17,7 +17,7 @@ class IWork {
  public:
   virtual ~IWork() = default;
 
-  SNAIL_SIGSLOT2(BasicInfoChanged, void());
+  SNAIL_SIGSLOT2(NameChanged, void(const utils::U8String& new_name));
 
   virtual bool set_name(const utils::U8String& name) = 0;
   virtual const utils::U8String& name() const = 0;

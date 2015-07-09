@@ -65,10 +65,9 @@ void WorkSpacePresenter::onWorkModelAdded(
     monitorModelDestroy(work_model.get());
     monitorViewDestroy(work_view);
 
-    auto raw_work_model = work_model.get();
-    work_model->whenBasicInfoChanged(
-        [this, raw_work_model, work_view]() {
-          view()->updateWorkViewTitle(work_view, raw_work_model->name());
+    work_model->whenNameChanged(
+        [this, work_view](const utils::U8String& new_name) {
+          view()->updateWorkViewTitle(work_view, new_name);
         },
         shared_from_this());
   }

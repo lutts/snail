@@ -27,8 +27,8 @@ class WorkModelTest : public ::testing::Test {
   }
   // ~WorkModelTest() { }
   virtual void SetUp() {
-    EXPECT_CALL(work, whenBasicInfoChanged(_, _))
-        .WillOnce(SaveArg<0>(&workBasicInfoChanged));
+    EXPECT_CALL(work, whenNameChanged(_, _))
+        .WillOnce(SaveArg<0>(&workNameChanged));
 
     auto model = std::make_shared<WorkModel>();
     model->set_work(&work);
@@ -45,20 +45,20 @@ class WorkModelTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IWork::BasicInfoChangedSlotType> workBasicInfoChanged;
+  SlotCatcher<IWork::NameChangedSlotType> workNameChanged;
   // endregion
 };
 
 class MockListener : public GenericMockListener<MockListener,
                                                 IWorkModel> {
  public:
-  MOCK_METHOD0(BasicInfoChanged, void());
+  MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
 
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
                            IWorkModel* model) {
-    model->whenBasicInfoChanged(
-        [this]() {
-          BasicInfoChanged();
+    model->whenNameChanged(
+        [this](const utils::U8String& new_name) {
+          NameChanged(new_name);
         },
         trackObject);
   }
@@ -91,13 +91,14 @@ TEST_F(WorkModelTest, should_relay_set_name_to_backing_work) { // NOLINT
   tester(false);
 }
 
-TEST_F(WorkModelTest, should_relay_BasicInfoChanged_signal_fired_by_backing_work) { // NOLINT
+TEST_F(WorkModelTest, should_relay_NameChanged_signal_fired_by_backing_work) { // NOLINT
+  auto new_name = xtestutils::genRandomString();
   // Expectations
   auto mockListener = MockListener::attachTo(work_model.get());
-  EXPECT_CALL(*mockListener, BasicInfoChanged());
+  EXPECT_CALL(*mockListener, NameChanged(new_name));
 
   // Exercise system
-  workBasicInfoChanged();
+  workNameChanged(new_name);
 }
 
 }  // namespace tests

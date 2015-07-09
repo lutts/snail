@@ -15,7 +15,7 @@ namespace tests {
 
 class MockWork : public IWork {
  public:
-  SNAIL_MOCK_SLOT(BasicInfoChanged);
+  SNAIL_MOCK_SLOT(NameChanged);
 
   MOCK_METHOD1(set_name, bool(const utils::U8String& name));
   MOCK_CONST_METHOD0(name, const utils::U8String&());

@@ -15,7 +15,7 @@ namespace tests {
 
 class MockWorkModel : public IWorkModel {
  public:
-  SNAIL_MOCK_SLOT(BasicInfoChanged);
+  SNAIL_MOCK_SLOT(NameChanged);
 
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(set_name, bool(const utils::U8String& new_name));

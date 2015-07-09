@@ -62,13 +62,13 @@ class WorkSpacePresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  using WorkBasicInfoChangedSlot = IWorkModel::BasicInfoChangedSlotType;
+  using WorkNameChangedSlot = IWorkModel::NameChangedSlotType;
   struct CreateWorkTriadResult {
     MockWorkModel* model;
     MockWorkView* view;
     std::unique_ptr<AboutToDestroyModelSlot> aboutToDestroyModelSlot;
     std::unique_ptr<AboutToDestroyViewSlot> aboutToDestroyViewSlot;
-    std::unique_ptr<WorkBasicInfoChangedSlot> workBasicInfoChanged;
+    std::unique_ptr<WorkNameChangedSlot> workNameChanged;
   };
   void createWorkTriad(CreateWorkTriadResult* result = nullptr);
 
@@ -120,7 +120,7 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
 
   auto aboutToDestroyModel = utils::make_unique<AboutToDestroyModelSlot>();
   auto aboutToDestroyView = utils::make_unique<AboutToDestroyViewSlot>();
-  auto workBasicInfoChanged = utils::make_unique<WorkBasicInfoChangedSlot>();
+  auto workNameChanged = utils::make_unique<WorkNameChangedSlot>();
 
   // Expectations
   EXPECT_CALL(triad_manager, createViewFor(work_pfmodel, _, _))
@@ -134,8 +134,8 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
   EXPECT_CALL(triad_manager, whenAboutToDestroyView(work_view.get(), _, _))
       .WillOnce(SaveArg<1>(aboutToDestroyView.get()));
 
-  EXPECT_CALL(*work_model, whenBasicInfoChanged(_, _))
-      .WillOnce(SaveArg<0>(workBasicInfoChanged.get()));
+  EXPECT_CALL(*work_model, whenNameChanged(_, _))
+      .WillOnce(SaveArg<0>(workNameChanged.get()));
 
   // Exercise system
   workModelAdded(work_model);
@@ -149,7 +149,7 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
     result->view = work_view.get();
     result->aboutToDestroyModelSlot = std::move(aboutToDestroyModel);
     result->aboutToDestroyViewSlot = std::move(aboutToDestroyView);
-    result->workBasicInfoChanged = std::move(workBasicInfoChanged);
+    result->workNameChanged = std::move(workNameChanged);
   }
 }
 
@@ -237,12 +237,12 @@ TEST_F(WorkSpacePresenterTest, should_update_work_tab_title_when_work_name_chang
 
   auto work_model = create_result.model;
   auto work_view = create_result.view;
-  auto workBasicInfoChanged = std::move(create_result.workBasicInfoChanged);
+  auto workNameChanged = std::move(create_result.workNameChanged);
   auto work_name = work_model->name();
 
   // Expectations
   EXPECT_CALL(*view, updateWorkViewTitle(work_view, work_name));
 
   // Exercise system
-  (*workBasicInfoChanged)();
+  (*workNameChanged)(work_name);
 }

@@ -39,7 +39,7 @@ class WorkModel : public IWorkModel
   IWork* work_ { nullptr };
 
  private:
-  SNAIL_SIGSLOT_IMPL(BasicInfoChanged);
+  SNAIL_SIGSLOT_IMPL(NameChanged);
 };
 
 }  // namespace snailcore

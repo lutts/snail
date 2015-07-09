@@ -23,7 +23,7 @@ class IWorkModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(WorkModel);
 
-  SNAIL_SIGSLOT2(BasicInfoChanged, void());
+  SNAIL_SIGSLOT2(NameChanged, void(const utils::U8String& new_name));
 
   virtual utils::U8String name() const = 0;
   virtual bool set_name(const utils::U8String& new_name) = 0;
