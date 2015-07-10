@@ -51,6 +51,8 @@ class PfViewFactoryT : public IPfViewFactory {
 #define INVALID_PF_VIEW_FACTORY_ID utils::U8String { "" }
 #define isViewFactoryIdValid(id) (id != INVALID_PF_VIEW_FACTORY_ID)
 
+#define PF_VIEW_FACTORY(factory) (#factory)
+
 #define DEF_VIEW_FACTORY_ID(id)                                 \
   const ViewFactoryIdType& getViewFactoryId() const override {  \
     return viewFactoryId();                                     \

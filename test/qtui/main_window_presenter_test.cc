@@ -50,7 +50,7 @@ class MainWindowPresenterTest : public ::testing::Test {
         .WillOnce(Return(workspace_model));
 
     std::shared_ptr<IPfModel> workspace_pfmodel = workspace_model;
-    R_EXPECT_CALL(triad_manager, createViewFor(workspace_pfmodel, _, _))
+    R_EXPECT_CALL(triad_manager, createViewFor(workspace_pfmodel, _, _, _))
         .WillOnce(Return(workspace_view));
 
     R_EXPECT_CALL(*view, setWorkSpaceView(workspace_view.get()));

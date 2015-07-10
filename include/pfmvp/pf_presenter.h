@@ -166,20 +166,29 @@ class PfPresenterT : public PfPresenter {
 
   //////////////// Triad Manager Helpers begin ///////////////////
   template <typename SubVT>
-  std::shared_ptr<SubVT> createViewFor(std::shared_ptr<IPfModel> model) {
+  std::shared_ptr<SubVT> createViewFor(
+      std::shared_ptr<IPfModel> model,
+      const IPfViewFactory::ViewFactoryIdType&
+      view_factory_id = INVALID_PF_VIEW_FACTORY_ID) {
     if (!triad_manager())
       return nullptr;
 
-    auto v = triad_manager()->createViewFor(model, this);
+    auto v = triad_manager()->createViewFor(model,
+                                            view_factory_id,
+                                            this);
     return std::dynamic_pointer_cast<SubVT>(v);
   }
 
   template <typename SubVT>
-  SubVT* createRawViewFor(std::shared_ptr<IPfModel> model) {
+  SubVT* createRawViewFor(std::shared_ptr<IPfModel> model,
+                          const IPfViewFactory::ViewFactoryIdType&
+                          view_factory_id = INVALID_PF_VIEW_FACTORY_ID) {
     if (!triad_manager())
       return nullptr;
 
-    auto v = triad_manager()->createViewFor(model, this);
+    auto v = triad_manager()->createViewFor(model,
+                                            view_factory_id,
+                                            this);
     return dynamic_cast<SubVT*>(v.get());
   }
 
@@ -191,16 +200,27 @@ class PfPresenterT : public PfPresenter {
       return nullptr;
 
     // TODO(lutts): do we need to warn user if multi views returned?
-    return dynamic_cast<SubVT*>(view_vec[0]);
+    for (auto v : view_vec) {
+      auto view = dynamic_cast<SubVT*>(v);
+      if (view)
+        return view;
+    }
+
+    return nullptr;
   }
 
+  // TODO(lutts): how do we ensure SubVT is matched with view_factory_id?
   template <typename SubVT>
-  SubVT* createRawViewIfNotExist(std::shared_ptr<IPfModel> model) {
+  SubVT* createRawViewIfNotExist(std::shared_ptr<IPfModel> model,
+                                 const IPfViewFactory::ViewFactoryIdType&
+                                 view_factory_id = INVALID_PF_VIEW_FACTORY_ID) {
+    // TODO(lutts): if we can ensure SubVT/view_factory_id connection,
+    // we can call this, else we may need a findByModelAndViewFactory impl
     auto view = findSingleViewByModel<SubVT>(model);
     if (view)
       return view;
 
-    return createRawViewFor(model);
+    return createRawViewFor(model, view_factory_id);
   }
 
   //////////////// Triad Manager Helpers end  ////////////////////
