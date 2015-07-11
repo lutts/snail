@@ -123,11 +123,12 @@ class PfPresenter : public utils::ITrackable
 
   // TODO(lutts): may add monitor support
   bool showDialog(std::shared_ptr<IPfModel> model,
+                  PfCreateViewArgs* args = nullptr,
                   bool modal = true) {
     if (!triad_manager_)
       return false;
 
-    auto view = triad_manager_->createViewFor(model);
+    auto view = triad_manager_->createViewFor(model, args);
     if (view) {
       return view->showView(modal);
     }
