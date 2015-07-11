@@ -36,8 +36,9 @@ class TestXXXViewFactory : public IPfViewFactory {
   DEF_VIEW_FACTORY_ID(TestXXXViewFactory);
 
   std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model) override {
+  createView(std::shared_ptr<IPfModel> model, PfCreateViewArgs* args) override {
     (void)model;
+    (void)args;
     return nullptr;
   }
 
@@ -54,8 +55,10 @@ class TestYYYViewFactory : public IPfViewFactory {
   DEF_VIEW_FACTORY_ID(TestYYYViewFactory);
 
   std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model) override {
+  createView(std::shared_ptr<IPfModel> model,
+             PfCreateViewArgs* args) override {
     (void)model;
+    (void)args;
     return nullptr;
   }
 
@@ -72,8 +75,10 @@ class TestZZZViewFactory : public IPfViewFactory {
   DEF_VIEW_FACTORY_ID(TestZZZViewFactory);
 
   std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model) override {
+  createView(std::shared_ptr<IPfModel> model,
+             PfCreateViewArgs* args) override {
     (void)model;
+    (void)args;
     return nullptr;
   }
 

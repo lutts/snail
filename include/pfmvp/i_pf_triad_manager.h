@@ -10,11 +10,13 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include "utils/i_trackable.h"
 #include "pfmvp/i_pf_model.h"
 #include "pfmvp/i_pf_view.h"
 #include "pfmvp/i_pf_view_factory.h"
+#include "pfmvp/i_pf_create_view_args.h"
 #include "utils/signal_slot.h"
 
 namespace pfmvp {
@@ -47,6 +49,12 @@ namespace pfmvp {
 
 class IPfTriadManager : public utils::ITrackable {
  public:
+  enum {
+    kMatchedContinue,
+    kMatchedBreak,
+    kNotMatched
+  };
+
   virtual ~IPfTriadManager() = default;
 
   SNAIL_PFTRIAD_SIGSLOT(RequestRemoveModel,
@@ -56,22 +64,24 @@ class IPfTriadManager : public utils::ITrackable {
 
   virtual std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model,
-                PfPresenter* parent_presenter = nullptr,
-                bool auto_remove_child = true) = 0;
-
-  virtual std::shared_ptr<IPfView>
-  createViewFor(std::shared_ptr<IPfModel> model,
-                const IPfViewFactory::ViewFactoryIdType& view_factory_id,
-                PfPresenter* parent_presenter = nullptr,
-                bool auto_remove_child = true) = 0;
+                PfCreateViewArgs* args = nullptr /* IN, OUT */) = 0;
 
   virtual void removeTriadBy(IPfModel* model) = 0;
   virtual void removeTriadBy(IPfView* view) = 0;
   virtual bool requestRemoveTriadByView(IPfView* view) = 0;
+
   virtual std::vector<IPfView*> findViewByModel(IPfModel* model) const = 0;
-  virtual std::vector<IPfView*>
-  findViewsByModelId(const IPfModel::ModelIdType& model_id) const = 0;
   virtual IPfModel* findModelByView(IPfView* view) const = 0;
+
+  virtual std::vector<IPfView*> findViewByModelAndViewFactory(
+      IPfModel* model,
+      const IPfViewFactory::ViewFactoryIdType& view_factory_id) const = 0;
+
+  using MementoPredicate =
+      std::function<int(const PfCreateViewArgsMemento& memento)>;
+  virtual std::vector<IPfView*> findViewByModel_if(
+      IPfModel* model,
+      MementoPredicate pred) const = 0;
 };
 
 }  // namespace pfmvp

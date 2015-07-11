@@ -25,25 +25,28 @@ class MockPfTriadManager : public IPfTriadManager {
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel, IPfModel);
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView, IPfView);
 
-  MOCK_METHOD3(createViewFor,
+  MOCK_METHOD2(createViewFor,
                std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model,
-                                        PfPresenter* parent_presenter,
-                                        bool auto_remove_child));
-  MOCK_METHOD4(createViewFor,
-               std::shared_ptr<IPfView>(
-                   std::shared_ptr<IPfModel> model,
-                   const IPfViewFactory::ViewFactoryIdType& vf_id,
-                   PfPresenter* parent_presenter,
-                   bool auto_remove_child));
+                                        PfCreateViewArgs* args));
+
   MOCK_METHOD1(removeTriadBy, void(IPfModel* model));
   MOCK_METHOD1(removeTriadBy, void(IPfView* view));
   MOCK_METHOD1(requestRemoveTriadByView, bool(IPfView* view));
+
   MOCK_CONST_METHOD1(findViewByModel,
                      std::vector<IPfView*>(IPfModel* model));
-  MOCK_CONST_METHOD1(
-      findViewsByModelId,
-      std::vector<IPfView*>(const IPfModel::ModelIdType& model_id));
   MOCK_CONST_METHOD1(findModelByView, IPfModel*(IPfView* view));
+
+  MOCK_CONST_METHOD2(
+      findViewByModelAndViewFactory,
+      std::vector<IPfView*>(
+          IPfModel* model,
+          const IPfViewFactory::ViewFactoryIdType& view_factory_id));
+
+  MOCK_CONST_METHOD2(findViewByModel_if,
+                     std::vector<IPfView*>(
+                         IPfModel* model,
+                         MementoPredicate pred));
 };
 
 }  // namespace tests

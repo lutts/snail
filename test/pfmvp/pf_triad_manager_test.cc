@@ -25,6 +25,28 @@ class PfTriadManagerTest : public PfTriadManagerTestBase
   // virtual void TearDown() { }
 };
 
+TEST_F(PfTriadManagerTest,
+       should_PfCreateViewArgs_setter_getters_working) { // NOLINT
+  // Setup fixture
+  PfCreateViewArgs args;
+
+  // default values
+  ASSERT_EQ(nullptr, args.parent_presenter());
+  ASSERT_EQ(INVALID_PF_VIEW_FACTORY_ID, args.view_factory_id());
+  ASSERT_EQ(true, args.auto_remove_child());
+
+  // Verify results
+  auto expect_presenter = xtestutils::genDummyPointer<PfPresenter>();
+  args.set_parent_presenter(expect_presenter);
+  ASSERT_EQ(expect_presenter, args.parent_presenter());
+
+  args.set_view_factory_id(MockXXXViewFactory::viewFactoryId());
+  ASSERT_EQ(MockXXXViewFactory::viewFactoryId(), args.view_factory_id());
+
+  args.set_auto_remove_child(false);
+  ASSERT_EQ(false, args.auto_remove_child());
+}
+
 TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_triad_reference) { // NOLINT
   // Setup fixture
   auto xxx_model = std::make_shared<MockXXXModel>();
@@ -39,37 +61,28 @@ TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_tria
 }
 
 TEST_F(PfTriadManagerTest,
-       should_be_able_to_create_view_for_model_with_specified_view_factory_id) { // NOLINT
+       should_args_passed_as_is_to_ViewFactory_createView) { // NOLINT
   // Setup fixture
-  auto model = std::make_shared<MockXXXModel>();
-  auto view1 = std::make_shared<MockXXXView>();
-  auto view2 = std::make_shared<MockXXXView>();
-
   view_factory_t<MockXXXModel,
-                 MockXXXViewFactory> view_factory_wrapper1;
-  view_factory_t<MockXXXModel,
-                 MockXXXViewFactory2> view_factory_wrapper2;
+                 MockPfViewFactory> view_factory_wrapper;
+  auto& factory = view_factory_wrapper.FTO_getFactory();
+  std::shared_ptr<IPfModel> model = std::make_shared<MockXXXModel>();
 
-  auto& factory1 = view_factory_wrapper1.FTO_getFactory();
-  auto& factory2 = view_factory_wrapper2.FTO_getFactory();
+  PfCreateViewArgs args;
 
-  ON_CALL(factory1, createTestView())
-      .WillByDefault(Return(view1));
-  ON_CALL(factory2, createTestView())
-      .WillByDefault(Return(view2));
+  // Expectations
+  EXPECT_CALL(factory, createView(model, &args)).WillOnce(Return(nullptr));
 
   // Exercise system
-  auto actual_view1 =
-      triad_manager->createViewFor(model,
-                                   factory1.getViewFactoryId());
-  auto actual_view2 =
-      triad_manager->createViewFor(model,
-                                   factory2.getViewFactoryId());
+  triad_manager->createViewFor(model, &args);
 
-  // Verify results
-  ASSERT_EQ(view1, actual_view1);
-  verifyTriad(model.get(), view1.get(), factory1.last_presenter);
-  verifyTriad(model.get(), view2.get(), factory2.last_presenter);
+  // Verify result
+  ::Mock::VerifyAndClearExpectations(&factory);
+
+  // pass nullptr will got nullptr
+  EXPECT_CALL(factory, createView(model, nullptr)).WillOnce(Return(nullptr));
+  triad_manager->createViewFor(model, nullptr);
+  ::Mock::VerifyAndClearExpectations(&factory);
 }
 
 TEST_F(PfTriadManagerTest, should_return_null_when_view_factory_failed_create_view) { // NOLINT
@@ -79,7 +92,7 @@ TEST_F(PfTriadManagerTest, should_return_null_when_view_factory_failed_create_vi
   auto& factory = view_factory_wrapper.FTO_getFactory();
 
   std::shared_ptr<IPfModel> model = std::make_shared<MockXXXModel>();
-  ON_CALL(factory, createView(model))
+  ON_CALL(factory, createView(model, _))
       .WillByDefault(Return(nullptr));
 
   // Exercise system
@@ -449,7 +462,7 @@ TEST_F(PfTriadManagerTest, should_be_able_to_find_view_by_model) { // NOLINT
   createTestXXXTriad(model, view1);
   createTestXXXTriad(model, view2);
 
-  // create some "background" triads
+  // create some jam triads
   TestXXX_MVP_Triad mvp_triad;
   CUSTOM_ASSERT(createTestXXXTriads(&mvp_triad));
 
@@ -463,33 +476,6 @@ TEST_F(PfTriadManagerTest, should_be_able_to_find_view_by_model) { // NOLINT
   auto actual_views = triad_manager->findViewByModel(model.get());
   std::sort(actual_views.begin(), actual_views.end());
 
-  ASSERT_EQ(expect_views, actual_views);
-}
-
-TEST_F(PfTriadManagerTest, should_be_able_to_find_view_by_model_id) { // NOLINT
-  // Setup fixture
-  TestXXX_MVP_Triad xxx_mvp_triad;
-  std::vector<TestXXX_MVP_Triad> all_xxx_mvp_triad;
-  CUSTOM_ASSERT(createTestXXXTriads(&xxx_mvp_triad, &all_xxx_mvp_triad));
-
-  TestYYY_MVP_Triad yyy_mvp_triad;
-  std::vector<TestYYY_MVP_Triad> all_yyy_mvp_triad;
-  CUSTOM_ASSERT(createTestYYYTriads(&yyy_mvp_triad, &all_yyy_mvp_triad));
-
-  // Expectations
-  std::vector<IPfView*> expect_views;
-  for (auto mvp_triad : all_xxx_mvp_triad) {
-    expect_views.push_back(get<1>(mvp_triad));
-  }
-
-  std::sort(expect_views.begin(), expect_views.end());
-
-  // Exercise system
-  auto actual_views =
-      triad_manager->findViewsByModelId(MockXXXModel::modelId());
-
-  // Verify results
-  std::sort(actual_views.begin(), actual_views.end());
   ASSERT_EQ(expect_views, actual_views);
 }
 

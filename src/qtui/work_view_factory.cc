@@ -25,7 +25,9 @@ class WorkViewFactory : public PfViewFactoryT<IWorkModel> {
   DEF_VIEW_FACTORY_ID(WorkViewFactory)
 
   std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<IWorkModel> model) override {
+  createViewFor(std::shared_ptr<IWorkModel> model,
+                PfCreateViewArgs* args) override {
+    V_UNUSED(args);
     auto view = std::make_shared<WorkView>();
     return std::make_shared<WorkPresenter>(
         model, view,

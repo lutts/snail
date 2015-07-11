@@ -12,13 +12,10 @@ namespace tests {
 
 using DestroyMethodFunc =
     std::function<void(IPfTriadManager*, TestXXX_MVPL_Tuple*)>;
-using TestParamType =
-    std::tuple<DestroyMethodFunc,
-               bool>;  // use_factory_id>;
 
 class PfTriadManagerAutoRemoveChildTest
     : public PfTriadManagerTestBase
-    , public TestWithParam<TestParamType> {
+    , public TestWithParam<DestroyMethodFunc> {
  protected:
   PfTriadManagerAutoRemoveChildTest() {
     // const string saved_flag = GMOCK_FLAG(verbose);
@@ -30,7 +27,6 @@ class PfTriadManagerAutoRemoveChildTest
   }
 
   std::vector<TestXXX_MVPL_Tuple> createTestTriadHierachy(
-      bool use_view_factory_id = false,
       bool root_enable_auto_remove_child = true,
       bool use_parent = true);
 
@@ -58,18 +54,12 @@ static DestroyMethodFunc remove_by_request =
 INSTANTIATE_TEST_CASE_P(
     VariousTriadCreateDestroyMethod,
     PfTriadManagerAutoRemoveChildTest,
-    ::testing::Values(
-         std::make_tuple(remove_by_model, false),
-         std::make_tuple(remove_by_view, false),
-         std::make_tuple(remove_by_request, false),
-
-         std::make_tuple(remove_by_model, true),
-         std::make_tuple(remove_by_view, true),
-         std::make_tuple(remove_by_request, true)));
+    ::testing::Values(remove_by_model,
+                      remove_by_view,
+                      remove_by_request));
 
 std::vector<TestXXX_MVPL_Tuple>
 PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
-    bool use_view_factory_id,
     bool root_enable_auto_remove_child,
     bool use_parent) {
   /*               __________
@@ -89,39 +79,26 @@ PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
 
   std::vector<TestXXX_MVPL_Tuple> triad_vec;
 
-  ViewCreatationFunction createViewFunc =
-      [this, use_view_factory_id](
-          std::shared_ptr<IPfModel> model,
-          const IPfViewFactory::ViewFactoryIdType& view_factory_id,
-          PfPresenter* parent_presenter,
-          bool auto_remove_child) -> std::shared_ptr<IPfView> {
-    if (!use_view_factory_id) {
-      return triad_manager->createViewFor(model,
-                                          parent_presenter,
-                                          auto_remove_child);
-    } else {
-      return triad_manager->createViewFor(model,
-                                          view_factory_id,
-                                          parent_presenter,
-                                          auto_remove_child);
-    }
-  };
+  PfCreateViewArgs root_args;
+  root_args.set_parent_presenter(nullptr);
+  root_args.set_auto_remove_child(root_enable_auto_remove_child);
 
   TestXXX_MVPL_Tuple root_tuple;
   createTestTriadAndListener<MockXXXViewFactory>(
-      &root_tuple,
-      &createViewFunc,
-      nullptr,
-      root_enable_auto_remove_child);
+      &root_tuple, &root_args);
 
   triad_vec.push_back(root_tuple);
 
-#define ADD_TEST_TRIAD(level, order, parent)            \
-  TestXXX_MVPL_Tuple level##_##order##_tuple;           \
-      createTestTriadAndListener<MockXXXViewFactory>(   \
-          &level##_##order##_tuple,                     \
-          &createViewFunc,                              \
-          use_parent ? std::get<2>(parent) : nullptr);  \
+  PfCreateViewArgs child_args;
+
+#define ADD_TEST_TRIAD(level, order, parent)                    \
+  if (use_parent)                                               \
+    child_args.set_parent_presenter(std::get<2>(parent));       \
+  else                                                          \
+    child_args.set_parent_presenter(nullptr);                   \
+  TestXXX_MVPL_Tuple level##_##order##_tuple;                   \
+      createTestTriadAndListener<MockXXXViewFactory>(           \
+          &level##_##order##_tuple, &child_args);               \
       triad_vec.push_back(level##_##order##_tuple)
 
   ADD_TEST_TRIAD(level1, order2, root_tuple);
@@ -139,10 +116,9 @@ PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
 TEST_P(PfTriadManagerAutoRemoveChildTest,
        should_be_able_to_destroy_child_triad_first_in_FILO_order_when_destroy_parent_triad) { // NOLINT
   // Setup fixture
-  auto remove_method = std::get<0>(GetParam());
-  auto use_view_factory_id = std::get<1>(GetParam());
+  auto remove_method = GetParam();
 
-  auto triad_vec = createTestTriadHierachy(use_view_factory_id);
+  auto triad_vec = createTestTriadHierachy();
   auto& root_tuple = triad_vec[0];
 
   // Expectations
@@ -171,11 +147,9 @@ TEST_P(PfTriadManagerAutoRemoveChildTest,
   auto tester = [this](bool auto_remove_child,
                        bool use_parent) {
     // Setup fixture
-    auto remove_method = std::get<0>(GetParam());
-    auto use_view_factory_id = std::get<1>(GetParam());
+    auto remove_method = GetParam();
 
-    auto triad_vec = createTestTriadHierachy(use_view_factory_id,
-                                             auto_remove_child,
+    auto triad_vec = createTestTriadHierachy(auto_remove_child,
                                              use_parent);
     auto& root_tuple = triad_vec[0];
 
@@ -215,9 +189,12 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
   MockXXXPresenter un_managed_presenter(nullptr, nullptr);
   auto model = std::make_shared<MockYYYModel>();
 
+  PfCreateViewArgs args;
+  args.set_parent_presenter(&un_managed_presenter);
+
   // Verify results
   ASSERT_EQ(nullptr,
-            triad_manager->createViewFor(model, &un_managed_presenter));
+            triad_manager->createViewFor(model, &args));
 }
 
 }  // namespace tests

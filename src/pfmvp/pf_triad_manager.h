@@ -27,23 +27,22 @@ class PfTriadManager : public IPfTriadManager {
 
   std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model,
-                PfPresenter* parent_presenter,
-                bool auto_remove_child) override;
-
-  std::shared_ptr<IPfView>
-  createViewFor(
-      std::shared_ptr<IPfModel> model,
-      const IPfViewFactory::ViewFactoryIdType& view_factory_id,
-      PfPresenter* parent_presenter,
-      bool auto_remove_child) override;
+                PfCreateViewArgs* args) override;
 
   void removeTriadBy(IPfModel* model) override;
   void removeTriadBy(IPfView* view) override;
   bool requestRemoveTriadByView(IPfView* view) override;
+
   std::vector<IPfView*> findViewByModel(IPfModel* model) const override;
-  std::vector<IPfView*>
-  findViewsByModelId(const IPfModel::ModelIdType& model_id) const override;
   IPfModel* findModelByView(IPfView* view) const override;
+
+  std::vector<IPfView*> findViewByModelAndViewFactory(
+      IPfModel* model,
+      const IPfViewFactory::ViewFactoryIdType& view_factory_id) const override;
+
+  std::vector<IPfView*> findViewByModel_if(
+      IPfModel* model,
+      MementoPredicate pred) const override;
 
  private:
   PfTriadManager(const PfTriadManager& other) = delete;

@@ -27,6 +27,9 @@ class PfViewFactoryManager :
   void addViewFactory(const IPfModel::ModelIdType& model_id,
                       IPfViewFactory* view_factory) override;
 
+  void removeViewFactory(const IPfModel::ModelIdType& model_id,
+                         IPfViewFactory* view_factory) override;
+
   IPfViewFactory* getViewFactory(
       const IPfModel::ModelIdType& model_id,
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) const override;
@@ -54,6 +57,11 @@ class view_factory_t {
  public:
   view_factory_t() {
     addToViewFactoryManager();
+  }
+
+  ~view_factory_t() {
+    PfViewFactoryManager::getInstance().
+        removeViewFactory(M::modelId(), &factory);
   }
 
   F& FTO_getFactory() {

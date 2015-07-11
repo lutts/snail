@@ -9,6 +9,7 @@
 #include <vector>
 #include <unordered_map>
 #include <forward_list>
+#include <memory>
 
 #include "utils/basic_utils.h"  // utils::make_unique
 #include "pfmvp/i_pf_view_factory.h"
@@ -22,11 +23,13 @@ class TriadInfo {
  public:
   TriadInfo() = default;
   TriadInfo(std::shared_ptr<PfPresenter> presenter,
-            TriadInfo* parent = nullptr,
-            bool auto_remove_child = true)
-      : presenter_(presenter)
-      , parent_(parent)
-      , auto_remove_child_(auto_remove_child) {
+            TriadInfo* parent,
+            bool auto_remove_child,
+            std::shared_ptr<PfCreateViewArgsMemento> creation_args_memento)
+      : presenter_{presenter}
+      , parent_{parent}
+      , auto_remove_child_{auto_remove_child}
+      , creation_args_memento_{creation_args_memento} {
     if (parent_) {
       parent->add_child_triad(this);
     }
@@ -35,6 +38,13 @@ class TriadInfo {
   PfPresenter* presenter() const { return presenter_.get(); }
   IPfView* view() const { return presenter_->getView().get(); }
   IPfModel* model() const { return presenter_->getModel().get(); }
+  IPfViewFactory::ViewFactoryIdType view_factory_id() const {
+    return creation_args_memento_->view_factory_id();
+  }
+
+  const PfCreateViewArgsMemento* memento() const {
+    return creation_args_memento_.get();
+  }
 
   bool auto_remove_child() const { return auto_remove_child_; }
   TriadInfo* parent() const { return parent_; }
@@ -70,6 +80,8 @@ class TriadInfo {
   std::shared_ptr<PfPresenter> presenter_;
   TriadInfo* parent_;
   bool auto_remove_child_;
+  std::shared_ptr<PfCreateViewArgsMemento> creation_args_memento_;
+
   std::forward_list<TriadInfo*> children_;
   bool waiting_delete_ { false };
 };
@@ -111,12 +123,10 @@ class PfTriadManagerImpl {
   }
 
   std::shared_ptr<IPfView>
-  createViewWithFactory(
+  createViewFor(
       std::shared_ptr<IPfModel> model,
-      IPfViewFactory* view_factory,
-      IPfTriadManager* triad_manager,
-      PfPresenter* parent_presenter,
-      bool auto_remove_child);
+      PfCreateViewArgs* args,
+      IPfTriadManager* triad_manager);
 
   void removeTriads(const std::forward_list<TriadInfo*>& triads);
 
@@ -124,9 +134,15 @@ class PfTriadManagerImpl {
   void removeTriadBy(IPfView* view);
   bool requestRemoveTriadByView(IPfView* view);
   std::vector<IPfView*> findViewByModel(IPfModel* model) const;
-  std::vector<IPfView*>
-  findViewsByModelId(const IPfModel::ModelIdType& model_id) const;
   IPfModel* findModelByView(IPfView* view) const;
+
+  std::vector<IPfView*> findViewByModelAndViewFactory(
+      IPfModel* model,
+      const IPfViewFactory::ViewFactoryIdType& view_factory_id) const;
+
+  std::vector<IPfView*> findViewByModel_if(
+      IPfModel* model,
+      IPfTriadManager::MementoPredicate pred) const;
 
   bool isModelExist(IPfModel* model) const;
   bool isViewExist(IPfView* view) const;
@@ -163,12 +179,18 @@ PfTriadManager::~PfTriadManager() = default;
 
 // NOTE: createViewXXX maybe recursively called
 std::shared_ptr<IPfView>
-PfTriadManagerImpl::createViewWithFactory(
+PfTriadManagerImpl::createViewFor(
     std::shared_ptr<IPfModel> model,
-    IPfViewFactory* view_factory,
-    IPfTriadManager* triad_manager,
-    PfPresenter* parent_presenter,
-    bool auto_remove_child) {
+    PfCreateViewArgs* args,
+    IPfTriadManager* triad_manager) {
+  PfCreateViewArgs defaultArgs;
+
+  auto orig_args = args;
+  if (!args) {
+    args = &defaultArgs;
+  }
+
+  auto parent_presenter = args->parent_presenter();
   TriadInfo* parent_triad = nullptr;
   if (parent_presenter) {
     for (auto& triad : triad_list_) {
@@ -184,21 +206,31 @@ PfTriadManagerImpl::createViewWithFactory(
     }
   }
 
+  IPfViewFactory* view_factory =
+      view_factory_mgr_.getViewFactory(model->getModelId(),
+                                       args->view_factory_id());
+
   if (model && view_factory) {
     ALOGI << "create view for model " << model->getModelId();
 
-    auto presenter = view_factory->createView(model);
+    auto presenter = view_factory->createView(model, orig_args);
 
     if (presenter) {
       presenter->set_triad_manager(triad_manager);
 
       // TODO(lutts): LOCK
+
       // we use FILO policy, because pop-up windows are close
       // before their parents, and MainWindow is the first created
       // and last destroyed
+      std::unique_ptr<PfCreateViewArgsMemento> memento;
+      if (orig_args)
+        memento = orig_args->getMemento();
+
       triad_list_.emplace_front(presenter,
-                                      parent_triad,
-                                      auto_remove_child);
+                                parent_triad,
+                                args->auto_remove_child(),
+                                std::move(memento));
       ++model_view_count[presenter->getModel().get()];
 
       // initialize may create sub-triads, so we need to
@@ -368,20 +400,6 @@ PfTriadManagerImpl::findViewByModel(IPfModel* model) const {
   return matched_views;
 }
 
-std::vector<IPfView*> PfTriadManagerImpl:: findViewsByModelId(
-    const IPfModel::ModelIdType& model_id) const {
-  std::vector<IPfView*> matched_views;
-
-  for (auto& triad : triad_list_) {
-    auto id = triad.model()->getModelId();
-    if (model_id == id) {
-      matched_views.push_back(triad.view());
-    }
-  }
-
-  return matched_views;
-}
-
 IPfModel* PfTriadManagerImpl::findModelByView(IPfView* view) const {
   auto iter = std::find_if(
       triad_list_.begin(),
@@ -396,6 +414,50 @@ IPfModel* PfTriadManagerImpl::findModelByView(IPfView* view) const {
   }
 
   return nullptr;
+}
+
+std::vector<IPfView*> PfTriadManagerImpl::findViewByModelAndViewFactory(
+    IPfModel* model,
+    const IPfViewFactory::ViewFactoryIdType& view_factory_id) const {
+  std::vector<IPfView*> matched_views;
+
+  for (auto& triad : triad_list_) {
+    if (model == triad.model() &&
+        view_factory_id == triad.view_factory_id()) {
+      matched_views.push_back(triad.view());
+    }
+  }
+
+  return matched_views;
+}
+
+std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
+    IPfModel* model,
+    IPfTriadManager::MementoPredicate pred) const {
+  std::vector<IPfView*> matched_views;
+
+  PfCreateViewArgsMemento default_memento;
+
+  for (auto& triad : triad_list_) {
+    if (model == triad.model()) {
+      int result = IPfTriadManager::kNotMatched;
+      if (triad.memento()) {
+        result = pred(*triad.memento());
+      } else {
+        result = pred(default_memento);
+      }
+
+      if (result == IPfTriadManager::kMatchedContinue) {
+        matched_views.push_back(triad.view());
+        // continue
+      } else if (result == IPfTriadManager::kMatchedBreak) {
+        matched_views.push_back(triad.view());
+        break;
+      }
+    }
+  }
+
+  return matched_views;
 }
 
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL(THISCLASS, sigName, ObjType, ExistChecker) \
@@ -426,25 +488,8 @@ SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
 
 std::shared_ptr<IPfView>
 PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model,
-                              PfPresenter* parent_presenter,
-                              bool auto_remove_child) {
-  IPfViewFactory* view_factory =
-      impl->view_factory_mgr_.getViewFactory(model->getModelId());
-  return impl->createViewWithFactory(model, view_factory, this,
-                               parent_presenter, auto_remove_child);
-}
-
-std::shared_ptr<IPfView>
-PfTriadManager::createViewFor(
-    std::shared_ptr<IPfModel> model,
-    const IPfViewFactory::ViewFactoryIdType& view_factory_id,
-    PfPresenter* parent_presenter,
-    bool auto_remove_child) {
-  IPfViewFactory* view_factory =
-      impl->view_factory_mgr_.getViewFactory(model->getModelId(),
-                                       view_factory_id);
-  return impl->createViewWithFactory(model, view_factory, this,
-                               parent_presenter, auto_remove_child);
+                              PfCreateViewArgs* args) {
+  return impl->createViewFor(model, args, this);
 }
 
 void PfTriadManager::removeTriadBy(IPfModel* model) {
@@ -463,14 +508,20 @@ std::vector<IPfView*> PfTriadManager::findViewByModel(IPfModel* model) const {
   return impl->findViewByModel(model);
 }
 
-std::vector<IPfView*>
-PfTriadManager::findViewsByModelId(
-    const IPfModel::ModelIdType& model_id) const {
-  return impl->findViewsByModelId(model_id);
-}
-
 IPfModel* PfTriadManager::findModelByView(IPfView* view) const {
   return impl->findModelByView(view);
+}
+
+std::vector<IPfView*> PfTriadManager::findViewByModelAndViewFactory(
+    IPfModel* model,
+    const IPfViewFactory::ViewFactoryIdType& view_factory_id) const {
+  return impl->findViewByModelAndViewFactory(model, view_factory_id);
+}
+
+std::vector<IPfView*> PfTriadManager::findViewByModel_if(
+    IPfModel* model,
+    MementoPredicate pred) const {
+  return impl->findViewByModel_if(model, pred);
 }
 
 }  // namespace pfmvp

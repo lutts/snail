@@ -18,6 +18,14 @@ void PfViewFactoryManager::addViewFactory(
   factories[vf_id] = view_factory;
 }
 
+void PfViewFactoryManager::removeViewFactory(
+    const IPfModel::ModelIdType& model_id,
+    IPfViewFactory* view_factory) {
+  auto& factories = model_viewfactory_map_[model_id];
+  auto vf_id = view_factory->getViewFactoryId();
+  factories.erase(vf_id);
+}
+
 IPfViewFactory* PfViewFactoryManager::getViewFactory(
     const IPfModel::ModelIdType& model_id,
     const IPfViewFactory::ViewFactoryIdType& view_factory_id) const {

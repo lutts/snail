@@ -20,7 +20,9 @@ class MainWindowViewFactory : public PfViewFactoryT<IMainWindowModel> {
   DEF_VIEW_FACTORY_ID(MainWindowViewFactory)
 
   std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<IMainWindowModel> model) override {
+  createViewFor(std::shared_ptr<IMainWindowModel> model,
+                PfCreateViewArgs* args) override {
+    V_UNUSED(args);
     auto view = std::make_shared<MainWindow>();
     return std::make_shared<MainWindowPresenter>(model, view);
   }

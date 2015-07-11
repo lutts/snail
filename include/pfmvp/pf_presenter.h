@@ -69,12 +69,13 @@ class PfPresenter : public utils::ITrackable
     return triad_manager_->findViewByModel(model);
   }
 
-  std::vector<IPfView*>
-  findViewByModelId(const IPfModel::ModelIdType& model_id) {
+  std::vector<IPfView*> findViewByModel_if(
+      IPfModel* model,
+      IPfTriadManager::MementoPredicate pred) {
     if (!triad_manager_)
       return std::vector<IPfView*>();
 
-    return triad_manager_->findViewsByModelId(model_id);
+    return triad_manager_->findViewByModel_if(model, pred);
   }
 
   IPfModel* findModelByView(IPfView* view) const {
@@ -168,39 +169,45 @@ class PfPresenterT : public PfPresenter {
   template <typename SubVT>
   std::shared_ptr<SubVT> createViewFor(
       std::shared_ptr<IPfModel> model,
-      const IPfViewFactory::ViewFactoryIdType&
-      view_factory_id = INVALID_PF_VIEW_FACTORY_ID) {
+      PfCreateViewArgs* args = nullptr) {
     if (!triad_manager())
       return nullptr;
 
-    auto v = triad_manager()->createViewFor(model,
-                                            view_factory_id,
-                                            this);
-    return std::dynamic_pointer_cast<SubVT>(v);
+    auto view = triad_manager()->createViewFor(model, args);
+    return std::dynamic_pointer_cast<SubVT>(view);
   }
 
   template <typename SubVT>
   SubVT* createRawViewFor(std::shared_ptr<IPfModel> model,
-                          const IPfViewFactory::ViewFactoryIdType&
-                          view_factory_id = INVALID_PF_VIEW_FACTORY_ID) {
-    if (!triad_manager())
-      return nullptr;
-
-    auto v = triad_manager()->createViewFor(model,
-                                            view_factory_id,
-                                            this);
-    return dynamic_cast<SubVT*>(v.get());
+                       PfCreateViewArgs* args = nullptr) {
+    auto view = createViewFor<SubVT>(model, args);
+    return view.get();
   }
 
   template <typename SubVT>
-  SubVT* findSingleViewByModel(IPfModel* model) {
-    auto view_vec = findViewByModel(model);
+  SubVT* findSingleViewByModel(IPfModel* model,
+                               const PfCreateViewArgs* args = nullptr) {
+    std::vector<IPfView*> matched_views;
 
-    if (view_vec.empty())
+    if (args) {
+      matched_views =
+          findViewByModel_if(model,
+                             [args](const PfCreateViewArgsMemento& memento) {
+                               if (args->memento_equals(memento)) {
+                                 return IPfTriadManager::kMatchedContinue;
+                               } else {
+                                 return IPfTriadManager::kNotMatched;
+                               }
+                             });
+    } else {
+      matched_views = findViewByModel(model);
+    }
+
+    if (matched_views.empty())
       return nullptr;
 
     // TODO(lutts): do we need to warn user if multi views returned?
-    for (auto v : view_vec) {
+    for (auto v : matched_views) {
       auto view = dynamic_cast<SubVT*>(v);
       if (view)
         return view;
@@ -212,15 +219,12 @@ class PfPresenterT : public PfPresenter {
   // TODO(lutts): how do we ensure SubVT is matched with view_factory_id?
   template <typename SubVT>
   SubVT* createRawViewIfNotExist(std::shared_ptr<IPfModel> model,
-                                 const IPfViewFactory::ViewFactoryIdType&
-                                 view_factory_id = INVALID_PF_VIEW_FACTORY_ID) {
-    // TODO(lutts): if we can ensure SubVT/view_factory_id connection,
-    // we can call this, else we may need a findByModelAndViewFactory impl
-    auto view = findSingleViewByModel<SubVT>(model);
+                                 PfCreateViewArgs* args = nullptr) {
+    auto view = findSingleViewByModel<SubVT>(model, args);
     if (view)
       return view;
 
-    return createRawViewFor(model, view_factory_id);
+    return createRawViewFor<SubVT>(model, args);
   }
 
   //////////////// Triad Manager Helpers end  ////////////////////

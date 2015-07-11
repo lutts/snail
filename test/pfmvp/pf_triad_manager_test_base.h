@@ -36,8 +36,10 @@ class MockPfViewFactory : public IPfViewFactory {
  public:
   DEF_VIEW_FACTORY_ID(MockPfViewFactory)
 
-  MOCK_METHOD1(createView,
-               std::shared_ptr<PfPresenter>(std::shared_ptr<IPfModel> model));
+  MOCK_METHOD2(createView,
+               std::shared_ptr<PfPresenter>(
+                   std::shared_ptr<IPfModel> model,
+                   PfCreateViewArgs* args));
 };
 
 #define DEFINE_TEST_CLASSES(name)                                       \
@@ -109,7 +111,9 @@ class MockPfViewFactory : public IPfViewFactory {
      DEF_VIEW_FACTORY_ID(Mock##name##ViewFactory)                       \
                                                                         \
      std::shared_ptr<PfPresenter>                                       \
-     createView(std::shared_ptr<IPfModel> model) override {             \
+     createView(std::shared_ptr<IPfModel> model,                        \
+                PfCreateViewArgs* args) override {                      \
+       V_UNUSED(args);                                                  \
        auto my_model = std::dynamic_pointer_cast<Mock##name##Model>(model); \
        if (my_model) {                                                  \
          auto view = createTestView();                                  \
@@ -141,7 +145,9 @@ class MockPfViewFactory : public IPfViewFactory {
      DEF_VIEW_FACTORY_ID(Mock##name##ViewFactory2)                      \
                                                                         \
      std::shared_ptr<PfPresenter>                                       \
-     createView(std::shared_ptr<IPfModel> model) override {             \
+     createView(std::shared_ptr<IPfModel> model,                        \
+                PfCreateViewArgs* args) override {                      \
+       V_UNUSED(args);                                                  \
        auto my_model = std::dynamic_pointer_cast<Mock##name##Model>(model); \
        if (my_model) {                                                  \
          auto view = createTestView();                                  \
@@ -242,13 +248,6 @@ using TestYYY_MVPL_Tuple = std::tuple<MockYYYModel*,
                                       MockYYYPresenter*,
                                       std::shared_ptr<MockListener>>;
 
-using ViewCreatationFunction =
-    std::function<std::shared_ptr<IPfView>(
-    std::shared_ptr<IPfModel> model,
-      const IPfViewFactory::ViewFactoryIdType& view_factory_id,
-      PfPresenter* parent_presenter,
-      bool auto_remove_child)>;
-
 class PfTriadManagerTestBase {
  protected:
   virtual ~PfTriadManagerTestBase() {
@@ -263,13 +262,6 @@ class PfTriadManagerTestBase {
   }
 
   void verifyTriadManagerInitialState() {
-    ASSERT_EQ(
-        0,
-        triad_manager->findViewsByModelId(MockXXXModel::modelId()).size());
-    ASSERT_EQ(
-        0,
-        triad_manager->findViewsByModelId(MockYYYModel::modelId()).size());
-
     auto dummy_model = std::make_shared<MockXXXModel>();
     ASSERT_EQ(0, triad_manager->findViewByModel(dummy_model.get()).size());
 
@@ -278,14 +270,16 @@ class PfTriadManagerTestBase {
 
     // after init and no view factory registered, cannot create view from model
     ASSERT_EQ(nullptr, triad_manager->createViewFor(dummy_model));
+
+    PfCreateViewArgs args;
+
+    args.set_view_factory_id(MockXXXViewFactory::viewFactoryId());
     ASSERT_EQ(nullptr,
-              triad_manager->createViewFor(
-                  dummy_model,
-                  MockXXXViewFactory::viewFactoryId()));
+              triad_manager->createViewFor(dummy_model, &args));
+
+    args.set_view_factory_id(MockXXXViewFactory2::viewFactoryId());
     ASSERT_EQ(nullptr,
-              triad_manager->createViewFor(
-                  dummy_model,
-                  MockXXXViewFactory2::viewFactoryId()));
+              triad_manager->createViewFor(dummy_model, &args));
   }
 
   static TestXXX_MVP_Triad make_xxx_triad(MockXXXModel* model,
@@ -304,16 +298,11 @@ class PfTriadManagerTestBase {
   void createTestTriad(std::shared_ptr<M> model,
                        std::shared_ptr<V> view,
                        P** presenter_ret,
-                       ViewCreatationFunction* viewCreatationFunc = nullptr,
-                       PfPresenter* parent_presenter = nullptr,
-                       bool auto_remove_child = true);
+                       PfCreateViewArgs* args = nullptr);
 
   template <typename VF, typename MVPLTuple>
   void createTestTriadAndListener(
-      MVPLTuple* tuple,
-      ViewCreatationFunction* viewCreatationFunc = nullptr,
-      PfPresenter* parent_presenter = nullptr,
-      bool auto_remove_child = true);
+      MVPLTuple* tuple, PfCreateViewArgs* args = nullptr);
 
   template <typename VF, typename TriadT>
   void createTestTriads(
@@ -384,9 +373,7 @@ void PfTriadManagerTestBase::createTestTriad(
     std::shared_ptr<M> model,
     std::shared_ptr<V> view,
     P** presenter_ret,
-    ViewCreatationFunction* viewCreatationFunc,
-    PfPresenter* parent_presenter,
-    bool auto_remove_child) {
+    PfCreateViewArgs* args) {
   auto old_model_use_count = model.use_count();
   auto old_view_use_count = view.use_count();
 
@@ -397,15 +384,11 @@ void PfTriadManagerTestBase::createTestTriad(
     ON_CALL(view_factory, createTestView())
         .WillByDefault(Return(view));
 
+    if (args)
+      args->set_view_factory_id(view_factory.getViewFactoryId());
+
     std::shared_ptr<IPfView> actual_view;
-    if (viewCreatationFunc) {
-      actual_view = (*viewCreatationFunc)(model,
-                                          view_factory.getViewFactoryId(),
-                                          parent_presenter,
-                                          auto_remove_child);
-    } else {
-      actual_view = triad_manager->createViewFor(model);
-    }
+    actual_view = triad_manager->createViewFor(model, args);
     ASSERT_EQ(view, actual_view);
 
     // for convenience, we will store the triad manager in presenter
@@ -436,10 +419,7 @@ void PfTriadManagerTestBase::createTestYYYTriad(
 
 template <typename VF, typename MVPLTuple>
 void PfTriadManagerTestBase::createTestTriadAndListener(
-    MVPLTuple* tuple,
-    ViewCreatationFunction* viewCreatationFunc,
-    PfPresenter* parent_presenter,
-    bool auto_remove_child) {
+    MVPLTuple* tuple, PfCreateViewArgs* args) {
   using MT = typename std::remove_pointer<
     typename std::tuple_element<0, MVPLTuple>::type>::type;
   using VT = typename std::remove_pointer<
@@ -451,10 +431,7 @@ void PfTriadManagerTestBase::createTestTriadAndListener(
   auto view = std::make_shared<VT>();
   PT* presenter = nullptr;
 
-  createTestTriad<VF>(model, view, &presenter,
-                      viewCreatationFunc,
-                      parent_presenter,
-                      auto_remove_child);
+  createTestTriad<VF>(model, view, &presenter, args);
 
   auto listener = MockListener::attachTo(triad_manager.get(),
                                          model.get(),
