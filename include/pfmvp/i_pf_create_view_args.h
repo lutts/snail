@@ -9,6 +9,7 @@
 #define INCLUDE_PFMVP_I_PF_CREATE_VIEW_ARGS_H_
 
 #include "utils/basic_utils.h"
+#include "pfmvp/i_pf_view_factory.h"
 
 namespace pfmvp {
 
