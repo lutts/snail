@@ -167,7 +167,7 @@ class PfPresenterT : public PfPresenter {
   view_type* view() { return view_; }
 
   //////////////// Triad Manager Helpers begin ///////////////////
-  template <typename SubVT>
+  template <typename SubVT = IPfView>
   std::shared_ptr<SubVT> createViewFor(
       std::shared_ptr<IPfModel> model,
       PfCreateViewArgs* args = nullptr) {
@@ -178,14 +178,14 @@ class PfPresenterT : public PfPresenter {
     return std::dynamic_pointer_cast<SubVT>(view);
   }
 
-  template <typename SubVT>
+  template <typename SubVT = IPfView>
   SubVT* createRawViewFor(std::shared_ptr<IPfModel> model,
                        PfCreateViewArgs* args = nullptr) {
     auto view = createViewFor<SubVT>(model, args);
     return view.get();
   }
 
-  template <typename SubVT>
+  template <typename SubVT = IPfView>
   SubVT* findSingleViewByModel(IPfModel* model,
                                const PfCreateViewArgs* args = nullptr) {
     std::vector<IPfView*> matched_views;
@@ -218,10 +218,10 @@ class PfPresenterT : public PfPresenter {
   }
 
   // TODO(lutts): how do we ensure SubVT is matched with view_factory_id?
-  template <typename SubVT>
+  template <typename SubVT = IPfView>
   SubVT* createRawViewIfNotExist(std::shared_ptr<IPfModel> model,
                                  PfCreateViewArgs* args = nullptr) {
-    auto view = findSingleViewByModel<SubVT>(model, args);
+    auto view = findSingleViewByModel<SubVT>(model.get(), args);
     if (view)
       return view;
 
