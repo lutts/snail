@@ -11,7 +11,7 @@
 
 #include "test/testutils/generic_mock_listener.h"
 #include "src/utils/command/command_processor.h"
-#include "test/utils/command/mock_command.h"
+#include "utils/mock_command.h"
 
 namespace utils {
 namespace tests {

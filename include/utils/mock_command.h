@@ -8,7 +8,7 @@
 #ifndef TEST_UTILS_COMMAND_MOCK_COMMAND_H_
 #define TEST_UTILS_COMMAND_MOCK_COMMAND_H_
 
-#include "src/utils/command/command.h"
+#include "utils/command.h"
 
 namespace utils {
 namespace tests {
@@ -20,6 +20,7 @@ class MockCommand : public Command {
   MOCK_METHOD0(redo, void());
   MOCK_METHOD0(undo, void());
   MOCK_METHOD0(destruct, void());
+  MOCK_METHOD0(display_text, utils::U8String());
   MOCK_METHOD0(getType, CmdType());
 };
 

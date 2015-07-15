@@ -7,7 +7,7 @@
 // but we may change some later time.
 
 #include "src/utils/command/command_processor.h"
-#include "src/utils/command/command.h"
+#include "utils/command.h"
 
 namespace utils {
 
