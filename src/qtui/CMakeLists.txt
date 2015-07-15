@@ -29,6 +29,8 @@ SET(qtui_SRCS
   work_view_factory.cc
   work_name_input_dialog.cc
   candidate_item_qmodel_adapter.cc
+  attr_create_view_args.cc
+  work_attribute_presenter.cc
   )
 
 set(SUBDIRS)

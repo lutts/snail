@@ -40,4 +40,10 @@ add_gmock_test(work_presenter_test
 add_gmock_test(candidate_item_qmodel_adapter_test
   LIBS qtuicore testutils qttestutils)
 
+add_gmock_test(work_attribute_presenter_test
+  LIBS qtuicore testutils)
+
+add_gmock_test(attr_create_view_args_test
+  LIBS qtuicore testutils)
+
 add_subdirectory(preview)
