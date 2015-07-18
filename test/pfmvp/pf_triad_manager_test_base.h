@@ -275,11 +275,11 @@ class PfTriadManagerTestBase {
 
     args.set_view_factory_id(MockXXXViewFactory::viewFactoryId());
     ASSERT_EQ(nullptr,
-              triad_manager->createViewFor(dummy_model, &args));
+              triad_manager->createViewFor(dummy_model, nullptr, true, &args));
 
     args.set_view_factory_id(MockXXXViewFactory2::viewFactoryId());
     ASSERT_EQ(nullptr,
-              triad_manager->createViewFor(dummy_model, &args));
+              triad_manager->createViewFor(dummy_model, nullptr, true, &args));
   }
 
   static TestXXX_MVP_Triad make_xxx_triad(MockXXXModel* model,
@@ -298,11 +298,16 @@ class PfTriadManagerTestBase {
   void createTestTriad(std::shared_ptr<M> model,
                        std::shared_ptr<V> view,
                        P** presenter_ret,
+                       PfPresenter* parent = nullptr,
+                       bool auto_remove_child = true,
                        PfCreateViewArgs* args = nullptr);
 
   template <typename VF, typename MVPLTuple>
   void createTestTriadAndListener(
-      MVPLTuple* tuple, PfCreateViewArgs* args = nullptr);
+      MVPLTuple* tuple,
+      PfPresenter* parent = nullptr,
+      bool auto_remove_child = true,
+      PfCreateViewArgs* args = nullptr);
 
   template <typename VF, typename TriadT>
   void createTestTriads(
@@ -373,6 +378,8 @@ void PfTriadManagerTestBase::createTestTriad(
     std::shared_ptr<M> model,
     std::shared_ptr<V> view,
     P** presenter_ret,
+    PfPresenter* parent,
+    bool auto_remove_child,
     PfCreateViewArgs* args) {
   auto old_model_use_count = model.use_count();
   auto old_view_use_count = view.use_count();
@@ -388,7 +395,9 @@ void PfTriadManagerTestBase::createTestTriad(
       args->set_view_factory_id(view_factory.getViewFactoryId());
 
     std::shared_ptr<IPfView> actual_view;
-    actual_view = triad_manager->createViewFor(model, args);
+    actual_view = triad_manager->createViewFor(model, parent,
+                                               auto_remove_child,
+                                               args);
     ASSERT_EQ(view, actual_view);
 
     // for convenience, we will store the triad manager in presenter
@@ -419,7 +428,10 @@ void PfTriadManagerTestBase::createTestYYYTriad(
 
 template <typename VF, typename MVPLTuple>
 void PfTriadManagerTestBase::createTestTriadAndListener(
-    MVPLTuple* tuple, PfCreateViewArgs* args) {
+    MVPLTuple* tuple,
+    PfPresenter* parent,
+    bool auto_remove_child,
+    PfCreateViewArgs* args) {
   using MT = typename std::remove_pointer<
     typename std::tuple_element<0, MVPLTuple>::type>::type;
   using VT = typename std::remove_pointer<
@@ -431,7 +443,7 @@ void PfTriadManagerTestBase::createTestTriadAndListener(
   auto view = std::make_shared<VT>();
   PT* presenter = nullptr;
 
-  createTestTriad<VF>(model, view, &presenter, args);
+  createTestTriad<VF>(model, view, &presenter, parent, auto_remove_child, args);
 
   auto listener = MockListener::attachTo(triad_manager.get(),
                                          model.get(),

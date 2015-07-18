@@ -65,7 +65,7 @@ class PfTriadManagerOneModelMultiViewFactoryTest
 
     for (int i = 0; i < NUM_TEST_VIEWS; ++i) {
       auto actual_view =
-          triad_manager->createViewFor(model, &args);
+          triad_manager->createViewFor(model, nullptr, true, &args);
 
       ASSERT_EQ(expect_factory1_views[NUM_TEST_VIEWS - 1 - i],
                 actual_view.get());
@@ -75,7 +75,7 @@ class PfTriadManagerOneModelMultiViewFactoryTest
     args.set_view_factory_id(factory2.getViewFactoryId());
     for (int i = 0; i < NUM_TEST_VIEWS; ++i) {
       auto actual_view =
-          triad_manager->createViewFor(model, &args);
+          triad_manager->createViewFor(model, nullptr, true, &args);
 
       ASSERT_EQ(expect_factory2_views[NUM_TEST_VIEWS - 1 - i],
                 actual_view.get());

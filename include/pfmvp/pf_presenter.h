@@ -128,7 +128,9 @@ class PfPresenter : public utils::ITrackable
     if (!triad_manager_)
       return false;
 
-    auto view = triad_manager_->createViewFor(model, args);
+    auto view = triad_manager_->createViewFor(model,
+                                              this, true,
+                                              args);
     if (view) {
       return view->showView(modal);
     }
@@ -174,7 +176,7 @@ class PfPresenterT : public PfPresenter {
     if (!triad_manager())
       return nullptr;
 
-    auto view = triad_manager()->createViewFor(model, args);
+    auto view = triad_manager()->createViewFor(model, this, true, args);
     return std::dynamic_pointer_cast<SubVT>(view);
   }
 

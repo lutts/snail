@@ -134,7 +134,7 @@ void WorkAttributePresenterTest::expectationsOnShowAttributes(
 
     R_EXPECT_CALL(triad_manager, findViewByModel_if(attr_pfmodel.get(), _))
         .WillOnce(Return(std::vector<IPfView*>()));
-    R_EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, args))
+    R_EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, args))
         .WillOnce(Return(attr_view));
 
     IWorkAttributeModel::Location location {
@@ -234,7 +234,7 @@ TEST_F(WorkAttributePresenterTest,
   auto args = AttrCreateViewArgs::getArgs(true);
 
   // Expectations
-  EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, args))
+  EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, args))
       .WillOnce(Return(attr_view));
   EXPECT_CALL(*attr_view, showView(true))
       .WillOnce(Return(true));

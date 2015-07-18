@@ -125,6 +125,8 @@ class PfTriadManagerImpl {
   std::shared_ptr<IPfView>
   createViewFor(
       std::shared_ptr<IPfModel> model,
+      PfPresenter* parent,
+      bool auto_remove_child,
       PfCreateViewArgs* args,
       IPfTriadManager* triad_manager);
 
@@ -181,6 +183,8 @@ PfTriadManager::~PfTriadManager() = default;
 std::shared_ptr<IPfView>
 PfTriadManagerImpl::createViewFor(
     std::shared_ptr<IPfModel> model,
+    PfPresenter* parent,
+    bool auto_remove_child,
     PfCreateViewArgs* args,
     IPfTriadManager* triad_manager) {
   PfCreateViewArgs defaultArgs;
@@ -190,11 +194,10 @@ PfTriadManagerImpl::createViewFor(
     args = &defaultArgs;
   }
 
-  auto parent_presenter = args->parent_presenter();
   TriadInfo* parent_triad = nullptr;
-  if (parent_presenter) {
+  if (parent) {
     for (auto& triad : triad_list_) {
-      if (triad.presenter() == parent_presenter) {
+      if (triad.presenter() == parent) {
         parent_triad = &triad;
         break;
       }
@@ -229,7 +232,7 @@ PfTriadManagerImpl::createViewFor(
 
       triad_list_.emplace_front(presenter,
                                 parent_triad,
-                                args->auto_remove_child(),
+                                auto_remove_child,
                                 std::move(memento));
       ++model_view_count[presenter->getModel().get()];
 
@@ -488,8 +491,10 @@ SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
 
 std::shared_ptr<IPfView>
 PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model,
+                              PfPresenter* parent,
+                              bool auto_remove_child,
                               PfCreateViewArgs* args) {
-  return impl->createViewFor(model, args, this);
+  return impl->createViewFor(model, parent, auto_remove_child, args, this);
 }
 
 void PfTriadManager::removeTriadBy(IPfModel* model) {

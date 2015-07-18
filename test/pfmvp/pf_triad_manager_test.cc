@@ -31,20 +31,11 @@ TEST_F(PfTriadManagerTest,
   PfCreateViewArgs args;
 
   // default values
-  ASSERT_EQ(nullptr, args.parent_presenter());
   ASSERT_EQ(INVALID_PF_VIEW_FACTORY_ID, args.view_factory_id());
-  ASSERT_EQ(true, args.auto_remove_child());
 
   // Verify results
-  auto expect_presenter = xtestutils::genDummyPointer<PfPresenter>();
-  args.set_parent_presenter(expect_presenter);
-  ASSERT_EQ(expect_presenter, args.parent_presenter());
-
   args.set_view_factory_id(MockXXXViewFactory::viewFactoryId());
   ASSERT_EQ(MockXXXViewFactory::viewFactoryId(), args.view_factory_id());
-
-  args.set_auto_remove_child(false);
-  ASSERT_EQ(false, args.auto_remove_child());
 }
 
 TEST_F(PfTriadManagerTest, should_be_able_to_create_view_for_model_and_hold_triad_reference) { // NOLINT
@@ -74,14 +65,14 @@ TEST_F(PfTriadManagerTest,
   EXPECT_CALL(factory, createView(model, &args)).WillOnce(Return(nullptr));
 
   // Exercise system
-  triad_manager->createViewFor(model, &args);
+  triad_manager->createViewFor(model, nullptr, true, &args);
 
   // Verify result
   ::Mock::VerifyAndClearExpectations(&factory);
 
   // pass nullptr will got nullptr
   EXPECT_CALL(factory, createView(model, nullptr)).WillOnce(Return(nullptr));
-  triad_manager->createViewFor(model, nullptr);
+  triad_manager->createViewFor(model, nullptr, true, nullptr);
   ::Mock::VerifyAndClearExpectations(&factory);
 }
 

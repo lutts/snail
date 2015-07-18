@@ -27,6 +27,8 @@ class PfTriadManager : public IPfTriadManager {
 
   std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model,
+                PfPresenter* parent,
+                bool auto_remove_child,
                 PfCreateViewArgs* args) override;
 
   void removeTriadBy(IPfModel* model) override;

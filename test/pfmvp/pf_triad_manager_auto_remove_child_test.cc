@@ -79,26 +79,17 @@ PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
 
   std::vector<TestXXX_MVPL_Tuple> triad_vec;
 
-  PfCreateViewArgs root_args;
-  root_args.set_parent_presenter(nullptr);
-  root_args.set_auto_remove_child(root_enable_auto_remove_child);
-
   TestXXX_MVPL_Tuple root_tuple;
   createTestTriadAndListener<MockXXXViewFactory>(
-      &root_tuple, &root_args);
+      &root_tuple, nullptr, root_enable_auto_remove_child);
 
   triad_vec.push_back(root_tuple);
 
-  PfCreateViewArgs child_args;
-
 #define ADD_TEST_TRIAD(level, order, parent)                    \
-  if (use_parent)                                               \
-    child_args.set_parent_presenter(std::get<2>(parent));       \
-  else                                                          \
-    child_args.set_parent_presenter(nullptr);                   \
   TestXXX_MVPL_Tuple level##_##order##_tuple;                   \
       createTestTriadAndListener<MockXXXViewFactory>(           \
-          &level##_##order##_tuple, &child_args);               \
+          &level##_##order##_tuple,                             \
+          use_parent ? std::get<2>(parent) : nullptr);          \
       triad_vec.push_back(level##_##order##_tuple)
 
   ADD_TEST_TRIAD(level1, order2, root_tuple);
@@ -189,12 +180,9 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
   MockXXXPresenter un_managed_presenter(nullptr, nullptr);
   auto model = std::make_shared<MockYYYModel>();
 
-  PfCreateViewArgs args;
-  args.set_parent_presenter(&un_managed_presenter);
-
   // Verify results
   ASSERT_EQ(nullptr,
-            triad_manager->createViewFor(model, &args));
+            triad_manager->createViewFor(model, &un_managed_presenter));
 }
 
 }  // namespace tests

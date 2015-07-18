@@ -25,8 +25,10 @@ class MockPfTriadManager : public IPfTriadManager {
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel, IPfModel);
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView, IPfView);
 
-  MOCK_METHOD2(createViewFor,
+  MOCK_METHOD4(createViewFor,
                std::shared_ptr<IPfView>(std::shared_ptr<IPfModel> model,
+                                        PfPresenter* parent,
+                                        bool auto_remove_child,
                                         PfCreateViewArgs* args));
 
   MOCK_METHOD1(removeTriadBy, void(IPfModel* model));

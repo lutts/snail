@@ -50,14 +50,6 @@ class PfCreateViewArgs {
   PfCreateViewArgs() = default;
   virtual ~PfCreateViewArgs()  = default;
 
-  void set_parent_presenter(PfPresenter* parent) {
-    parent_presenter_ = parent;
-  }
-
-  PfPresenter* parent_presenter() const {
-    return parent_presenter_;
-  }
-
   void set_view_factory_id(
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) {
     view_factory_id_ = view_factory_id;
@@ -65,14 +57,6 @@ class PfCreateViewArgs {
 
   IPfViewFactory::ViewFactoryIdType view_factory_id() const {
     return view_factory_id_;
-  }
-
-  void set_auto_remove_child(bool auto_remove_child) {
-    auto_remove_child_ = auto_remove_child;
-  }
-
-  bool auto_remove_child() const {
-    return auto_remove_child_;
   }
 
   std::unique_ptr<PfCreateViewArgsMemento> getMemento() const {
@@ -108,13 +92,12 @@ class PfCreateViewArgs {
  private:
   void initMemento(PfCreateViewArgsMemento* memento) const {
     // parent_presenter & auto_remove_child is not checked
-    memento->set_view_factory_id(view_factory_id_);
+    memento->
+        set_view_factory_id(view_factory_id_);
   }
 
   IPfViewFactory::ViewFactoryIdType view_factory_id_ {
     INVALID_PF_VIEW_FACTORY_ID };
-  PfPresenter* parent_presenter_ { nullptr };
-  bool auto_remove_child_ { true };
 };
 
 }  // namespace pfmvp
