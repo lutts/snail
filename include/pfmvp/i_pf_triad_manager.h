@@ -65,7 +65,7 @@ class IPfTriadManager : public utils::ITrackable {
   virtual std::shared_ptr<IPfView>
   createViewFor(std::shared_ptr<IPfModel> model,
                 PfPresenter* parent = nullptr,
-                bool auto_remove_child = false,
+                bool auto_remove_child = true,
                 PfCreateViewArgs* args = nullptr /* IN, OUT */) = 0;
 
   virtual void removeTriadBy(IPfModel* model) = 0;

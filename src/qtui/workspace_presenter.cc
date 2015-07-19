@@ -44,26 +44,28 @@ void WorkSpacePresenter::initialize() {
       shared_from_this());
 }
 
-void WorkSpacePresenter::onAboutToDestroyModel(IPfModel* pfmodel) {
-  auto work_model = dynamic_cast<IWorkModel*>(pfmodel);
-  if (work_model)
-    model()->removeWorkModel(work_model);
-}
-
-void WorkSpacePresenter::onAboutToDestroyView(IPfView* pfview) {
-  auto work_view = dynamic_cast<IWorkView*>(pfview);
-  if (work_view)
-    view()->removeWorkView(work_view);
-}
-
 void WorkSpacePresenter::onWorkModelAdded(
     std::shared_ptr<IWorkModel> work_model) {
   auto work_view = createRawViewFor<IWorkView>(work_model);
   if (work_view) {
     view()->addWorkView(work_view, work_model->name());
     view()->setActiveWorkView(work_view);
-    monitorModelDestroy(work_model.get());
-    monitorViewDestroy(work_view);
+
+    triad_manager()->whenAboutToDestroyModel(
+        work_model.get(),
+        [this](IPfModel* pfmodel) {
+          auto work_model = dynamic_cast<IWorkModel*>(pfmodel);
+          if (work_model)
+            model()->removeWorkModel(work_model);
+        }, shared_from_this());
+
+    triad_manager()->whenAboutToDestroyView(
+        work_view,
+        [this](IPfView* pfview){
+          auto work_view = dynamic_cast<IWorkView*>(pfview);
+          if (work_view)
+            view()->removeWorkView(work_view);
+        }, shared_from_this());
 
     work_model->whenNameChanged(
         [this, work_view](const utils::U8String& new_name) {

@@ -33,9 +33,6 @@ class WorkSpacePresenter : public WorkSpacePresenterBase {
   WorkSpacePresenter(const WorkSpacePresenter& other) = delete;
   WorkSpacePresenter& operator=(const WorkSpacePresenter& other) = delete;
 
-  void onAboutToDestroyModel(pfmvp::IPfModel* pfmodel) override;
-  void onAboutToDestroyView(pfmvp::IPfView* pfview) override;
-
   void onWorkModelAdded(std::shared_ptr<snailcore::IWorkModel> work_model);
 };
 

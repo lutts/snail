@@ -185,5 +185,74 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
             triad_manager->createViewFor(model, &un_managed_presenter));
 }
 
+TEST_F(PfTriadManagerAutoRemoveChildTest,
+       should_createViewFor_default_to_null_parent_and_true_auto_remove_child) { // NOLINT
+  // NOTE:
+  //   * true auto_remove_child means child will be destroyed because parent is destroyed
+  //   * null parent means a triad will not destroyed because another triad is destroyed
+  // Setup fixture
+  MockXXXView* view1 = nullptr;
+  MockXXXView* view2 = nullptr;
+  MockXXXView* view3 = nullptr;
+
+  {  // prepare scope
+    view_factory_t<MockXXXModel,
+                   MockXXXViewFactory> view_factory_wrapper;
+    auto& factory = view_factory_wrapper.FTO_getFactory();
+
+    auto model = std::make_shared<MockXXXModel>();
+    std::shared_ptr<IPfModel> pfmodel = model;
+
+    auto expect_view1 = std::make_shared<MockXXXView>();
+    auto expect_view2 = std::make_shared<MockXXXView>();
+    auto expect_view3 = std::make_shared<MockXXXView>();
+
+    PfPresenter* presenter2 = nullptr;
+
+    EXPECT_CALL(factory, createTestView())
+        .WillOnce(Return(expect_view1))
+        .WillOnce(Return(expect_view2))
+        .WillOnce(Return(expect_view3));
+
+    auto actual_view1 = triad_manager->createViewFor(model);
+    auto actual_view2 = triad_manager->createViewFor(model);
+    presenter2 = factory.last_presenter;
+    ASSERT_NE(nullptr, presenter2);
+    auto actual_view3 = triad_manager->createViewFor(model, presenter2);
+
+    ASSERT_EQ(expect_view1, actual_view1);
+    ASSERT_EQ(expect_view2, actual_view2);
+    ASSERT_EQ(expect_view3, actual_view3);
+
+    view1 = expect_view1.get();
+    view2 = expect_view2.get();
+    view3 = expect_view3.get();
+  }
+
+  // 1. destroy view1 will not destroy view2 and view3
+  EXPECT_CALL(*view1, destruct());
+  EXPECT_CALL(*view2, destruct()).Times(0);
+  EXPECT_CALL(*view3, destruct()).Times(0);
+
+  triad_manager->removeTriadBy(view1);
+
+  ::Mock::VerifyAndClearExpectations(view1);
+  ::Mock::VerifyAndClearExpectations(view2);
+  ::Mock::VerifyAndClearExpectations(view3);
+
+  // 2. destroy view2 will destroy view3 first
+  {
+    InSequence seq;
+
+    EXPECT_CALL(*view3, destruct());
+    EXPECT_CALL(*view2, destruct());
+  }
+
+  triad_manager->removeTriadBy(view2);
+
+  ::Mock::VerifyAndClearExpectations(view2);
+  ::Mock::VerifyAndClearExpectations(view3);
+}
+
 }  // namespace tests
 }  // namespace pfmvp

@@ -57,6 +57,9 @@ class TriadInfo {
 
   void markForDelete() {
     waiting_delete_ = true;
+    ALOGI << "mark triad " << model()->getModelId() << " for delete"
+          << ", has child: " << !children_.empty()
+          << ", auto_remove_child: " << auto_remove_child_;
 
     if (!auto_remove_child_)
       return;
@@ -214,7 +217,9 @@ PfTriadManagerImpl::createViewFor(
                                        args->view_factory_id());
 
   if (model && view_factory) {
-    ALOGI << "create view for model " << model->getModelId();
+    ALOGI << "create view for model " << model->getModelId()
+          << ", parent is "
+          << (parent_triad ? parent_triad->model()->getModelId() : "(none)");
 
     auto presenter = view_factory->createView(model, orig_args);
 
@@ -301,10 +306,12 @@ void PfTriadManagerImpl::doAboutToDestroyTriad(PfPresenter* presenter) {
   presenter->onDestroy();
 
   // 2. view,
+  ALOGI << "about to destroy view of model " << model->getModelId();
   view->onDestroy();
 
   // 3. model
   if (model_view_count[model] == 0) {
+    ALOGI << "about to destroy model " << model->getModelId();
     model->onDestroy();
   }
 }
