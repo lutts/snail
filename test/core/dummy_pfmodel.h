@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef DUMMY_PFMODEL_H_
-#define DUMMY_PFMODEL_H_
+#ifndef TEST_CORE_DUMMY_PFMODEL_H_
+#define TEST_CORE_DUMMY_PFMODEL_H_
 
 #include "pfmvp/i_pf_model.h"
 
@@ -23,4 +23,4 @@ class DummyModel : public pfmvp::IPfModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // DUMMY_PFMODEL_H_
+#endif  // TEST_CORE_DUMMY_PFMODEL_H_

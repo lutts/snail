@@ -188,8 +188,10 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
 TEST_F(PfTriadManagerAutoRemoveChildTest,
        should_createViewFor_default_to_null_parent_and_true_auto_remove_child) { // NOLINT
   // NOTE:
-  //   * true auto_remove_child means child will be destroyed because parent is destroyed
-  //   * null parent means a triad will not destroyed because another triad is destroyed
+  //   * true auto_remove_child means child will be destroyed
+  //     because parent is destroyed
+  //   * null parent means a triad will not destroyed
+  //     because another triad is destroyed
   // Setup fixture
   MockXXXView* view1 = nullptr;
   MockXXXView* view2 = nullptr;

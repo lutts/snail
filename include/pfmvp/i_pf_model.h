@@ -48,7 +48,7 @@ class IPfModel {
 template <typename Visitor>
 class VisitableModel : public IPfModel {
  public:
-  virtual void accept(Visitor& visitor) = 0;
+  virtual void accept(Visitor& visitor) = 0;  // NOLINT
 };
 
 class IPfModelVisitor {
@@ -58,7 +58,7 @@ class IPfModelVisitor {
 
 class AcyclicVisitableModel : public IPfModel {
  public:
-  virtual void accept(IPfModelVisitor& visitor) = 0;
+  virtual void accept(IPfModelVisitor& visitor) = 0;  // NOLINT
   /*
    * typical implementation:
    *

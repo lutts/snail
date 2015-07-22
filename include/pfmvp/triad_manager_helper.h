@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef TRIAD_MANAGER_HELPER_H_
-#define TRIAD_MANAGER_HELPER_H_
+#ifndef INCLUDE_PFMVP_TRIAD_MANAGER_HELPER_H_
+#define INCLUDE_PFMVP_TRIAD_MANAGER_HELPER_H_
+
+#include <vector>
 
 namespace pfmvp {
 
@@ -163,4 +165,4 @@ class TriadManagerHelper {
 
 }  // namespace pfmvp
 
-#endif  // TRIAD_MANAGER_HELPER_H_
+#endif  // INCLUDE_PFMVP_TRIAD_MANAGER_HELPER_H_
