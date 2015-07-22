@@ -210,7 +210,8 @@ void AttributeLayout::addAttributeDisplayBlock(
   QWidget* attr_widget = attr_view_block.attr_view->getWidget();
   addWidget(attr_widget, row, attr_view_column);
 
-  addToolButton(attr_view_block.erase_command, row, erase_btn_column);
+  if (attr_view_block.erase_command)
+    addToolButton(attr_view_block.erase_command, row, erase_btn_column);
 
   if (attr_view_block.edit_command)
     addToolButton(attr_view_block.edit_command, row, edit_btn_column);

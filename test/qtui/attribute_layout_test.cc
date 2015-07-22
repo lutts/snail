@@ -844,18 +844,20 @@ TEST_F(AttributeLayoutTest,
   verifyLayoutResult(attr_generator);
 }
 
-class SparseNullEditCommmandAttributeGenerator
+class SparseNullEditEraseCommmandAttributeGenerator
     : public BasicAttributesGenerator {
  public:
-  SparseNullEditCommmandAttributeGenerator()
+  SparseNullEditEraseCommmandAttributeGenerator()
       : BasicAttributesGenerator(5) {
   }
-  virtual ~SparseNullEditCommmandAttributeGenerator() = default;
+  virtual ~SparseNullEditEraseCommmandAttributeGenerator() = default;
 
   AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
     auto attr_block = BasicAttributesGenerator::attrViewBlockAt(index);
     if (index % 2)
       attr_block.edit_command = nullptr;
+    else
+      attr_block.erase_command = nullptr;
 
     return attr_block;
   }
@@ -868,15 +870,23 @@ class SparseNullEditCommmandAttributeGenerator
     }
   }
 
+  MockCommand* eraseCommandAt(int index) const override {
+    if (index % 2 == 0) {
+      return nullptr;
+    } else {
+      return BasicAttributesGenerator::eraseCommandAt(index);
+    }
+  }
+
  private:
-  SNAIL_DISABLE_COPY(SparseNullEditCommmandAttributeGenerator)
+  SNAIL_DISABLE_COPY(SparseNullEditEraseCommmandAttributeGenerator)
 };
 
 
 TEST_F(AttributeLayoutTest,
        should_not_create_buttons_for_null_edit_commands) { // NOLINT
   // Setup fixture
-  SparseNullEditCommmandAttributeGenerator attr_generator;
+  SparseNullEditEraseCommmandAttributeGenerator attr_generator;
 
   // Exercise system
   layoutAttributes(attr_generator);
