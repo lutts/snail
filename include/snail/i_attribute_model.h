@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_MODEL_H_
-#define I_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_H_
 
 #include "pfmvp/i_pf_model.h"
 #include "utils/signal_slot.h"
@@ -35,4 +35,4 @@ class IAttributeModel : public pfmvp::IPfModel {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_H_

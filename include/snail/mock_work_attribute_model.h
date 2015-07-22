@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_WORK_ATTRIBUTE_MODEL_H_
-#define MOCK_WORK_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
 
 #include "snail/i_work_attribute_model.h"
 
@@ -22,16 +22,11 @@ class MockWorkAttributeModel : public IWorkAttributeModel {
   SNAIL_MOCK_SLOT(AttributesChanged);
   SNAIL_MOCK_SLOT(ShowPopupFor);
 
-  MOCK_CONST_METHOD0(getAttributeModels,
-                     std::vector<std::shared_ptr<IAttributeModel>>());
-  MOCK_CONST_METHOD0(getEraseCommands, std::vector<utils::Command*>());
-  MOCK_CONST_METHOD0(getPopupEditorCommands, std::vector<utils::Command*>());
-  MOCK_CONST_METHOD0(getAddAttributeCommands, std::vector<utils::Command*>());
-  MOCK_CONST_METHOD1(getLocation, Location(IPfModel* model));
-  MOCK_CONST_METHOD1(getLocation, Location(utils::Command* command));
+  MOCK_METHOD1(traverseAttributes,
+               void(IAttributeDisplayBlockVisitor* visitor));
 };
 
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_WORK_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_

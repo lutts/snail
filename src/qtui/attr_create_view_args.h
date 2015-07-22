@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef ATTR_CREATE_VIEW_ARGS_H_
-#define ATTR_CREATE_VIEW_ARGS_H_
+#ifndef SRC_QTUI_ATTR_CREATE_VIEW_ARGS_H_
+#define SRC_QTUI_ATTR_CREATE_VIEW_ARGS_H_
 
 #include <memory>
 
@@ -14,7 +14,7 @@
 
 class AttrCreateViewArgs : public pfmvp::PfCreateViewArgs {
  public:
-  AttrCreateViewArgs(bool edit_mode) : edit_mode_(edit_mode) { }
+  explicit AttrCreateViewArgs(bool edit_mode) : edit_mode_(edit_mode) { }
   virtual ~AttrCreateViewArgs() = default;
 
   static AttrCreateViewArgs* getArgs(bool edit_mode);
@@ -34,4 +34,4 @@ class AttrCreateViewArgs : public pfmvp::PfCreateViewArgs {
 };
 
 
-#endif  // ATTR_CREATE_VIEW_ARGS_H_
+#endif  // SRC_QTUI_ATTR_CREATE_VIEW_ARGS_H_

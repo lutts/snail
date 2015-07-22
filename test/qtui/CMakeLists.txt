@@ -46,4 +46,7 @@ add_gmock_test(work_attribute_presenter_test
 add_gmock_test(attr_create_view_args_test
   LIBS qtuicore testutils)
 
+add_gmock_test(attribute_layout_test
+  LIBS qtuicore testutils qttestutils)
+
 add_subdirectory(preview)

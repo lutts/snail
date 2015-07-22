@@ -18,8 +18,7 @@
 // triad headers
 #include "snail/mock_attribute_model.h"
 #include "qtui/mock_attribute_view.h"
-
-#include "utils/command.h"
+#include "snail/mock_attribute_display_block.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -36,12 +35,16 @@ class WorkAttributePresenterTest : public ::testing::Test {
   // ~WorkAttributePresenterTest() { }
   virtual void SetUp() {
     // Setup fixture
-    model = std::make_shared<StrictMock<MockWorkAttributeModel>>();
-    view = std::make_shared<StrictMock<MockWorkAttributeView>>();
+    model = std::make_shared<MockWorkAttributeModel>();
+    view = std::make_shared<MockWorkAttributeView>();
+
+    IAttributeDisplayBlockVisitor* attr_visitor { nullptr };
 
     // Expectations
-    bool init_edit_mode = false;
-    expectationsOnReLayoutUI(init_edit_mode);
+    RECORD_USED_MOCK_OBJECTS_SETUP;
+
+    R_EXPECT_CALL(*model, traverseAttributes(_))
+        .WillOnce(SaveArg<0>(&attr_visitor));
 
     R_EXPECT_CALL(*view, whenEditModeButtonClicked(_, _))
         .WillOnce(SaveArg<0>(&editModeButtonClicked));
@@ -56,23 +59,22 @@ class WorkAttributePresenterTest : public ::testing::Test {
         .WillOnce(SaveArg<0>(&showPopupFor));
 
     // Excercise system
-    presenter = std::make_shared<WorkAttributePresenter>(model, view);
+    presenter = std::make_shared<WorkAttributePresenter>(
+        model, view, &attr_layout);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
     VERIFY_RECORDED_MOCK_OBJECTS;
+
+    ASSERT_EQ(presenter.get(), attr_visitor);
   }
   // virtual void TearDown() { }
 
-  void expectationsOnReLayoutUI(bool edit_mode);
-  void expectationsOnShowAttributes(bool edit_mode);
-  void expectationsOnShowCommands();
-
-  RECORD_USED_MOCK_OBJECTS_SETUP;
-
   // region: objects test subject depends on
-  std::shared_ptr<StrictMock<MockWorkAttributeModel>> model;
-  std::shared_ptr<StrictMock<MockWorkAttributeView>> view;
+  std::shared_ptr<MockWorkAttributeModel> model;
+  std::shared_ptr<MockWorkAttributeView> view;
+
+  MockAttributeLayout attr_layout;
 
   MockPfTriadManager triad_manager;
   // endregion
@@ -110,120 +112,6 @@ TEST_F(WorkAttributePresenterTest,
   doneButtonClicked();
 }
 
-void WorkAttributePresenterTest::expectationsOnShowAttributes(
-    bool edit_mode) {
-
-  auto args = AttrCreateViewArgs::getArgs(edit_mode);
-
-  const int NUM_ATTR_MODELS = 3;
-  std::vector<std::shared_ptr<IAttributeModel>> attr_models;
-
-  for (int i = 0; i < NUM_ATTR_MODELS; ++i) {
-    auto attr_model = std::make_shared<MockAttributeModel>();
-    ON_CALL(*attr_model, displayName())
-        .WillByDefault(Return(xtestutils::genRandomString()));
-
-    attr_models.push_back(attr_model);
-  }
-
-  R_EXPECT_CALL(*model, getAttributeModels())
-      .WillOnce(Return(attr_models));
-  for (auto& attr_model : attr_models) {
-    std::shared_ptr<IPfModel> attr_pfmodel = attr_model;
-    auto attr_view = std::make_shared<MockAttributeView>();
-
-    R_EXPECT_CALL(triad_manager, findViewByModel_if(attr_pfmodel.get(), _))
-        .WillOnce(Return(std::vector<IPfView*>()));
-    R_EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, args))
-        .WillOnce(Return(attr_view));
-
-    IWorkAttributeModel::Location location {
-      std::rand(), std::rand(), std::rand(), std::rand()
-          };
-
-    R_EXPECT_CALL(*model, getLocation(attr_model.get()))
-        .WillOnce(Return(location));
-    R_EXPECT_CALL(*view, addLabel(attr_model->displayName(),
-                                  location.row(),
-                                  location.column() - 1,
-                                  location.row_span(),
-                                  location.column_span()));
-    R_EXPECT_CALL(*view, addAttribute(attr_view.get(),
-                                      location.row(),
-                                      location.column(),
-                                      location.row_span(),
-                                      location.column_span()));
-  }
-}
-
-// TODO(lutts.cao@gmail.com 2015-07-15): Maybe we can get command for attributes
-void WorkAttributePresenterTest::expectationsOnShowCommands() {
-  const int NUM_COMMANDS = 3;
-
-#define SHOW_COMMANDS(CmdType)                                          \
-  {                                                                     \
-    std::vector<Command*> commands;                                     \
-    for (int i = 0; i < NUM_COMMANDS; ++i) {                            \
-      commands.push_back(xtestutils::genDummyPointer<Command>());       \
-    }                                                                   \
-                                                                        \
-    EXPECT_CALL(*model, get##CmdType##Commands())                       \
-        .WillOnce(Return(commands));                                    \
-                                                                        \
-    for (auto & command : commands) {                                   \
-      IWorkAttributeModel::Location location {                          \
-        std::rand(), std::rand(), std::rand(), std::rand()              \
-            };                                                          \
-                                                                        \
-      R_EXPECT_CALL(*model, getLocation(command))                       \
-          .WillOnce(Return(location));                                  \
-                                                                        \
-      EXPECT_CALL(*view, add##CmdType##Command(command,                 \
-                                               location.row(),          \
-                                               location.column(),       \
-                                               location.row_span(),     \
-                                               location.column_span())); \
-    }                                                                   \
-  }
-
-  SHOW_COMMANDS(Erase);
-  SHOW_COMMANDS(PopupEditor);
-  SHOW_COMMANDS(AddAttribute)
-}
-
-void WorkAttributePresenterTest::expectationsOnReLayoutUI(bool edit_mode) {
-  EXPECT_CALL(*model, isEditMode())
-      .WillRepeatedly(Return(edit_mode));
-
-  InSequence seq;
-
-  EXPECT_CALL(*view, beginReLayoutAttributes());
-
-  expectationsOnShowAttributes(edit_mode);
-  if (edit_mode)
-    expectationsOnShowCommands();
-
-  EXPECT_CALL(*view, endReLayoutAttributes());
-}
-
-TEST_F(WorkAttributePresenterTest,
-       should_refresh_ui_when_attributes_changed_in_edit_mode) { // NOLINT
-  // Expectations
-  expectationsOnReLayoutUI(true);
-
-  // Exercise system
-  attributesChanged();
-}
-
-TEST_F(WorkAttributePresenterTest,
-       should_refresh_ui_when_attributes_changed_in_display_mode) { // NOLINT
-  // Expectations
-  expectationsOnReLayoutUI(false);
-
-  // Exercise system
-  attributesChanged();
-}
-
 TEST_F(WorkAttributePresenterTest,
        should_be_able_to_show_popup_attribute_editor_dialog_for_model) { // NOLINT
   // Setup fixture
@@ -242,3 +130,97 @@ TEST_F(WorkAttributePresenterTest,
   // Exercise system
   ASSERT_TRUE(showPopupFor(attr_model));
 }
+
+TEST_F(WorkAttributePresenterTest,
+       should_re_traverse_attributes_when_attributes_changed) { // NOLINT
+  // Expectations
+  EXPECT_CALL(*model, traverseAttributes(presenter.get()));
+
+  // Exercise system
+  attributesChanged();
+}
+
+///////////////////// IAttributeDisplayBlockVisitor test begin //////////////
+TEST_F(WorkAttributePresenterTest,
+       should_relay_beginAddAttributeDisplayBlock_to_attr_layout) { // NOLINT
+  // Setup fixture
+  int total_block_count = std::rand();
+
+  // Expectations
+  EXPECT_CALL(attr_layout, beginAddAttributeDisplayBlock(total_block_count));
+
+  // Exercise system
+  presenter->beginAddAttributeDisplayBlock(total_block_count);
+}
+
+TEST_F(WorkAttributePresenterTest,
+       should_relay_AttributeGroupDisplayBlock_to_attr_layout) { // NOLINT
+  // Setup fixture
+  AttributeGroupDisplayBlock attr_group_block;
+
+  // Expectations
+  EXPECT_CALL(attr_layout,
+              addAttributeGroupDisplayBlock(&attr_group_block));
+
+  // Exercise system
+  presenter->addAttributeGroupDisplayBlock(&attr_group_block);
+}
+
+bool operator==(const AttributeViewDisplayBlock& a,
+                const AttributeViewDisplayBlock& b) {
+  return (a.label == b.label) &&
+      (a.attr_view == b.attr_view) &&
+      (a.erase_command == b.erase_command) &&
+      (a.edit_command == b.edit_command) &&
+      (a.is_in_group == b.is_in_group);
+}
+
+TEST_F(WorkAttributePresenterTest,
+       should_createViewFor_attr_model_before_add_to_attr_layout) { // NOLINT
+  // Setup fixture
+  auto attr_model = std::make_shared<MockAttributeModel>();
+  std::shared_ptr<IPfModel> attr_pfmodel = attr_model;
+  auto attr_view = std::make_shared<MockAttributeView>();
+
+  AttributeDisplayBlock attr_block;
+  AttributeViewDisplayBlock attr_view_block;
+
+  attr_block.label = xtestutils::genRandomString();
+  attr_block.attr_model = attr_model;
+  attr_block.erase_command = xtestutils::genDummyPointer<utils::Command>();
+  attr_block.edit_command = xtestutils::genDummyPointer<utils::Command>();
+  attr_block.is_in_group = xtestutils::randomBool();
+
+  attr_view_block.label = attr_block.label;
+  attr_view_block.attr_view = attr_view.get();
+  attr_view_block.erase_command = attr_block.erase_command;
+  attr_view_block.edit_command = attr_block.edit_command;
+  attr_view_block.is_in_group = attr_block.is_in_group;
+
+  bool edit_mode = true;
+  auto args = AttrCreateViewArgs::getArgs(edit_mode);
+
+  // Expectations
+  EXPECT_CALL(*model, isEditMode())
+      .WillRepeatedly(Return(edit_mode));
+  EXPECT_CALL(triad_manager, findViewByModel_if(attr_pfmodel.get(), _))
+      .WillOnce(Return(std::vector<IPfView*>()));
+  EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, args))
+      .WillOnce(Return(attr_view));
+
+  EXPECT_CALL(attr_layout, addAttributeDisplayBlock(attr_view_block));
+
+  // Exercise system
+  presenter->addAttributeDisplayBlock(&attr_block);
+}
+
+TEST_F(WorkAttributePresenterTest,
+       should_relay_endAddAttributeDisplayBlock_to_attr_layout) { // NOLINT
+  // Expectations
+  EXPECT_CALL(attr_layout, endAddAttributeDisplayBlock());
+
+  // Exercise system
+  presenter->endAddAttributeDisplayBlock();
+}
+
+///////////////////// IAttributeDisplayBlockVisitor test end ////////////////

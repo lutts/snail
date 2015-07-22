@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "work_attribute_presenter.h"
+#include "src/qtui/work_attribute_presenter.h"
 #include "src/qtui/attr_create_view_args.h"
 #include "snail/i_attribute_model.h"
 #include "qtui/i_attribute_view.h"
@@ -12,7 +12,7 @@
 using namespace snailcore;  // NOLINT
 
 void WorkAttributePresenter::initialize() {
-  reLayoutUI();
+  model()->traverseAttributes(this);
 
   view()->whenEditModeButtonClicked(
       [this]() {
@@ -28,7 +28,7 @@ void WorkAttributePresenter::initialize() {
 
   model()->whenAttributesChanged(
       [this]() {
-        reLayoutUI();
+        model()->traverseAttributes(this);
       },
       shared_from_this());
 
@@ -39,62 +39,35 @@ void WorkAttributePresenter::initialize() {
       shared_from_this());
 }
 
-void WorkAttributePresenter::reLayoutUI() {
-  view()->beginReLayoutAttributes();
-
-  showAttributes();
-
-  if (model()->isEditMode()) {
-    showCommands();
-  }
-
-  view()->endReLayoutAttributes();
+//////////////////// IAttributeDisplayBlockVisitor impl begin /////////////
+void WorkAttributePresenter::beginAddAttributeDisplayBlock(
+    int total_block_count) {
+  attr_layout_->beginAddAttributeDisplayBlock(total_block_count);
 }
 
-void WorkAttributePresenter::showAttributes() {
-  auto attr_models = model()->getAttributeModels();
-  bool edit_mode = model()->isEditMode();
+void WorkAttributePresenter::addAttributeGroupDisplayBlock(
+    AttributeGroupDisplayBlock* attr_group_block) {
+  attr_layout_->addAttributeGroupDisplayBlock(attr_group_block);
+}
 
-  for (auto& attr_model : attr_models) {
-    auto attr_view = createRawViewIfNotExist<IAttributeView>(
-        attr_model, AttrCreateViewArgs::getArgs(edit_mode));
+void WorkAttributePresenter::addAttributeDisplayBlock(
+    AttributeDisplayBlock* attr_block) {
+  auto args = AttrCreateViewArgs::getArgs(model()->isEditMode());
+  auto attr_view =
+      createRawViewIfNotExist<IAttributeView>(attr_block->attr_model, args);
+  if (attr_view) {
+    AttributeViewDisplayBlock attr_view_block;
+    attr_view_block.label = attr_block->label;
+    attr_view_block.attr_view = attr_view;
+    attr_view_block.erase_command = attr_block->erase_command;
+    attr_view_block.edit_command = attr_block->edit_command;
+    attr_view_block.is_in_group = attr_block->is_in_group;
 
-    if (!attr_view)
-      continue;
-
-    auto location = model()->getLocation(attr_model.get());
-    view()->addLabel(attr_model->displayName(),
-                     location.row(), location.column() - 1,
-                     location.row_span(), location.column_span());
-    view()->addAttribute(attr_view,
-                         location.row(), location.column(),
-                         location.row_span(), location.column_span());
+    attr_layout_->addAttributeDisplayBlock(attr_view_block);
   }
 }
 
-void WorkAttributePresenter::showCommands() {
-  auto erase_commands = model()->getEraseCommands();
-
-  for (auto& command : erase_commands) {
-    auto location = model()->getLocation(command);
-    view()->addEraseCommand(command,
-                      location.row(), location.column(),
-                      location.row_span(), location.column_span());
-  }
-
-  auto popup_editor_commands = model()->getPopupEditorCommands();
-  for (auto& command : popup_editor_commands) {
-    auto location = model()->getLocation(command);
-    view()->addPopupEditorCommand(command,
-                                  location.row(), location.column(),
-                                  location.row_span(), location.column_span());
-  }
-
-  auto add_attr_commands = model()->getAddAttributeCommands();
-  for (auto & command : add_attr_commands) {
-    auto location = model()->getLocation(command);
-    view()->addAddAttributeCommand(command,
-                                   location.row(), location.column(),
-                                   location.row_span(), location.column_span());
-  }
+void WorkAttributePresenter::endAddAttributeDisplayBlock() {
+  attr_layout_->endAddAttributeDisplayBlock();
 }
+///////////////////// IAttributeDisplayBlockVisitor impl end ///////////////

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_VIEW_H_
-#define MOCK_ATTRIBUTE_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_VIEW_H_
+#define INCLUDE_QTUI_MOCK_ATTRIBUTE_VIEW_H_
 
 #include "qtui/i_attribute_view.h"
 
@@ -14,6 +14,8 @@ class MockAttributeView : public IAttributeView {
  public:
   // IPfView mocks
   MOCK_METHOD1(showView, bool(bool modal));
+  // GenericViewBase mocks
+  MOCK_CONST_METHOD0(getWidget, QWidget*());
 };
 
-#endif  // MOCK_ATTRIBUTE_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_VIEW_H_
