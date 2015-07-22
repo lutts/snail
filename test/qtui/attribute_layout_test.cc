@@ -69,7 +69,8 @@ class AttributeLayoutTest : public TestWithParam<int>
   }
   // virtual void TearDown() { }
 
-  void layoutAttributes(const TestAttributeGenerator& attr_generator);
+  void layoutAttributes(const TestAttributeGenerator& attr_generator,
+                        bool print = false);
 
   void assertAttributeLabelEqual(
       const utils::U8String& expect_label, int row, int column);
@@ -98,17 +99,23 @@ INSTANTIATE_TEST_CASE_P(
     ::testing::Range(1, 10));
 
 void AttributeLayoutTest::layoutAttributes(
-    const TestAttributeGenerator& attr_generator) {
+    const TestAttributeGenerator& attr_generator, bool print) {
   int num_attrs = attr_generator.num_attrs();
 
   attr_layout.beginAddAttributeDisplayBlock(num_attrs);
   for (int i = 0; i < num_attrs; ++i) {
     if (attr_generator.isGroup(i)) {
-      // std::cout << "group @ index " << i << std::endl;
+      if (print) {
+        std::cout << "group " << attr_generator.labelAt(i)
+                  << " @ index " << i << std::endl;
+      }
       attr_layout.addAttributeGroupDisplayBlock(
           attr_generator.attrGroupBlockAt(i));
     } else {
-      // std::cout << attr_generator.labelAt(i) << " @index " << i << std::endl;
+      if (print) {
+        std::cout << "attribute " << attr_generator.labelAt(i)
+        << " @index " << i << std::endl;
+      }
       attr_layout.addAttributeDisplayBlock(attr_generator.attrViewBlockAt(i));
     }
   }
@@ -370,9 +377,9 @@ TEST_P(AttributeLayoutTest,
 
 #include "utils/basic_utils.h"
 
-class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
+class OneGroupAttributeGenerator : public TestAttributeGenerator {
  public:
-  explicit OnlyOneGroupAttributeGenerator(int num_sub_attrs)
+  explicit OneGroupAttributeGenerator(int num_sub_attrs)
       : num_sub_attrs_(num_sub_attrs)
       , sub_attr_views(num_sub_attrs)
       , sub_widgets(num_sub_attrs)
@@ -401,7 +408,7 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
     }
   }
 
-  virtual ~OnlyOneGroupAttributeGenerator() = default;
+  virtual ~OneGroupAttributeGenerator() = default;
 
   int num_attrs() const override {
     return num_sub_attrs_ + 1;
@@ -433,7 +440,7 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
   MockCommand* addCommandAt(int index) const override {
     [index]() {
       ASSERT_EQ(0, index)
-          << "OnlyGroupGenerator index 0 is group, not " << index;
+          << "OneGroupGenerator index 0 is group, not " << index;
     }();
 
     return const_cast<MockCommand*>(&add_command);
@@ -441,7 +448,7 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
 
   AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
     [index]() {
-      ASSERT_NE(0, index) << "OnlyGroupGenerator index 0 is group, not attr";
+      ASSERT_NE(0, index) << "OneGroupGenerator index 0 is group, not attr";
     }();
 
     return sub_attr_view_blocks[index - 1];
@@ -456,7 +463,7 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
 
   const QWidget* widgetAt(int index) const override {
     [index]() {
-      ASSERT_NE(0, index) << "OnlyGroupGenerator index 0 is group, no widget";
+      ASSERT_NE(0, index) << "OneGroupGenerator index 0 is group, no widget";
     }();
 
     return &sub_widgets[index - 1];
@@ -465,7 +472,7 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
   MockCommand* eraseCommandAt(int index) const override {
     [index]() {
       ASSERT_NE(0, index)
-          << "OnlyGroupGenerator index 0 is group, no erase cmd";
+          << "OneGroupGenerator index 0 is group, no erase cmd";
     }();
 
     return const_cast<MockCommand*>(&sub_erase_commands[index - 1]);
@@ -474,7 +481,7 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
   MockCommand* editCommandAt(int index) const override {
     [index]() {
       ASSERT_NE(0, index)
-          << "OnlyGroupGenerator index 0 is group, no edit cmd";
+          << "OneGroupGenerator index 0 is group, no edit cmd";
     }();
 
     return const_cast<MockCommand*>(&sub_edit_commands[index - 1]);
@@ -494,9 +501,96 @@ class OnlyOneGroupAttributeGenerator : public TestAttributeGenerator {
   std::vector<AttributeViewDisplayBlock> sub_attr_view_blocks;
 
  private:
-  SNAIL_DISABLE_COPY(OnlyOneGroupAttributeGenerator)
+  SNAIL_DISABLE_COPY(OneGroupAttributeGenerator)
 };
 
+class CompositeAttributeGenerator : public TestAttributeGenerator {
+ public:
+  CompositeAttributeGenerator() = default;
+  virtual ~CompositeAttributeGenerator() = default;
+
+  int num_attrs() const override {
+    return total_attrs_;
+  }
+
+  void addAttributeGenerator(const TestAttributeGenerator& attr_generator) {
+    generator_list_.push_back(&attr_generator);
+
+    int num_attrs = attr_generator.num_attrs();
+    for (int index = 0; index < num_attrs; ++index) {
+      int global_index = index + total_attrs_;
+      index_to_generator[global_index] = &attr_generator;
+      index_to_sub_index[global_index] = index;
+    }
+
+    total_attrs_ += attr_generator.num_attrs();
+  }
+
+  int left_side_count() const {
+    int count = total_attrs_ / 2;
+    if (total_attrs_ % 2)
+      count ++;
+
+    return count;
+  }
+
+  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->attrViewBlockAt(indexOfGenerator(index));
+  }
+
+  U8String labelAt(int index) const override {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->labelAt(indexOfGenerator(index));
+  }
+
+  const QWidget* widgetAt(int index) const override {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->widgetAt(indexOfGenerator(index));
+  }
+
+  MockCommand* eraseCommandAt(int index) const override {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->eraseCommandAt(indexOfGenerator(index));
+  }
+
+  MockCommand* editCommandAt(int index) const override {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->editCommandAt(indexOfGenerator(index));
+  }
+
+  bool isGroup(int index) const {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->isGroup(indexOfGenerator(index));
+  }
+
+  AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->attrGroupBlockAt(indexOfGenerator(index));
+  }
+
+  MockCommand* addCommandAt(int index) const {
+    const TestAttributeGenerator* generator = generatorOfIndex(index);
+    return generator->addCommandAt(indexOfGenerator(index));
+  }
+
+  const TestAttributeGenerator* generatorOfIndex(int index) const {
+    return index_to_generator.at(index);
+  }
+
+  int indexOfGenerator(int index) const {
+    return index_to_sub_index.at(index);
+  }
+
+ private:
+  int total_attrs_ { 0 };
+  std::list<const TestAttributeGenerator*> generator_list_;
+  std::map<int, const TestAttributeGenerator*> index_to_generator;
+  std::map<int, int> index_to_sub_index;
+
+ private:
+  SNAIL_DISABLE_COPY(CompositeAttributeGenerator)
+};
 
 /*
  * num_attrs % 2 == 0 && sub_attrs == 1
@@ -642,7 +736,7 @@ class CutAtFirstSubAttrOfGroupAttributeGenerator
 
  private:
   bool should_move_group_to_right() const {
-    if (num_attrs_ % 2) {
+    if ( (num_attrs_ % 2) && (num_sub_attrs_ != 0) ) {
       // in this case, left side in therory plus one,
       // if we move the subattr to left, then left side
       // will plus three, to avoid this, we move the group
@@ -697,7 +791,7 @@ class CutAtFirstSubAttrOfGroupAttributeGenerator
   int num_sub_attrs_;
 
   BasicAttributesGenerator basic_attrs;
-  OnlyOneGroupAttributeGenerator group_attrs;
+  OneGroupAttributeGenerator group_attrs;
 };
 
 TEST_P(AttributeLayoutTest,
@@ -760,6 +854,25 @@ TEST_P(AttributeLayoutTest,
 }
 
 TEST_P(AttributeLayoutTest,
+       should_treat_group_as_normal_attrs_if_group_has_no_sub_attrs) { // NOLINT
+  // Setup fixture
+  int num_attrs = GetParam();
+  CutAtFirstSubAttrOfGroupAttributeGenerator attr_generator(num_attrs, 0);
+
+  int expect_left_count = num_attrs / 2;
+  if (num_attrs % 2)
+    ++ expect_left_count;
+
+  ASSERT_EQ(expect_left_count, attr_generator.left_side_count());
+
+  // Exercise system
+  layoutAttributes(attr_generator);
+
+  // Verify results
+  verifyLayoutResult(attr_generator);
+}
+
+TEST_P(AttributeLayoutTest,
        should_not_split_if_there_is_only_one_group_and_the_group_has_less_than_3_subviews_and_there_is_no_other_toplevel_attributes) { // NOLINT
   // Setup fixture
   int num_attrs = GetParam();
@@ -768,7 +881,7 @@ TEST_P(AttributeLayoutTest,
     SUCCEED();
     return;
   }
-  OnlyOneGroupAttributeGenerator attr_generator(num_attrs);
+  OneGroupAttributeGenerator attr_generator(num_attrs);
 
   int right_side_count = attr_generator.num_attrs()
                          - attr_generator.left_side_count();
@@ -791,7 +904,7 @@ TEST_P(AttributeLayoutTest,
     return;
   }
 
-  OnlyOneGroupAttributeGenerator attr_generator(num_attrs);
+  OneGroupAttributeGenerator attr_generator(num_attrs);
 
   int expect_left_count = attr_generator.num_attrs() / 2;
   if (attr_generator.num_attrs() % 2)
@@ -807,15 +920,15 @@ TEST_P(AttributeLayoutTest,
 }
 
 class NullAddCommandGroupAttributeGenerator
-    : public OnlyOneGroupAttributeGenerator {
+    : public OneGroupAttributeGenerator {
  public:
   NullAddCommandGroupAttributeGenerator()
-      :OnlyOneGroupAttributeGenerator(1) { }
+      :OneGroupAttributeGenerator(1) { }
 
   virtual ~NullAddCommandGroupAttributeGenerator() = default;
 
   AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const override {
-    auto grp_block = OnlyOneGroupAttributeGenerator::attrGroupBlockAt(index);
+    auto grp_block = OneGroupAttributeGenerator::attrGroupBlockAt(index);
     if (grp_block) {
       grp_block->add_command = nullptr;
     }
@@ -895,7 +1008,7 @@ TEST_F(AttributeLayoutTest,
   verifyLayoutResult(attr_generator);
 }
 
-class EqualLabelAttributesGenerator : public TestAttributeGenerator {
+class EqualLabelAttributesGenerator : public CompositeAttributeGenerator {
  public:
   EqualLabelAttributesGenerator()
       : basic_attrs_begin(begin_count)
@@ -903,6 +1016,12 @@ class EqualLabelAttributesGenerator : public TestAttributeGenerator {
       , group_attrs_middle2(middle1_count)
       , basic_attrs_end(end_count)
       , padding_attrs(padding_count) {
+    addAttributeGenerator(basic_attrs_begin);
+    addAttributeGenerator(group_attrs_middle1);
+    addAttributeGenerator(group_attrs_middle2);
+    addAttributeGenerator(basic_attrs_end);
+    addAttributeGenerator(padding_attrs);
+
     // label to layouter
     // begin
     label_to_layout.emplace_back("Attribute 1");
@@ -950,19 +1069,14 @@ class EqualLabelAttributesGenerator : public TestAttributeGenerator {
 
   virtual ~EqualLabelAttributesGenerator() = default;
 
-  int num_attrs() const override {
-    return left_count + padding_count;
-  }
-
   int left_side_count() const override {
     return left_count;
   }
 
   AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    const auto& generator = generatorOfIndex(index);
-    auto attr_block = generator.attrViewBlockAt(adjust_index(index));
+    auto attr_block = CompositeAttributeGenerator::attrViewBlockAt(index);
 
-    if (index <= left_max_index) {
+    if (index < left_count) {
       attr_block.label = label_to_layout[index];
     }
 
@@ -970,113 +1084,35 @@ class EqualLabelAttributesGenerator : public TestAttributeGenerator {
   }
 
   AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const override {
-    if (index == group1_index) {
-      auto group = group_attrs_middle1.attrGroupBlockAt(0);
-      group->label = label_to_layout[group1_index];
-      return group;
-    } else if (index == group2_index) {
-      auto group = group_attrs_middle2.attrGroupBlockAt(0);
-      group->label = label_to_layout[group2_index];
-      return group;
-    } else {
-      return nullptr;
-    }
+    auto group = CompositeAttributeGenerator::attrGroupBlockAt(index);
+    if (group && (index < left_count))
+      group->label = label_to_layout[index];
+
+    return group;
   }
 
   U8String labelAt(int index) const {
-    if (index <= left_max_index) {
+    if (index < left_count) {
       return label_expected[index];
     } else {
       return padding_attrs.labelAt(index - left_count);
     }
   }
 
-  // other functions
-  const QWidget* widgetAt(int index) const override {
-    const auto& generator = generatorOfIndex(index);
-    return generator.widgetAt(adjust_index(index));
-  }
-
-  MockCommand* eraseCommandAt(int index) const override {
-    const auto& generator = generatorOfIndex(index);
-    return generator.eraseCommandAt(adjust_index(index));
-  }
-
-  MockCommand* editCommandAt(int index) const override {
-    const auto& generator = generatorOfIndex(index);
-    return generator.editCommandAt(adjust_index(index));
-  }
-
-  bool isGroup(int index) const {
-    return (index == group1_index) ||
-        (index == group2_index);
-  }
-
-  MockCommand* addCommandAt(int index) const {
-    if (index == group1_index) {
-      return group_attrs_middle1.addCommandAt(0);
-    } else if (index == group2_index) {
-      return group_attrs_middle2.addCommandAt(0);
-    } else {
-      return nullptr;
-    }
-  }
-
-  const TestAttributeGenerator& generatorOfIndex(int index) const {
-    if (index <= begin_max_index)
-      return basic_attrs_begin;
-    else if (index <= middle1_max_index)
-      return group_attrs_middle1;
-    else if (index <= middle2_max_index)
-      return group_attrs_middle2;
-    else if (index <= left_max_index)
-      return basic_attrs_end;
-    else
-      return padding_attrs;
-  }
-
-  int adjust_index(int index) const {
-    if (index <= begin_max_index)
-      return index;
-    else if (index <= middle1_max_index)
-      return index - begin_count;
-    else if (index <= middle2_max_index)
-      return index - (middle1_max_index + 1);
-    else if (index <= left_max_index)
-      return index - (middle2_max_index + 1);
-    else
-      return index - left_count;
-  }
-
  private:
   static constexpr int begin_count = 3;
-  static constexpr int begin_max_index = begin_count - 1;
-
   static constexpr int middle1_count = 4;  // sub attributes count
-  static constexpr int group1_index = begin_count;
-  static constexpr int middle1_max_index = begin_count
-                                           + 1 + middle1_count
-                                           - 1;
-
   static constexpr int middle2_count = 4;  // sub attributes count
-  static constexpr int group2_index = begin_count + 1 + middle1_count;
-  static constexpr int middle2_max_index = begin_count
-                                           + 1 + middle1_count
-                                           + 1 + middle2_count
-                                           - 1;
-
   static constexpr int end_count = 3;
   static constexpr int left_count = begin_count
                                     + 1 + middle1_count
                                     + 1 + middle2_count
                                     + end_count;
-  static constexpr int left_max_index = left_count - 1;
-
   static constexpr int padding_count = left_count;
 
   BasicAttributesGenerator basic_attrs_begin;
-  OnlyOneGroupAttributeGenerator group_attrs_middle1;
-  OnlyOneGroupAttributeGenerator group_attrs_middle2;
+  OneGroupAttributeGenerator group_attrs_middle1;
+  OneGroupAttributeGenerator group_attrs_middle2;
   BasicAttributesGenerator basic_attrs_end;
   BasicAttributesGenerator padding_attrs;
 

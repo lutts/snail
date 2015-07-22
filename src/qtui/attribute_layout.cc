@@ -41,7 +41,7 @@ void AttributeLayout::beginAddAttributeDisplayBlock(int total_block_count) {
 namespace {
 
 bool should_move_group_to_right(int total_item_count, int sub_item_count) {
-  if (total_item_count % 2) {
+  if ( (total_item_count % 2) && (sub_item_count != 0) ) {
     // in this case, left side in therory plus one,
     // if we move the subattr to left, then left side
     // will plus three, to avoid this, we move the group
