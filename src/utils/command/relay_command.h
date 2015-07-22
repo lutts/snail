@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef RELAY_COMMAND_H_
-#define RELAY_COMMAND_H_
+#ifndef SRC_UTILS_COMMAND_RELAY_COMMAND_H_
+#define SRC_UTILS_COMMAND_RELAY_COMMAND_H_
 
 #include <functional>
 
@@ -30,7 +30,7 @@ class RelayCommand : public Command {
     display_text_ = new_text;
   }
 
-  utils::U8String display_text() override {
+  utils::U8String display_text() const override {
     return display_text_;
   }
 
@@ -45,4 +45,4 @@ class RelayCommand : public Command {
 
 }  // namespace utils
 
-#endif  // RELAY_COMMAND_H_
+#endif  // SRC_UTILS_COMMAND_RELAY_COMMAND_H_

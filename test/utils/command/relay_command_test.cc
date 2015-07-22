@@ -30,7 +30,8 @@ TEST(RelayCommandTest,
 TEST(RelayCommandTest, should_be_change_display_text) {
   RelayCommand cmd { xtestutils::genRandomString(), [](){}};
 
-  auto new_display_text = xtestutils::genRandomDifferentString(cmd.display_text());
+  auto new_display_text =
+      xtestutils::genRandomDifferentString(cmd.display_text());
 
   cmd.set_display_text(new_display_text);
 

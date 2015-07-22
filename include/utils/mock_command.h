@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TEST_UTILS_COMMAND_MOCK_COMMAND_H_
-#define TEST_UTILS_COMMAND_MOCK_COMMAND_H_
+#ifndef INCLUDE_UTILS_MOCK_COMMAND_H_
+#define INCLUDE_UTILS_MOCK_COMMAND_H_
 
 #include "utils/command.h"
 
@@ -20,9 +20,14 @@ class MockCommand : public Command {
   MOCK_METHOD0(redo, void());
   MOCK_METHOD0(undo, void());
   MOCK_METHOD0(destruct, void());
-  MOCK_METHOD0(display_text, utils::U8String());
+  MOCK_CONST_METHOD0(display_text, utils::U8String());
+  MOCK_CONST_METHOD0(help_text, utils::U8String());
   MOCK_METHOD0(getType, CmdType());
 };
+
+void PrintTo(const MockCommand& command, ::std::ostream* os) {
+  *os << command.display_text();
+}
 
 class DummyCommand : public Command {
  public:
@@ -36,4 +41,4 @@ class DummyCommand : public Command {
 }  // namespace tests
 }  // namespace utils
 
-#endif  // TEST_UTILS_COMMAND_MOCK_COMMAND_H_
+#endif  // INCLUDE_UTILS_MOCK_COMMAND_H_
