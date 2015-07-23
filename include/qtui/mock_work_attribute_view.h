@@ -14,7 +14,7 @@ class MockAttributeLayout : public IAttributeLayout {
  public:
   MOCK_METHOD1(beginAddAttributeDisplayBlock, void(int total_block_count));
   MOCK_METHOD1(addAttributeGroupDisplayBlock,
-               void(snailcore::AttributeGroupDisplayBlock* attr_group_block));
+               void(snailcore::AttributeGroupDisplayBlock attr_group_block));
   MOCK_METHOD1(addAttributeDisplayBlock,
                void(AttributeViewDisplayBlock attr_view_block));
   MOCK_METHOD0(endAddAttributeDisplayBlock, void());

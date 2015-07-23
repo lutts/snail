@@ -27,7 +27,7 @@ class AttributeLayout : public IAttributeLayout
 
   void beginAddAttributeDisplayBlock(int total_block_count) override;
   void addAttributeGroupDisplayBlock(
-      snailcore::AttributeGroupDisplayBlock* attr_group_block) override;
+      snailcore::AttributeGroupDisplayBlock attr_group_block) override;
   void addAttributeDisplayBlock(
       AttributeViewDisplayBlock attr_view_block) override;
   void endAddAttributeDisplayBlock() override;

@@ -46,22 +46,22 @@ void WorkAttributePresenter::beginAddAttributeDisplayBlock(
 }
 
 void WorkAttributePresenter::addAttributeGroupDisplayBlock(
-    AttributeGroupDisplayBlock* attr_group_block) {
+    AttributeGroupDisplayBlock attr_group_block) {
   attr_layout_->addAttributeGroupDisplayBlock(attr_group_block);
 }
 
 void WorkAttributePresenter::addAttributeDisplayBlock(
-    AttributeDisplayBlock* attr_block) {
+    AttributeDisplayBlock attr_block) {
   auto args = AttrCreateViewArgs::getArgs(model()->isEditMode());
   auto attr_view =
-      createRawViewIfNotExist<IAttributeView>(attr_block->attr_model, args);
+      createRawViewIfNotExist<IAttributeView>(attr_block.attr_model, args);
   if (attr_view) {
     AttributeViewDisplayBlock attr_view_block;
-    attr_view_block.label = attr_block->label;
+    attr_view_block.label = attr_block.label;
     attr_view_block.attr_view = attr_view;
-    attr_view_block.erase_command = attr_block->erase_command;
-    attr_view_block.edit_command = attr_block->edit_command;
-    attr_view_block.is_in_group = attr_block->is_in_group;
+    attr_view_block.erase_command = attr_block.erase_command;
+    attr_view_block.edit_command = attr_block.edit_command;
+    attr_view_block.is_in_group = attr_block.is_in_group;
 
     attr_layout_->addAttributeDisplayBlock(attr_view_block);
   }

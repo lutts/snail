@@ -11,14 +11,11 @@
 #include "src/qtui/generic_view_base.h"
 #include "utils/u8string.h"
 #include "utils/signal_slot.h"
+#include "snail/attribute_display_block.h"
 
 namespace utils {
 class Command;
 }  // namespace utils
-
-namespace snailcore {
-class AttributeGroupDisplayBlock;
-}  // namespace snailcore
 
 class IAttributeView;
 
@@ -36,7 +33,7 @@ class IAttributeLayout {
 
   virtual void beginAddAttributeDisplayBlock(int total_block_count) = 0;
   virtual void addAttributeGroupDisplayBlock(
-      snailcore::AttributeGroupDisplayBlock* attr_group_block) = 0;
+      snailcore::AttributeGroupDisplayBlock attr_group_block) = 0;
   virtual void addAttributeDisplayBlock(
       AttributeViewDisplayBlock attr_view_block) = 0;
   virtual void endAddAttributeDisplayBlock() = 0;

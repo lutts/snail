@@ -153,6 +153,27 @@ TEST_F(WorkAttributePresenterTest,
   presenter->beginAddAttributeDisplayBlock(total_block_count);
 }
 
+namespace snailcore {
+
+bool operator==(const AttributeGroupDisplayBlock& a,
+                const AttributeGroupDisplayBlock& b) {
+  return (a.label == b.label) &&
+      (a.add_command == b.add_command) &&
+      (a.sub_attr_count == b.sub_attr_count);
+}
+
+bool operator==(const AttributeDisplayBlock& a,
+                const AttributeDisplayBlock& b) {
+  return (a.label == b.label) &&
+      (a.attr_model == b.attr_model) &&
+      (a.erase_command == b.erase_command) &&
+      (a.edit_command == b.edit_command) &&
+      (a.is_in_group == b.is_in_group);
+}
+
+}  // namespace snailcore
+
+
 TEST_F(WorkAttributePresenterTest,
        should_relay_AttributeGroupDisplayBlock_to_attr_layout) { // NOLINT
   // Setup fixture
@@ -160,10 +181,10 @@ TEST_F(WorkAttributePresenterTest,
 
   // Expectations
   EXPECT_CALL(attr_layout,
-              addAttributeGroupDisplayBlock(&attr_group_block));
+              addAttributeGroupDisplayBlock(attr_group_block));
 
   // Exercise system
-  presenter->addAttributeGroupDisplayBlock(&attr_group_block);
+  presenter->addAttributeGroupDisplayBlock(attr_group_block);
 }
 
 bool operator==(const AttributeViewDisplayBlock& a,
@@ -211,7 +232,7 @@ TEST_F(WorkAttributePresenterTest,
   EXPECT_CALL(attr_layout, addAttributeDisplayBlock(attr_view_block));
 
   // Exercise system
-  presenter->addAttributeDisplayBlock(&attr_block);
+  presenter->addAttributeDisplayBlock(attr_block);
 }
 
 TEST_F(WorkAttributePresenterTest,

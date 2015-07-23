@@ -128,8 +128,8 @@ void AttributeLayout::addPushButton(utils::Command* command,
 }
 
 void AttributeLayout::addAttributeGroupDisplayBlock(
-    AttributeGroupDisplayBlock* attr_group_block) {
-  mayAdjustLeftSideCountOnGroup(attr_group_block->sub_attr_count);
+    AttributeGroupDisplayBlock attr_group_block) {
+  mayAdjustLeftSideCountOnGroup(attr_group_block.sub_attr_count);
 
   int row = added_rows;
   int label_column = 0;
@@ -143,7 +143,7 @@ void AttributeLayout::addAttributeGroupDisplayBlock(
     add_btn_column += kRightSideFirstColumn;
   }
 
-  utils::U8String label_ustr = label_to_display(attr_group_block->label,
+  utils::U8String label_ustr = label_to_display(attr_group_block.label,
                                                 ATTR_TYPE_GROUP);
 
   QString label_qstr = U8StringToQString(label_ustr);
@@ -151,8 +151,8 @@ void AttributeLayout::addAttributeGroupDisplayBlock(
 
   // qDebug() << "add group " << label_qstr << " at row " << row;
 
-  if (attr_group_block->add_command)
-    addPushButton(attr_group_block->add_command, row, add_btn_column);
+  if (attr_group_block.add_command)
+    addPushButton(attr_group_block.add_command, row, add_btn_column);
 }
 
 void AttributeLayout::addToolButton(utils::Command* command,

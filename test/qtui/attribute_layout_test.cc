@@ -44,9 +44,9 @@ class TestAttributeGenerator {
     return false;
   }
 
-  virtual AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const {
+  virtual AttributeGroupDisplayBlock attrGroupBlockAt(int index) const {
     (void)index;
-    return nullptr;
+    return AttributeGroupDisplayBlock();
   }
 
   virtual MockCommand* addCommandAt(int index) const {
@@ -430,11 +430,12 @@ class OneGroupAttributeGenerator : public TestAttributeGenerator {
     return index == 0;
   }
 
-  AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const override {
-    if (index == 0)
-      return const_cast<AttributeGroupDisplayBlock*>(&group);
-    else
-      return nullptr;
+  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
+    [index]() {
+      ASSERT_EQ(0, index)
+          << "OnlyGroupGenerator only index 0 is group, not index " << index;
+    }();
+    return group;
   }
 
   MockCommand* addCommandAt(int index) const override {
@@ -564,7 +565,7 @@ class CompositeAttributeGenerator : public TestAttributeGenerator {
     return generator->isGroup(indexOfGenerator(index));
   }
 
-  AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const {
+  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const {
     const TestAttributeGenerator* generator = generatorOfIndex(index);
     return generator->attrGroupBlockAt(indexOfGenerator(index));
   }
@@ -665,13 +666,14 @@ class CutAtFirstSubAttrOfGroupAttributeGenerator
     return index == group_index();
   }
 
-  AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const override {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.attrGroupBlockAt(grp_attr_index);
-    }
+  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
+    [this, index]() {
+      ASSERT_TRUE(is_group_attrs_index(index))
+          << "invalid index" << index << " called with attrGroupBlockAt()";
+    }();
 
-    return nullptr;
+    int grp_attr_index = to_group_attrs_index(index);
+    return group_attrs.attrGroupBlockAt(grp_attr_index);
   }
 
   AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
@@ -927,11 +929,9 @@ class NullAddCommandGroupAttributeGenerator
 
   virtual ~NullAddCommandGroupAttributeGenerator() = default;
 
-  AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const override {
+  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
     auto grp_block = OneGroupAttributeGenerator::attrGroupBlockAt(index);
-    if (grp_block) {
-      grp_block->add_command = nullptr;
-    }
+    grp_block.add_command = nullptr;
 
     return grp_block;
   }
@@ -1083,10 +1083,10 @@ class EqualLabelAttributesGenerator : public CompositeAttributeGenerator {
     return attr_block;
   }
 
-  AttributeGroupDisplayBlock* attrGroupBlockAt(int index) const override {
+  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
     auto group = CompositeAttributeGenerator::attrGroupBlockAt(index);
-    if (group && (index < left_count))
-      group->label = label_to_layout[index];
+    if (index < left_count)
+      group.label = label_to_layout[index];
 
     return group;
   }

@@ -38,9 +38,9 @@ class IAttributeDisplayBlockVisitor {
 
   virtual void beginAddAttributeDisplayBlock(int total_block_count) = 0;
   virtual void addAttributeGroupDisplayBlock(
-      AttributeGroupDisplayBlock* attr_group_block) = 0;
+      AttributeGroupDisplayBlock attr_group_block) = 0;
   virtual void addAttributeDisplayBlock(
-      AttributeDisplayBlock* attr_block) = 0;
+      AttributeDisplayBlock attr_block) = 0;
   virtual void endAddAttributeDisplayBlock() = 0;
 };
 

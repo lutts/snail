@@ -35,9 +35,9 @@ class WorkAttributePresenter : public WorkAttributePresenterBase
   // IAttributeDisplayBlockVisitor impl
   void beginAddAttributeDisplayBlock(int total_block_count) override;
   void addAttributeGroupDisplayBlock(
-      snailcore::AttributeGroupDisplayBlock* attr_group_block) override;
+      snailcore::AttributeGroupDisplayBlock attr_group_block) override;
   void addAttributeDisplayBlock(
-      snailcore::AttributeDisplayBlock* attr_block) override;
+      snailcore::AttributeDisplayBlock attr_block) override;
   void endAddAttributeDisplayBlock() override;
 
  private:
