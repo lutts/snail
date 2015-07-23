@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_DISPLAY_BLOCK_H_
-#define INCLUDE_SNAIL_I_ATTRIBUTE_DISPLAY_BLOCK_H_
+#ifndef INCLUDE_SNAIL_ATTRIBUTE_DISPLAY_BLOCK_H_
+#define INCLUDE_SNAIL_ATTRIBUTE_DISPLAY_BLOCK_H_
 
 #include "utils/u8string.h"
 
@@ -46,4 +46,4 @@ class IAttributeDisplayBlockVisitor {
 
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_DISPLAY_BLOCK_H_
+#endif  // INCLUDE_SNAIL_ATTRIBUTE_DISPLAY_BLOCK_H_

@@ -13,7 +13,7 @@
 #include "src/qtui/attribute_layout.h"
 #include "utils/command.h"
 #include "qtui/i_attribute_view.h"
-#include "snail/i_attribute_display_block.h"
+#include "snail/attribute_display_block.h"
 
 using namespace snailcore;  // NOLINT
 using namespace utils;  // NOLINT

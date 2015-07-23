@@ -8,7 +8,7 @@
 #ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_DISPLAY_BLOCK_H_
 #define INCLUDE_SNAIL_MOCK_ATTRIBUTE_DISPLAY_BLOCK_H_
 
-#include "snail/i_attribute_display_block.h"
+#include "snail/attribute_display_block.h"
 
 namespace snailcore {
 namespace tests {

@@ -13,7 +13,7 @@
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_work_attribute_model.h"
 #include "qtui/i_work_attribute_view.h"
-#include "snail/i_attribute_display_block.h"
+#include "snail/attribute_display_block.h"
 
 using WorkAttributePresenterBase =
     pfmvp::PfPresenterT<snailcore::IWorkAttributeModel,

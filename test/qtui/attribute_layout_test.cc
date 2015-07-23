@@ -17,7 +17,7 @@
 #include "src/qtui/attribute_layout.h"
 #include "utils/mock_command.h"
 #include "qtui/mock_attribute_view.h"
-#include "snail/i_attribute_display_block.h"
+#include "snail/attribute_display_block.h"
 
 using namespace utils;  // NOLINT
 using namespace utils::tests;  // NOLINT
@@ -529,7 +529,7 @@ class CompositeAttributeGenerator : public TestAttributeGenerator {
   int left_side_count() const {
     int count = total_attrs_ / 2;
     if (total_attrs_ % 2)
-      count ++;
+      ++count;
 
     return count;
   }
@@ -861,7 +861,7 @@ TEST_P(AttributeLayoutTest,
 
   int expect_left_count = num_attrs / 2;
   if (num_attrs % 2)
-    ++ expect_left_count;
+    ++expect_left_count;
 
   ASSERT_EQ(expect_left_count, attr_generator.left_side_count());
 
