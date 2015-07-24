@@ -18,5 +18,8 @@ add_gmock_test(model_view_mock_generator_test)
 
 add_gmock_test(mock_object_generator_test)
 
+add_executable(boost_signal2_wp_memory_leak_test boost_signal2_wp_memory_leak_test.cc)
+target_link_libraries(boost_signal2_wp_memory_leak_test utils)
+
 add_subdirectory(log)
 add_subdirectory(command)
