@@ -33,12 +33,12 @@ class WorkAttributePresenter : public WorkAttributePresenterBase
   void initialize() override;
 
   // IAttributeDisplayBlockVisitor impl
-  void beginAddAttributeDisplayBlock(int total_block_count) override;
-  void addAttributeGroupDisplayBlock(
+  void beginTraverse(int total_block_count) override;
+  void* visitAttributeGroupDisplayBlock(
       snailcore::AttributeGroupDisplayBlock attr_group_block) override;
-  void addAttributeDisplayBlock(
+  void* visitAttributeDisplayBlock(
       snailcore::AttributeDisplayBlock attr_block) override;
-  void endAddAttributeDisplayBlock() override;
+  void endTraverse() override;
 
  private:
   WorkAttributePresenter(const WorkAttributePresenter&) = delete;

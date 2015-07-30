@@ -46,7 +46,14 @@ add_gmock_test(work_attribute_presenter_test
 add_gmock_test(attr_create_view_args_test
   LIBS qtuicore testutils)
 
+add_library(test_attr_display_block_generator STATIC
+  test_attr_display_block_generator.cc)
+target_link_libraries(test_attr_display_block_generator qtuicore testutils ${GMOCK_LIBRARIES})
+
+add_gmock_test(test_attr_display_block_generator_test
+  LIBS test_attr_display_block_generator)
+
 add_gmock_test(attribute_layout_test
-  LIBS qtuicore testutils qttestutils)
+  LIBS qtuicore testutils qttestutils test_attr_display_block_generator)
 
 add_subdirectory(preview)

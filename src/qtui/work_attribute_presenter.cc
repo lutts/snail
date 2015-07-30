@@ -40,19 +40,19 @@ void WorkAttributePresenter::initialize() {
 }
 
 //////////////////// IAttributeDisplayBlockVisitor impl begin /////////////
-void WorkAttributePresenter::beginAddAttributeDisplayBlock(
+void WorkAttributePresenter::beginTraverse(
     int total_block_count) {
-  attr_layout_->beginAddAttributeDisplayBlock(total_block_count);
+  attr_layout_->beginLayout(total_block_count);
 }
 
-void WorkAttributePresenter::addAttributeGroupDisplayBlock(
+void* WorkAttributePresenter::visitAttributeGroupDisplayBlock(
     AttributeGroupDisplayBlock attr_group_block) {
-  attr_layout_->addAttributeGroupDisplayBlock(attr_group_block);
+  return attr_layout_->layoutAttributeGroupDisplayBlock(attr_group_block);
 }
 
-void WorkAttributePresenter::addAttributeDisplayBlock(
+void* WorkAttributePresenter::visitAttributeDisplayBlock(
     AttributeDisplayBlock attr_block) {
-  auto args = AttrCreateViewArgs::getArgs(model()->isEditMode());
+  auto args = AttrCreateViewArgs::getArgs(attr_block.edit_mode);
   auto attr_view =
       createRawViewIfNotExist<IAttributeView>(attr_block.attr_model, args);
   if (attr_view) {
@@ -62,12 +62,15 @@ void WorkAttributePresenter::addAttributeDisplayBlock(
     attr_view_block.erase_command = attr_block.erase_command;
     attr_view_block.edit_command = attr_block.edit_command;
     attr_view_block.is_in_group = attr_block.is_in_group;
+    attr_view_block.view_priv_data = attr_block.view_priv_data;
 
-    attr_layout_->addAttributeDisplayBlock(attr_view_block);
+    return attr_layout_->layoutAttributeDisplayBlock(attr_view_block);
   }
+
+  return nullptr;
 }
 
-void WorkAttributePresenter::endAddAttributeDisplayBlock() {
-  attr_layout_->endAddAttributeDisplayBlock();
+void WorkAttributePresenter::endTraverse() {
+  attr_layout_->endLayout();
 }
 ///////////////////// IAttributeDisplayBlockVisitor impl end ///////////////

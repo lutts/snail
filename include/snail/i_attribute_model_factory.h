@@ -8,11 +8,19 @@
 #ifndef INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_FACTORY_H_
 #define INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_FACTORY_H_
 
+#include <memory>
+
 namespace snailcore {
+
+class IAttribute;
+class IAttributeModel;
 
 class IAttributeModelFactory {
  public:
   virtual ~IAttributeModelFactory() = default;
+
+  virtual
+  std::shared_ptr<IAttributeModel> createModel(IAttribute* attr) const = 0;
 };
 
 }  // namespace snailcore

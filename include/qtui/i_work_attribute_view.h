@@ -20,23 +20,31 @@ class Command;
 class IAttributeView;
 
 struct AttributeViewDisplayBlock {
+  AttributeViewDisplayBlock()
+      : attr_view{nullptr}
+      , erase_command{nullptr}
+      , edit_command{nullptr}
+      , is_in_group{false}
+      , view_priv_data{nullptr} { }
+
   utils::U8String label;
   IAttributeView* attr_view;
   utils::Command* erase_command;
   utils::Command* edit_command;
   bool is_in_group;
+  void* view_priv_data;
 };
 
 class IAttributeLayout {
  public:
   virtual ~IAttributeLayout() = default;
 
-  virtual void beginAddAttributeDisplayBlock(int total_block_count) = 0;
-  virtual void addAttributeGroupDisplayBlock(
+  virtual void beginLayout(int total_block_count) = 0;
+  virtual void* layoutAttributeGroupDisplayBlock(
       snailcore::AttributeGroupDisplayBlock attr_group_block) = 0;
-  virtual void addAttributeDisplayBlock(
+  virtual void* layoutAttributeDisplayBlock(
       AttributeViewDisplayBlock attr_view_block) = 0;
-  virtual void endAddAttributeDisplayBlock() = 0;
+  virtual void endLayout() = 0;
 };
 
 class IWorkAttributeView : public GenericViewBase {

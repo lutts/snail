@@ -34,15 +34,7 @@ class WorkAttributeModel : public IWorkAttributeModel {
   void switchToEditMode() override;
   void switchToDisplayMode() override;
 
-  std::vector<std::shared_ptr<IAttributeModel>>
-  getAttributeModels() const override;
-
-  std::vector<utils::Command*> getEraseCommands() const override;
-  std::vector<utils::Command*> getPopupEditorCommands() const override;
-  std::vector<utils::Command*> getAddAttributeCommands() const override;
-
-  Location getLocation(IPfModel* model) const override;
-  Location getLocation(utils::Command* command) const override;
+  void traverseAttributes(IAttributeDisplayBlockVisitor* visitor) override;
 
  private:
   SNAIL_DISABLE_COPY(WorkAttributeModel);

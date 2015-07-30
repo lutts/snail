@@ -15,8 +15,7 @@ class A : public utils::ITrackable {
   A() { std::cout << "construct A" << std::endl; }
   ~A() { std::cout << "destruct A" << std::endl; }
 
-  static void* operator new(std::size_t sz)
-  {
+  static void* operator new(std::size_t sz) {
     void* p = ::operator new(sz);
     std::cout << "custom new for size " << sz << ", got p " << p << std::endl;
     return p;
@@ -26,8 +25,7 @@ class A : public utils::ITrackable {
     std::cout << "custom delete for p " << p << std::endl;
     return ::operator delete(p);
   }
-  static void* operator new[](std::size_t sz)
-  {
+  static void* operator new[](std::size_t sz) {
     std::cout << "custom new for size " << sz << std::endl;
     return ::operator new(sz);
   }
@@ -39,13 +37,13 @@ template <class T>
 struct custom_allocator {
   typedef T value_type;
   custom_allocator() noexcept {}
-  template <class U> custom_allocator (const custom_allocator<U>&) noexcept {}
-  T* allocate (std::size_t n) {
+  template <class U> custom_allocator(const custom_allocator<U>&) noexcept {}
+  T* allocate(std::size_t n) {
     std::cout << "allocate " << n
               << " objects, object size is " << sizeof(T) << std::endl;
     return static_cast<T*>(::operator new(n * sizeof(T)));
   }
-  void deallocate (T* p, std::size_t n) {
+  void deallocate(T* p, std::size_t n) {
     std::cout << "deallocate " << n << " objects" << std::endl;
     ::operator delete(p);
   }

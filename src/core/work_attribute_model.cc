@@ -9,6 +9,12 @@
 #include <vector>
 
 #include "utils/i_relay_command_factory.h"
+#include "snail/attribute_display_block.h"
+#include "snail/i_attribute_model_factory.h"
+#include "core/i_attribute_container.h"
+#include "core/i_attribute.h"
+#include "snail/i_attribute_model.h"
+#include "core/i_attribute_supplier.h"
 
 using namespace utils;  // NOLINT
 
@@ -32,37 +38,29 @@ void WorkAttributeModel::switchToEditMode() {
 void WorkAttributeModel::switchToDisplayMode() {
 }
 
-std::vector<std::shared_ptr<IAttributeModel>>
-WorkAttributeModel::getAttributeModels() const {
-  return std::vector<std::shared_ptr<IAttributeModel>>();
-}
+void WorkAttributeModel::traverseAttributes(
+    IAttributeDisplayBlockVisitor* visitor) {
+  auto attr_suppliers = attr_container_->attr_suppliers();
 
+  int total_attrs = 0;
+  for (auto & supplier : attr_suppliers) {
+    total_attrs += supplier->num_attributes();
+  }
+  visitor->beginAddAttributeDisplayBlock(total_attrs);
 
-std::vector<utils::Command*> WorkAttributeModel::getEraseCommands() const {
-  return std::vector<utils::Command*>();
-}
-
-std::vector<utils::Command*>
-WorkAttributeModel::getPopupEditorCommands() const {
-  return std::vector<utils::Command*>();
-}
-
-
-std::vector<utils::Command*>
-WorkAttributeModel::getAddAttributeCommands() const {
-  return std::vector<utils::Command*>();
-}
-
-IWorkAttributeModel::Location
-WorkAttributeModel::getLocation(IPfModel* model) const {
-  (void)model;
-  return {0, 0, 0, 0};
-}
-
-IWorkAttributeModel::Location
-WorkAttributeModel::getLocation(utils::Command* command) const {
-  (void)command;
-  return {0, 0, 0, 0};
+  for (auto & supplier : attr_suppliers) {
+    for (auto & attr : supplier->attributes()) {
+      auto attr_model = attr_model_factory_.createModel(attr);
+      visitor->addAttributeDisplayBlock({
+          attr->displayName(),
+              attr_model,
+              nullptr,
+              nullptr,
+              false
+        });
+    }
+  }
+  visitor->endAddAttributeDisplayBlock();
 }
 
 }  // namespace snailcore

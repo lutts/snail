@@ -8,11 +8,17 @@
 #ifndef INCLUDE_CORE_I_ATTRIBUTE_CONTAINER_H_
 #define INCLUDE_CORE_I_ATTRIBUTE_CONTAINER_H_
 
+#include <vector>
+
 namespace snailcore {
+
+class IAttributeSupplier;
 
 class IAttributeContainer {
  public:
   virtual ~IAttributeContainer() = default;
+
+  virtual std::vector<IAttributeSupplier*> attr_suppliers() const = 0;
 };
 
 }  // namespace snailcore

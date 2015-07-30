@@ -25,9 +25,11 @@ class MockCommand : public Command {
   MOCK_METHOD0(getType, CmdType());
 };
 
+#if 0
 void PrintTo(const MockCommand& command, ::std::ostream* os) {
   *os << command.display_text();
 }
+#endif
 
 class DummyCommand : public Command {
  public:

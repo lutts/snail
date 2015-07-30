@@ -5,6 +5,8 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+#include <algorithm>
+
 #include <QApplication>
 #include <QLabel>
 #include <QToolButton>
@@ -13,11 +15,12 @@
 #include "test/testutils/gmock_common.h"
 #include "test/testutils/qt/gui_tester.h"
 
+
 #include "src/utils/utils.h"
+#include "test/qtui/test_attr_display_block_generator.h"
 #include "src/qtui/attribute_layout.h"
 #include "utils/mock_command.h"
-#include "qtui/mock_attribute_view.h"
-#include "snail/attribute_display_block.h"
+#include "qtui/i_attribute_view.h"
 
 using namespace utils;  // NOLINT
 using namespace utils::tests;  // NOLINT
@@ -26,38 +29,7 @@ using namespace snailcore;  // NOLINT
 static int dummy_argc { 0 };
 static QApplication app(dummy_argc, nullptr);
 
-class TestAttributeGenerator {
- public:
-  virtual ~TestAttributeGenerator() = default;
-
-  virtual int num_attrs() const = 0;
-  virtual int left_side_count() const = 0;
-
-  virtual AttributeViewDisplayBlock attrViewBlockAt(int index) const = 0;
-  virtual U8String labelAt(int index) const = 0;
-  virtual const QWidget* widgetAt(int index) const = 0;
-  virtual MockCommand* eraseCommandAt(int index) const = 0;
-  virtual MockCommand* editCommandAt(int index) const = 0;
-
-  virtual bool isGroup(int index) const {
-    (void)index;
-    return false;
-  }
-
-  virtual AttributeGroupDisplayBlock attrGroupBlockAt(int index) const {
-    (void)index;
-    return AttributeGroupDisplayBlock();
-  }
-
-  virtual MockCommand* addCommandAt(int index) const {
-    (void)index;
-    return nullptr;
-  }
-};
-
-using DummyWidget = QLabel;
-
-class AttributeLayoutTest : public TestWithParam<int>
+class AttributeLayoutTest : public ::testing::Test
                           , public GuiTester {
  protected:
   AttributeLayoutTest() {
@@ -69,73 +41,62 @@ class AttributeLayoutTest : public TestWithParam<int>
   }
   // virtual void TearDown() { }
 
-  void layoutAttributes(const TestAttributeGenerator& attr_generator,
-                        bool print = false);
+  void layoutAttributes(const ExpectationHolder& expectation,
+                        bool debug = false);
 
   void assertAttributeLabelEqual(
-      const utils::U8String& expect_label, int row, int column);
+      const ExpectationHolder& expectation, int row, int column);
   void assertAttributeViewWidgetEqual(
-      const QWidget* expect_widget, int row, int column);
+      const ExpectationHolder& expectation, int row, int column);
   void assertCommandCanBeTriggered(
-      MockCommand* command, int row, int column);
+      const ExpectationHolder& expectation, int row, int column);
   void assertCellEmpty(int row, int column);
 
-  void verifyAttributeViewDisplayBlock(
-      const TestAttributeGenerator& attr_generator,
-      int block_index, int row, int start_column);
-  void verifyAttributeGroupDisplayBlock(
-      const TestAttributeGenerator& attr_generator,
-      int block_index, int row, int start_column);
-  void verifyLayoutResult(const TestAttributeGenerator& attr_generator);
+  void verifyLayoutResult(const ExpectationHolder& expectation);
 
   // region: test subject
   AttributeLayout attr_layout;
   // endregion
 };
 
-INSTANTIATE_TEST_CASE_P(
-    VariousNumberOfAttributes,
-    AttributeLayoutTest,
-    ::testing::Range(1, 10));
-
 void AttributeLayoutTest::layoutAttributes(
-    const TestAttributeGenerator& attr_generator, bool print) {
-  int num_attrs = attr_generator.num_attrs();
+    const ExpectationHolder& expectation,  bool debug) {
+  int num_attrs = expectation.num_attrs();
 
-  attr_layout.beginAddAttributeDisplayBlock(num_attrs);
-  for (int i = 0; i < num_attrs; ++i) {
-    if (attr_generator.isGroup(i)) {
-      if (print) {
-        std::cout << "group " << attr_generator.labelAt(i)
-                  << " @ index " << i << std::endl;
+  attr_layout.beginLayout(num_attrs);
+  for (int index = 0; index < num_attrs; ++index) {
+    if (expectation.isGroupAt(index)) {
+      auto group_block = expectation.attrGroupBlockAt(index);
+      if (debug) {
+        std::cout << "group@" << group_block << " " << group_block->label
+                  << " @ index " << index << std::endl;
       }
-      attr_layout.addAttributeGroupDisplayBlock(
-          attr_generator.attrGroupBlockAt(i));
+      auto priv_data = attr_layout.layoutAttributeGroupDisplayBlock(*group_block);
+      group_block->view_priv_data = priv_data;
     } else {
-      if (print) {
-        std::cout << "attribute " << attr_generator.labelAt(i)
-        << " @index " << i << std::endl;
+      auto attr_block = expectation.attrViewBlockAt(index);
+      if (debug) {
+        std::cout << "attribute@" << attr_block << " " << attr_block->label
+                  << " @index " << index
+                  << ", widget@" << attr_block->attr_view->getWidget()
+                  << std::endl;
       }
-      attr_layout.addAttributeDisplayBlock(attr_generator.attrViewBlockAt(i));
+      auto priv_data = attr_layout.layoutAttributeDisplayBlock(*attr_block);
+      attr_block->view_priv_data = priv_data;
     }
   }
-  attr_layout.endAddAttributeDisplayBlock();
+  attr_layout.endLayout();
+  QTest::qWait(10);  // TODO(lutts): 10 is enought?
 }
 
 void AttributeLayoutTest::assertAttributeLabelEqual(
-    const utils::U8String& expect_label, int row, int column) {
+    const ExpectationHolder& expectation, int row, int column) {
+  auto expect_label = expectation.labelAt(row, column);
+
   QLayoutItem* item = attr_layout.itemAtPosition(row, column);
-  if (!expect_label.empty()) {
-    ASSERT_NE(nullptr, item) << "label item @row" << row
-                             << ",column" << column
-                             << " should not be null, "
-                             << "label = " << expect_label;
-  } else {
-    ASSERT_EQ(nullptr, item) << "empty label @row" << row
-                             << ",column" << column
-                             << " should got null cell item";
-    return;
-  }
+  ASSERT_NE(nullptr, item) << "label item @row" << row
+                           << ",column" << column
+                           << " should be " << expect_label;
   QLabel* label = qobject_cast<QLabel*>(item->widget());
   ASSERT_NE(nullptr, label) << "label @row" << row
                             << ", column" << column
@@ -147,11 +108,13 @@ void AttributeLayoutTest::assertAttributeLabelEqual(
 }
 
 void AttributeLayoutTest::assertAttributeViewWidgetEqual(
-    const QWidget* expect_widget, int row, int column) {
+    const ExpectationHolder& expectation, int row, int column) {
+  auto expect_widget = expectation.widgetAt(row, column);
+
   QLayoutItem* item = attr_layout.itemAtPosition(row, column);
   ASSERT_NE(nullptr, item) << "widget item @row" << row
                            << ", column" << column
-                           << " should not be null";
+                           << " should be " << expect_widget;
   ASSERT_EQ(expect_widget, item->widget())
       << "widget @row" << row << ", column" << column
       << " should be " << expect_widget
@@ -159,24 +122,20 @@ void AttributeLayoutTest::assertAttributeViewWidgetEqual(
 }
 
 void AttributeLayoutTest::assertCommandCanBeTriggered(
-    MockCommand* command, int row, int column) {
+    const ExpectationHolder& expectation, int row, int column) {
+  auto expect_command = expectation.commandAt(row, column);
+
   QLayoutItem* item = attr_layout.itemAtPosition(row, column);
-  if (command) {
-    ASSERT_NE(nullptr, item) << "command item @row" << row
-                             << ", column" << column
-                             << " should not be null";
-  } else {
-    ASSERT_EQ(nullptr, item) << "command item @row" << row
-                             << ", column" << column
-                             << " should be empty because command is null";
-    return;
-  }
+  ASSERT_NE(nullptr, item) << "command item @row" << row
+                           << ", column" << column
+                           << " should not be null";
+
   QWidget* widget = item->widget();
   ASSERT_NE(nullptr, widget) << "Command front widget @row" << row
                              << ", column" << column
                              << " should not be null";
 
-  EXPECT_CALL(*command, redo());
+  EXPECT_CALL(*expect_command, redo());
 
   QTest::mouseClick(widget, Qt::LeftButton);
 }
@@ -186,414 +145,98 @@ void AttributeLayoutTest::assertCellEmpty(int row, int column) {
   ASSERT_EQ(nullptr, item);
 }
 
-void AttributeLayoutTest::verifyAttributeGroupDisplayBlock(
-    const TestAttributeGenerator& attr_generator,
-    int block_index, int row, int start_column) {
-  int label_column = start_column + 0;
-  int add_cmd_column = start_column + 1;
-
-  auto expect_label = attr_generator.labelAt(block_index);
-  auto expect_add_cmd = attr_generator.addCommandAt(block_index);
-
-  CUSTOM_ASSERT(assertAttributeLabelEqual(expect_label, row, label_column));
-  CUSTOM_ASSERT(assertCommandCanBeTriggered(expect_add_cmd,
-                                            row, add_cmd_column));
-}
-
-void AttributeLayoutTest::verifyAttributeViewDisplayBlock(
-    const TestAttributeGenerator& attr_generator,
-    int block_index, int row, int start_column) {
-  int label_column = start_column + 0;
-  int attr_view_column = start_column + 1;
-  int erase_cmd_column = start_column + 2;
-  int edit_cmd_column = start_column + 3;
-
-  auto expect_label = attr_generator.labelAt(block_index);
-  auto expect_widget = attr_generator.widgetAt(block_index);
-  auto erase_cmd = attr_generator.eraseCommandAt(block_index);
-  auto edit_cmd = attr_generator.editCommandAt(block_index);
-
-  CUSTOM_ASSERT(assertAttributeLabelEqual(expect_label, row, label_column));
-  CUSTOM_ASSERT(assertAttributeViewWidgetEqual(expect_widget,
-                                               row, attr_view_column));
-  CUSTOM_ASSERT(assertCommandCanBeTriggered(erase_cmd,
-                                            row, erase_cmd_column));
-  CUSTOM_ASSERT(assertCommandCanBeTriggered(edit_cmd,
-                                            row, edit_cmd_column));
-}
-
 void AttributeLayoutTest::verifyLayoutResult(
-    const TestAttributeGenerator& attr_generator) {
-  int num_attrs = attr_generator.num_attrs();
-  int left_side_count = attr_generator.left_side_count();
-  int right_side_count = num_attrs - left_side_count;
+    const ExpectationHolder& expectation) {
+  int row_count = expectation.rowCount();
 
-  for (int block_index = 0; block_index < num_attrs;  ++block_index) {
-    // std::cout << "check block index " << block_index << std::endl;
-    int row = block_index;
-    int start_column = 0;
-    if (block_index >= left_side_count) {
-      row -= left_side_count;
-      start_column = AttributeLayout::kRightSideFirstColumn;
-    }
+  int item_count = 0;
 
-    if (attr_generator.isGroup(block_index)) {
-      // std::cout << "verify group at row " << row << std::endl;
-      CUSTOM_ASSERT(verifyAttributeGroupDisplayBlock(attr_generator,
-                                                     block_index,
-                                                     row, start_column));
-    } else {
-      // std::cout << "verify attr at row " << row << std::endl;
-      CUSTOM_ASSERT(verifyAttributeViewDisplayBlock(attr_generator,
-                                                    block_index,
-                                                    row, start_column));
-    }
-  }
-
-  int large_row_count = 0;
-  int small_row_count = 0;
-  int column_offset = 0;
-
-  if (right_side_count < left_side_count) {
-    large_row_count = left_side_count;
-    small_row_count = right_side_count;
-    // empty is on the right
-    column_offset = AttributeLayout::kRightSideFirstColumn;
-  } else if (right_side_count > left_side_count) {
-    large_row_count = right_side_count;
-    small_row_count = left_side_count;
-    // empty is on the left
-    column_offset = 0;
-  }
-
-  if (large_row_count != small_row_count) {
-    const int empty_cell_start_row = small_row_count;
-    const int empty_cell_end_row = large_row_count;
-    const int empty_cell_start_column = column_offset;
-    const int empty_cell_end_column = column_offset +
-                                      AttributeLayout::kNumColumnPerSide;
-
-    for (int row = empty_cell_start_row;
-         row < empty_cell_end_row; ++row) {
-      for (int column = empty_cell_start_column;
-           column < empty_cell_end_column;
-           ++column) {
-        CUSTOM_ASSERT(assertCellEmpty(row, column));
+  for (int row = 0; row < row_count; ++row) {
+    for (int column = 0; column < AttributeLayout::kTotalColumn; ++column) {
+      if (column == AttributeLayout::kSeperatorColumn) {
+        continue;
       }
-    }
-  }
+
+      if (expectation.isEmpty(row, column)) {
+        CUSTOM_ASSERT(assertCellEmpty(row, column));
+        continue;
+      }
+
+      ++item_count;
+
+      switch (column) {
+        case AttributeLayout::kLeftLabelColumn:
+        case AttributeLayout::kRightLabelColumn:
+          CUSTOM_ASSERT(assertAttributeLabelEqual(expectation, row, column));
+          break;
+
+        case AttributeLayout::kLeftAttrViewColumn:
+          // case AttributeLayout::kLeftAddCommandColumn:
+        case AttributeLayout::kRightAttrViewColumn:
+          //  case AttributeLayout::kRightAddCommandColumn:
+          if (expectation.isGroupAt(row, column)) {
+            CUSTOM_ASSERT(
+                assertCommandCanBeTriggered(expectation, row, column));
+          } else {
+            CUSTOM_ASSERT(
+                assertAttributeViewWidgetEqual(expectation, row, column));
+          }
+          break;
+
+        case AttributeLayout::kLeftEraseCommandColumn:
+        case AttributeLayout::kLeftEditCommandColumn:
+        case AttributeLayout::kRightEraseCommandColumn:
+        case AttributeLayout::kRightEditCommandColumn:
+          CUSTOM_ASSERT(assertCommandCanBeTriggered(expectation, row, column));
+          break;
+
+        case AttributeLayout::kSeperatorColumn:
+        default:
+          break;
+      }  // switch column
+    }  // for column
+  }    // for row
+
+  ASSERT_EQ(item_count, attr_layout.count());
 }
 
-class BasicAttributesGenerator : public TestAttributeGenerator {
- public:
-  explicit BasicAttributesGenerator(int num_attrs)
-      : num_attrs_(num_attrs)
-      , attr_views(num_attrs)
-      , widgets(num_attrs)
-      , erase_commands(num_attrs)
-      , edit_commands(num_attrs) {
-    for (int i = 0; i < num_attrs_; ++i) {
-      ON_CALL(attr_views[i], getWidget())
-          .WillByDefault(Return(&widgets[i]));
-      ON_CALL(erase_commands[i], display_text())
-          .WillByDefault(
-              Return(utils::formatString("erase command No.{1}", i)));
-      ON_CALL(edit_commands[i], display_text())
-          .WillByDefault(
-              Return(utils::formatString("edit command No.{1}", i)));
-
-      attr_view_blocks.push_back(
-          { utils::formatString("basic attribute No.{1}", i),
-                &attr_views[i],
-                &erase_commands[i],
-                &edit_commands[i],
-                false});
-    }
-  }
-  virtual ~BasicAttributesGenerator() = default;
-
-  int num_attrs() const override { return num_attrs_; }
-
-  int left_side_count() const override {
-    int count = num_attrs_ / 2;
-    if (num_attrs_ % 2)
-      ++count;
-
-    return count;
-  }
-
-  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    return attr_view_blocks[index];
-  }
-
-  U8String labelAt(int index) const override {
-    return attr_view_blocks[index].label;
-  }
-
-  const QWidget* widgetAt(int index) const override {
-    return attr_view_blocks[index].attr_view->getWidget();
-  }
-
-  MockCommand* eraseCommandAt(int index) const override {
-    return const_cast<MockCommand*>(&erase_commands[index]);
-  }
-
-  MockCommand* editCommandAt(int index) const override {
-    return const_cast<MockCommand*>(&edit_commands[index]);
-  }
-
- private:
-  int num_attrs_;
-  std::vector<MockAttributeView> attr_views;
-  std::vector<DummyWidget> widgets;
-  std::vector<MockCommand> erase_commands;
-  std::vector<MockCommand> edit_commands;
-
-  std::vector<AttributeViewDisplayBlock> attr_view_blocks;
-
- private:
-  SNAIL_DISABLE_COPY(BasicAttributesGenerator)
-};
-
-TEST_P(AttributeLayoutTest,
-       should_basically_divide_from_the_middle_but_allow_left_side_plus_one_if_num_attrs_is_odd) { // NOLINT
+TEST_F(AttributeLayoutTest,
+       should_basically_divide_from_the_middle_if_num_attrs_is_even_number) { // NOLINT
   // Setup fixture
-  int num_attrs = GetParam();
-  BasicAttributesGenerator attr_generator(num_attrs);
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-  int expect_left_side_count = num_attrs / 2;
-  if (num_attrs % 2) {
-    ++expect_left_side_count;
-  }
-
+  expect.setExpectAA(0, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(1, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(2, attr_pool.createAttr(), attr_pool.createAttr());
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
   // Verify results
-  ASSERT_EQ(expect_left_side_count, attr_generator.left_side_count());
-  verifyLayoutResult(attr_generator);
+  verifyLayoutResult(expect);
 }
 
-#include "utils/basic_utils.h"
+TEST_F(AttributeLayoutTest,
+       should_allow_left_side_plus_one_if_num_attrs_is_odd) { // NOLINT
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-class OneGroupAttributeGenerator : public TestAttributeGenerator {
- public:
-  explicit OneGroupAttributeGenerator(int num_sub_attrs)
-      : num_sub_attrs_(num_sub_attrs)
-      , sub_attr_views(num_sub_attrs)
-      , sub_widgets(num_sub_attrs)
-      , sub_erase_commands(num_sub_attrs)
-      , sub_edit_commands(num_sub_attrs) {
-    group.label = utils::U8String{"The Group"};
-    group.add_command = &add_command;
-    group.sub_attr_count = num_sub_attrs;
+  expect.setExpectAA(0, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(1, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(2, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(3, attr_pool.createAttr(), nullptr);
 
-    for (int i = 0; i < num_sub_attrs; ++i) {
-      ON_CALL(sub_attr_views[i], getWidget())
-          .WillByDefault(Return(&sub_widgets[i]));
-      ON_CALL(sub_erase_commands[i], display_text())
-          .WillByDefault(
-              Return(utils::formatString("sub erase command No.{1}", i)));
-      ON_CALL(sub_edit_commands[i], display_text())
-          .WillByDefault(
-              Return(utils::formatString("sub edit command No.{1}", i)));
+  // Exercise system
+  layoutAttributes(expect);
 
-      sub_attr_view_blocks.push_back(
-          { utils::formatString("sub attribute No.{1}", i),
-                &sub_attr_views[i],
-                &sub_erase_commands[i],
-                &sub_edit_commands[i],
-                true});
-    }
-  }
-
-  virtual ~OneGroupAttributeGenerator() = default;
-
-  int num_attrs() const override {
-    return num_sub_attrs_ + 1;
-  }
-
-  int left_side_count() const {
-    if (num_sub_attrs_ <= 2) {
-      return num_attrs();
-    } else {
-      int count = num_attrs() / 2;
-      if (num_attrs() % 2)
-        ++count;
-
-      return count;
-    }
-  }
-
-  bool isGroup(int index) const override {
-    return index == 0;
-  }
-
-  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
-    [index]() {
-      ASSERT_EQ(0, index)
-          << "OnlyGroupGenerator only index 0 is group, not index " << index;
-    }();
-    return group;
-  }
-
-  MockCommand* addCommandAt(int index) const override {
-    [index]() {
-      ASSERT_EQ(0, index)
-          << "OneGroupGenerator index 0 is group, not " << index;
-    }();
-
-    return const_cast<MockCommand*>(&add_command);
-  }
-
-  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    [index]() {
-      ASSERT_NE(0, index) << "OneGroupGenerator index 0 is group, not attr";
-    }();
-
-    return sub_attr_view_blocks[index - 1];
-  }
-
-  U8String labelAt(int index) const override {
-    if (index == 0)
-      return group.label;
-    else
-      return sub_attr_view_blocks[index - 1].label;
-  }
-
-  const QWidget* widgetAt(int index) const override {
-    [index]() {
-      ASSERT_NE(0, index) << "OneGroupGenerator index 0 is group, no widget";
-    }();
-
-    return &sub_widgets[index - 1];
-  }
-
-  MockCommand* eraseCommandAt(int index) const override {
-    [index]() {
-      ASSERT_NE(0, index)
-          << "OneGroupGenerator index 0 is group, no erase cmd";
-    }();
-
-    return const_cast<MockCommand*>(&sub_erase_commands[index - 1]);
-  }
-
-  MockCommand* editCommandAt(int index) const override {
-    [index]() {
-      ASSERT_NE(0, index)
-          << "OneGroupGenerator index 0 is group, no edit cmd";
-    }();
-
-    return const_cast<MockCommand*>(&sub_edit_commands[index - 1]);
-  }
-
- private:
-  int num_sub_attrs_;
-
-  AttributeGroupDisplayBlock group;
-  MockCommand add_command;
-
-  std::vector<MockAttributeView> sub_attr_views;
-  std::vector<DummyWidget> sub_widgets;
-  std::vector<MockCommand> sub_erase_commands;
-  std::vector<MockCommand> sub_edit_commands;
-
-  std::vector<AttributeViewDisplayBlock> sub_attr_view_blocks;
-
- private:
-  SNAIL_DISABLE_COPY(OneGroupAttributeGenerator)
-};
-
-class CompositeAttributeGenerator : public TestAttributeGenerator {
- public:
-  CompositeAttributeGenerator() = default;
-  virtual ~CompositeAttributeGenerator() = default;
-
-  int num_attrs() const override {
-    return total_attrs_;
-  }
-
-  void addAttributeGenerator(const TestAttributeGenerator& attr_generator) {
-    generator_list_.push_back(&attr_generator);
-
-    int num_attrs = attr_generator.num_attrs();
-    for (int index = 0; index < num_attrs; ++index) {
-      int global_index = index + total_attrs_;
-      index_to_generator[global_index] = &attr_generator;
-      index_to_sub_index[global_index] = index;
-    }
-
-    total_attrs_ += attr_generator.num_attrs();
-  }
-
-  int left_side_count() const {
-    int count = total_attrs_ / 2;
-    if (total_attrs_ % 2)
-      ++count;
-
-    return count;
-  }
-
-  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->attrViewBlockAt(indexOfGenerator(index));
-  }
-
-  U8String labelAt(int index) const override {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->labelAt(indexOfGenerator(index));
-  }
-
-  const QWidget* widgetAt(int index) const override {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->widgetAt(indexOfGenerator(index));
-  }
-
-  MockCommand* eraseCommandAt(int index) const override {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->eraseCommandAt(indexOfGenerator(index));
-  }
-
-  MockCommand* editCommandAt(int index) const override {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->editCommandAt(indexOfGenerator(index));
-  }
-
-  bool isGroup(int index) const {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->isGroup(indexOfGenerator(index));
-  }
-
-  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->attrGroupBlockAt(indexOfGenerator(index));
-  }
-
-  MockCommand* addCommandAt(int index) const {
-    const TestAttributeGenerator* generator = generatorOfIndex(index);
-    return generator->addCommandAt(indexOfGenerator(index));
-  }
-
-  const TestAttributeGenerator* generatorOfIndex(int index) const {
-    return index_to_generator.at(index);
-  }
-
-  int indexOfGenerator(int index) const {
-    return index_to_sub_index.at(index);
-  }
-
- private:
-  int total_attrs_ { 0 };
-  std::list<const TestAttributeGenerator*> generator_list_;
-  std::map<int, const TestAttributeGenerator*> index_to_generator;
-  std::map<int, int> index_to_sub_index;
-
- private:
-  SNAIL_DISABLE_COPY(CompositeAttributeGenerator)
-};
+  // Verify results
+  verifyLayoutResult(expect);
+}
 
 /*
+ * group with one or two sub attributes test scenario
+ *
  * num_attrs % 2 == 0 && sub_attrs == 1
  * before adjust
  *   xxxxx               sub attr
@@ -636,521 +279,300 @@ class CompositeAttributeGenerator : public TestAttributeGenerator {
  *
  */
 
-class CutAtFirstSubAttrOfGroupAttributeGenerator
-    : public TestAttributeGenerator {
- public:
-  CutAtFirstSubAttrOfGroupAttributeGenerator(int total_num_attrs,
-                                             int num_sub_attrs)
-      : num_attrs_(total_num_attrs)
-      , num_sub_attrs_(num_sub_attrs)
-      , basic_attrs(total_num_attrs - 1 - num_sub_attrs)
-      , group_attrs(num_sub_attrs) { }
+TEST_F(AttributeLayoutTest,
+       should_move_sub_attr_to_left_when_cut_at_first_sub_attr_of_a_group_which_has_only_one_sub_attr_on_even_num_attrs) { // NOLINT
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-  int num_attrs() const override {
-    return num_attrs_;
-  }
+  auto group_block = attr_pool.createGroup();
+  auto sub_attr_block = attr_pool.createAttr(group_block);
 
-  int left_side_count() const override {
-    // based on group_index
-    int count = group_index() + 1;
-
-    if (should_move_subattr_to_left())
-      ++count;
-    else if (should_move_group_to_right())
-      --count;
-
-    return count;
-  }
-
-  bool isGroup(int index) const override {
-    return index == group_index();
-  }
-
-  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
-    [this, index]() {
-      ASSERT_TRUE(is_group_attrs_index(index))
-          << "invalid index" << index << " called with attrGroupBlockAt()";
-    }();
-
-    int grp_attr_index = to_group_attrs_index(index);
-    return group_attrs.attrGroupBlockAt(grp_attr_index);
-  }
-
-  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.attrViewBlockAt(grp_attr_index);
-    } else {
-      int basic_attr_index = to_basic_attrs_index(index);
-      return basic_attrs.attrViewBlockAt(basic_attr_index);
-    }
-  }
-
-  U8String labelAt(int index) const override {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.labelAt(grp_attr_index);
-    } else {
-      int basic_attr_index = to_basic_attrs_index(index);
-      return basic_attrs.labelAt(basic_attr_index);
-    }
-  }
-
-  const QWidget* widgetAt(int index) const {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.widgetAt(grp_attr_index);
-    } else {
-      int basic_attr_index = to_basic_attrs_index(index);
-      return basic_attrs.widgetAt(basic_attr_index);
-    }
-  }
-
-  MockCommand* eraseCommandAt(int index) const override {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.eraseCommandAt(grp_attr_index);
-    } else {
-      int basic_attr_index = to_basic_attrs_index(index);
-      return basic_attrs.eraseCommandAt(basic_attr_index);
-    }
-  }
-
-  MockCommand* editCommandAt(int index) const override {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.editCommandAt(grp_attr_index);
-    } else {
-      int basic_attr_index = to_basic_attrs_index(index);
-      return basic_attrs.editCommandAt(basic_attr_index);
-    }
-  }
-
-
-  MockCommand* addCommandAt(int index) const override {
-    if (is_group_attrs_index(index)) {
-      int grp_attr_index = to_group_attrs_index(index);
-      return group_attrs.addCommandAt(grp_attr_index);
-    }
-
-    return nullptr;
-  }
-
- private:
-  bool should_move_group_to_right() const {
-    if ( (num_attrs_ % 2) && (num_sub_attrs_ != 0) ) {
-      // in this case, left side in therory plus one,
-      // if we move the subattr to left, then left side
-      // will plus three, to avoid this, we move the group
-      // to the right side, which makes right_side_count = left_side_count + 1
-      return true;
-    } else {
-      return (num_sub_attrs_ > 1);
-    }
-  }
-
-  bool should_move_subattr_to_left() const {
-    if ( (num_attrs_ % 2 == 0) && (num_sub_attrs_ == 1) )
-      return true;
-    else
-      return false;
-  }
-
-  int group_index() const {
-    // put group at the last row of unadjusted left side
-    int unadjusted_left_side_count = num_attrs_ / 2;
-    if (num_attrs_ % 2)
-      ++unadjusted_left_side_count;
-
-    return --unadjusted_left_side_count;
-  }
-
-  int min_group_attr_index() const {
-    return group_index();
-  }
-
-  int max_group_attr_index() const {
-    return group_index() + num_sub_attrs_;
-  }
-
-  bool is_group_attrs_index(int index) const {
-    return (index >= min_group_attr_index()) &&
-        (index <= max_group_attr_index());
-  }
-
-  int to_group_attrs_index(int index) const {
-    return index - group_index();
-  }
-
-  int to_basic_attrs_index(int index) const {
-    if (index > max_group_attr_index())
-      return index - group_attrs.num_attrs();
-
-    return index;
-  }
-
-  int num_attrs_;
-  int num_sub_attrs_;
-
-  BasicAttributesGenerator basic_attrs;
-  OneGroupAttributeGenerator group_attrs;
-};
-
-TEST_P(AttributeLayoutTest,
-       should_treat_the_single_sub_attr_and_group_as_a_whole_if_the_group_has_only_one_sub_attr) { // NOLINT
-  // Setup fixture
-  int num_attrs = GetParam();
-
-  // min requirement: 1 normal attr + 1 group + 1 sub attr
-  const int MIN_REQUIREMENT_NUM_ATTR = 1 + 1 + 1;
-  if (num_attrs < MIN_REQUIREMENT_NUM_ATTR) {
-    SUCCEED();
-    return;
-  }
-
-  CutAtFirstSubAttrOfGroupAttributeGenerator attr_generator(num_attrs, 1);
-
-  int right_side_count = num_attrs - attr_generator.left_side_count();
-  if (num_attrs % 2 == 0) {
-    int diff = attr_generator.left_side_count() - right_side_count;
-    ASSERT_EQ(2, diff);
-  } else {
-    int diff = right_side_count - attr_generator.left_side_count();
-    ASSERT_EQ(1, diff);
-  }
+  expect.setExpectAA(0, attr_pool.createAttr(),  attr_pool.createAttr());
+  expect.setExpectAA(1, attr_pool.createAttr(),  attr_pool.createAttr());
+  expect.setExpectGA(2, group_block,             nullptr);
+  expect.setExpectAA(3, sub_attr_block,          nullptr);
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
-  // Verify results
-  verifyLayoutResult(attr_generator);
+  // Verify result
+  verifyLayoutResult(expect);
 }
 
-TEST_P(AttributeLayoutTest,
-       should_move_group_to_right_side_if_split_on_first_subview_of_a_group_which_has_more_that_one_subview) { // NOLINT
-  // Setup fixture
-  int num_attrs = GetParam();
+TEST_F(AttributeLayoutTest,
+       should_move_group_to_right_when_cut_at_first_sub_attr_of_a_group_which_has_more_than_one_sub_attr_on_even_num_attrs) { // NOLINT
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-  // min requirement: 1 normal attr + 1 group + 2 sub attr
-  const int MIN_REQUIREMENT_NUM_ATTR = 1 + 1 + 2;
-  if (num_attrs < MIN_REQUIREMENT_NUM_ATTR) {
-    SUCCEED();
-    return;
-  }
+  auto group_block = attr_pool.createGroup();
+  auto sub_attr_block1 = attr_pool.createAttr(group_block);
+  auto sub_attr_block2 = attr_pool.createAttr(group_block);
 
-  CutAtFirstSubAttrOfGroupAttributeGenerator attr_generator(num_attrs, 2);
-
-  int right_side_count = num_attrs - attr_generator.left_side_count();
-  int diff = right_side_count - attr_generator.left_side_count();
-  if (num_attrs % 2 == 0) {
-    ASSERT_EQ(2, diff);
-  } else {
-    ASSERT_EQ(1, diff);
-  }
+  expect.setExpectAG(0, attr_pool.createAttr(), group_block);
+  expect.setExpectAA(1, attr_pool.createAttr(), sub_attr_block1);
+  expect.setExpectAA(2, attr_pool.createAttr(), sub_attr_block2);
+  expect.setExpectAA(3, nullptr,                 attr_pool.createAttr());
+  expect.setExpectAA(4, nullptr,                 attr_pool.createAttr());
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
-  // Verify results
-  verifyLayoutResult(attr_generator);
+  // Verify result
+  verifyLayoutResult(expect);
 }
 
-TEST_P(AttributeLayoutTest,
-       should_treat_group_as_normal_attrs_if_group_has_no_sub_attrs) { // NOLINT
+TEST_F(AttributeLayoutTest,
+       should_move_group_to_right_when_cut_at_first_sub_attr_of_a_group_which_has_only_one_sub_attr_on_odd_num_attr) { // NOLINT
   // Setup fixture
-  int num_attrs = GetParam();
-  CutAtFirstSubAttrOfGroupAttributeGenerator attr_generator(num_attrs, 0);
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-  int expect_left_count = num_attrs / 2;
-  if (num_attrs % 2)
-    ++expect_left_count;
+  auto group_block = attr_pool.createGroup();
+  auto sub_attr_block = attr_pool.createAttr(group_block);
 
-  ASSERT_EQ(expect_left_count, attr_generator.left_side_count());
+  expect.setExpectAG(0, attr_pool.createAttr(), group_block);
+  expect.setExpectAA(1, attr_pool.createAttr(), sub_attr_block);
+  expect.setExpectAA(2, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(3, nullptr,                 attr_pool.createAttr());
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
   // Verify results
-  verifyLayoutResult(attr_generator);
+  verifyLayoutResult(expect);
 }
 
-TEST_P(AttributeLayoutTest,
+TEST_F(AttributeLayoutTest,
+       should_move_group_to_right_when_cut_at_first_sub_attr_of_a_group_which_has_more_than_one_sub_attr_on_odd_num_attr) { // NOLINT
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
+
+  auto group_block = attr_pool.createGroup();
+  auto sub_attr_block1 = attr_pool.createAttr(group_block);
+  auto sub_attr_block2 = attr_pool.createAttr(group_block);
+
+  expect.setExpectAG(0, attr_pool.createAttr(), group_block);
+  expect.setExpectAA(1, attr_pool.createAttr(), sub_attr_block1);
+  expect.setExpectAA(2, attr_pool.createAttr(), sub_attr_block2);
+  expect.setExpectAA(3, nullptr,                 attr_pool.createAttr());
+
+  // Exercise system
+  layoutAttributes(expect);
+
+  // Verify results
+  verifyLayoutResult(expect);
+}
+
+TEST_F(AttributeLayoutTest,
+       should_treat_group_as_normal_attrs_if_group_has_no_sub_attrs_on_even_num_attr) { // NOLINT
+  // Setup fixture
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
+
+  // Layout:
+  // xxxxx           xxxxx
+  // group           xxxxx
+  expect.setExpectAA(0, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectGA(1, attr_pool.createGroup(), attr_pool.createAttr());
+
+  // Exercise system
+  layoutAttributes(expect);
+
+  // Verify results
+  verifyLayoutResult(expect);
+}
+
+TEST_F(AttributeLayoutTest,
+       should_treat_group_as_normal_attrs_if_group_has_no_sub_attrs_on_odd_num_attr) { // NOLINT
+  // Setup fixture
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
+
+  // Layout:
+  // xxxxx           xxxxx
+  // xxxxx           xxxxx
+  // group
+  expect.setExpectAA(0, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectAA(1, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectGA(2, attr_pool.createGroup(), nullptr);
+
+  // Exercise system
+  layoutAttributes(expect);
+
+  // Verify results
+  verifyLayoutResult(expect);
+}
+
+TEST_F(AttributeLayoutTest,
        should_not_split_if_there_is_only_one_group_and_the_group_has_less_than_3_subviews_and_there_is_no_other_toplevel_attributes) { // NOLINT
-  // Setup fixture
-  int num_attrs = GetParam();
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-  if (num_attrs > 2) {
-    SUCCEED();
-    return;
-  }
-  OneGroupAttributeGenerator attr_generator(num_attrs);
+  auto group_block = attr_pool.createGroup();
+  auto sub_attr1 = attr_pool.createAttr(group_block);
+  auto sub_attr2 = attr_pool.createAttr(group_block);
 
-  int right_side_count = attr_generator.num_attrs()
-                         - attr_generator.left_side_count();
-  ASSERT_EQ(0, right_side_count);
-
-  // Exercise system
-  layoutAttributes(attr_generator);
-
-  // Verify results
-  verifyLayoutResult(attr_generator);
-}
-
-TEST_P(AttributeLayoutTest,
-       should_do_normal_split_if_there_is_only_one_group_which_has_GE_tha_3_subviews_and_there_is_no_other_toplevel_attributes) { // NOLINT
-  // Setup fixture
-  int num_attrs = GetParam();
-
-  if (num_attrs < 3) {
-    SUCCEED();
-    return;
-  }
-
-  OneGroupAttributeGenerator attr_generator(num_attrs);
-
-  int expect_left_count = attr_generator.num_attrs() / 2;
-  if (attr_generator.num_attrs() % 2)
-    ++expect_left_count;
-
-  ASSERT_EQ(expect_left_count, attr_generator.left_side_count());
+  // expect layout:
+  //    group                 (empty)
+  //      sub_attr            (empty)
+  //      sub_attr            (empty)
+  expect.setExpectGA(0, group_block, nullptr);
+  expect.setExpectAA(1, sub_attr1,   nullptr);
+  expect.setExpectAA(2, sub_attr2,   nullptr);
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
   // Verify results
-  verifyLayoutResult(attr_generator);
+  verifyLayoutResult(expect);
 }
-
-class NullAddCommandGroupAttributeGenerator
-    : public OneGroupAttributeGenerator {
- public:
-  NullAddCommandGroupAttributeGenerator()
-      :OneGroupAttributeGenerator(1) { }
-
-  virtual ~NullAddCommandGroupAttributeGenerator() = default;
-
-  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
-    auto grp_block = OneGroupAttributeGenerator::attrGroupBlockAt(index);
-    grp_block.add_command = nullptr;
-
-    return grp_block;
-  }
-
-  MockCommand* addCommandAt(int index) const override {
-    (void)index;
-    return nullptr;
-  }
-
- private:
-  SNAIL_DISABLE_COPY(NullAddCommandGroupAttributeGenerator);
-};
 
 TEST_F(AttributeLayoutTest,
-       should_not_create_button_for_null_add_commands) { // NOLINT
-  // Setup fixture
-  NullAddCommandGroupAttributeGenerator attr_generator;
+       should_do_normal_split_if_there_is_only_one_group_which_has_GE_than_3_subviews_and_there_is_no_other_toplevel_attributes) { // NOLINT
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
+
+  auto group_block = attr_pool.createGroup();
+  auto sub_attr1 = attr_pool.createAttr(group_block);
+  auto sub_attr2 = attr_pool.createAttr(group_block);
+  auto sub_attr3 = attr_pool.createAttr(group_block);
+
+  // expect layout:
+  //    group                 sub_attr2
+  //      sub_attr1           sub_attr3
+  expect.setExpectGA(0, group_block, sub_attr2);
+  expect.setExpectAA(1, sub_attr1,   sub_attr3);
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
   // Verify results
-  verifyLayoutResult(attr_generator);
+  verifyLayoutResult(expect);
 }
-
-class SparseNullEditEraseCommmandAttributeGenerator
-    : public BasicAttributesGenerator {
- public:
-  SparseNullEditEraseCommmandAttributeGenerator()
-      : BasicAttributesGenerator(5) {
-  }
-  virtual ~SparseNullEditEraseCommmandAttributeGenerator() = default;
-
-  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    auto attr_block = BasicAttributesGenerator::attrViewBlockAt(index);
-    if (index % 2)
-      attr_block.edit_command = nullptr;
-    else
-      attr_block.erase_command = nullptr;
-
-    return attr_block;
-  }
-
-  MockCommand* editCommandAt(int index) const override {
-    if (index % 2) {
-      return nullptr;
-    } else {
-      return BasicAttributesGenerator::editCommandAt(index);
-    }
-  }
-
-  MockCommand* eraseCommandAt(int index) const override {
-    if (index % 2 == 0) {
-      return nullptr;
-    } else {
-      return BasicAttributesGenerator::eraseCommandAt(index);
-    }
-  }
-
- private:
-  SNAIL_DISABLE_COPY(SparseNullEditEraseCommmandAttributeGenerator)
-};
-
 
 TEST_F(AttributeLayoutTest,
-       should_not_create_buttons_for_null_edit_commands) { // NOLINT
-  // Setup fixture
-  SparseNullEditEraseCommmandAttributeGenerator attr_generator;
+       should_not_create_button_for_null_commands) { // NOLINT
+  TestAttributePool attr_pool;
+
+  auto attr_block = attr_pool.createAttr();
+  attr_block->erase_command = nullptr;
+  attr_block->edit_command = nullptr;
+
+  auto group_block = attr_pool.createGroup();
+  group_block->add_command = nullptr;
+
+  ExpectationHolder expect;
+  expect.setExpectGA(0, group_block, attr_block);
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
   // Verify results
-  verifyLayoutResult(attr_generator);
+  verifyLayoutResult(expect);
 }
-
-class EqualLabelAttributesGenerator : public CompositeAttributeGenerator {
- public:
-  EqualLabelAttributesGenerator()
-      : basic_attrs_begin(begin_count)
-      , group_attrs_middle1(middle1_count)
-      , group_attrs_middle2(middle1_count)
-      , basic_attrs_end(end_count)
-      , padding_attrs(padding_count) {
-    addAttributeGenerator(basic_attrs_begin);
-    addAttributeGenerator(group_attrs_middle1);
-    addAttributeGenerator(group_attrs_middle2);
-    addAttributeGenerator(basic_attrs_end);
-    addAttributeGenerator(padding_attrs);
-
-    // label to layouter
-    // begin
-    label_to_layout.emplace_back("Attribute 1");
-    label_to_layout.emplace_back("Attribute 1");
-    label_to_layout.emplace_back("Attribute 2");  // same as begin of group
-    // middle 1
-    label_to_layout.emplace_back("Attribute 2");  // acutally is a group
-    label_to_layout.emplace_back("Attribute 2");
-    label_to_layout.emplace_back("Attribute 2");
-    label_to_layout.emplace_back("Attribute 3");
-    label_to_layout.emplace_back("Attribute 3");
-    // middle 2
-    label_to_layout.emplace_back("Attribute 3");  // acutally is a group
-    label_to_layout.emplace_back("Attribute 3");
-    label_to_layout.emplace_back("Attribute 3");
-    label_to_layout.emplace_back("Attribute 4");
-    label_to_layout.emplace_back("Attribute 4");
-    // end
-    label_to_layout.emplace_back("Attribute 4");  // same as end of group
-    label_to_layout.emplace_back("Attribute 5");
-    label_to_layout.emplace_back("Attribute 6");
-
-    // label expected
-    // begin
-    label_expected.emplace_back("Attribute 1");
-    label_expected.emplace_back("Attribute 1");
-    label_expected.emplace_back("Attribute 2");
-    // middle 1
-    label_expected.emplace_back("Attribute 2");  // actually is a group
-    label_expected.emplace_back("Attribute 2");
-    label_expected.emplace_back("");
-    label_expected.emplace_back("Attribute 3");
-    label_expected.emplace_back("");
-    // middle 2
-    label_expected.emplace_back("Attribute 3");  // actually is a group
-    label_expected.emplace_back("Attribute 3");
-    label_expected.emplace_back("");
-    label_expected.emplace_back("Attribute 4");
-    label_expected.emplace_back("");
-    // end
-    label_expected.emplace_back("Attribute 4");
-    label_expected.emplace_back("Attribute 5");
-    label_expected.emplace_back("Attribute 6");
-  }
-
-  virtual ~EqualLabelAttributesGenerator() = default;
-
-  int left_side_count() const override {
-    return left_count;
-  }
-
-  AttributeViewDisplayBlock attrViewBlockAt(int index) const override {
-    auto attr_block = CompositeAttributeGenerator::attrViewBlockAt(index);
-
-    if (index < left_count) {
-      attr_block.label = label_to_layout[index];
-    }
-
-    return attr_block;
-  }
-
-  AttributeGroupDisplayBlock attrGroupBlockAt(int index) const override {
-    auto group = CompositeAttributeGenerator::attrGroupBlockAt(index);
-    if (index < left_count)
-      group.label = label_to_layout[index];
-
-    return group;
-  }
-
-  U8String labelAt(int index) const {
-    if (index < left_count) {
-      return label_expected[index];
-    } else {
-      return padding_attrs.labelAt(index - left_count);
-    }
-  }
-
- private:
-  static constexpr int begin_count = 3;
-  static constexpr int middle1_count = 4;  // sub attributes count
-  static constexpr int middle2_count = 4;  // sub attributes count
-  static constexpr int end_count = 3;
-  static constexpr int left_count = begin_count
-                                    + 1 + middle1_count
-                                    + 1 + middle2_count
-                                    + end_count;
-  static constexpr int padding_count = left_count;
-
-  BasicAttributesGenerator basic_attrs_begin;
-  OneGroupAttributeGenerator group_attrs_middle1;
-  OneGroupAttributeGenerator group_attrs_middle2;
-  BasicAttributesGenerator basic_attrs_end;
-  BasicAttributesGenerator padding_attrs;
-
-  std::vector<utils::U8String> label_to_layout;
-  std::vector<utils::U8String> label_expected;
-
- private:
-  SNAIL_DISABLE_COPY(EqualLabelAttributesGenerator)
-};
-
 
 TEST_F(AttributeLayoutTest,
        should_only_show_the_first_label_and_hide_other_equal_labels_if_there_are_successive_equal_labels) { // NOLINT
   // Setup fixture
-  EqualLabelAttributesGenerator attr_generator;
+  TestAttributePool attr_pool;
+
+  auto left_attr0 = attr_pool.createAttr("Attribute 1");
+  auto left_attr1 = attr_pool.createAttr("Attribute 1");
+  auto left_attr2 = attr_pool.createAttr("Attribute 2");  // same as begin of group
+
+  auto left_group0 = attr_pool.createGroup("Attribute 2");  // same name as prev and next
+  auto left_sub_attr00 = attr_pool.createAttr(left_group0, "Attribute 2");
+  auto left_sub_attr01 = attr_pool.createAttr(left_group0, "Attribute 2");
+  auto left_sub_attr02 = attr_pool.createAttr(left_group0, "Attribute 3");
+  auto left_sub_attr03 = attr_pool.createAttr(left_group0, "Attribute 3");
+
+  auto left_group1 = attr_pool.createGroup("Attribute 3");  // same name as prev and next
+  auto left_sub_attr10 = attr_pool.createAttr(left_group1, "Attribute 3");
+  auto left_sub_attr11 = attr_pool.createAttr(left_group1, "Attribute 3");
+  auto left_sub_attr12 = attr_pool.createAttr(left_group1, "Attribute 4");
+  auto left_sub_attr13 = attr_pool.createAttr(left_group1, "Attribute 4");
+
+  auto left_attr3 = attr_pool.createAttr("Attribute 4");  // same as end of group
+  auto left_attr4 = attr_pool.createAttr("Attribute 5");
+  auto left_attr5 = attr_pool.createAttr("Attribute 6");
+
+  ExpectationHolder expect;
+
+  expect.setExpectAA(0, left_attr0, attr_pool.createAttr());
+  expect.setExpectAA(1, left_attr1, attr_pool.createAttr());
+  expect.setExpectAA(2, left_attr2, attr_pool.createAttr());
+
+  expect.setExpectGA(3, left_group0, attr_pool.createAttr());
+  expect.setExpectAA(4, left_sub_attr00, attr_pool.createAttr());
+  expect.setExpectAA(5, left_sub_attr01, attr_pool.createAttr());
+  expect.setExpectAA(6, left_sub_attr02, attr_pool.createAttr());
+  expect.setExpectAA(7, left_sub_attr03, attr_pool.createAttr());
+
+  expect.setExpectGA(8, left_group1, attr_pool.createAttr());
+  expect.setExpectAA(9, left_sub_attr10, attr_pool.createAttr());
+  expect.setExpectAA(10, left_sub_attr11, attr_pool.createAttr());
+  expect.setExpectAA(11, left_sub_attr12, attr_pool.createAttr());
+  expect.setExpectAA(12, left_sub_attr13, attr_pool.createAttr());
+
+  expect.setExpectAA(13, left_attr3, attr_pool.createAttr());
+  expect.setExpectAA(14, left_attr4, attr_pool.createAttr());
+  expect.setExpectAA(15, left_attr5, attr_pool.createAttr());
+
+  // label expected
+  expect.setLeftLabelAt(0, "Attribute 1");
+  expect.setLeftLabelAt(1, "Attribute 1");
+  expect.setLeftLabelAt(2, "Attribute 2");
+
+  expect.setLeftLabelAt(3, "Attribute 2");  // actually is a group
+  expect.setLeftLabelAt(4, "Attribute 2");
+  expect.setLeftLabelAt(5, "");  // should hide
+  expect.setLeftLabelAt(6, "Attribute 3");
+  expect.setLeftLabelAt(7, "");            // should hide
+
+  expect.setLeftLabelAt(8, "Attribute 3");  // actually is a group
+  expect.setLeftLabelAt(9, "Attribute 3");
+  expect.setLeftLabelAt(10, "");  // should hide
+  expect.setLeftLabelAt(11, "Attribute 4");
+  expect.setLeftLabelAt(12, "");  // should hide
+
+  expect.setLeftLabelAt(13, "Attribute 4");
+  expect.setLeftLabelAt(14, "Attribute 5");
+  expect.setLeftLabelAt(15, "Attribute 6");
 
   // Exercise system
-  layoutAttributes(attr_generator);
+  layoutAttributes(expect);
 
   // Verify results
-  verifyLayoutResult(attr_generator);
+  verifyLayoutResult(expect);
 }
 
 TEST_F(AttributeLayoutTest,
-       should_clear_layout_items_when_beginAddAttributeDisplayBlock_called) { // NOLINT
+       should_be_able_to_relayout_with_different_set_of_attrs_and_groups) { // NOLINT
   // Setup fixture
-  BasicAttributesGenerator attr_generator(10);
-  layoutAttributes(attr_generator);
-  verifyLayoutResult(attr_generator);
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
 
-  // Exercise system
-  attr_layout.beginAddAttributeDisplayBlock(std::rand());
+  auto group = attr_pool.createGroup();
+  auto sub_attr1 = attr_pool.createAttr(group);
 
-  // Verify results
-  ASSERT_EQ(0, attr_layout.count());
+  expect.setExpectAA(0, attr_pool.createAttr(), attr_pool.createAttr());
+  expect.setExpectGA(1, group, attr_pool.createAttr());
+  expect.setExpectAA(2, sub_attr1, nullptr);
 
-  // can be re-layout with other attributes
-  BasicAttributesGenerator another_generator(7);
-  layoutAttributes(another_generator);
-  verifyLayoutResult(another_generator);
+  layoutAttributes(expect, true);
+  verifyLayoutResult(expect);
+
+  // relayout with different set of attrs and groups
+  auto sub_attr2 = attr_pool.createAttr(group);
+  ExpectationHolder another_expect;
+
+  another_expect.setExpectAG(0, attr_pool.createAttr(), group);
+  another_expect.setExpectAA(1, attr_pool.createAttr(), sub_attr1);
+  another_expect.setExpectAA(2, attr_pool.createAttr(), sub_attr2);
+  another_expect.setExpectAA(3, nullptr, attr_pool.createAttr());
+
+  layoutAttributes(another_expect, true);
+  verifyLayoutResult(another_expect);
 }
+
+// test Add, Delete, Update

@@ -1,3 +1,5 @@
+add_subdirectory(lib)
+
 # Widgets finds its own dependencies (QtGui and QtCore).
 find_package(Qt5Widgets REQUIRED)
 
@@ -8,6 +10,7 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII)
 set(qtui_MOC_HDRS
   qt_uiengine.h
   main_window.h
+  attribute_layout.h
   )
 
 set(qtui_RESOURCES
@@ -44,5 +47,5 @@ foreach (_subdir ${SUBDIRS})
 endforeach()
 
 add_library(qtuicore SHARED ${qtui_SRCS} ${qtui_GEN_MOC_SRCS} ${qtui_GEN_RCS})
-target_link_libraries(qtuicore Qt5::Widgets pfmvp ${Boost_LIBRARIES} pthread)
+target_link_libraries(qtuicore Qt5::Widgets qtuilib pfmvp ${Boost_LIBRARIES} pthread)
 set_target_properties(qtuicore PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")

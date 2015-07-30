@@ -26,14 +26,15 @@ using namespace pfmvp;  // NOLINT
 using namespace pfmvp::tests;  // NOLINT
 using namespace utils;  // NOLINT
 
-class WorkAttributePresenterTest : public ::testing::Test {
+template <typename TestBase>
+class WorkAttributePresenterTestBase : public TestBase {
  protected:
-  WorkAttributePresenterTest() {
+  WorkAttributePresenterTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~WorkAttributePresenterTest() { }
-  virtual void SetUp() {
+  // ~WorkAttributePresenterTestBase() { }
+  void SetUp() override {
     // Setup fixture
     model = std::make_shared<MockWorkAttributeModel>();
     view = std::make_shared<MockWorkAttributeView>();
@@ -68,7 +69,7 @@ class WorkAttributePresenterTest : public ::testing::Test {
 
     ASSERT_EQ(presenter.get(), attr_visitor);
   }
-  // virtual void TearDown() { }
+  // void TearDown() override { }
 
   // region: objects test subject depends on
   std::shared_ptr<MockWorkAttributeModel> model;
@@ -93,6 +94,9 @@ class WorkAttributePresenterTest : public ::testing::Test {
   SlotCatcher<IWorkAttributeModel::ShowPopupForSlotType> showPopupFor;
   // endregion
 };
+
+class WorkAttributePresenterTest
+    : public WorkAttributePresenterTestBase<::testing::Test> { };
 
 TEST_F(WorkAttributePresenterTest,
        should_switch_model_to_edit_mode_when_user_click_EditMode_button) { // NOLINT
@@ -147,32 +151,11 @@ TEST_F(WorkAttributePresenterTest,
   int total_block_count = std::rand();
 
   // Expectations
-  EXPECT_CALL(attr_layout, beginAddAttributeDisplayBlock(total_block_count));
+  EXPECT_CALL(attr_layout, beginLayout(total_block_count));
 
   // Exercise system
-  presenter->beginAddAttributeDisplayBlock(total_block_count);
+  presenter->beginTraverse(total_block_count);
 }
-
-namespace snailcore {
-
-bool operator==(const AttributeGroupDisplayBlock& a,
-                const AttributeGroupDisplayBlock& b) {
-  return (a.label == b.label) &&
-      (a.add_command == b.add_command) &&
-      (a.sub_attr_count == b.sub_attr_count);
-}
-
-bool operator==(const AttributeDisplayBlock& a,
-                const AttributeDisplayBlock& b) {
-  return (a.label == b.label) &&
-      (a.attr_model == b.attr_model) &&
-      (a.erase_command == b.erase_command) &&
-      (a.edit_command == b.edit_command) &&
-      (a.is_in_group == b.is_in_group);
-}
-
-}  // namespace snailcore
-
 
 TEST_F(WorkAttributePresenterTest,
        should_relay_AttributeGroupDisplayBlock_to_attr_layout) { // NOLINT
@@ -181,10 +164,10 @@ TEST_F(WorkAttributePresenterTest,
 
   // Expectations
   EXPECT_CALL(attr_layout,
-              addAttributeGroupDisplayBlock(attr_group_block));
+              layoutAttributeGroupDisplayBlock(attr_group_block));
 
   // Exercise system
-  presenter->addAttributeGroupDisplayBlock(attr_group_block);
+  presenter->visitAttributeGroupDisplayBlock(attr_group_block);
 }
 
 bool operator==(const AttributeViewDisplayBlock& a,
@@ -193,10 +176,18 @@ bool operator==(const AttributeViewDisplayBlock& a,
       (a.attr_view == b.attr_view) &&
       (a.erase_command == b.erase_command) &&
       (a.edit_command == b.edit_command) &&
-      (a.is_in_group == b.is_in_group);
+      (a.is_in_group == b.is_in_group) &&
+      (a.view_priv_data == b.view_priv_data);
 }
 
-TEST_F(WorkAttributePresenterTest,
+class WorkAttributePresenterTest_data_EditMode
+    : public WorkAttributePresenterTestBase<::testing::TestWithParam<bool>> { };
+
+INSTANTIATE_TEST_CASE_P(AllEditModes,
+                        WorkAttributePresenterTest_data_EditMode,
+                        ::testing::Bool());
+
+TEST_P(WorkAttributePresenterTest_data_EditMode,
        should_createViewFor_attr_model_before_add_to_attr_layout) { // NOLINT
   // Setup fixture
   auto attr_model = std::make_shared<MockAttributeModel>();
@@ -211,37 +202,38 @@ TEST_F(WorkAttributePresenterTest,
   attr_block.erase_command = xtestutils::genDummyPointer<utils::Command>();
   attr_block.edit_command = xtestutils::genDummyPointer<utils::Command>();
   attr_block.is_in_group = xtestutils::randomBool();
+  attr_block.view_priv_data = xtestutils::genDummyPointer<void>();
 
   attr_view_block.label = attr_block.label;
   attr_view_block.attr_view = attr_view.get();
   attr_view_block.erase_command = attr_block.erase_command;
   attr_view_block.edit_command = attr_block.edit_command;
   attr_view_block.is_in_group = attr_block.is_in_group;
+  attr_view_block.view_priv_data = attr_block.view_priv_data;
 
-  bool edit_mode = true;
+  bool edit_mode = GetParam();
+  attr_block.edit_mode = edit_mode;
   auto args = AttrCreateViewArgs::getArgs(edit_mode);
 
   // Expectations
-  EXPECT_CALL(*model, isEditMode())
-      .WillRepeatedly(Return(edit_mode));
   EXPECT_CALL(triad_manager, findViewByModel_if(attr_pfmodel.get(), _))
       .WillOnce(Return(std::vector<IPfView*>()));
   EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, args))
       .WillOnce(Return(attr_view));
 
-  EXPECT_CALL(attr_layout, addAttributeDisplayBlock(attr_view_block));
+  EXPECT_CALL(attr_layout, layoutAttributeDisplayBlock(attr_view_block));
 
   // Exercise system
-  presenter->addAttributeDisplayBlock(attr_block);
+  presenter->visitAttributeDisplayBlock(attr_block);
 }
 
 TEST_F(WorkAttributePresenterTest,
        should_relay_endAddAttributeDisplayBlock_to_attr_layout) { // NOLINT
   // Expectations
-  EXPECT_CALL(attr_layout, endAddAttributeDisplayBlock());
+  EXPECT_CALL(attr_layout, endLayout());
 
   // Exercise system
-  presenter->endAddAttributeDisplayBlock();
+  presenter->endTraverse();
 }
 
 ///////////////////// IAttributeDisplayBlockVisitor test end ////////////////
