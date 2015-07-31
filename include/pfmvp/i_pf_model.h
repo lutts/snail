@@ -12,6 +12,8 @@
 
 namespace pfmvp {
 
+class IPfTriadManager;
+
 class IPfModel {
  public:
   using ModelIdType = utils::U8String;
@@ -20,6 +22,7 @@ class IPfModel {
 
   virtual const ModelIdType& getModelId() const = 0;
   virtual void onDestroy() { }
+  virtual void set_triad_manager(IPfTriadManager*) { }
 };
 
 #define DEF_MODEL_ID(id)                                        \

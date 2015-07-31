@@ -224,6 +224,7 @@ PfTriadManagerImpl::createViewFor(
     auto presenter = view_factory->createView(model, orig_args);
 
     if (presenter) {
+      model->set_triad_manager(triad_manager);
       presenter->set_triad_manager(triad_manager);
 
       // TODO(lutts): LOCK

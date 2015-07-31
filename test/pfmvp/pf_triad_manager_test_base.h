@@ -50,6 +50,14 @@ class MockPfViewFactory : public IPfViewFactory {
                                                                         \
      MOCK_METHOD0(onDestroy, void());                                   \
      MOCK_METHOD0(destruct, void());                                    \
+                                                                        \
+     void set_triad_manager(IPfTriadManager* triad_manager) override {  \
+       triad_manager_ = triad_manager;                                  \
+     }                                                                  \
+                                                                        \
+     IPfTriadManager* triad_manager() { return triad_manager_; }        \
+   private:                                                             \
+   IPfTriadManager* triad_manager_ { nullptr };                         \
   };                                                                    \
                                                                         \
   class ITest##name##View : public IPfView {                            \
@@ -368,6 +376,7 @@ template <typename M, typename V, typename P>
 void PfTriadManagerTestBase::verifyTriad(M* model, V* view, P* presenter) {
   ASSERT_NE(nullptr, presenter);
   ASSERT_EQ(model, presenter->getModel().get());
+  ASSERT_EQ(triad_manager.get(), model->triad_manager());
   ASSERT_EQ(view, presenter->getView().get());
   ASSERT_EQ(triad_manager.get(), presenter->triad_manager());
   ASSERT_TRUE(presenter->initialized_ok);
