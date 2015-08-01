@@ -309,12 +309,12 @@ U8String ExpectationHolder::labelAt(int index) const {
 
 void ExpectationHolder::setLeftLabelAt(int row, const utils::U8String& new_label) {
   position_to_Label[row][AttributeLayout::kLeftLabelColumn] = new_label;
-  checkLabelEmpty(row, AttributeLayout::kLeftLabelColumn, new_label);
+  // checkLabelEmpty(row, AttributeLayout::kLeftLabelColumn, new_label);
 }
 
 void ExpectationHolder::setRightLabelAt(int row, const utils::U8String& new_label) {
   position_to_Label[row][AttributeLayout::kRightLabelColumn] = new_label;
-  checkLabelEmpty(row, AttributeLayout::kRightLabelColumn, new_label);
+  // checkLabelEmpty(row, AttributeLayout::kRightLabelColumn, new_label);
 }
 
 const QWidget* ExpectationHolder::widgetAt(int row, int column) const {

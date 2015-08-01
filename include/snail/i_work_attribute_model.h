@@ -21,6 +21,7 @@ namespace snailcore {
 
 class IAttributeModel;
 class IAttributeDisplayBlockVisitor;
+class UpdateAttrLabelData;
 
 class IWorkAttributeModel : public pfmvp::IPfModel {
  public:
@@ -34,6 +35,7 @@ class IWorkAttributeModel : public pfmvp::IPfModel {
   SNAIL_SIGSLOT2(AttributesChanged, void());
   SNAIL_SIGSLOT2(ShowPopupFor, bool(
       std::shared_ptr<IAttributeModel> attr_model));
+  SNAIL_SIGSLOT2(AttrLabelChanged, void(UpdateAttrLabelData label_data));
 
   virtual void traverseAttributes(IAttributeDisplayBlockVisitor* visitor) = 0;
 };

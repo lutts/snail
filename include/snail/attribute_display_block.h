@@ -45,6 +45,11 @@ struct AttributeDisplayBlock {
   void* view_priv_data;
 };
 
+struct UpdateAttrLabelData {
+  utils::U8String label;
+  void* view_priv_data;
+};
+
 class IAttributeDisplayBlockVisitor {
  public:
   virtual ~IAttributeDisplayBlockVisitor() = default;

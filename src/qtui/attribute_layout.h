@@ -41,6 +41,7 @@ class AttributeLayout : public QGridLayout
       snailcore::AttributeGroupDisplayBlock attr_group_block) override;
   void* layoutAttributeDisplayBlock(
       AttributeViewDisplayBlock attr_view_block) override;
+  void updateLabel(snailcore::UpdateAttrLabelData label_data) override;
   void endLayout() override;
 
  private slots:

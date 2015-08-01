@@ -56,6 +56,9 @@ class WorkAttributePresenterTestBase : public TestBase {
     R_EXPECT_CALL(*model, whenAttributesChanged(_, _))
         .WillOnce(SaveArg<0>(&attributesChanged));
 
+    R_EXPECT_CALL(*model, whenAttrLabelChanged(_, _))
+        .WillOnce(SaveArg<0>(&attrLabelChanged));
+
     R_EXPECT_CALL(*model, whenShowPopupFor(_, _))
         .WillOnce(SaveArg<0>(&showPopupFor));
 
@@ -91,6 +94,7 @@ class WorkAttributePresenterTestBase : public TestBase {
   SlotCatcher<IWorkAttributeView::DoneButtonClickedSlotType> doneButtonClicked;
 
   SlotCatcher<IWorkAttributeModel::AttributesChangedSlotType> attributesChanged;
+  SlotCatcher<IWorkAttributeModel::AttrLabelChangedSlotType> attrLabelChanged;
   SlotCatcher<IWorkAttributeModel::ShowPopupForSlotType> showPopupFor;
   // endregion
 };
@@ -219,6 +223,20 @@ TEST_P(WorkAttributePresenterTest_data_EditMode,
 
   // Exercise system
   presenter->visitAttributeDisplayBlock(attr_block);
+}
+
+TEST_F(WorkAttributePresenterTest,
+       should_update_label_in_layout_when_LabelChanged) { // NOLINT
+  // Setup fixture
+  UpdateAttrLabelData label_data;
+  label_data.label = xtestutils::genRandomString();
+  label_data.view_priv_data = xtestutils::genDummyPointer<void>();
+
+  // Expectations
+  EXPECT_CALL(attr_layout, updateLabel(label_data));
+
+  // Exercise system
+  attrLabelChanged(label_data);
 }
 
 TEST_F(WorkAttributePresenterTest,

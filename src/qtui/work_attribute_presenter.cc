@@ -32,6 +32,12 @@ void WorkAttributePresenter::initialize() {
       },
       shared_from_this());
 
+  model()->whenAttrLabelChanged(
+      [this](UpdateAttrLabelData label_data) {
+        attr_layout_->updateLabel(label_data);
+      },
+      shared_from_this());
+
   model()->whenShowPopupFor(
       [this](std::shared_ptr<IAttributeModel> attr_model) -> bool {
         return showDialog(attr_model, AttrCreateViewArgs::getArgs(true));
@@ -67,6 +73,11 @@ void* WorkAttributePresenter::visitAttributeDisplayBlock(
 
   return nullptr;
 }
+
+#if 0
+void WorkAttributePresenter::updateLabel(UpdateAttrLabelData label_data) {
+}
+#endif
 
 void WorkAttributePresenter::endTraverse() {
   attr_layout_->endLayout();

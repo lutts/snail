@@ -36,6 +36,7 @@ class IAttributeLayout {
       snailcore::AttributeGroupDisplayBlock attr_group_block) = 0;
   virtual void* layoutAttributeDisplayBlock(
       AttributeViewDisplayBlock attr_view_block) = 0;
+  virtual void updateLabel(snailcore::UpdateAttrLabelData label_data) = 0;
   virtual void endLayout() = 0;
 };
 

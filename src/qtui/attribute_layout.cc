@@ -156,7 +156,7 @@ void* AttributeLayout::layoutAttributeGroupDisplayBlock(
   if (attr_group_block.add_command)
     addPushButton(attr_group_block.add_command, row, add_btn_column);
 
-  return nullptr;
+  return label;
 }
 
 #if 0
@@ -206,12 +206,10 @@ void* AttributeLayout::layoutAttributeDisplayBlock(
   utils::U8String label_ustr =
       label_to_display(attr_view_block.label, attr_type);
 
-  if (!label_ustr.empty()) {
-    QString label_qstr = U8StringToQString(label_ustr);
-    auto label = new QLabel(label_qstr);
-    addWidget(label, row, label_column);
-    curr_widgets.push_front(label);
-  }
+  QString label_qstr = U8StringToQString(label_ustr);
+  auto label = new QLabel(label_qstr);
+  addWidget(label, row, label_column);
+  curr_widgets.push_front(label);
 
   QWidget* attr_widget = attr_view_block.attr_view->getWidget();
   // NOTE: if cause flicker, use RelocatableGridLayout
@@ -223,7 +221,12 @@ void* AttributeLayout::layoutAttributeDisplayBlock(
   addWidget(attr_widget, row, attr_view_column);
   curr_attr_widgets.push_front(attr_widget);
 
-  return nullptr;
+  return label;
+}
+
+void AttributeLayout::updateLabel(UpdateAttrLabelData label_data) {
+  QLabel* label = reinterpret_cast<QLabel*>(label_data.view_priv_data);
+  label->setText(U8StringToQString(label_data.label));
 }
 
 void AttributeLayout::endLayout() {

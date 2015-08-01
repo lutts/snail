@@ -29,6 +29,12 @@ bool operator==(const AttributeDisplayBlock& a,
       (a.view_priv_data == b.view_priv_data);
 }
 
+bool operator==(const UpdateAttrLabelData& a,
+                const UpdateAttrLabelData& b) {
+  return (a.label == b.label) &&
+      (a.view_priv_data == b.view_priv_data);
+}
+
 namespace tests {
 
 class MockAttributeDisplayBlockVisitor : public IAttributeDisplayBlockVisitor {

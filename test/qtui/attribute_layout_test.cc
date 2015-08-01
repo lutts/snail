@@ -566,4 +566,40 @@ TEST_F(AttributeLayoutTest,
   verifyLayoutResult(another_expect);
 }
 
-// test Add, Delete, Update
+TEST_F(AttributeLayoutTest,
+       should_be_able_to_update_label) { // NOLINT
+  // Setup fixture
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
+
+  auto r0_left_attr = attr_pool.createAttr();
+  auto r1_left_attr = attr_pool.createAttr();
+
+  auto group = attr_pool.createGroup();
+  auto sub_attr = attr_pool.createAttr(group);
+
+  expect.setExpectAG(0, r0_left_attr, group);
+  expect.setExpectAA(1, r1_left_attr, sub_attr);
+
+  layoutAttributes(expect);
+  verifyLayoutResult(expect);
+
+  // Exercise system
+  auto new_r0_left_label = xtestutils::genRandomString();
+  auto new_r0_right_label = xtestutils::genRandomString();
+  auto new_r1_left_label = xtestutils::genRandomString();
+  auto new_r1_right_label = xtestutils::genRandomString();
+
+  attr_layout.updateLabel({new_r0_left_label, r0_left_attr->view_priv_data});
+  attr_layout.updateLabel({new_r0_right_label, group->view_priv_data});
+  attr_layout.updateLabel({new_r1_left_label, r1_left_attr->view_priv_data});
+  attr_layout.updateLabel({new_r1_right_label, sub_attr->view_priv_data});
+
+  expect.setLeftLabelAt(0, new_r0_left_label);
+  expect.setLeftLabelAt(1, new_r1_left_label);
+  expect.setRightLabelAt(0, new_r0_right_label);
+  expect.setRightLabelAt(1, new_r1_right_label);
+
+  // Verify results
+  verifyLayoutResult(expect);
+}

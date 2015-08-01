@@ -20,6 +20,7 @@ class MockWorkAttributeModel : public IWorkAttributeModel {
   MOCK_METHOD0(switchToDisplayMode, void());
 
   SNAIL_MOCK_SLOT(AttributesChanged);
+  SNAIL_MOCK_SLOT(AttrLabelChanged);
   SNAIL_MOCK_SLOT(ShowPopupFor);
 
   MOCK_METHOD1(traverseAttributes,

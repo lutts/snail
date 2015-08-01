@@ -392,7 +392,7 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       should_be_channge_label_column_to_empty_if_set_an_empty_label) { // NOLINT
+       should_set_an_empty_label_wont_change_isEmpty_result) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect;
@@ -409,7 +409,7 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
   expect.setLeftLabelAt(0, empty_label);
 
   // Verify results
-  ASSERT_TRUE(expect.isEmpty(0, AttributeLayout::kLeftLabelColumn));
+  ASSERT_FALSE(expect.isEmpty(0, AttributeLayout::kLeftLabelColumn));
   ASSERT_FALSE(expect.isEmpty(0, AttributeLayout::kRightLabelColumn));
 }
 
