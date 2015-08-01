@@ -59,9 +59,6 @@ class WorkAttributePresenterTestBase : public TestBase {
     R_EXPECT_CALL(*model, whenAttrLabelChanged(_, _))
         .WillOnce(SaveArg<0>(&attrLabelChanged));
 
-    R_EXPECT_CALL(*model, whenShowPopupFor(_, _))
-        .WillOnce(SaveArg<0>(&showPopupFor));
-
     // Excercise system
     presenter = std::make_shared<WorkAttributePresenter>(
         model, view, &attr_layout);
@@ -95,7 +92,6 @@ class WorkAttributePresenterTestBase : public TestBase {
 
   SlotCatcher<IWorkAttributeModel::AttributesChangedSlotType> attributesChanged;
   SlotCatcher<IWorkAttributeModel::AttrLabelChangedSlotType> attrLabelChanged;
-  SlotCatcher<IWorkAttributeModel::ShowPopupForSlotType> showPopupFor;
   // endregion
 };
 
@@ -118,25 +114,6 @@ TEST_F(WorkAttributePresenterTest,
 
   // Exercise system
   doneButtonClicked();
-}
-
-TEST_F(WorkAttributePresenterTest,
-       should_be_able_to_show_popup_attribute_editor_dialog_for_model) { // NOLINT
-  // Setup fixture
-  auto attr_model = std::make_shared<MockAttributeModel>();
-  std::shared_ptr<IPfModel> attr_pfmodel = attr_model;
-  auto attr_view = std::make_shared<MockAttributeView>();
-
-  auto args = AttrCreateViewArgs::getArgs(true);
-
-  // Expectations
-  EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, args))
-      .WillOnce(Return(attr_view));
-  EXPECT_CALL(*attr_view, showView(true))
-      .WillOnce(Return(true));
-
-  // Exercise system
-  ASSERT_TRUE(showPopupFor(attr_model));
 }
 
 TEST_F(WorkAttributePresenterTest,

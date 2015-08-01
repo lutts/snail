@@ -37,12 +37,6 @@ void WorkAttributePresenter::initialize() {
         attr_layout_->updateLabel(label_data);
       },
       shared_from_this());
-
-  model()->whenShowPopupFor(
-      [this](std::shared_ptr<IAttributeModel> attr_model) -> bool {
-        return showDialog(attr_model, AttrCreateViewArgs::getArgs(true));
-      },
-      shared_from_this());
 }
 
 //////////////////// IAttributeDisplayBlockVisitor impl begin /////////////

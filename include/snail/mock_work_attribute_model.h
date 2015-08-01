@@ -21,7 +21,6 @@ class MockWorkAttributeModel : public IWorkAttributeModel {
 
   SNAIL_MOCK_SLOT(AttributesChanged);
   SNAIL_MOCK_SLOT(AttrLabelChanged);
-  SNAIL_MOCK_SLOT(ShowPopupFor);
 
   MOCK_METHOD1(traverseAttributes,
                void(IAttributeDisplayBlockVisitor* visitor));
