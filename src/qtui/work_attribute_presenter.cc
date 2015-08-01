@@ -59,8 +59,6 @@ void* WorkAttributePresenter::visitAttributeDisplayBlock(
     AttributeViewDisplayBlock attr_view_block;
     attr_view_block.label = attr_block.label;
     attr_view_block.attr_view = attr_view;
-    attr_view_block.erase_command = attr_block.erase_command;
-    attr_view_block.edit_command = attr_block.edit_command;
     attr_view_block.is_in_group = attr_block.is_in_group;
     attr_view_block.view_priv_data = attr_block.view_priv_data;
 

@@ -52,8 +52,6 @@ class TestAttributePoolImpl {
 
   std::vector<std::unique_ptr<MockAttributeView>> attr_views;
   std::vector<std::unique_ptr<DummyWidget>> widgets;
-  std::vector<std::unique_ptr<MockCommand>> erase_commands;
-  std::vector<std::unique_ptr<MockCommand>> edit_commands;
   std::vector<std::unique_ptr<MockCommand>> add_commands;
 
   std::vector<std::unique_ptr<AttributeGroupDisplayBlock>> attr_group_blocks;
@@ -98,26 +96,16 @@ AttributeViewDisplayBlock*
 TestAttributePoolImpl::createAttr(const utils::U8String& label) {
   attr_views.push_back(utils::make_unique<MockAttributeView>());
   widgets.push_back(utils::make_unique<DummyWidget>());
-  erase_commands.push_back(utils::make_unique<MockCommand>());
-  edit_commands.push_back(utils::make_unique<MockCommand>());
 
   auto& attr_view = attr_views.back();
   auto& widget = widgets.back();
-  auto& erase_command = erase_commands.back();
-  auto& edit_command = edit_commands.back();
 
   ON_CALL(*attr_view, getWidget())
       .WillByDefault(Return(widget.get()));
-  ON_CALL(*erase_command, display_text())
-      .WillByDefault(Return(xtestutils::genRandomString()));
-  ON_CALL(*edit_command, display_text())
-      .WillByDefault(Return(xtestutils::genRandomString()));
 
   auto block = utils::make_unique<AttributeViewDisplayBlock>();
   block->label = label;
   block->attr_view = attr_view.get();
-  block->erase_command = erase_command.get();
-  block->edit_command = edit_command.get();
 
   auto block_ptr = block.get();
 
@@ -161,14 +149,6 @@ void TestAttributePoolImpl::associateAttributeToGroup(
 }
 
 void TestAttributePoolImpl::verifyMocks() {
-  for (auto & cmd : erase_commands) {
-    Mock::VerifyAndClearExpectations(&cmd);
-  }
-
-  for (auto & cmd : edit_commands) {
-    Mock::VerifyAndClearExpectations(&cmd);
-  }
-
   for (auto & cmd : add_commands) {
     Mock::VerifyAndClearExpectations(&cmd);
   }
@@ -347,30 +327,12 @@ MockCommand* ExpectationHolder::commandAt(int row, int column) const {
     case AttributeLayout::kRightAddCommandColumn:
       return addCommandAt(row, column);
 
-    case AttributeLayout::kLeftEraseCommandColumn:
-    case AttributeLayout::kRightEraseCommandColumn:
-      return eraseCommandAt(row, column);
-
-    case AttributeLayout::kLeftEditCommandColumn:
-    case AttributeLayout::kRightEditCommandColumn:
-      return editCommandAt(row, column);
-
     default:
       [column]() {
         FAIL() << "column " << column << "is not a command column";
       }();
       return nullptr;  // never reach here
   }
-}
-
-MockCommand* ExpectationHolder::eraseCommandAt(int row, int column) const {
-  Command* cmd = position_to_EraseCommand.at(row).at(column);
-  return dynamic_cast<MockCommand*>(cmd);
-}
-
-MockCommand* ExpectationHolder::editCommandAt(int row, int column) const {
-  Command* cmd = position_to_EditCommand.at(row).at(column);
-  return dynamic_cast<MockCommand*>(cmd);
 }
 
 MockCommand* ExpectationHolder::addCommandAt(int row, int column) const {
@@ -423,8 +385,6 @@ void ExpectationHolder::setLeftExpectation(int row, AttributeViewDisplayBlock* a
 
   CONTENT_AT(Left, Label,         attr_block->label);
   CONTENT_AT(Left, AttrView,      attr_block->attr_view->getWidget());
-  CONTENT_AT(Left, EraseCommand,  attr_block->erase_command);
-  CONTENT_AT(Left, EditCommand,   attr_block->edit_command);
 
   addLeftRowData(row, attr_block);
 }
@@ -451,8 +411,6 @@ void ExpectationHolder::setRightExpectation(int row, AttributeViewDisplayBlock* 
 
   CONTENT_AT(Right, Label,        attr_block->label);
   CONTENT_AT(Right, AttrView,     attr_block->attr_view->getWidget());
-  CONTENT_AT(Right, EraseCommand, attr_block->erase_command);
-  CONTENT_AT(Right, EditCommand,  attr_block->edit_command);
 
   addRightRowData(row, attr_block);
 }
@@ -481,16 +439,6 @@ void ExpectationHolder::checkLabelEmpty(int row, int column, const utils::U8Stri
 
 void ExpectationHolder::checkAttrViewEmpty(int row, int column, const QWidget* widget) {
   if (widget != nullptr)
-    position_empty[row][column] = false;
-}
-
-void ExpectationHolder::checkEraseCommandEmpty(int row, int column, const Command* cmd) {
-  if (cmd != nullptr)
-    position_empty[row][column] = false;
-}
-
-void ExpectationHolder::checkEditCommandEmpty(int row, int column, const Command* cmd) {
-  if (cmd != nullptr)
     position_empty[row][column] = false;
 }
 

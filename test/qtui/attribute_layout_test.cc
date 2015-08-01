@@ -183,13 +183,6 @@ void AttributeLayoutTest::verifyLayoutResult(
           }
           break;
 
-        case AttributeLayout::kLeftEraseCommandColumn:
-        case AttributeLayout::kLeftEditCommandColumn:
-        case AttributeLayout::kRightEraseCommandColumn:
-        case AttributeLayout::kRightEditCommandColumn:
-          CUSTOM_ASSERT(assertCommandCanBeTriggered(expectation, row, column));
-          break;
-
         case AttributeLayout::kSeperatorColumn:
         default:
           break;
@@ -455,8 +448,6 @@ TEST_F(AttributeLayoutTest,
   TestAttributePool attr_pool;
 
   auto attr_block = attr_pool.createAttr();
-  attr_block->erase_command = nullptr;
-  attr_block->edit_command = nullptr;
 
   auto group_block = attr_pool.createGroup();
   group_block->add_command = nullptr;

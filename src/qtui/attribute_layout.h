@@ -23,16 +23,12 @@ class AttributeLayout : public QGridLayout
     kLeftLabelColumn = 0,
     kLeftAttrViewColumn,
     kLeftAddCommandColumn = kLeftAttrViewColumn,
-    kLeftEraseCommandColumn,
-    kLeftEditCommandColumn,
 
     kSeperatorColumn,
 
     kRightLabelColumn,
     kRightAttrViewColumn,
     kRightAddCommandColumn = kRightAttrViewColumn,
-    kRightEraseCommandColumn,
-    kRightEditCommandColumn,
 
     kTotalColumn
   };
@@ -51,7 +47,7 @@ class AttributeLayout : public QGridLayout
   void clearOldWidgets();
 
  private:
-  void addToolButton(utils::Command* command, int row, int column);
+  // void addToolButton(utils::Command* command, int row, int column);
   void addPushButton(utils::Command* command, int row, int column);
   void mayAdjustLeftSideCountOnGroup(int sub_item_count);
 

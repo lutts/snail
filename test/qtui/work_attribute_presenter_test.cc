@@ -174,8 +174,6 @@ bool operator==(const AttributeViewDisplayBlock& a,
                 const AttributeViewDisplayBlock& b) {
   return (a.label == b.label) &&
       (a.attr_view == b.attr_view) &&
-      (a.erase_command == b.erase_command) &&
-      (a.edit_command == b.edit_command) &&
       (a.is_in_group == b.is_in_group) &&
       (a.view_priv_data == b.view_priv_data);
 }
@@ -199,15 +197,11 @@ TEST_P(WorkAttributePresenterTest_data_EditMode,
 
   attr_block.label = xtestutils::genRandomString();
   attr_block.attr_model = attr_model;
-  attr_block.erase_command = xtestutils::genDummyPointer<utils::Command>();
-  attr_block.edit_command = xtestutils::genDummyPointer<utils::Command>();
   attr_block.is_in_group = xtestutils::randomBool();
   attr_block.view_priv_data = xtestutils::genDummyPointer<void>();
 
   attr_view_block.label = attr_block.label;
   attr_view_block.attr_view = attr_view.get();
-  attr_view_block.erase_command = attr_block.erase_command;
-  attr_view_block.edit_command = attr_block.edit_command;
   attr_view_block.is_in_group = attr_block.is_in_group;
   attr_view_block.view_priv_data = attr_block.view_priv_data;
 

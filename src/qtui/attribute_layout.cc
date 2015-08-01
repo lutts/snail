@@ -159,6 +159,7 @@ void* AttributeLayout::layoutAttributeGroupDisplayBlock(
   return nullptr;
 }
 
+#if 0
 void AttributeLayout::addToolButton(utils::Command* command,
                                     int row, int column) {
   QToolButton* button = new QToolButton();
@@ -177,14 +178,13 @@ void AttributeLayout::addToolButton(utils::Command* command,
   addWidget(button, row, column);
   curr_widgets.push_front(button);
 }
+#endif
 
 void* AttributeLayout::layoutAttributeDisplayBlock(
     AttributeViewDisplayBlock attr_view_block) {
   int row = added_rows;
   int label_column = kLeftLabelColumn;
   int attr_view_column = kLeftAttrViewColumn;
-  int erase_btn_column = kLeftEraseCommandColumn;
-  int edit_btn_column = kLeftEditCommandColumn;
 
   ++added_rows;
 
@@ -192,8 +192,6 @@ void* AttributeLayout::layoutAttributeDisplayBlock(
     row -= left_side_count;
     label_column = kRightLabelColumn;
     attr_view_column = kRightAttrViewColumn;
-    erase_btn_column = kRightEraseCommandColumn;
-    edit_btn_column = kRightEditCommandColumn;
   }
 
 #if 1
@@ -224,12 +222,6 @@ void* AttributeLayout::layoutAttributeDisplayBlock(
       });
   addWidget(attr_widget, row, attr_view_column);
   curr_attr_widgets.push_front(attr_widget);
-
-  if (attr_view_block.erase_command)
-    addToolButton(attr_view_block.erase_command, row, erase_btn_column);
-
-  if (attr_view_block.edit_command)
-    addToolButton(attr_view_block.edit_command, row, edit_btn_column);
 
   return nullptr;
 }

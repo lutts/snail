@@ -35,16 +35,12 @@ struct AttributeGroupDisplayBlock {
 struct AttributeDisplayBlock {
   AttributeDisplayBlock()
       : edit_mode{false}
-      , erase_command {nullptr}
-      , edit_command { nullptr }
       , is_in_group(false)
       , view_priv_data { nullptr } { }
 
   utils::U8String label;
   bool edit_mode;
   std::shared_ptr<IAttributeModel> attr_model;
-  utils::Command* erase_command;
-  utils::Command* edit_command;
   bool is_in_group;
   void* view_priv_data;
 };

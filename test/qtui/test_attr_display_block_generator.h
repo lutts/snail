@@ -103,8 +103,6 @@ class ExpectationHolder {
   void setRightLabelAt(int row, const utils::U8String& new_label);
   const QWidget* widgetAt(int row, int column) const;
   utils::tests::MockCommand* commandAt(int row, int column) const;
-  utils::tests::MockCommand* eraseCommandAt(int row, int column) const;
-  utils::tests::MockCommand* editCommandAt(int row, int column) const;
   utils::tests::MockCommand* addCommandAt(int row, int column) const;
   bool isGroupAt(int row, int column) const;
   // end of methods for verify result
@@ -139,8 +137,6 @@ class ExpectationHolder {
 
   void checkLabelEmpty(int row, int column, const utils::U8String& label);
   void checkAttrViewEmpty(int row, int column, const QWidget* widget);
-  void checkEraseCommandEmpty(int row, int column, const utils::Command* cmd);
-  void checkEditCommandEmpty(int row, int column, const utils::Command* cmd);
   void checkAddCommandEmpty(int row, int column, const utils::Command* cmd);
   void checkAttrBlockExist(const AttributeViewDisplayBlock* attr_block);
   void checkGroupBlockExist(const snailcore::AttributeGroupDisplayBlock* group_block);
@@ -159,8 +155,6 @@ class ExpectationHolder {
   // expections
   std::map<int, std::map<int, utils::U8String> > position_to_Label;
   std::map<int, std::map<int, QWidget*> > position_to_AttrView;
-  std::map<int, std::map<int, utils::Command*> > position_to_EraseCommand;
-  std::map<int, std::map<int, utils::Command*> > position_to_EditCommand;
   std::map<int, std::map<int, utils::Command*> > position_to_AddCommand;
 
   std::map<int, std::map<int, bool> > position_empty;

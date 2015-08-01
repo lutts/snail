@@ -25,8 +25,6 @@ bool operator==(const AttributeDisplayBlock& a,
   return (a.label == b.label) &&
       (a.edit_mode == b.edit_mode) &&
       (a.attr_model == b.attr_model) &&
-      (a.erase_command == b.erase_command) &&
-      (a.edit_command == b.edit_command) &&
       (a.is_in_group == b.is_in_group) &&
       (a.view_priv_data == b.view_priv_data);
 }

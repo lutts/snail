@@ -24,8 +24,6 @@ bool operator==(const AttributeViewDisplayBlock& a,
                 const AttributeViewDisplayBlock& b) {
   return (a.label == b.label) &&
       (a.attr_view == b.attr_view) &&
-      (a.erase_command == b.erase_command) &&
-      (a.edit_command == b.edit_command) &&
       (a.is_in_group == b.is_in_group) &&
       (a.view_priv_data == b.view_priv_data);
 }
@@ -56,14 +54,10 @@ void assertPositionIsAttr(
     int row, int side) {
   int label_column = AttributeLayout::kLeftLabelColumn;
   int widget_column = AttributeLayout::kLeftAttrViewColumn;
-  int erase_cmd_column = AttributeLayout::kLeftEraseCommandColumn;
-  int edit_cmd_column = AttributeLayout::kLeftEditCommandColumn;
 
   if (side == kRightSide) {
     label_column = AttributeLayout::kRightLabelColumn;
     widget_column = AttributeLayout::kRightAttrViewColumn;
-    erase_cmd_column = AttributeLayout::kRightEraseCommandColumn;
-    edit_cmd_column = AttributeLayout::kRightEditCommandColumn;
   }
 
   ASSERT_FALSE(expect_holder.isGroupAt(row, widget_column));
@@ -81,18 +75,6 @@ void assertPositionIsAttr(
       expect_holder.widgetAt(row, widget_column);
   ASSERT_NE(nullptr, expect_widget);
   ASSERT_EQ(expect_widget, actual_widget);
-
-  auto expect_erase_cmd = attr_block->erase_command;
-  auto actual_erase_cmd =
-      expect_holder.eraseCommandAt(row, erase_cmd_column);
-  ASSERT_NE(nullptr, expect_erase_cmd);
-  ASSERT_EQ(expect_erase_cmd, actual_erase_cmd);
-
-  auto expect_edit_cmd = attr_block->edit_command;
-  auto actual_edit_cmd =
-      expect_holder.editCommandAt(row, edit_cmd_column);
-  ASSERT_NE(nullptr, expect_edit_cmd);
-  ASSERT_EQ(expect_edit_cmd, actual_edit_cmd);
 }
 
 void assertPositionIsGroup(
@@ -101,14 +83,10 @@ void assertPositionIsGroup(
     int row, int side) {
   int label_column = AttributeLayout::kLeftLabelColumn;
   int add_cmd_column = AttributeLayout::kLeftAddCommandColumn;
-  int erase_cmd_column = AttributeLayout::kLeftEraseCommandColumn;
-  int edit_cmd_column = AttributeLayout::kLeftEditCommandColumn;
 
   if (side == kRightSide) {
     label_column = AttributeLayout::kRightLabelColumn;
     add_cmd_column = AttributeLayout::kRightAddCommandColumn;
-    erase_cmd_column = AttributeLayout::kRightEraseCommandColumn;
-    edit_cmd_column = AttributeLayout::kRightEditCommandColumn;
   }
 
   ASSERT_TRUE(expect_holder.isGroupAt(row, add_cmd_column));
@@ -126,43 +104,22 @@ void assertPositionIsGroup(
       expect_holder.addCommandAt(row, add_cmd_column);
   ASSERT_NE(nullptr, expect_add_cmd);
   ASSERT_EQ(expect_add_cmd, actual_add_cmd);
-
-  try {
-    expect_holder.eraseCommandAt(row, erase_cmd_column);
-    FAIL() << "group should not has erase command";
-  } catch (...) { }
-
-  try {
-    expect_holder.editCommandAt(row, edit_cmd_column);
-    FAIL() << "group should not has edit command";
-  } catch (...) { }
-
-  ASSERT_TRUE(expect_holder.isEmpty(row, erase_cmd_column));
-  ASSERT_TRUE(expect_holder.isEmpty(row, edit_cmd_column));
 }
 
 void assertPositionEmpty(const ExpectationHolder& expect_holder,
                          int row, int side) {
   int label_column = AttributeLayout::kLeftLabelColumn;
   int widget_column = AttributeLayout::kLeftAttrViewColumn;
-  int erase_cmd_column = AttributeLayout::kLeftEraseCommandColumn;
-  int edit_cmd_column = AttributeLayout::kLeftEditCommandColumn;
 
   if (side == kRightSide) {
     label_column = AttributeLayout::kRightLabelColumn;
     widget_column = AttributeLayout::kRightAttrViewColumn;
-    erase_cmd_column = AttributeLayout::kRightEraseCommandColumn;
-    edit_cmd_column = AttributeLayout::kRightEditCommandColumn;
   }
 
   ASSERT_TRUE(
       expect_holder.isEmpty(row, label_column));
   ASSERT_TRUE(
       expect_holder.isEmpty(row, widget_column));
-  ASSERT_TRUE(
-      expect_holder.isEmpty(row, erase_cmd_column));
-  ASSERT_TRUE(
-      expect_holder.isEmpty(row, edit_cmd_column));
 }
 
 void assertAttributeAtIndex(const ExpectationHolder& expect_holder,
@@ -184,10 +141,6 @@ void assertAttrValid(AttributeViewDisplayBlock* attr) {
   ASSERT_FALSE(attr->label.empty());
   ASSERT_NE(nullptr, attr->attr_view);
   ASSERT_NE(nullptr, attr->attr_view->getWidget());
-  ASSERT_NE(nullptr, attr->erase_command);
-  ASSERT_FALSE(attr->erase_command->display_text().empty());
-  ASSERT_NE(nullptr, attr->edit_command);
-  ASSERT_FALSE(attr->edit_command->display_text().empty());
   ASSERT_EQ(nullptr, attr->view_priv_data);
 }
 
@@ -200,10 +153,6 @@ void assertAttrNotEqual(AttributeViewDisplayBlock* attr_a,
   ASSERT_FIELD(label);
   ASSERT_FIELD(attr_view);
   ASSERT_FIELD(attr_view->getWidget());
-  ASSERT_FIELD(erase_command);
-  ASSERT_FIELD(erase_command->display_text());
-  ASSERT_FIELD(edit_command);
-  ASSERT_FIELD(edit_command->display_text());
 
 #undef ASSERT_FIELD
 }
