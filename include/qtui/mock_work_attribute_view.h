@@ -25,6 +25,8 @@ class MockWorkAttributeView : public IWorkAttributeView {
  public:
   SNAIL_MOCK_SLOT(EditModeButtonClicked);
   SNAIL_MOCK_SLOT(DoneButtonClicked);
+
+  MOCK_METHOD1(setEditMode, void(bool edit_mode));
 };
 
 #endif  // INCLUDE_QTUI_MOCK_WORK_ATTRIBUTE_VIEW_H_

@@ -12,6 +12,7 @@
 using namespace snailcore;  // NOLINT
 
 void WorkAttributePresenter::initialize() {
+  view()->setEditMode(model()->isEditMode());
   model()->traverseAttributes(this);
 
   view()->whenEditModeButtonClicked(
@@ -28,6 +29,7 @@ void WorkAttributePresenter::initialize() {
 
   model()->whenAttributesChanged(
       [this]() {
+        // TODO(lutts): do we need to setEditMode to view?
         model()->traverseAttributes(this);
       },
       shared_from_this());

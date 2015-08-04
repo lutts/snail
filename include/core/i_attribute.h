@@ -17,6 +17,8 @@ class IAttribute {
   virtual ~IAttribute() = default;
 
   virtual utils::U8String displayName() const = 0;
+  virtual bool isEmpty() const = 0;
+  virtual void clear() = 0;
 };
 
 }  // namespace snailcore

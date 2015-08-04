@@ -8,11 +8,10 @@
 #ifndef SRC_CORE_WORK_ATTRIBUTE_MODEL_H_
 #define SRC_CORE_WORK_ATTRIBUTE_MODEL_H_
 
-#include <vector>
+#include <memory>
 
 #include "utils/basic_utils.h"
 #include "snail/i_work_attribute_model.h"
-#include "utils/signal_slot_impl.h"
 
 namespace utils {
 class IRelayCommandFactory;
@@ -20,15 +19,19 @@ class IRelayCommandFactory;
 
 namespace snailcore {
 
-class IAttributeContainer;
+class IAttributeSupplier;
 class IAttributeModelFactory;
 
-class WorkAttributeModel : public IWorkAttributeModel {
+class WorkAttributeModelImpl;
+
+class WorkAttributeModel
+    : public IWorkAttributeModel
+    , public std::enable_shared_from_this<WorkAttributeModel> {
  public:
-  WorkAttributeModel(IAttributeContainer* attr_container,
+  WorkAttributeModel(const std::vector<IAttributeSupplier*>& attr_supplier_list,
                      const IAttributeModelFactory& attr_model_factory,
                      const utils::IRelayCommandFactory& cmd_factory);
-  virtual ~WorkAttributeModel() = default;
+  virtual ~WorkAttributeModel();
 
   bool isEditMode() const override;
   void switchToEditMode() override;
@@ -37,15 +40,15 @@ class WorkAttributeModel : public IWorkAttributeModel {
   void traverseAttributes(IAttributeDisplayBlockVisitor* visitor) override;
 
  private:
-  SNAIL_DISABLE_COPY(WorkAttributeModel);
-
-  IAttributeContainer* attr_container_;
-  const IAttributeModelFactory& attr_model_factory_;
-  const utils::IRelayCommandFactory& cmd_factory_;
+  std::unique_ptr<WorkAttributeModelImpl> impl;
+  friend class WorkAttributeModelImpl;
 
  private:
-  SNAIL_SIGSLOT_IMPL(AttributesChanged);
-  SNAIL_SIGSLOT_IMPL(ShowPopupFor);
+  SNAIL_OVERRIDE_SLOT(AttributesChanged);
+  SNAIL_OVERRIDE_SLOT(AttrLabelChanged);
+
+ private:
+  SNAIL_DISABLE_COPY(WorkAttributeModel);
 };
 
 }  // namespace snailcore

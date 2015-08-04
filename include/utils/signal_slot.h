@@ -26,6 +26,11 @@
   MOCK_METHOD2(when##sigName,                                           \
                void(sigName##SlotType, std::shared_ptr<utils::ITrackable>))
 
+#define SNAIL_OVERRIDE_SLOT(sigName)                                  \
+  void when##sigName(                                                 \
+      sigName##SlotType handler,                                      \
+      std::shared_ptr<utils::ITrackable> trackObject) override;
+
 // as its name suggests, this macro is used For Test Only, this macro has
 // a default implementation for the whenXXX connection point, so you do not
 // have to modify a derived class of an interface just because you added a new

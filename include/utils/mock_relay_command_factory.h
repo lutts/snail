@@ -15,6 +15,8 @@ namespace tests {
 
 class MockRelayCommandFactory : public IRelayCommandFactory {
  public:
+  MOCK_CONST_METHOD1(createCommand,
+               std::shared_ptr<Command>(std::function<void()> callback));
 };
 
 }  // namespace tests

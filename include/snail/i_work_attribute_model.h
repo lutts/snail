@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "pfmvp/i_pf_model.h"
+#include "pfmvp/pf_model_with_triad_manager.h"
 #include "utils/signal_slot.h"
 
 namespace utils {
@@ -23,7 +23,7 @@ class IAttributeModel;
 class IAttributeDisplayBlockVisitor;
 class UpdateAttrLabelData;
 
-class IWorkAttributeModel : public pfmvp::IPfModel {
+class IWorkAttributeModel : public pfmvp::PfModelWithTriadManager {
  public:
   virtual ~IWorkAttributeModel() = default;
   DEF_MODEL_ID(WorkAttributeModel);

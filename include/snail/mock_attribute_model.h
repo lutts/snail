@@ -15,6 +15,8 @@ namespace tests {
 
 class MockAttributeModel : public IAttributeModel {
  public:
+  SNAIL_MOCK_SLOT(DisplayNameChanged);
+
   MOCK_CONST_METHOD0(displayName, utils::U8String());
 };
 

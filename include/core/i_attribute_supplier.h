@@ -20,10 +20,12 @@ class IAttributeSupplier {
   virtual ~IAttributeSupplier() = default;
 
   virtual utils::U8String name() const = 0;
-  virtual int num_attributes() const = 0;
+  virtual int attr_count() const = 0;
   virtual int min_attrs() const = 0;
   virtual int max_attrs() const = 0;
   virtual std::vector<IAttribute*> attributes() const = 0;
+  virtual IAttribute* addAttribute() = 0;
+  virtual void removeAttribute(IAttribute* attr) = 0;
 };
 
 }  // namespace snailcore

@@ -44,6 +44,12 @@ class WorkAttributePresenterTestBase : public TestBase {
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
+    bool initial_mode = false;
+
+    R_EXPECT_CALL(*model, isEditMode())
+        .WillOnce(Return(initial_mode));
+    R_EXPECT_CALL(*view, setEditMode(initial_mode));
+
     R_EXPECT_CALL(*model, traverseAttributes(_))
         .WillOnce(SaveArg<0>(&attr_visitor));
 
@@ -101,6 +107,7 @@ class WorkAttributePresenterTest
 TEST_F(WorkAttributePresenterTest,
        should_switch_model_to_edit_mode_when_user_click_EditMode_button) { // NOLINT
   // Expectations
+
   EXPECT_CALL(*model, switchToEditMode());
 
   // Exercise system

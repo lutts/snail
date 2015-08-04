@@ -46,6 +46,8 @@ class IWorkAttributeView : public GenericViewBase {
 
   SNAIL_SIGSLOT2(EditModeButtonClicked, void());
   SNAIL_SIGSLOT2(DoneButtonClicked, void());
+
+  virtual void setEditMode(bool edit_mode) = 0;
 };
 
 

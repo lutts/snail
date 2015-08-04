@@ -38,6 +38,17 @@ T* genDummyPointer() {
   return reinterpret_cast<T*>(std::rand());
 }
 
+template <typename T>
+T* genDifferentDummyPointer(T* ref_ptr) {
+  T* ptr = nullptr;
+
+  while (ptr == ref_ptr) {
+    ptr = genDummyPointer<T>();
+  }
+
+  return ptr;
+}
+
 }  // namespace xtestutils
 
 

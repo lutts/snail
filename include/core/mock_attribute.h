@@ -16,6 +16,8 @@ namespace tests {
 class MockAttribute : public IAttribute {
  public:
   MOCK_CONST_METHOD0(displayName, utils::U8String());
+  MOCK_CONST_METHOD0(isEmpty, bool());
+  MOCK_METHOD0(clear, void());
 };
 
 }  // namespace tests
