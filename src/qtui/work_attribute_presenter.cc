@@ -75,7 +75,7 @@ void WorkAttributePresenter::updateLabel(UpdateAttrLabelData label_data) {
 }
 #endif
 
-void WorkAttributePresenter::endTraverse() {
-  attr_layout_->endLayout();
+void WorkAttributePresenter::endTraverse(bool remove_triads) {
+  attr_layout_->endLayout(remove_triads);
 }
 ///////////////////// IAttributeDisplayBlockVisitor impl end ///////////////

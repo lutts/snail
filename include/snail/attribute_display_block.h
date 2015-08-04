@@ -59,7 +59,7 @@ class IAttributeDisplayBlockVisitor {
       AttributeGroupDisplayBlock attr_group_block) = 0;
   virtual void* visitAttributeDisplayBlock(
       AttributeDisplayBlock attr_block) = 0;
-  virtual void endTraverse() = 0;
+  virtual void endTraverse(bool remove_triads) = 0;
 };
 
 }  // namespace snailcore

@@ -38,7 +38,7 @@ class WorkAttributePresenter : public WorkAttributePresenterBase
       snailcore::AttributeGroupDisplayBlock attr_group_block) override;
   void* visitAttributeDisplayBlock(
       snailcore::AttributeDisplayBlock attr_block) override;
-  void endTraverse() override;
+  void endTraverse(bool remove_triads) override;
 
  private:
   WorkAttributePresenter(const WorkAttributePresenter&) = delete;

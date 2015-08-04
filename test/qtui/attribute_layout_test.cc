@@ -13,8 +13,8 @@
 #include <QAction>
 
 #include "test/testutils/gmock_common.h"
+#include "pfmvp/mock_pf_triad_manager.h"
 #include "test/testutils/qt/gui_tester.h"
-
 
 #include "src/utils/utils.h"
 #include "test/qtui/test_attr_display_block_generator.h"
@@ -38,10 +38,12 @@ class AttributeLayoutTest : public ::testing::Test
   }
   // ~AttributeLayoutTest() { }
   virtual void SetUp() {
+    attr_layout.set_triad_manager(&triad_manager);
   }
   // virtual void TearDown() { }
 
   void layoutAttributes(const ExpectationHolder& expectation,
+                        bool remove_triads = false,
                         bool debug = false);
 
   void assertAttributeLabelEqual(
@@ -54,13 +56,15 @@ class AttributeLayoutTest : public ::testing::Test
 
   void verifyLayoutResult(const ExpectationHolder& expectation);
 
+  StrictMock<pfmvp::tests::MockPfTriadManager> triad_manager;
+
   // region: test subject
   AttributeLayout attr_layout;
   // endregion
 };
 
 void AttributeLayoutTest::layoutAttributes(
-    const ExpectationHolder& expectation,  bool debug) {
+    const ExpectationHolder& expectation,  bool remove_triads, bool debug) {
   int num_attrs = expectation.num_attrs();
 
   attr_layout.beginLayout(num_attrs);
@@ -85,7 +89,7 @@ void AttributeLayoutTest::layoutAttributes(
       attr_block->view_priv_data = priv_data;
     }
   }
-  attr_layout.endLayout();
+  attr_layout.endLayout(remove_triads);
   QTest::qWait(10);  // TODO(lutts): 10 is enought?
 }
 
@@ -550,7 +554,7 @@ TEST_F(AttributeLayoutTest,
   expect.setExpectGA(1, group, attr_pool.createAttr());
   expect.setExpectAA(2, sub_attr1, nullptr);
 
-  layoutAttributes(expect, true);
+  layoutAttributes(expect);
   verifyLayoutResult(expect);
 
   // relayout with different set of attrs and groups
@@ -561,6 +565,39 @@ TEST_F(AttributeLayoutTest,
   another_expect.setExpectAA(1, attr_pool.createAttr(), sub_attr1);
   another_expect.setExpectAA(2, attr_pool.createAttr(), sub_attr2);
   another_expect.setExpectAA(3, nullptr, attr_pool.createAttr());
+
+  layoutAttributes(another_expect);
+  verifyLayoutResult(another_expect);
+}
+
+TEST_F(AttributeLayoutTest,
+       should_remove_triads_of_attr_views_when_endLayout_with_remove_triad_true) { // NOLINT
+  // Setup fixture
+  // Setup fixture
+  TestAttributePool attr_pool;
+  ExpectationHolder expect;
+
+  auto attr0 = attr_pool.createAttr();
+  auto group = attr_pool.createGroup();
+  auto sub_attr1 = attr_pool.createAttr(group);
+
+  expect.setExpectGA(0, group, attr0);
+  expect.setExpectAA(1, sub_attr1, nullptr);
+
+  layoutAttributes(expect);
+  verifyLayoutResult(expect);
+
+  // relayout with different set of attrs and groups
+  ExpectationHolder another_expect;
+
+  another_expect.setExpectAA(0, attr_pool.createAttr(), attr_pool.createAttr());
+  another_expect.setExpectAA(1, attr_pool.createAttr(), attr_pool.createAttr());
+
+  // Expectations
+  auto attr0_view = attr0->attr_view;
+  auto sub_attr1_view = sub_attr1->attr_view;
+  EXPECT_CALL(triad_manager, removeTriadBy(attr0_view));
+  EXPECT_CALL(triad_manager, removeTriadBy(sub_attr1_view));
 
   layoutAttributes(another_expect, true);
   verifyLayoutResult(another_expect);

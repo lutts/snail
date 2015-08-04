@@ -43,6 +43,9 @@ class WorkAttributeModelImpl {
   }
 
   void switchToDisplayMode() {
+    if (!edit_mode_)
+      return;
+
     clear_empty_attrs_ = true;
     edit_mode_ = false;
     AttributesChanged();
@@ -188,7 +191,7 @@ void WorkAttributeModelImpl::traverseAttributes(
     }
   }
 
-  visitor->endTraverse();
+  visitor->endTraverse(clear_empty_attrs_);
 
   clearEmptyAttributes(model);
 }

@@ -432,7 +432,7 @@ TEST_F(WorkAttributeModelTest,
     InSequence seq;
 
     EXPECT_CALL(attr_visitor, beginTraverse(0));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_)).Times(0);
@@ -459,7 +459,7 @@ TEST_F(WorkAttributeModelTest,
     InSequence seq;
 
     EXPECT_CALL(attr_visitor, beginTraverse(0));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_)).Times(0);
@@ -495,7 +495,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(attr_visitor, beginTraverse(1));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(expect_priv_data));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_)).Times(0);
@@ -519,7 +519,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(another_visitor, beginTraverse(1));
       EXPECT_CALL(another_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(expect_priv_data));
-      EXPECT_CALL(another_visitor, endTraverse());
+      EXPECT_CALL(another_visitor, endTraverse(false));
     }
 
     model->traverseAttributes(&another_visitor);
@@ -536,7 +536,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(yet_another_visitor, beginTraverse(1));
       EXPECT_CALL(yet_another_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(nullptr));
-      EXPECT_CALL(yet_another_visitor, endTraverse());
+      EXPECT_CALL(yet_another_visitor, endTraverse(false));
     }
 
     model->traverseAttributes(&yet_another_visitor);
@@ -570,7 +570,7 @@ TEST_F(WorkAttributeModelTest,
           .WillOnce(Return(group_priv_data));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(attr_priv_data));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     // Exercise system
@@ -595,7 +595,7 @@ TEST_F(WorkAttributeModelTest,
           .WillOnce(Return(group_priv_data));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(attr_priv_data));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     // Exercise system
@@ -616,7 +616,7 @@ TEST_F(WorkAttributeModelTest,
           .WillOnce(Return(group_priv_data));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(attr_priv_data));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     // Exercise system
@@ -640,7 +640,7 @@ TEST_F(WorkAttributeModelTest,
     InSequence seq;
 
     EXPECT_CALL(attr_visitor, beginTraverse(0));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_)).Times(0);
@@ -685,7 +685,7 @@ TEST_F(WorkAttributeModelTest,
           .WillOnce(Return(nullptr));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_c))
           .WillOnce(Return(nullptr));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     model->traverseAttributes(&attr_visitor);
@@ -738,7 +738,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(sub_attr0_block));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(sub_attr1_block));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr1_block));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     model->traverseAttributes(&attr_visitor);
@@ -807,7 +807,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
           .WillOnce(Return(nullptr));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     // Exercise system
@@ -824,7 +824,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
           .WillOnce(Return(nullptr));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     // Exercise system
@@ -857,7 +857,7 @@ TEST_F(WorkAttributeModelTest,
     EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block));
     EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
     EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   // Exercise system
@@ -926,7 +926,7 @@ TEST_F(WorkAttributeModelTest,
 
     EXPECT_CALL(attr_visitor, beginTraverse(1));
     EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   // Exercise system
@@ -956,7 +956,7 @@ TEST_F(WorkAttributeModelTest,
 
     EXPECT_CALL(attr_visitor, beginTraverse(1));
     EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_)).Times(0);
@@ -1040,7 +1040,7 @@ TEST_F(WorkAttributeModelTest,
         .WillOnce(Return(expect_attr0_priv_data));
     EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr1_block))
         .WillOnce(Return(expect_attr1_priv_data));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    EXPECT_CALL(attr_visitor, endTraverse(false));
   }
 
   model->traverseAttributes(&attr_visitor);
@@ -1094,7 +1094,7 @@ TEST_F(WorkAttributeModelTest,
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_c));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_b));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_a));
-      EXPECT_CALL(attr_visitor, endTraverse());
+      EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
     model->traverseAttributes(&attr_visitor);
@@ -1149,26 +1149,52 @@ TEST_F(WorkAttributeModelTest,
   attr0_block.edit_mode = false;
   attr2_block.edit_mode = false;
 
-  StrictMock<MockAttributeDisplayBlockVisitor> attr_visitor;
+
   {
-    InSequence seq;
+    bool expect_remove_triad = true;
 
-    EXPECT_CALL(attr_visitor, beginTraverse(3));
-    EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_));
-    EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr0_block));
-    EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr2_block));
-    EXPECT_CALL(attr_visitor, endTraverse());
+    StrictMock<MockAttributeDisplayBlockVisitor> attr_visitor;
+    {
+      InSequence seq;
 
-    EXPECT_CALL(triad_manager, removeTriadBy(attr1_block.attr_model.get()));
-    EXPECT_CALL(supplier, attrRemoved(attr1_empty));
+      EXPECT_CALL(attr_visitor, beginTraverse(3));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr0_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr2_block));
+      EXPECT_CALL(attr_visitor, endTraverse(expect_remove_triad));
 
-    EXPECT_CALL(triad_manager, removeTriadBy(attr3_block.attr_model.get()));
-    EXPECT_CALL(supplier, attrRemoved(attr3_empty));
+      EXPECT_CALL(triad_manager, removeTriadBy(attr1_block.attr_model.get()));
+      EXPECT_CALL(supplier, attrRemoved(attr1_empty));
+
+      EXPECT_CALL(triad_manager, removeTriadBy(attr3_block.attr_model.get()));
+      EXPECT_CALL(supplier, attrRemoved(attr3_empty));
+    }
+
+    // Exercise system
+    model->switchToDisplayMode();
+    model->traverseAttributes(&attr_visitor);
   }
 
-  // Exercise system
-  model->switchToDisplayMode();
-  model->traverseAttributes(&attr_visitor);
+  {
+    // traverse again in display mode will not remove triads
+    bool expect_remove_triad = false;
+
+    StrictMock<MockAttributeDisplayBlockVisitor> attr_visitor;
+    {
+      InSequence seq;
+
+      EXPECT_CALL(attr_visitor, beginTraverse(3));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr0_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr2_block));
+      EXPECT_CALL(attr_visitor, endTraverse(expect_remove_triad));
+    }
+
+    // switchToDisplayModel when already in display
+    // mode will not set remove_triad to true
+    model->switchToDisplayMode();
+    model->traverseAttributes(&attr_visitor);
+  }
 }
 
 }  // namespace tests

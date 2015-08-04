@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-#include <QLabel>
+#include <QWidget>
 
 #include "test/testutils/gmock_common.h"
 
@@ -25,6 +25,23 @@
 using namespace utils;  // NOLINT
 using namespace utils::tests;  // NOLINT
 using namespace snailcore;  // NOLINT
+
+#include "utils/basic_utils.h"
+
+class AttributeViewTestStub : public IAttributeView
+                            , public QWidget {
+ public:
+  AttributeViewTestStub() = default;
+  virtual ~AttributeViewTestStub() = default;
+
+  QWidget* getWidget() const {
+    auto t = const_cast<AttributeViewTestStub*>(this);
+    return t;
+  }
+
+ private:
+  SNAIL_DISABLE_COPY(AttributeViewTestStub)
+};
 
 class TestAttributePoolImpl {
  public:
@@ -48,10 +65,7 @@ class TestAttributePoolImpl {
   void verifyMocks();
 
  private:
-  using DummyWidget = QLabel;
-
-  std::vector<std::unique_ptr<MockAttributeView>> attr_views;
-  std::vector<std::unique_ptr<DummyWidget>> widgets;
+  std::vector<std::unique_ptr<AttributeViewTestStub>> attr_views;
   std::vector<std::unique_ptr<MockCommand>> add_commands;
 
   std::vector<std::unique_ptr<AttributeGroupDisplayBlock>> attr_group_blocks;
@@ -94,14 +108,9 @@ TestAttributePoolImpl::createAttr(
 
 AttributeViewDisplayBlock*
 TestAttributePoolImpl::createAttr(const utils::U8String& label) {
-  attr_views.push_back(utils::make_unique<MockAttributeView>());
-  widgets.push_back(utils::make_unique<DummyWidget>());
+  attr_views.push_back(utils::make_unique<AttributeViewTestStub>());
 
   auto& attr_view = attr_views.back();
-  auto& widget = widgets.back();
-
-  ON_CALL(*attr_view, getWidget())
-      .WillByDefault(Return(widget.get()));
 
   auto block = utils::make_unique<AttributeViewDisplayBlock>();
   block->label = label;

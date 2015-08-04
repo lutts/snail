@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QAction>
 #include <QTimer>
+#include <QSignalMapper>
 #include <QDebug>
 
 #include "src/qtui/attribute_layout.h"
@@ -20,7 +21,14 @@
 using namespace snailcore;  // NOLINT
 using namespace utils;  // NOLINT
 
+AttributeLayout::AttributeLayout()
+    : timer{new QTimer()} {
+  if (timer)
+    timer->setSingleShot(true);
+}
+
 void AttributeLayout::beginLayout(int total_block_count) {
+  // TODO(lutts): need to ensure clearOldWidgets is finished
   // clear old status
   added_rows = 0;
   last_attr_type = ATTR_TYPE_NONE;
@@ -61,7 +69,7 @@ bool should_move_subattr_to_left(int total_item_count, int sub_item_count)  {
 }  // namespace
 
 void AttributeLayout::mayAdjustLeftSideCountOnGroup(int sub_item_count) {
-#if 1
+#if 0
   qDebug() << "left_side_count before adjust: " << left_side_count
            << ", total: " << total_item_count
            << ", sub: " << sub_item_count
@@ -86,7 +94,7 @@ void AttributeLayout::mayAdjustLeftSideCountOnGroup(int sub_item_count) {
       left_side_count = num_group_attrs;
   }
 
-  qDebug() << "left_side_count after adjust: " << left_side_count;
+  // qDebug() << "left_side_count after adjust: " << left_side_count;
 }
 
 utils::U8String AttributeLayout::label_to_display(utils::U8String label,
@@ -151,7 +159,7 @@ void* AttributeLayout::layoutAttributeGroupDisplayBlock(
   addWidget(label, row, label_column);
   curr_widgets.push_front(label);
 
-  qDebug() << "add group " << label_qstr << " at row " << row;
+  // qDebug() << "add group " << label_qstr << " at row " << row;
 
   if (attr_group_block.add_command)
     addPushButton(attr_group_block.add_command, row, add_btn_column);
@@ -194,7 +202,7 @@ void* AttributeLayout::layoutAttributeDisplayBlock(
     attr_view_column = kRightAttrViewColumn;
   }
 
-#if 1
+#if 0
   qDebug() << "add attr " << U8StringToQString(attr_view_block.label)
            << " at row " << row;
 #endif
@@ -229,11 +237,20 @@ void AttributeLayout::updateLabel(UpdateAttrLabelData label_data) {
   label->setText(U8StringToQString(label_data.label));
 }
 
-void AttributeLayout::endLayout() {
-  QTimer::singleShot(0, this, SLOT(clearOldWidgets()));
+void AttributeLayout::endLayout(bool remove_triads) {
+  int rm_triads = remove_triads ? 1 : 0;
+  QSignalMapper* mapper = new QSignalMapper(this);
+
+  mapper->setMapping(timer, rm_triads);
+
+  connect(timer, SIGNAL(timeout()), mapper, SLOT(map()));
+  connect(mapper, SIGNAL(mapped(int)),
+          this, SLOT(clearOldWidgets(int)));
+
+  timer->start();
 }
 
-void AttributeLayout::clearOldWidgets() {
+void AttributeLayout::clearOldWidgets(int remove_triads) {
   for (auto widget : to_be_deleted_widgets) {
     removeWidget(widget);
     widget->deleteLater();
@@ -243,7 +260,12 @@ void AttributeLayout::clearOldWidgets() {
 
   for (auto widget : to_be_removed_widgets) {
     removeWidget(widget);
-    // TODO(lutts): how to remove triad?
+    if (!!remove_triads && (triad_manager_ != nullptr)) {
+      auto attr_view = dynamic_cast<IAttributeView*>(widget);
+      triad_manager_->removeTriadBy(attr_view);
+    }
   }
   to_be_removed_widgets.clear();
+
+  disconnect(timer, 0, 0, 0);
 }

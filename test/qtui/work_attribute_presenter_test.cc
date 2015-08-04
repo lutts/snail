@@ -223,13 +223,21 @@ TEST_F(WorkAttributePresenterTest,
   attrLabelChanged(label_data);
 }
 
-TEST_F(WorkAttributePresenterTest,
+class WorkAttributePresenterTest_data_remove_triads
+    : public WorkAttributePresenterTestBase<::testing::TestWithParam<bool>> { };
+
+INSTANTIATE_TEST_CASE_P(AllEditModes,
+                        WorkAttributePresenterTest_data_remove_triads,
+                        ::testing::Bool());
+
+TEST_P(WorkAttributePresenterTest_data_remove_triads,
        should_relay_endAddAttributeDisplayBlock_to_attr_layout) { // NOLINT
   // Expectations
-  EXPECT_CALL(attr_layout, endLayout());
+  bool remove_triads = GetParam();
+  EXPECT_CALL(attr_layout, endLayout(remove_triads));
 
   // Exercise system
-  presenter->endTraverse();
+  presenter->endTraverse(remove_triads);
 }
 
 ///////////////////// IAttributeDisplayBlockVisitor test end ////////////////

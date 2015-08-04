@@ -18,7 +18,7 @@ class MockAttributeLayout : public IAttributeLayout {
   MOCK_METHOD1(layoutAttributeDisplayBlock,
                void*(AttributeViewDisplayBlock attr_view_block));
   MOCK_METHOD1(updateLabel, void(snailcore::UpdateAttrLabelData label_data));
-  MOCK_METHOD0(endLayout, void());
+  MOCK_METHOD1(endLayout, void(bool remove_triads));
 };
 
 class MockWorkAttributeView : public IWorkAttributeView {

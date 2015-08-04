@@ -13,6 +13,9 @@
 
 #include "utils/basic_utils.h"
 #include "qtui/i_work_attribute_view.h"
+#include "pfmvp/i_pf_triad_manager.h"
+
+class QTimer;
 
 class AttributeLayout : public QGridLayout
                       , public IAttributeLayout {
@@ -33,8 +36,12 @@ class AttributeLayout : public QGridLayout
     kTotalColumn
   };
 
-  AttributeLayout() = default;
+  AttributeLayout();
   virtual ~AttributeLayout() = default;
+
+  void set_triad_manager(pfmvp::IPfTriadManager* triad_manager) {
+    triad_manager_ = triad_manager;
+  }
 
   void beginLayout(int total_block_count) override;
   void* layoutAttributeGroupDisplayBlock(
@@ -42,20 +49,12 @@ class AttributeLayout : public QGridLayout
   void* layoutAttributeDisplayBlock(
       AttributeViewDisplayBlock attr_view_block) override;
   void updateLabel(snailcore::UpdateAttrLabelData label_data) override;
-  void endLayout() override;
+  void endLayout(bool remove_triads) override;
 
  private slots:
-  void clearOldWidgets();
+  void clearOldWidgets(int remove_triads);
 
  private:
-  // void addToolButton(utils::Command* command, int row, int column);
-  void addPushButton(utils::Command* command, int row, int column);
-  void mayAdjustLeftSideCountOnGroup(int sub_item_count);
-
-  int total_item_count { 0 };
-  int left_side_count { 0 };
-  int added_rows { 0 };
-
   enum AttrType {
     ATTR_TYPE_NONE,
     ATTR_TYPE_GROUP,
@@ -63,8 +62,15 @@ class AttributeLayout : public QGridLayout
     ATTR_TYPE_TOPLEVEL_ATTR,
   };
 
+  // void addToolButton(utils::Command* command, int row, int column);
+  void addPushButton(utils::Command* command, int row, int column);
+  void mayAdjustLeftSideCountOnGroup(int sub_item_count);
   utils::U8String label_to_display(utils::U8String label,
                                    AttrType attr_type);
+
+  int total_item_count { 0 };
+  int left_side_count { 0 };
+  int added_rows { 0 };
 
   AttrType last_attr_type = ATTR_TYPE_NONE;
   utils::U8String last_label { "" };
@@ -74,6 +80,9 @@ class AttributeLayout : public QGridLayout
 
   std::forward_list<QWidget*> to_be_deleted_widgets;
   std::forward_list<QWidget*> to_be_removed_widgets;
+
+  pfmvp::IPfTriadManager* triad_manager_ { nullptr };
+  QTimer *timer { nullptr };
 
  private:
   SNAIL_DISABLE_COPY(AttributeLayout)

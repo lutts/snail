@@ -72,7 +72,7 @@ class MockAttributeDisplayBlockVisitor : public IAttributeDisplayBlockVisitor {
                void*(AttributeGroupDisplayBlock attr_group_block));
   MOCK_METHOD1(visitAttributeDisplayBlock,
                void*(AttributeDisplayBlock attr_block));
-  MOCK_METHOD0(endTraverse, void());
+  MOCK_METHOD1(endTraverse, void(bool remove_triads));
 };
 
 class NullAttributeDisplayBlockVisitor : public IAttributeDisplayBlockVisitor {
@@ -93,7 +93,7 @@ class NullAttributeDisplayBlockVisitor : public IAttributeDisplayBlockVisitor {
     return nullptr;
   }
 
-  void endTraverse() override { }
+  void endTraverse(bool) override { }
 };
 
 }  // namespace tests
