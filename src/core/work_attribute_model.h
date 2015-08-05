@@ -20,9 +20,7 @@ class IAttributeModelFactory;
 
 class WorkAttributeModelImpl;
 
-class WorkAttributeModel
-    : public IWorkAttributeModel
-    , public std::enable_shared_from_this<WorkAttributeModel> {
+class WorkAttributeModel : public IWorkAttributeModel {
  public:
   WorkAttributeModel(const std::vector<IAttributeSupplier*>& attr_supplier_list,
                      const IAttributeModelFactory& attr_model_factory);
