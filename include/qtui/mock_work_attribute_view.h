@@ -12,6 +12,7 @@
 
 class MockAttributeLayout : public IAttributeLayout {
  public:
+  MOCK_METHOD1(set_triad_manager, void(pfmvp::IPfTriadManager* triad_manager));
   MOCK_METHOD1(beginLayout, void(int total_block_count));
   MOCK_METHOD1(layoutAttributeGroupDisplayBlock,
                void*(snailcore::AttributeGroupDisplayBlock attr_group_block));

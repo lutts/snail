@@ -13,6 +13,8 @@ using namespace snailcore;  // NOLINT
 
 void WorkAttributePresenter::initialize() {
   view()->setEditMode(model()->isEditMode());
+  attr_layout_->set_triad_manager(triad_manager());
+
   model()->traverseAttributes(this);
 
   view()->whenEditModeButtonClicked(

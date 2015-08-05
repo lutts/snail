@@ -13,7 +13,6 @@
 
 #include "utils/basic_utils.h"
 #include "qtui/i_work_attribute_view.h"
-#include "pfmvp/i_pf_triad_manager.h"
 
 class QTimer;
 
@@ -39,7 +38,7 @@ class AttributeLayout : public QGridLayout
   AttributeLayout();
   virtual ~AttributeLayout() = default;
 
-  void set_triad_manager(pfmvp::IPfTriadManager* triad_manager) {
+  void set_triad_manager(pfmvp::IPfTriadManager* triad_manager) override {
     triad_manager_ = triad_manager;
   }
 

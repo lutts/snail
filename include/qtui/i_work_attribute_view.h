@@ -12,6 +12,7 @@
 #include "utils/u8string.h"
 #include "utils/signal_slot.h"
 #include "snail/attribute_display_block.h"
+#include "pfmvp/i_pf_triad_manager.h"
 
 class IAttributeView;
 
@@ -31,6 +32,7 @@ class IAttributeLayout {
  public:
   virtual ~IAttributeLayout() = default;
 
+  virtual void set_triad_manager(pfmvp::IPfTriadManager* triad_manager) = 0;
   virtual void beginLayout(int total_block_count) = 0;
   virtual void* layoutAttributeGroupDisplayBlock(
       snailcore::AttributeGroupDisplayBlock attr_group_block) = 0;

@@ -49,6 +49,7 @@ class WorkAttributePresenterTestBase : public TestBase {
     R_EXPECT_CALL(*model, isEditMode())
         .WillOnce(Return(initial_mode));
     R_EXPECT_CALL(*view, setEditMode(initial_mode));
+    EXPECT_CALL(attr_layout, set_triad_manager(&triad_manager));
 
     R_EXPECT_CALL(*model, traverseAttributes(_))
         .WillOnce(SaveArg<0>(&attr_visitor));
