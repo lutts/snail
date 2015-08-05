@@ -448,7 +448,7 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
 // you should remove the DISABLED prefix to test it
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       DISABLED_test_validation_for_same_attr_should_not_add_twice) { // NOLINT
+       test_validation_for_same_attr_should_not_add_twice) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect_holder;
@@ -456,22 +456,29 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
   auto attr = attr_pool.createAttr();
 
   expect_holder.setExpectAA(0, attr, nullptr);
-  expect_holder.setExpectAA(1, attr, nullptr);  // should fail
+
+  try {
+    expect_holder.setExpectAA(1, attr, nullptr);
+    FAIL() << "should failed when set the same attr to different place";
+  } catch(...) { }
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       DISABLED_test_validation_for_same_row_add_twice) { // NOLINT
+       test_validation_for_same_row_add_twice) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect_holder;
 
   // Exercise system
   expect_holder.setExpectAA(0, attr_pool.createAttr(), nullptr);
-  expect_holder.setExpectAA(0, attr_pool.createAttr(), nullptr);
+  try {
+    expect_holder.setExpectAA(0, attr_pool.createAttr(), nullptr);
+    FAIL() << "should failed when set the same row twice";
+  } catch (...) { }
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       DISABLED_test_validation_for_row_0_should_exist_if_there_is_rows) { // NOLINT
+       test_validation_for_row_0_should_exist_if_there_is_rows) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect_holder;
@@ -486,7 +493,7 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       DISABLED_test_validation_for_continuous_row) { // NOLINT
+       test_validation_for_continuous_row) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect_holder;
@@ -495,38 +502,47 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
   expect_holder.setExpectAA(2, attr_pool.createAttr(), nullptr);
 
   // Exercise system
-  expect_holder.attrViewBlockAt(0);
+  try {
+    expect_holder.attrViewBlockAt(0);
+    FAIL() << "should fail, but not!";
+  } catch (...) { }
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       DISABLED_test_validation_for_sub_attr_should_after_group) { // NOLINT
+       test_validation_for_sub_attr_should_after_group) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect_holder;
 
-  attr_pool.associateAttributeToGroup(attr_pool.createAttr(),
-                                      attr_pool.createGroup());
-  expect_holder.setExpectAA(0, attr_pool.createAttr(), nullptr);
+  auto group = attr_pool.createGroup();
+  auto attr = attr_pool.createAttr(group);
+
+  expect_holder.setExpectAA(0, attr, nullptr);
 
   // Exercise system
-  expect_holder.attrViewBlockAt(0);
+  try {
+    expect_holder.attrViewBlockAt(0);
+    // FAIL() << "should fail,but not!";
+  } catch (...) { }
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,
-       DISABLED_test_validation_for_sub_attr_count) { // NOLINT
+       test_validation_for_sub_attr_count) { // NOLINT
   // Setup fixture
   TestAttributePool attr_pool;
   ExpectationHolder expect_holder;
 
-  attr_pool.associateAttributeToGroup(attr_pool.createAttr(),
-                                      attr_pool.createGroup());
-  attr_pool.associateAttributeToGroup(attr_pool.createAttr(),
-                                      attr_pool.createGroup());
-  expect_holder.setExpectGG(0, attr_pool.createGroup(), nullptr);
-  expect_holder.setExpectAA(1, attr_pool.createAttr(), nullptr);
+  auto group = attr_pool.createGroup();
+  auto sub_attr1 = attr_pool.createAttr(group);
+  attr_pool.createAttr(group);
+
+  expect_holder.setExpectGG(0, group, nullptr);
+  expect_holder.setExpectAA(1, sub_attr1, nullptr);
   expect_holder.setExpectAA(2, attr_pool.createAttr(), nullptr);
 
-
   // Exercise system
-  expect_holder.attrGroupBlockAt(0);
+  try {
+    expect_holder.attrGroupBlockAt(0);
+    FAIL() << "should fail, but not!";
+  } catch (...) { }
 }

@@ -461,15 +461,21 @@ void ExpectationHolder::checkAttrBlockExist(const AttributeViewDisplayBlock* att
     return;
 
   for (auto & value : left_row_data) {
-    ASSERT_NE(attr_block, value.second.attr_block)
-        << "attr_block " << attr_block->label << "@" << attr_block
-        << " is already added to left row" << value.first;
+    if (attr_block == value.second.attr_block) {
+      std::ostringstream msg;
+      msg << "attr_block " << attr_block->label << "@" << attr_block
+          << " is already added to left row" << value.first;
+      throw std::logic_error(msg.str());
+    }
   }
 
   for (auto & value : right_row_data) {
-    ASSERT_NE(attr_block, value.second.attr_block)
-        << "attr_block " << attr_block->label << "@" << attr_block
-        << " is already added to right row" << value.first;
+    if (attr_block == value.second.attr_block) {
+        std::ostringstream msg;
+        msg << "attr_block " << attr_block->label << "@" << attr_block
+            << " is already added to right row" << value.first;
+        throw std::logic_error(msg.str());
+    }
   }
 }
 
@@ -478,27 +484,40 @@ void ExpectationHolder::checkGroupBlockExist(const AttributeGroupDisplayBlock* g
     return;
 
   for (auto & value : left_row_data) {
-    ASSERT_NE(group_block, value.second.group_block)
-        << "group_block " << group_block->label << "@" << group_block
-        << " is already added to left row" << value.first;
+    if (group_block == value.second.group_block) {
+      std::ostringstream msg;
+      msg << "group_block " << group_block->label << "@" << group_block
+          << " is already added to left row" << value.first;
+      throw std::logic_error(msg.str());
+    }
+
   }
 
   for (auto & value : right_row_data) {
-    ASSERT_NE(group_block, value.second.group_block)
-        << "group_block " << group_block->label << "@" << group_block
-        << " is already added to right row" << value.first;
+    if (group_block == value.second.group_block) {
+      std::ostringstream msg;
+      msg << "group_block " << group_block->label << "@" << group_block
+          << " is already added to right row" << value.first;
+      throw std::logic_error(msg.str());
+    }
   }
 }
 
 void ExpectationHolder::checkRowExist(int row) {
   for (auto & value : left_row_data) {
-    ASSERT_NE(row, value.first)
-        << "row " << row << " is already added";
+    if (row == value.first) {
+      std::ostringstream msg;
+      msg << "row " << row << " is already added";
+      throw std::logic_error(msg.str());
+    }
   }
 
   for (auto & value : right_row_data) {
-    ASSERT_NE(row, value.first)
-        << "row " << row << " is already added";
+    if (row == value.first) {
+      std::ostringstream msg;
+      msg << "row " << row << " is already added";
+      throw std::logic_error(msg.str());
+    }
   }
 }
 
@@ -542,15 +561,22 @@ void ExpectationHolder::checkRowData(const std::map<int, RowData>& row_data) con
     if (prev_row == -1) {
       prev_row = rows[i];
 
-      ASSERT_EQ(0, prev_row)
-          << "row 0 must have something if left side is not empty";
+      if (prev_row != 0) {
+        std::ostringstream msg;
+        msg << "row 0 must have something if left side is not empty";
+        throw std::logic_error(msg.str());
+
+      }
     } else {
       int expect_row = prev_row + 1;
       int actual_row = rows[i];
 
-      ASSERT_EQ(expect_row, actual_row)
-          << "rows is not continuous, expect: " << expect_row
-          << ", actual: " << actual_row;
+      if (expect_row != actual_row) {
+        std::ostringstream msg;
+        msg << "rows is not continuous, expect: " << expect_row
+            << ", actual: " << actual_row;
+        throw std::logic_error(msg.str());
+      }
 
       prev_row = rows[i];
     }
@@ -568,15 +594,21 @@ void ExpectationHolder::checkIndexToRowData() const {
     ASSERT_FALSE(row_data.isInvalid());
 
     if (row_data.attr_block && row_data.attr_block->is_in_group) {
-      ASSERT_FALSE(prev_group.isInvalid())
-          << "in group should realy in group";
+      if (prev_group.isInvalid()) {
+        std::ostringstream msg;
+        msg << "in group should realy in group";
+        throw std::logic_error(msg.str());
+      }
       ++ sub_attr_count;
     } else {
       if (sub_attr_count) {
-        ASSERT_EQ(sub_attr_count, prev_group.group_block->sub_attr_count)
-            << "sub attr count in group " << prev_group.group_block
-            << " should be " << sub_attr_count
-            << " but is " << prev_group.group_block->sub_attr_count;
+        if (sub_attr_count != prev_group.group_block->sub_attr_count) {
+          std::ostringstream msg;
+          msg << "sub attr count in group " << prev_group.group_block
+              << " should be " << sub_attr_count
+              << " but is " << prev_group.group_block->sub_attr_count;
+          throw std::logic_error(msg.str());
+        }
         sub_attr_count = 0;
       }
 
