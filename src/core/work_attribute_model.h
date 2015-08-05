@@ -13,10 +13,6 @@
 #include "utils/basic_utils.h"
 #include "snail/i_work_attribute_model.h"
 
-namespace utils {
-class IRelayCommandFactory;
-}  // namespace utils
-
 namespace snailcore {
 
 class IAttributeSupplier;
@@ -29,8 +25,7 @@ class WorkAttributeModel
     , public std::enable_shared_from_this<WorkAttributeModel> {
  public:
   WorkAttributeModel(const std::vector<IAttributeSupplier*>& attr_supplier_list,
-                     const IAttributeModelFactory& attr_model_factory,
-                     const utils::IRelayCommandFactory& cmd_factory);
+                     const IAttributeModelFactory& attr_model_factory);
   virtual ~WorkAttributeModel();
 
   bool isEditMode() const override;

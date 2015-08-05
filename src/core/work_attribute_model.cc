@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "utils/signal_slot_impl.h"
-#include "utils/i_relay_command_factory.h"
+#include "utils/command.h"
 #include "snail/attribute_display_block.h"
 #include "snail/i_attribute_model_factory.h"
 #include "core/i_attribute_container.h"
@@ -27,11 +27,9 @@ class WorkAttributeModelImpl {
  public:
   WorkAttributeModelImpl(
       const std::vector<IAttributeSupplier*>& attr_supplier_list,
-      const IAttributeModelFactory& attr_model_factory,
-      const IRelayCommandFactory& cmd_factory)
+      const IAttributeModelFactory& attr_model_factory)
       : attr_supplier_list_(attr_supplier_list)
-      , attr_model_factory_(attr_model_factory)
-      , cmd_factory_(cmd_factory) { }
+      , attr_model_factory_(attr_model_factory) { }
   virtual ~WorkAttributeModelImpl() = default;
 
   bool isEditMode() const {
@@ -54,22 +52,58 @@ class WorkAttributeModelImpl {
   void traverseAttributes(WorkAttributeModel* model,
                           IAttributeDisplayBlockVisitor* visitor);
   int attrDisplayCount(IAttributeSupplier* supplier);
-  bool shouldGenerateGroupBlock(IAttributeSupplier* supplier);
+
+  bool shouldGenerateGroupBlock(IAttributeSupplier* supplier) {
+    return (supplier->max_attrs() > 1) &&
+        (edit_mode_ || (attrDisplayCount(supplier) != 0));
+  }
+
+  bool shouldAddAnEmptyAttribute(IAttributeSupplier* supplier) {
+    return edit_mode_ &&
+        (supplier->max_attrs() == 1) &&
+        (supplier->attr_count() == 0);
+  }
+
+  bool shouldSetAddCommand(IAttributeSupplier* supplier) {
+    return edit_mode_ && (supplier->attr_count() < supplier->max_attrs());
+  }
   void clearEmptyAttributes(WorkAttributeModel* model);
   void updateAttrLabel(IAttribute* attr);
 
  private:
-  std::vector<IAttributeSupplier*> attr_supplier_list_;
-  const IAttributeModelFactory& attr_model_factory_;
-  const utils::IRelayCommandFactory& cmd_factory_;
+  class AddAttributeCommand : public Command {
+   public:
+    virtual ~AddAttributeCommand() = default;
 
-  std::map<IAttribute*, AttributeDisplayBlock> attr_block_cache_;
+    void redo() override {
+      supplier_->addAttribute();
+      model_->AttributesChanged();
+    }
+
+    void set_model(WorkAttributeModelImpl* model) { model_ = model;}
+    void set_supplier(IAttributeSupplier* supplier) { supplier_ = supplier; }
+
+   private:
+    WorkAttributeModelImpl* model_;
+    IAttributeSupplier* supplier_;
+  };
 
   struct GroupBlockCacheItem {
     AttributeGroupDisplayBlock group_block;
-    std::shared_ptr<Command> add_command;
+    AddAttributeCommand add_command;
   };
+
+  void mayAddGroupBlockCacheFor(IAttributeSupplier* supplier);
+  void mayVisitGroupBlock(IAttributeSupplier* supplier,
+                          IAttributeDisplayBlockVisitor* visitor);
+  void visitAttributes(IAttributeSupplier* supplier,
+                          IAttributeDisplayBlockVisitor* visitor);
+
+  std::vector<IAttributeSupplier*> attr_supplier_list_;
+  const IAttributeModelFactory& attr_model_factory_;
+
   std::map<IAttributeSupplier*, GroupBlockCacheItem> group_block_cache_;
+  std::map<IAttribute*, AttributeDisplayBlock> attr_block_cache_;
 
   bool edit_mode_ { false };
   bool clear_empty_attrs_ { false };
@@ -87,108 +121,102 @@ class WorkAttributeModelImpl {
 SNAIL_SIGSLOT_PIMPL_RELAY(WorkAttributeModel, AttributesChanged, impl);
 SNAIL_SIGSLOT_PIMPL_RELAY(WorkAttributeModel, AttrLabelChanged, impl);
 
+void WorkAttributeModelImpl::mayVisitGroupBlock(
+    IAttributeSupplier* supplier, IAttributeDisplayBlockVisitor* visitor) {
+  if (!shouldGenerateGroupBlock(supplier))
+    return;
+
+  mayAddGroupBlockCacheFor(supplier);
+
+  try {
+    auto & group_cache_item = group_block_cache_.at(supplier);
+    AttributeGroupDisplayBlock group_block = group_cache_item.group_block;
+
+    if (shouldSetAddCommand(supplier)) {
+      group_block.add_command = &group_cache_item.add_command;
+    } else {
+      group_block.add_command = nullptr;
+    }
+
+    group_block.sub_attr_count = attrDisplayCount(supplier);
+
+    auto priv_data = visitor->visitAttributeGroupDisplayBlock(group_block);
+
+    group_block.view_priv_data = priv_data;
+
+    group_cache_item.group_block = group_block;
+  } catch (...) { }
+}
+
+void WorkAttributeModelImpl::visitAttributes(
+    IAttributeSupplier* supplier, IAttributeDisplayBlockVisitor* visitor) {
+  if (shouldAddAnEmptyAttribute(supplier)) {
+    supplier->addAttribute();
+  }
+
+  auto attrs = supplier->attributes();
+  if (!edit_mode_) {
+    std::sort(begin(attrs), end(attrs),
+              [](const IAttribute* a, const IAttribute* b) -> bool {
+                return a->displayName() < b->displayName();
+              });
+  }
+
+  for (auto & attr : attrs) {
+    if (!edit_mode_ && attr->isEmpty())
+      continue;
+
+    AttributeDisplayBlock attr_block;
+
+    auto iter = attr_block_cache_.find(attr);
+    if (iter != attr_block_cache_.end()) {
+      attr_block = iter->second;
+    } else {
+      auto attr_model = attr_model_factory_.createModel(attr);
+      attr_block.attr_model = attr_model;
+      attr_block.is_in_group = (supplier->max_attrs() > 1);
+
+      if (attr_model) {
+        attr_model->whenDisplayNameChanged(
+            [this, attr]() {
+              updateAttrLabel(attr);
+            });
+      }
+    }
+
+    attr_block.label = attr->displayName();
+    attr_block.edit_mode = edit_mode_;
+
+    auto priv_data = visitor->visitAttributeDisplayBlock(attr_block);
+
+    attr_block.view_priv_data = priv_data;
+
+    attr_block_cache_[attr] = attr_block;
+  }
+}
+
 void WorkAttributeModelImpl::traverseAttributes(
     WorkAttributeModel* model, IAttributeDisplayBlockVisitor* visitor) {
   int total_attrs = 0;
+
+  // 1st pass: determine total attributes
   for (auto & supplier : attr_supplier_list_) {
     int display_count = attrDisplayCount(supplier);
     total_attrs += display_count;
 
     if (shouldGenerateGroupBlock(supplier)) {
       ++total_attrs;
-    } else {
-      if (edit_mode_ && (supplier->attr_count() == 0)) {
-        ++total_attrs;
-      }
+    } else if (shouldAddAnEmptyAttribute(supplier)) {
+      ++total_attrs;
     }
   }
 
+  // 2nd pass: real traverse
   visitor->beginTraverse(total_attrs);
 
   for (auto & supplier : attr_supplier_list_) {
-    if (shouldGenerateGroupBlock(supplier)) {
-      AttributeGroupDisplayBlock group_block;
-      auto iter = group_block_cache_.find(supplier);
-      if (iter != group_block_cache_.end()) {
-        group_block = iter->second.group_block;
-
-        if (edit_mode_) {
-          group_block.add_command = iter->second.add_command.get();
-        } else {
-          group_block.add_command = nullptr;
-        }
-      } else {
-        group_block.label = supplier->name();
-
-        GroupBlockCacheItem group_cache_item;
-        if (edit_mode_) {
-          auto add_cmd = cmd_factory_.createCommand([this, supplier](){
-              supplier->addAttribute();
-              AttributesChanged();
-            });
-          // TODO(lutts): may be we can use unique_ptr in GroupBlock instead of raw pointer
-          //              to avoid cache add command, and generate fresh cmd on every traverse
-          group_block.add_command = add_cmd.get();
-
-          group_cache_item.add_command = add_cmd;
-        }
-
-        group_block_cache_[supplier] = group_cache_item;
-      }
-
-      group_block.sub_attr_count = attrDisplayCount(supplier);
-
-      auto priv_data = visitor->visitAttributeGroupDisplayBlock(group_block);
-
-      group_block.view_priv_data = priv_data;
-
-      auto & group_cache_item = group_block_cache_[supplier];
-      group_cache_item.group_block = group_block;
-    }  else if (edit_mode_) {  // no group block and is edit_mode
-      if (supplier->attr_count() == 0) {
-        supplier->addAttribute();
-      }
-    }
-
-    auto attrs = supplier->attributes();
-    if (!edit_mode_) {
-      std::sort(begin(attrs), end(attrs),
-                [](const IAttribute* a, const IAttribute* b) -> bool {
-                  return a->displayName() < b->displayName();
-                });
-    }
-
-    for (auto & attr : attrs) {
-      if (!edit_mode_ && attr->isEmpty())
-        continue;
-
-      AttributeDisplayBlock attr_block;
-
-      auto iter = attr_block_cache_.find(attr);
-      if (iter != attr_block_cache_.end()) {
-        attr_block = iter->second;
-      } else {
-        auto attr_model = attr_model_factory_.createModel(attr);
-        attr_block.attr_model = attr_model;
-        attr_block.is_in_group = (supplier->max_attrs() > 1);
-
-        if (attr_model) {
-          attr_model->whenDisplayNameChanged(
-              [this, attr]() {
-                updateAttrLabel(attr);
-              });
-        }
-      }
-
-      attr_block.label = attr->displayName();
-      attr_block.edit_mode = edit_mode_;
-
-      auto priv_data = visitor->visitAttributeDisplayBlock(attr_block);
-
-      attr_block.view_priv_data = priv_data;
-
-      attr_block_cache_[attr] = attr_block;
-    }
+    mayVisitGroupBlock(supplier, visitor);
+    visitAttributes(supplier, visitor);
   }
 
   visitor->endTraverse(clear_empty_attrs_);
@@ -210,10 +238,16 @@ int WorkAttributeModelImpl::attrDisplayCount(IAttributeSupplier* supplier) {
   return count;
 }
 
-bool WorkAttributeModelImpl::shouldGenerateGroupBlock(
+void WorkAttributeModelImpl::mayAddGroupBlockCacheFor(
     IAttributeSupplier* supplier) {
-  return (supplier->max_attrs() > 1) &&
-      (edit_mode_ || (attrDisplayCount(supplier) != 0));
+  auto iter = group_block_cache_.find(supplier);
+  if (iter == group_block_cache_.end()) {
+    GroupBlockCacheItem group_cache_item;
+    group_cache_item.group_block.label = supplier->name();
+    group_cache_item.add_command.set_model(this);
+    group_cache_item.add_command.set_supplier(supplier);
+    group_block_cache_[supplier] = group_cache_item;
+  }
 }
 
 void WorkAttributeModelImpl::clearEmptyAttributes(WorkAttributeModel* model) {
@@ -262,10 +296,9 @@ void WorkAttributeModelImpl::updateAttrLabel(IAttribute* attr) {
 
 WorkAttributeModel::WorkAttributeModel(
     const std::vector<IAttributeSupplier*>& attr_supplier_list,
-    const IAttributeModelFactory& attr_model_factory,
-    const IRelayCommandFactory& cmd_factory)
+    const IAttributeModelFactory& attr_model_factory)
     : impl(utils::make_unique<WorkAttributeModelImpl>(
-          attr_supplier_list, attr_model_factory, cmd_factory)) { }
+          attr_supplier_list, attr_model_factory)) { }
 
 WorkAttributeModel::~WorkAttributeModel() = default;
 

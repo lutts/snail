@@ -41,7 +41,6 @@ class WorkAttributeModelTest : public ::testing::Test {
 
   // region: objects test subject depends on
   MockAttributeModelFactory attr_model_factory;
-  MockRelayCommandFactory relay_cmd_factory;
   // endregion
 
   // region: test subject
@@ -56,8 +55,7 @@ std::unique_ptr<IWorkAttributeModel>
 WorkAttributeModelTest::createWorkAttributeModel(
     const std::vector<IAttributeSupplier*>& attr_supplier_list) {
   return utils::make_unique<WorkAttributeModel>(attr_supplier_list,
-                                                attr_model_factory,
-                                                relay_cmd_factory);
+                                                attr_model_factory);
 }
 
 TEST_F(WorkAttributeModelTest,
@@ -108,10 +106,8 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
  public:
   AttributeSupplierTestStub(
       const MockAttributeModelFactory& attr_model_factory,
-      const MockRelayCommandFactory& relay_cmd_factory,
       int num_attrs, int max_attrs, bool edit_mode)
       : attr_model_factory_(attr_model_factory)
-      , relay_cmd_factory_(relay_cmd_factory)
       , name_(xtestutils::genRandomString())
       , max_attrs_(max_attrs)
       , edit_mode_(edit_mode) {
@@ -295,7 +291,6 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
   }
 
   const MockAttributeModelFactory& attr_model_factory_;
-  const MockRelayCommandFactory& relay_cmd_factory_;
   utils::U8String name_;
   int num_attrs_ { 0 };
   int max_attrs_;
@@ -317,7 +312,6 @@ TEST_F(WorkAttributeModelTest,
        test_AttributeSupplierTestStub_max_attrs_gt_1) { // NOLINT
   int expect_max_attrs = 3;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, expect_max_attrs, false);
 
   AttributeGroupDisplayBlock expect_group_block;
@@ -407,7 +401,6 @@ TEST_F(WorkAttributeModelTest,
        test_AttributeSupplierTestStub_max_attrs_eq_1) { // NOLINT
   // Setup fixture
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 1, false);
   // Verify results
   auto attr = supplier.addMockAttribute();
@@ -447,7 +440,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 1, false);
   supplier_list.push_back(&supplier);
 
@@ -474,7 +466,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      1, 1, false);
 
   supplier_list.push_back(&supplier);
@@ -548,7 +539,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      1, 2, false);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -629,7 +619,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 3, false);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -655,7 +644,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 3, false);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -696,13 +684,10 @@ TEST_F(WorkAttributeModelTest,
        should_supplier_traverse_order_be_the_order_of_the_supplier_list) { // NOLINT
   // Setup fixture
   AttributeSupplierTestStub supplier0(attr_model_factory,
-                                      relay_cmd_factory,
                                       0, 1, false);
   AttributeSupplierTestStub supplier1(attr_model_factory,
-                                      relay_cmd_factory,
                                       0, 3, false);
   AttributeSupplierTestStub supplier2(attr_model_factory,
-                                      relay_cmd_factory,
                                       0, 1, false);
 
   auto attr0 = supplier0.addMockAttribute();
@@ -779,7 +764,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      1, 3, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -789,14 +773,8 @@ TEST_F(WorkAttributeModelTest,
   auto shared_cmd_raw_ptr = shared_cmd_ptr.get();
 
   // Expectations
-  EXPECT_CALL(relay_cmd_factory, createCommand(_))
-      .WillOnce(Return(shared_cmd_ptr));
-
-  // should not delete the command
-  EXPECT_CALL(*shared_cmd_ptr, destruct()).Times(0);
-
-  auto group_block = supplier.getGroupBlock();
-  group_block.add_command = shared_cmd_raw_ptr;
+  auto expect_group_block = supplier.getGroupBlock();
+  AttributeGroupDisplayBlock actual_group_block;
 
   {
     MockAttributeDisplayBlockVisitor attr_visitor;
@@ -804,8 +782,8 @@ TEST_F(WorkAttributeModelTest,
       InSequence seq;
 
       EXPECT_CALL(attr_visitor, beginTraverse(2));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
-          .WillOnce(Return(nullptr));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+          .WillOnce(DoAll(SaveArg<0>(&actual_group_block), Return(nullptr)));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
       EXPECT_CALL(attr_visitor, endTraverse(false));
     }
@@ -814,6 +792,11 @@ TEST_F(WorkAttributeModelTest,
     model->traverseAttributes(&attr_visitor);
   }
 
+  auto add_command = actual_group_block.add_command;
+  ASSERT_NE(nullptr, add_command);
+  expect_group_block.add_command = add_command;
+  ASSERT_EQ(expect_group_block, actual_group_block);
+
   // traverse a second time will got the same result
   {
     MockAttributeDisplayBlockVisitor attr_visitor;
@@ -821,7 +804,7 @@ TEST_F(WorkAttributeModelTest,
       InSequence seq;
 
       EXPECT_CALL(attr_visitor, beginTraverse(2));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(expect_group_block))
           .WillOnce(Return(nullptr));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
       EXPECT_CALL(attr_visitor, endTraverse(false));
@@ -840,13 +823,13 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      2, 2, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
   model->switchToEditMode();
 
   auto group_block = supplier.getGroupBlock();
+  ASSERT_EQ(nullptr, group_block.add_command);
 
   // Expectations
   MockAttributeDisplayBlockVisitor attr_visitor;
@@ -901,7 +884,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 1, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -943,7 +925,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 2, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -970,27 +951,32 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 2, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
   model->switchToEditMode();
 
-  auto add_cmd = std::make_shared<MockCommand>();
-  std::function<void()> callback;
-  EXPECT_CALL(relay_cmd_factory, createCommand(_))
-      .WillOnce(DoAll(SaveArg<0>(&callback), Return(add_cmd)));
+  // Exercise system
+  MockAttributeDisplayBlockVisitor attr_visitor;
+  AttributeGroupDisplayBlock group_block;
+  {
+    InSequence seq;
 
+    EXPECT_CALL(attr_visitor, beginTraverse(1));
+    EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+        .WillOnce(DoAll(SaveArg<0>(&group_block), Return(nullptr)));
+    EXPECT_CALL(attr_visitor, endTraverse(false));
+  }
+  model->traverseAttributes(&attr_visitor);
+
+  // Verify results
   // Expectations
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener, AttributesChanged());
 
-  // Exercise system
-  MockAttributeDisplayBlockVisitor attr_visitor;
-  model->traverseAttributes(&attr_visitor);
-
-  // Verify results
-  callback();  // can be called
+  Command* add_command = group_block.add_command;
+  ASSERT_NE(nullptr, add_command);
+  add_command->redo();
   // and after called, attributes +1
   ASSERT_EQ(1, supplier.attr_count());
 }
@@ -1000,10 +986,8 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier0(attr_model_factory,
-                                      relay_cmd_factory,
                                       0, 1, true);
   AttributeSupplierTestStub supplier1(attr_model_factory,
-                                      relay_cmd_factory,
                                       0, 1, true);
   supplier_list.push_back(&supplier0);
   supplier_list.push_back(&supplier1);
@@ -1068,7 +1052,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 3, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
@@ -1123,7 +1106,6 @@ TEST_F(WorkAttributeModelTest,
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     relay_cmd_factory,
                                      0, 4, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);

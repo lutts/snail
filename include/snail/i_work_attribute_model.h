@@ -13,10 +13,6 @@
 #include "pfmvp/pf_model_with_triad_manager.h"
 #include "utils/signal_slot.h"
 
-namespace utils {
-class Command;
-}  // namespace utils
-
 namespace snailcore {
 
 class IAttributeModel;
