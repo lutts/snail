@@ -36,6 +36,9 @@ class WorkAttributeModelImpl {
     return edit_mode_;
   }
   void switchToEditMode() {
+    if (edit_mode_)
+      return;
+
     edit_mode_ = true;
     AttributesChanged();
   }

@@ -26,18 +26,22 @@ using namespace pfmvp::tests;  // NOLINT
 namespace snailcore {
 namespace tests {
 
-class WorkAttributeModelTest : public ::testing::Test {
+template <typename TestBase>
+class WorkAttributeModelTestBase : public TestBase {
  protected:
-  WorkAttributeModelTest() {
+  WorkAttributeModelTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~WorkAttributeModelTest() { }
+  // ~WorkAttributeModelTestBase() { }
   virtual void SetUp() { }
   // virtual void TearDown() { }
 
   std::unique_ptr<IWorkAttributeModel> createWorkAttributeModel(
-      const std::vector<IAttributeSupplier*>& attr_supplier_list);
+      const std::vector<IAttributeSupplier*>& attr_supplier_list) {
+    return utils::make_unique<WorkAttributeModel>(attr_supplier_list,
+                                                  attr_model_factory);
+  }
 
   // region: objects test subject depends on
   MockAttributeModelFactory attr_model_factory;
@@ -51,11 +55,22 @@ class WorkAttributeModelTest : public ::testing::Test {
   // endregion
 };
 
-std::unique_ptr<IWorkAttributeModel>
-WorkAttributeModelTest::createWorkAttributeModel(
-    const std::vector<IAttributeSupplier*>& attr_supplier_list) {
-  return utils::make_unique<WorkAttributeModel>(attr_supplier_list,
-                                                attr_model_factory);
+class WorkAttributeModelTest
+    : public WorkAttributeModelTestBase<::testing::Test> { };
+
+void assertGroupBlockEqual(AttributeGroupDisplayBlock expect,
+                           AttributeGroupDisplayBlock actual,
+                           bool edit_mode) {
+  if (edit_mode) {
+    ASSERT_NE(nullptr, actual.add_command);
+  }
+
+  if (expect.add_command) {
+    ASSERT_EQ(expect, actual);
+  } else {
+    actual.add_command = nullptr;
+    ASSERT_EQ(expect, actual);
+  }
 }
 
 TEST_F(WorkAttributeModelTest,
@@ -66,41 +81,6 @@ TEST_F(WorkAttributeModelTest,
 }
 
 namespace {
-
-class AttributeTestStub : public IAttribute {
- public:
-  AttributeTestStub(const utils::U8String& name, bool empty)
-      : name_(name)
-      , empty_(empty) { }
-  virtual ~AttributeTestStub() = default;
-
-  utils::U8String displayName() const override {
-    return name_;
-  }
-
-  void setDisplayName(const utils::U8String& name) {
-    name_ = name;
-  }
-
-  bool isEmpty() const override {
-    return empty_;
-  }
-
-  void setEmpty(bool empty) {
-    empty_ = empty;
-  }
-
-  void clear() override {
-    empty_ = true;
-  }
-
- private:
-  utils::U8String name_;
-  bool empty_ { true };
-
- private:
-  SNAIL_DISABLE_COPY(AttributeTestStub)
-};
 
 class AttributeSupplierTestStub : public IAttributeSupplier {
  public:
@@ -118,10 +98,8 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
   virtual ~AttributeSupplierTestStub() = default;
 
   //////////////// IAttributeSupplier Impl ////////////////
-  utils::U8String name() const override {
-    return name_;
-  }
-  int attr_count() const override { return num_attrs_; }
+  utils::U8String name() const override { return name_; }
+  int attr_count() const override { return attrs_.size(); }
   int min_attrs() const override { return 0; }
   int max_attrs() const override { return max_attrs_; }
 
@@ -144,24 +122,22 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
 
   //////////////// IAttributeSupplier Impl end ////////////////
 
-  void set_name(const utils::U8String& name) {
-    name_ = name;
-  }
-
-  AttributeTestStub* addMockAttribute() {
+  MockAttribute* addMockAttribute() {
     return addMockAttribute(name_, false);
   }
 
-  AttributeTestStub* addMockAttribute(
+  MockAttribute* addMockAttribute(
       const utils::U8String& attr_display_name, bool empty = false) {
-    ++num_attrs_;
-
     [this]() {
-      ASSERT_LE(num_attrs_, max_attrs_);
+      ASSERT_LE(attr_count(), max_attrs_);
     }();
 
-    auto attr = utils::make_unique<AttributeTestStub>(
-        attr_display_name, empty);
+    auto attr = utils::make_unique<MockAttribute>();
+    EXPECT_CALL(*attr, displayName())
+        .WillRepeatedly(Return(attr_display_name));
+    EXPECT_CALL(*attr, isEmpty())
+        .WillRepeatedly(Return(empty));
+
     auto attr_ptr = attr.get();
 
     attrs_.push_back(std::move(attr));
@@ -176,8 +152,7 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
     AttributeGroupDisplayBlock group_block;
 
     group_block.label = name_;
-    group_block.sub_attr_count = num_attrs_;
-    group_block.view_priv_data = view_priv_data_;
+    group_block.sub_attr_count = attr_count();
 
     return group_block;
   }
@@ -217,37 +192,10 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
     return attr_block;
   }
 
-  void traverse(MockAttributeDisplayBlockVisitor* attr_visitor,
-                Sequence *seq) {
-    if (max_attrs_ > 1) {
-      auto priv_data =
-          xtestutils::genDifferentDummyPointer<void>(view_priv_data_);
-      EXPECT_CALL(*attr_visitor,
-                  visitAttributeGroupDisplayBlock(getGroupBlock()))
-          .WillOnce(Return(priv_data))
-          .InSequence(*seq);
-      view_priv_data_ = priv_data;
-    }
-
-    for (auto & attr : attributes()) {
-      auto attr_block = getAttrBlock(attr);
-      auto priv_data =
-          xtestutils::genDifferentDummyPointer<void>(attr_block.view_priv_data);
-      EXPECT_CALL(*attr_visitor,
-                  visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(priv_data))
-          .InSequence(*seq);
-
-      auto new_block = attr_block;
-      new_block.view_priv_data = priv_data;
-      attr_to_block[attr] = new_block;
-    }
-  }
-
   MOCK_METHOD1(attrRemoved, void(IAttribute* attr));
 
  private:
-  using AttrElemType = std::unique_ptr<AttributeTestStub>;
+  using AttrElemType = std::unique_ptr<MockAttribute>;
 
   std::shared_ptr<IAttributeModel> getAttrModelForAttr(IAttribute* attr) {
     if (!isAttributeExist(attr))
@@ -284,7 +232,6 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
 
       attr_to_block.erase(attr);
       attr_model_created.erase(attr);
-      --num_attrs_;
 
       attrRemoved(attr);
     }
@@ -292,7 +239,6 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
 
   const MockAttributeModelFactory& attr_model_factory_;
   utils::U8String name_;
-  int num_attrs_ { 0 };
   int max_attrs_;
   bool edit_mode_ { false };
 
@@ -300,7 +246,6 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
 
   std::map<IAttribute*, AttributeDisplayBlock> attr_to_block;
   std::map<IAttribute*, bool> attr_model_created;
-  void* view_priv_data_ { nullptr };
 
  private:
   SNAIL_DISABLE_COPY(AttributeSupplierTestStub)
@@ -414,10 +359,21 @@ TEST_F(WorkAttributeModelTest,
   } catch(...) { }
 }
 
-TEST_F(WorkAttributeModelTest,
+class WorkAttributeModelTest_BothMode
+    : public WorkAttributeModelTestBase<::testing::TestWithParam<bool>> { };
+
+INSTANTIATE_TEST_CASE_P(BothModes,
+                        WorkAttributeModelTest_BothMode,
+                        ::testing::Bool());
+
+TEST_P(WorkAttributeModelTest_BothMode,
        should_visit_nothing_when_there_is_no_suppliers) { // NOLINT
   // Setup fixture
   auto model = createWorkAttributeModel({});
+  bool edit_mode = GetParam();
+  if (edit_mode)
+    model->switchToEditMode();
+
   MockAttributeDisplayBlockVisitor attr_visitor;
 
   // Expectations
@@ -435,12 +391,39 @@ TEST_F(WorkAttributeModelTest,
   model->traverseAttributes(&attr_visitor);
 }
 
+//////////////// Display Mode Tests Begin ////////////////
+
 TEST_F(WorkAttributeModelTest,
-       should_visit_nothing_when_suppliers_has_no_attributes) { // NOLINT
+       should_visit_nothing_with_supplier_whos_max_attr_eq_1_and_attr_count_eq_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 1, false);
+  supplier_list.push_back(&supplier);
+  auto model = createWorkAttributeModel(supplier_list);
+
+  // Expectations
+  MockAttributeDisplayBlockVisitor attr_visitor;
+  {
+    InSequence seq;
+
+    EXPECT_CALL(attr_visitor, beginTraverse(0));
+    EXPECT_CALL(attr_visitor, endTraverse(false));
+  }
+
+  EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_)).Times(0);
+  EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_)).Times(0);
+
+  // Exercise system
+  model->traverseAttributes(&attr_visitor);
+}
+
+TEST_F(WorkAttributeModelTest,
+       should_visit_nothing_with_supplier_whos_max_attr_gt_1_and_attr_count_eq_0_in_display_mode) { // NOLINT
+  // Setup fixture
+  std::vector<IAttributeSupplier*> supplier_list;
+  AttributeSupplierTestStub supplier(attr_model_factory,
+                                     0, 2, false);
   supplier_list.push_back(&supplier);
 
   auto model = createWorkAttributeModel(supplier_list);
@@ -462,30 +445,25 @@ TEST_F(WorkAttributeModelTest,
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_generate_attr_for_attributes_in_supplier_num_attrs_1_max_attrs_1) { // NOLINT
+       should_generate_attr_block_for_attributes_in_supplier_whos_max_attrs_eq_1_and_attr_count_eq_1_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      1, 1, false);
-
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
 
   auto attr = supplier.attributes()[0];
   AttributeDisplayBlock attr_block = supplier.getAttrBlock(attr);
 
-
-  auto expect_priv_data = xtestutils::genDummyPointer<void>();
   // Expectations
-
   {
     MockAttributeDisplayBlockVisitor attr_visitor;
     {
       InSequence seq;
 
       EXPECT_CALL(attr_visitor, beginTraverse(1));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(expect_priv_data));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block));
       EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
@@ -494,48 +472,10 @@ TEST_F(WorkAttributeModelTest,
     // Exercise system
     model->traverseAttributes(&attr_visitor);
   }
-
-  // traverse a second time, will got the same data plus the view_priv_data
-  // returned by the previous traverse
-
-  attr_block.view_priv_data = expect_priv_data;
-
-  expect_priv_data =
-      xtestutils::genDifferentDummyPointer<void>(expect_priv_data);
-  {
-    MockAttributeDisplayBlockVisitor another_visitor;
-    {
-      InSequence seq;
-
-      EXPECT_CALL(another_visitor, beginTraverse(1));
-      EXPECT_CALL(another_visitor, visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(expect_priv_data));
-      EXPECT_CALL(another_visitor, endTraverse(false));
-    }
-
-    model->traverseAttributes(&another_visitor);
-  }
-
-  {
-    attr_block.view_priv_data = expect_priv_data;
-
-    MockAttributeDisplayBlockVisitor yet_another_visitor;
-
-    {
-      InSequence seq;
-
-      EXPECT_CALL(yet_another_visitor, beginTraverse(1));
-      EXPECT_CALL(yet_another_visitor, visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(nullptr));
-      EXPECT_CALL(yet_another_visitor, endTraverse(false));
-    }
-
-    model->traverseAttributes(&yet_another_visitor);
-  }
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_generate_group_block_for_suppliers_whos_max_attr_gt_1) { // NOLINT
+       should_generate_group_block_without_add_command_for_suppliers_whos_max_attr_gt_1_and_attr_count_gt_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -546,8 +486,7 @@ TEST_F(WorkAttributeModelTest,
   auto group_block = supplier.getGroupBlock();
   auto attr_block = supplier.getAttrBlock(supplier.attributes()[0]);
 
-  auto group_priv_data = xtestutils::genDummyPointer<void>();
-  auto attr_priv_data = xtestutils::genDummyPointer<void>();
+  ASSERT_EQ(nullptr, group_block.add_command);
 
   // Expectations
   {
@@ -556,56 +495,8 @@ TEST_F(WorkAttributeModelTest,
       InSequence seq;
 
       EXPECT_CALL(attr_visitor, beginTraverse(2));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
-          .WillOnce(Return(group_priv_data));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(attr_priv_data));
-      EXPECT_CALL(attr_visitor, endTraverse(false));
-    }
-
-    // Exercise system
-    model->traverseAttributes(&attr_visitor);
-  }
-
-  // traverse a second time, will got the same data plus the view_priv_data
-  // returned by the previous traverse
-  group_block.view_priv_data = group_priv_data;
-  attr_block.view_priv_data = attr_priv_data;
-
-  group_priv_data = xtestutils::genDifferentDummyPointer<void>(group_priv_data);
-  attr_priv_data = xtestutils::genDifferentDummyPointer<void>(attr_priv_data);
-
-  {
-    MockAttributeDisplayBlockVisitor attr_visitor;
-    {
-      InSequence seq;
-
-      EXPECT_CALL(attr_visitor, beginTraverse(2));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
-          .WillOnce(Return(group_priv_data));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(attr_priv_data));
-      EXPECT_CALL(attr_visitor, endTraverse(false));
-    }
-
-    // Exercise system
-    model->traverseAttributes(&attr_visitor);
-  }
-
-
-  group_block.view_priv_data = group_priv_data;
-  attr_block.view_priv_data = attr_priv_data;
-
-  {
-    MockAttributeDisplayBlockVisitor attr_visitor;
-    {
-      InSequence seq;
-
-      EXPECT_CALL(attr_visitor, beginTraverse(2));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
-          .WillOnce(Return(group_priv_data));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
-          .WillOnce(Return(attr_priv_data));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block));
       EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
@@ -615,7 +506,7 @@ TEST_F(WorkAttributeModelTest,
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_not_generate_group_block_for_supplier_with_max_attrs_gt_1_but_attr_count_is_0) { // NOLINT
+       should_not_generate_group_block_for_supplier_whos_max_attrs_gt_1_but_attr_count_is_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -640,7 +531,7 @@ TEST_F(WorkAttributeModelTest,
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_sort_sub_attrs_by_display_name_for_suppliers_whos_max_attrs_gt_1) { // NOLINT
+       should_sort_sub_attrs_by_display_name_for_suppliers_whos_max_attrs_gt_1_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -665,14 +556,10 @@ TEST_F(WorkAttributeModelTest,
       InSequence seq;
 
       EXPECT_CALL(attr_visitor, beginTraverse(4));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block))
-          .WillOnce(Return(nullptr));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_a))
-          .WillOnce(Return(nullptr));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_b))
-          .WillOnce(Return(nullptr));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_c))
-          .WillOnce(Return(nullptr));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_a));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_b));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block_c));
       EXPECT_CALL(attr_visitor, endTraverse(false));
     }
 
@@ -680,55 +567,7 @@ TEST_F(WorkAttributeModelTest,
   }
 }
 
-TEST_F(WorkAttributeModelTest,
-       should_supplier_traverse_order_be_the_order_of_the_supplier_list) { // NOLINT
-  // Setup fixture
-  AttributeSupplierTestStub supplier0(attr_model_factory,
-                                      0, 1, false);
-  AttributeSupplierTestStub supplier1(attr_model_factory,
-                                      0, 3, false);
-  AttributeSupplierTestStub supplier2(attr_model_factory,
-                                      0, 1, false);
-
-  auto attr0 = supplier0.addMockAttribute();
-  auto attr0_block = supplier0.getAttrBlock(attr0);
-
-  auto sub_attr0 = supplier1.addMockAttribute();
-  auto sub_attr0_block = supplier1.getAttrBlock(sub_attr0);
-  auto sub_attr1 = supplier1.addMockAttribute();
-  auto sub_attr1_block = supplier1.getAttrBlock(sub_attr1);
-
-  auto group1_block = supplier1.getGroupBlock();
-
-  auto attr1 = supplier2.addMockAttribute();
-  auto attr1_block = supplier2.getAttrBlock(attr1);
-
-  std::vector<IAttributeSupplier*> supplier_list;
-  supplier_list.push_back(&supplier0);
-  supplier_list.push_back(&supplier1);
-  supplier_list.push_back(&supplier2);
-
-  auto model = createWorkAttributeModel(supplier_list);
-
-  // Expectations
-  {
-    MockAttributeDisplayBlockVisitor attr_visitor;
-
-    {
-      InSequence seq;
-
-      EXPECT_CALL(attr_visitor, beginTraverse(5));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr0_block));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(group1_block));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(sub_attr0_block));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(sub_attr1_block));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr1_block));
-      EXPECT_CALL(attr_visitor, endTraverse(false));
-    }
-
-    model->traverseAttributes(&attr_visitor);
-  }
-}
+//////////////// Display Mode Tests End ////////////////
 
 BEGIN_MOCK_LISTENER_DEF(MockListener, IWorkAttributeModel)
 
@@ -759,18 +598,17 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_TRUE(model->isEditMode());
 }
 
+//////////////// Edit Mode Tests Begin ////////////////
+
 TEST_F(WorkAttributeModelTest,
-       should_generate_group_block_with_add_command_for_supplier_with_max_attrs_gt_1_and_attr_count_lt_max_attrs_in_edit_mode) { // NOLINT
+       should_generate_group_block_with_add_command_for_supplier_whos_max_attrs_gt_1_and_attr_count_lt_max_attrs_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
-                                     1, 3, true);
+                                     1, 2, true);
   supplier_list.push_back(&supplier);
   auto model = createWorkAttributeModel(supplier_list);
   model->switchToEditMode();
-
-  auto shared_cmd_ptr = std::make_shared<MockCommand>();
-  auto shared_cmd_raw_ptr = shared_cmd_ptr.get();
 
   // Expectations
   auto expect_group_block = supplier.getGroupBlock();
@@ -783,29 +621,7 @@ TEST_F(WorkAttributeModelTest,
 
       EXPECT_CALL(attr_visitor, beginTraverse(2));
       EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
-          .WillOnce(DoAll(SaveArg<0>(&actual_group_block), Return(nullptr)));
-      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
-      EXPECT_CALL(attr_visitor, endTraverse(false));
-    }
-
-    // Exercise system
-    model->traverseAttributes(&attr_visitor);
-  }
-
-  auto add_command = actual_group_block.add_command;
-  ASSERT_NE(nullptr, add_command);
-  expect_group_block.add_command = add_command;
-  ASSERT_EQ(expect_group_block, actual_group_block);
-
-  // traverse a second time will got the same result
-  {
-    MockAttributeDisplayBlockVisitor attr_visitor;
-    {
-      InSequence seq;
-
-      EXPECT_CALL(attr_visitor, beginTraverse(2));
-      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(expect_group_block))
-          .WillOnce(Return(nullptr));
+          .WillOnce(SaveArg<0>(&actual_group_block));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_));
       EXPECT_CALL(attr_visitor, endTraverse(false));
     }
@@ -815,11 +631,52 @@ TEST_F(WorkAttributeModelTest,
   }
 
   // Verify result
-  Mock::VerifyAndClearExpectations(shared_cmd_raw_ptr);
+  auto add_command = actual_group_block.add_command;
+  ASSERT_NE(nullptr, add_command);
+  expect_group_block.add_command = add_command;
+  ASSERT_EQ(expect_group_block, actual_group_block);
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_generate_group_block_without_add_command_for_supplier_with_max_attrs_gt_1_and_attr_count_eq_max_attrs_in_edit_mode) { // NOLINT
+       should_generate_group_block_with_add_command_for_supplier_with_max_attrs_gt_1_and_attr_count_eq_0_in_edit_mode) { // NOLINT
+  // Setup fixture
+  std::vector<IAttributeSupplier*> supplier_list;
+  AttributeSupplierTestStub supplier(attr_model_factory,
+                                     0, 2, true);
+  supplier_list.push_back(&supplier);
+  auto model = createWorkAttributeModel(supplier_list);
+  model->switchToEditMode();
+
+  // Expectations
+  auto expect_group_block = supplier.getGroupBlock();
+  AttributeGroupDisplayBlock actual_group_block;
+
+  {
+    MockAttributeDisplayBlockVisitor attr_visitor;
+    {
+      InSequence seq;
+
+      EXPECT_CALL(attr_visitor, beginTraverse(1));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+          .WillOnce(SaveArg<0>(&actual_group_block));
+      EXPECT_CALL(attr_visitor, endTraverse(false));
+    }
+
+    EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(_)).Times(0);
+
+    // Exercise system
+    model->traverseAttributes(&attr_visitor);
+  }
+
+  // Verify result
+  auto add_command = actual_group_block.add_command;
+  ASSERT_NE(nullptr, add_command);
+  expect_group_block.add_command = add_command;
+  ASSERT_EQ(expect_group_block, actual_group_block);
+}
+
+TEST_F(WorkAttributeModelTest,
+       should_generate_group_block_without_add_command_for_supplier_whos_max_attrs_gt_1_and_attr_count_eq_max_attrs_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -848,39 +705,39 @@ TEST_F(WorkAttributeModelTest,
 }
 
 TEST_F(WorkAttributeModelTest,
-       DISABLED_should_generate_group_block_with_add_command_for_supplier_with_max_attrs_gt_1_and_attr_count_eq_0) { // NOLINT
+       should_attr_block_edit_mode_be_true_when_generate_attr_blocks_in_edit_mode) { // NOLINT
   // Setup fixture
+  std::vector<IAttributeSupplier*> supplier_list;
+  AttributeSupplierTestStub supplier(attr_model_factory,
+                                     1, 1, true);
 
-  // Expectations
+  supplier_list.push_back(&supplier);
+  auto model = createWorkAttributeModel(supplier_list);
+  model->switchToEditMode();
 
-  // Exercise system
+  auto attr = supplier.attributes()[0];
+  AttributeDisplayBlock attr_block = supplier.getAttrBlock(attr);
+
+  ASSERT_TRUE(attr_block.edit_mode);
 
   // Verify results
+  {
+    MockAttributeDisplayBlockVisitor attr_visitor;
+    {
+      InSequence seq;
 
-  // Teardown fixture
-  //  * ensuring runs even when the test is failed
-  //  * do not introduce additional errors
-  FAIL() << "Unfinished Test!";
+      EXPECT_CALL(attr_visitor, beginTraverse(1));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block));
+      EXPECT_CALL(attr_visitor, endTraverse(false));
+    }
+
+    // Exercise system
+    model->traverseAttributes(&attr_visitor);
+  }
 }
 
 TEST_F(WorkAttributeModelTest,
-       DISABLED_should_attr_block_edit_mode_be_true_when_generate_attr_blocks_in_edit_mode) { // NOLINT
-  // Setup fixture
-
-  // Expectations
-
-  // Exercise system
-
-  // Verify results
-
-  // Teardown fixture
-  //  * ensuring runs even when the test is failed
-  //  * do not introduce additional errors
-  FAIL() << "Unfinished Test!";
-}
-
-TEST_F(WorkAttributeModelTest,
-       should_automatically_create_empty_attribute_for_edit_for_suppliers_with_max_attrs_eq_1_and_attr_count_eq_0) { // NOLINT
+       should_automatically_create_empty_attribute_for_edit_for_suppliers_with_max_attrs_eq_1_and_attr_count_eq_0_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -921,7 +778,7 @@ TEST_F(WorkAttributeModelTest,
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_not_automatically_create_empty_attribue_for_suppliers_with_max_attrs_gt_1_and_attr_count_eq_0) { // NOLINT
+       should_not_automatically_create_empty_attribue_for_suppliers_with_max_attrs_gt_1_and_attr_count_eq_0_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -944,10 +801,13 @@ TEST_F(WorkAttributeModelTest,
 
   // Exercise system
   model->traverseAttributes(&attr_visitor);
+
+  // Verify result
+  ASSERT_EQ(0, supplier.attr_count());
 }
 
 TEST_F(WorkAttributeModelTest,
-       should_add_command_create_an_empty_attribute_and_fire_AttributesChanged_signal) { // NOLINT
+       should_add_command_create_an_empty_attribute_and_fire_AttributesChanged_signal_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -964,7 +824,7 @@ TEST_F(WorkAttributeModelTest,
 
     EXPECT_CALL(attr_visitor, beginTraverse(1));
     EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
-        .WillOnce(DoAll(SaveArg<0>(&group_block), Return(nullptr)));
+        .WillOnce(SaveArg<0>(&group_block));
     EXPECT_CALL(attr_visitor, endTraverse(false));
   }
   model->traverseAttributes(&attr_visitor);
@@ -1084,6 +944,10 @@ TEST_F(WorkAttributeModelTest,
   }
 }
 
+//////////////// Edit Mode Tests End ////////////////
+
+///////////// Switch between Display Mode & Edit Mode Tests Begin /////////////
+
 TEST_F(WorkAttributeModelTest,
        should_fire_AttributesChanged_signal_with_switch_from_edit_mode_to_display_mode) { // NOLINT
   // Setup fixture
@@ -1177,6 +1041,197 @@ TEST_F(WorkAttributeModelTest,
     model->switchToDisplayMode();
     model->traverseAttributes(&attr_visitor);
   }
+}
+
+class WorkAttributeModelTest_ModeCombination
+    : public WorkAttributeModelTestBase<::testing::TestWithParam<std::pair<bool, bool>>> { };
+
+INSTANTIATE_TEST_CASE_P(ModeCombination,
+                        WorkAttributeModelTest_ModeCombination,
+                        ::testing::Values(
+                             std::make_pair(true, true),
+                             std::make_pair(true, false),
+                             std::make_pair(false, true),
+                             std::make_pair(false, false)));
+
+TEST_P(WorkAttributeModelTest_ModeCombination,
+       should_store_view_priv_data_and_pass_back_when_traverse_again) { // NOLINT
+  // Setup fixture
+  std::vector<IAttributeSupplier*> supplier_list;
+  AttributeSupplierTestStub supplier(attr_model_factory,
+                                     1, 2, false);
+  supplier_list.push_back(&supplier);
+  auto model = createWorkAttributeModel(supplier_list);
+
+  bool pass1_edit_mode = std::get<0>(GetParam());
+  if (pass1_edit_mode) {
+    model->switchToEditMode();
+  }
+
+  auto expect_group_block = supplier.getGroupBlock();
+  auto attr_block = supplier.getAttrBlock(supplier.attributes()[0]);
+  attr_block.edit_mode = pass1_edit_mode;
+
+  auto group_priv_data = xtestutils::genDummyPointer<void>();
+  auto attr_priv_data = xtestutils::genDummyPointer<void>();
+
+  AttributeGroupDisplayBlock actual_group_block;
+  // Expectations
+  {
+    MockAttributeDisplayBlockVisitor attr_visitor;
+    {
+      InSequence seq;
+
+      EXPECT_CALL(attr_visitor, beginTraverse(2));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+          .WillOnce(DoAll(SaveArg<0>(&actual_group_block),
+                          Return(group_priv_data)));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
+          .WillOnce(Return(attr_priv_data));
+      EXPECT_CALL(attr_visitor, endTraverse(false));
+    }
+
+    // Exercise system
+    model->traverseAttributes(&attr_visitor);
+  }
+
+  CUSTOM_ASSERT(assertGroupBlockEqual(expect_group_block,
+                                      actual_group_block,
+                                      pass1_edit_mode));
+
+  // traverse a second time, will got the same data plus the view_priv_data
+  // returned by the previous traverse
+  expect_group_block.view_priv_data = group_priv_data;
+  attr_block.view_priv_data = attr_priv_data;
+
+  group_priv_data = xtestutils::genDifferentDummyPointer<void>(group_priv_data);
+  attr_priv_data = xtestutils::genDifferentDummyPointer<void>(attr_priv_data);
+
+  bool pass2_edit_mode = std::get<1>(GetParam());
+  if (pass2_edit_mode)
+    model->switchToEditMode();
+  else
+    model->switchToDisplayMode();
+  attr_block.edit_mode = pass2_edit_mode;
+
+  {
+    MockAttributeDisplayBlockVisitor attr_visitor;
+    {
+      InSequence seq;
+
+      EXPECT_CALL(attr_visitor, beginTraverse(2));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+          .WillOnce(DoAll(SaveArg<0>(&actual_group_block), Return(group_priv_data)));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
+          .WillOnce(Return(attr_priv_data));
+      EXPECT_CALL(attr_visitor, endTraverse(_));
+    }
+
+    // Exercise system
+    model->traverseAttributes(&attr_visitor);
+  }
+
+  CUSTOM_ASSERT(assertGroupBlockEqual(expect_group_block,
+                                      actual_group_block,
+                                      pass2_edit_mode));
+
+
+  // traverse again to ensure the priv_data is really stored
+  expect_group_block.view_priv_data = group_priv_data;
+  attr_block.view_priv_data = attr_priv_data;
+
+  {
+    MockAttributeDisplayBlockVisitor attr_visitor;
+    {
+      InSequence seq;
+
+      EXPECT_CALL(attr_visitor, beginTraverse(2));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+          .WillOnce(DoAll(SaveArg<0>(&actual_group_block), Return(group_priv_data)));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
+          .WillOnce(Return(attr_priv_data));
+      EXPECT_CALL(attr_visitor, endTraverse(false));
+    }
+
+    // Exercise system
+    model->traverseAttributes(&attr_visitor);
+  }
+
+  CUSTOM_ASSERT(assertGroupBlockEqual(expect_group_block,
+                                      actual_group_block,
+                                      pass2_edit_mode));
+}
+
+///////////// Switch between Edit Mode & Display Mode Tests End /////////////
+
+TEST_P(WorkAttributeModelTest_BothMode,
+       should_supplier_traverse_order_be_the_order_of_the_supplier_list) { // NOLINT
+  // Setup fixture
+  AttributeSupplierTestStub supplier0(attr_model_factory,
+                                      0, 1, false);
+  AttributeSupplierTestStub supplier1(attr_model_factory,
+                                      0, 3, false);
+  AttributeSupplierTestStub supplier2(attr_model_factory,
+                                      0, 1, false);
+
+  auto attr0 = supplier0.addMockAttribute();
+  auto attr0_block = supplier0.getAttrBlock(attr0);
+
+  auto sub_attr0 = supplier1.addMockAttribute();
+  auto sub_attr0_block = supplier1.getAttrBlock(sub_attr0);
+  auto sub_attr1 = supplier1.addMockAttribute();
+  auto sub_attr1_block = supplier1.getAttrBlock(sub_attr1);
+
+  auto expect_group1_block = supplier1.getGroupBlock();
+
+  auto attr1 = supplier2.addMockAttribute();
+  auto attr1_block = supplier2.getAttrBlock(attr1);
+
+  std::vector<IAttributeSupplier*> supplier_list;
+  supplier_list.push_back(&supplier0);
+  supplier_list.push_back(&supplier1);
+  supplier_list.push_back(&supplier2);
+
+  auto model = createWorkAttributeModel(supplier_list);
+  bool edit_mode = GetParam();
+  if (edit_mode) {
+    model->switchToEditMode();
+  }
+
+  attr0_block.edit_mode = edit_mode;
+  sub_attr0_block.edit_mode = edit_mode;
+  sub_attr1_block.edit_mode = edit_mode;
+  attr1_block.edit_mode = edit_mode;
+
+  AttributeGroupDisplayBlock actual_group1_block;
+
+  // Expectations
+  {
+    MockAttributeDisplayBlockVisitor attr_visitor;
+
+    {
+      InSequence seq;
+
+      EXPECT_CALL(attr_visitor, beginTraverse(5));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr0_block));
+      EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
+          .WillOnce(SaveArg<0>(&actual_group1_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(sub_attr0_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(sub_attr1_block));
+      EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr1_block));
+      EXPECT_CALL(attr_visitor, endTraverse(false));
+    }
+
+    model->traverseAttributes(&attr_visitor);
+  }
+
+  // Verify result
+  if (edit_mode) {
+    ASSERT_NE(nullptr, actual_group1_block.add_command);
+    actual_group1_block.add_command = nullptr;
+  }
+
+  ASSERT_EQ(expect_group1_block, actual_group1_block);
 }
 
 }  // namespace tests
