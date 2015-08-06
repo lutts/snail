@@ -14,7 +14,6 @@
 #include "snail/mock_attribute_model.h"
 #include "core/mock_attribute_supplier.h"
 #include "snail/mock_attribute_model_factory.h"
-#include "utils/mock_relay_command_factory.h"
 #include "snail/mock_attribute_display_block.h"
 #include "utils/mock_command.h"
 
