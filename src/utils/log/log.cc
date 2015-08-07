@@ -228,6 +228,9 @@ void initLog() {
 void cleanupLog() {
   loggingEnabled = false;
   logging::core::get()->remove_all_sinks();
+  user_file_sink.reset();
+  debug_file_sink.reset();
+  console_sink.reset();
 }
 
 // set log level to verbose, debug, info, warning, error, user, or disable

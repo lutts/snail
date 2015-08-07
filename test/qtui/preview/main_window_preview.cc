@@ -75,5 +75,7 @@ int main() {
   commandProcessor->do_cmd(new DummyCommand());
 #endif
 
-  return qtUiEngine.run();
+  int ret = qtUiEngine.run();
+  cleanupLog();
+  return ret;
 }
