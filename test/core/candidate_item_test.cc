@@ -28,10 +28,6 @@ class CandidateItemTest : public ::testing::Test {
 
 TEST_F(CandidateItemTest,
        should_default_constructor_build_and_root_item) { // NOLINT
-  // Setup fixture
-
-  // Expectations
-
   // Exercise system
   auto item = utils::make_unique<CandidateItem>();
 
@@ -73,10 +69,6 @@ TEST_F(CandidateItemTest,
 
 TEST_F(CandidateItemTest,
        should_be_able_to_build_item_hierarchy) { // NOLINT
-  // Setup fixture
-
-  // Expectations
-
   // Exercise system
   auto root_item = utils::make_unique<CandidateItem>(
       xtestutils::genRandomString(),
@@ -99,22 +91,27 @@ TEST_F(CandidateItemTest,
 
   // Verify results
   ASSERT_EQ(2, root_item->num_children());
+  ASSERT_EQ(-1, root_item->row());
 
   auto actual_child_item1 = (*root_item)[0];
   ASSERT_EQ(child_item1.get(), actual_child_item1);
   ASSERT_EQ(root_item.get(), child_item1->parent());
+  ASSERT_EQ(0, child_item1->row());
 
   auto actual_child_item2 = (*root_item)[1];
   ASSERT_EQ(child_item2.get(), actual_child_item2);
   ASSERT_EQ(root_item.get(), child_item2->parent());
+  ASSERT_EQ(1, child_item2->row());
 
   ASSERT_EQ(1, actual_child_item1->num_children());
   ASSERT_EQ(subchild_item1.get(), (*actual_child_item1)[0]);
   ASSERT_EQ(actual_child_item1, subchild_item1->parent());
+  ASSERT_EQ(0, subchild_item1->row());
 
   ASSERT_EQ(1, actual_child_item2->num_children());
   ASSERT_EQ(subchild_item2.get(), (*actual_child_item2)[0]);
   ASSERT_EQ(actual_child_item2, subchild_item2->parent());
+  ASSERT_EQ(0, subchild_item2->row());
 }
 
 TEST_F(CandidateItemTest,
@@ -137,6 +134,8 @@ TEST_F(CandidateItemTest,
   auto actual_child_item2 = (*root_item)[1];
   ASSERT_EQ(child_item1.get(), actual_child_item1);
   ASSERT_EQ(child_item2.get(), actual_child_item2);
+  ASSERT_EQ(0, child_item1->row());
+  ASSERT_EQ(1, child_item2->row());
 
   // Expectations
 
@@ -146,6 +145,7 @@ TEST_F(CandidateItemTest,
   // Verify results
   ASSERT_EQ(1, root_item->num_children());
   ASSERT_EQ(child_item2.get(), (*root_item)[0]);
+  ASSERT_EQ(0, child_item2->row());
 }
 
 class MockCandidateItem : public CandidateItem {

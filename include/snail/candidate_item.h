@@ -72,7 +72,7 @@ class CandidateItem {
     if (!parent_)
       return -1;
 
-    int index = -1;
+    int index = 0;
     for (auto item : parent_->children_) {
       if (item == this)
         break;

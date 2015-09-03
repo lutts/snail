@@ -89,6 +89,22 @@ TEST_F(CandidateItemQModelAdapterTest,
 }
 
 TEST_F(CandidateItemQModelAdapterTest,
+       should_EditRole_data_be_item_text) { // NOLINT
+  auto checker =
+      [this](const CandidateItem& item, const QModelIndex& index, int role) {
+    auto expect_text = U8StringToQString(item.text());
+    auto cell_data = adapter.data(index, role);
+    auto actual_text = cell_data.toString();
+    ASSERT_EQ(expect_text, actual_text);
+  };
+
+  CUSTOM_ASSERT(assertRoleItemData(*root_item,
+                                   QModelIndex(),
+                                   Qt::EditRole,
+                                   checker));
+}
+
+TEST_F(CandidateItemQModelAdapterTest,
        should_TooltipRole_data_be_item_description) { // NOLINT
   auto checker =
       [this](const CandidateItem& item, const QModelIndex& index, int role) {
@@ -160,6 +176,13 @@ TEST_F(CandidateItemQModelAdapterTest,
     auto parent_index_item = parent_index.internalPointer();
 
     ASSERT_EQ(parent_item, parent_index_item);
+
+    if (parent_item == root_item.get()) {
+      ASSERT_EQ(-1, parent_index.row());
+    } else {
+      ASSERT_GE(parent_index.row(), 0);
+      ASSERT_EQ(parent_index.row(), parent_item->row());
+    }
   };
 
   // Verify results
@@ -167,4 +190,44 @@ TEST_F(CandidateItemQModelAdapterTest,
                                    QModelIndex(),
                                    0,
                                    checker));
+}
+
+TEST_F(CandidateItemQModelAdapterTest,
+       should_the_parent_of_top_level_index_be_invalid) { // NOLINT
+  // Setup fixture
+  auto root_item = utils::make_unique<CandidateItem>(
+      xtestutils::genRandomString(),
+      xtestutils::genRandomString());
+  auto child_item1 = utils::make_unique<CandidateItem>(
+      xtestutils::genRandomString(),
+      xtestutils::genRandomString(), root_item.get());
+
+  auto child_item2 = utils::make_unique<CandidateItem>(
+      xtestutils::genRandomString(),
+      xtestutils::genRandomString(), root_item.get());
+
+  auto subchild_item1 = utils::make_unique<CandidateItem>(
+      xtestutils::genRandomString(),
+      xtestutils::genRandomString(), child_item1.get());
+
+  auto subchild_item2 = utils::make_unique<CandidateItem>(
+      xtestutils::genRandomString(),
+      xtestutils::genRandomString(), child_item2.get());
+
+  // Verify results
+  QModelIndex parent_index;
+  QModelIndex first_child_index;
+
+  CandidateItemQModelAdapter root_adapter;
+  root_adapter.setCandidates(*root_item);
+  first_child_index = root_adapter.index(0, 0);
+  parent_index = root_adapter.parent(first_child_index);
+  ASSERT_EQ(-1, parent_index.row());
+
+
+  CandidateItemQModelAdapter child_adapter;
+  child_adapter.setCandidates(*child_item1);
+  first_child_index = child_adapter.index(0, 0);
+  parent_index = child_adapter.parent(first_child_index);
+  ASSERT_EQ(-1, parent_index.row());
 }
