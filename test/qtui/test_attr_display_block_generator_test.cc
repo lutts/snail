@@ -5,9 +5,9 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include <map>
-
 #include <QApplication>
+
+#include <map>
 
 #include "test/testutils/gmock_common.h"
 #include "test/qtui/test_attr_display_block_generator.h"
@@ -146,7 +146,6 @@ void assertAttrValid(AttributeViewDisplayBlock* attr) {
 
 void assertAttrNotEqual(AttributeViewDisplayBlock* attr_a,
                         AttributeViewDisplayBlock* attr_b) {
-
 #define ASSERT_FIELD(field)                     \
   ASSERT_NE(attr_a->field, attr_b->field);
 
@@ -280,11 +279,16 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
   ASSERT_EQ(0, expect_holder.num_attrs());
   ASSERT_EQ(0, expect_holder.rowCount());
 
-  expect_holder.setExpectAA(0, test_attrs[0][kLeftSide], test_attrs[0][kRightSide]);
-  expect_holder.setExpectAG(1, test_attrs[1][kLeftSide], test_groups[1][kRightSide]);
-  expect_holder.setExpectGA(2, test_groups[2][kLeftSide], test_attrs[2][kRightSide]);
-  expect_holder.setExpectGG(3, test_groups[3][kLeftSide], test_groups[3][kRightSide]);
-  expect_holder.setExpectAA(4, test_attrs[4][kLeftSide], nullptr);
+  expect_holder.
+      setExpectAA(0, test_attrs[0][kLeftSide], test_attrs[0][kRightSide]);
+  expect_holder.
+      setExpectAG(1, test_attrs[1][kLeftSide], test_groups[1][kRightSide]);
+  expect_holder.
+      setExpectGA(2, test_groups[2][kLeftSide], test_attrs[2][kRightSide]);
+  expect_holder.
+      setExpectGG(3, test_groups[3][kLeftSide], test_groups[3][kRightSide]);
+  expect_holder.
+      setExpectAA(4, test_attrs[4][kLeftSide], nullptr);
 
   // check layout interface
   int expect_num_attrs = 2 * expect_row_count - 1 /* nullptr */;
@@ -292,31 +296,50 @@ TEST_F(TestAttrDisplayBlockGeneratorTest,
   ASSERT_EQ(expect_row_count, expect_holder.rowCount());
 
   // check index@
-  CUSTOM_ASSERT(assertAttributeAtIndex(expect_holder, test_attrs, 0, 0, kLeftSide));
-  CUSTOM_ASSERT(assertAttributeAtIndex(expect_holder, test_attrs, 1, 1, kLeftSide));
-  CUSTOM_ASSERT(assertGroupAtIndex(expect_holder, test_groups,    2, 2, kLeftSide));
-  CUSTOM_ASSERT(assertGroupAtIndex(expect_holder, test_groups,    3, 3, kLeftSide));
-  CUSTOM_ASSERT(assertAttributeAtIndex(expect_holder, test_attrs, 4, 4, kLeftSide));
+  CUSTOM_ASSERT(
+      assertAttributeAtIndex(expect_holder, test_attrs, 0, 0, kLeftSide));
+  CUSTOM_ASSERT(
+      assertAttributeAtIndex(expect_holder, test_attrs, 1, 1, kLeftSide));
+  CUSTOM_ASSERT(
+      assertGroupAtIndex(expect_holder, test_groups,    2, 2, kLeftSide));
+  CUSTOM_ASSERT(
+      assertGroupAtIndex(expect_holder, test_groups,    3, 3, kLeftSide));
+  CUSTOM_ASSERT(
+      assertAttributeAtIndex(expect_holder, test_attrs, 4, 4, kLeftSide));
 
-  CUSTOM_ASSERT(assertAttributeAtIndex(expect_holder, test_attrs, 5, 0, kRightSide));
-  CUSTOM_ASSERT(assertGroupAtIndex(expect_holder, test_groups,    6, 1, kRightSide));
-  CUSTOM_ASSERT(assertAttributeAtIndex(expect_holder, test_attrs, 7, 2, kRightSide));
-  CUSTOM_ASSERT(assertGroupAtIndex(expect_holder, test_groups,    8, 3, kRightSide));
+  CUSTOM_ASSERT(
+      assertAttributeAtIndex(expect_holder, test_attrs, 5, 0, kRightSide));
+  CUSTOM_ASSERT(
+      assertGroupAtIndex(expect_holder, test_groups,    6, 1, kRightSide));
+  CUSTOM_ASSERT(
+      assertAttributeAtIndex(expect_holder, test_attrs, 7, 2, kRightSide));
+  CUSTOM_ASSERT(
+      assertGroupAtIndex(expect_holder, test_groups,    8, 3, kRightSide));
 
   // check expectation interface
   // check left side
-  CUSTOM_ASSERT(assertPositionIsAttr(expect_holder, test_attrs, 0, kLeftSide));
-  CUSTOM_ASSERT(assertPositionIsAttr(expect_holder, test_attrs, 1, kLeftSide));
-  CUSTOM_ASSERT(assertPositionIsGroup(expect_holder, test_groups, 2, kLeftSide));
-  CUSTOM_ASSERT(assertPositionIsGroup(expect_holder, test_groups, 3, kLeftSide));
-  CUSTOM_ASSERT(assertPositionIsAttr(expect_holder, test_attrs, 4, kLeftSide));
+  CUSTOM_ASSERT(
+      assertPositionIsAttr(expect_holder, test_attrs, 0, kLeftSide));
+  CUSTOM_ASSERT(
+      assertPositionIsAttr(expect_holder, test_attrs, 1, kLeftSide));
+  CUSTOM_ASSERT(
+      assertPositionIsGroup(expect_holder, test_groups, 2, kLeftSide));
+  CUSTOM_ASSERT(
+      assertPositionIsGroup(expect_holder, test_groups, 3, kLeftSide));
+  CUSTOM_ASSERT(
+      assertPositionIsAttr(expect_holder, test_attrs, 4, kLeftSide));
 
   // check right side
-  CUSTOM_ASSERT(assertPositionIsAttr(expect_holder, test_attrs, 0, kRightSide));
-  CUSTOM_ASSERT(assertPositionIsGroup(expect_holder, test_groups, 1, kRightSide));
-  CUSTOM_ASSERT(assertPositionIsAttr(expect_holder, test_attrs, 2, kRightSide));
-  CUSTOM_ASSERT(assertPositionIsGroup(expect_holder, test_groups, 3, kRightSide));
-  CUSTOM_ASSERT(assertPositionEmpty(expect_holder, 4, kRightSide));
+  CUSTOM_ASSERT(
+      assertPositionIsAttr(expect_holder, test_attrs, 0, kRightSide));
+  CUSTOM_ASSERT(
+      assertPositionIsGroup(expect_holder, test_groups, 1, kRightSide));
+  CUSTOM_ASSERT(
+      assertPositionIsAttr(expect_holder, test_attrs, 2, kRightSide));
+  CUSTOM_ASSERT(
+      assertPositionIsGroup(expect_holder, test_groups, 3, kRightSide));
+  CUSTOM_ASSERT(
+      assertPositionEmpty(expect_holder, 4, kRightSide));
 }
 
 TEST_F(TestAttrDisplayBlockGeneratorTest,

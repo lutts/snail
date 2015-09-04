@@ -22,7 +22,9 @@ class IPfModel {
 
   virtual const ModelIdType& getModelId() const = 0;
   virtual void onDestroy() { }
-  virtual void set_triad_manager(IPfTriadManager*) { }
+  virtual void set_triad_manager(IPfTriadManager* triad_manager) {
+    (void)triad_manager;
+  }
 };
 
 #define DEF_MODEL_ID(id)                                        \

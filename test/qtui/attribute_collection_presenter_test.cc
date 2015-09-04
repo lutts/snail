@@ -95,10 +95,17 @@ class AttributeCollectionPresenterTestBase : public TestBase {
   SlotCatcher<IAttributeCollectionView::EditModeButtonClickedSlotType>
   editModeButtonClicked;
 
-  SlotCatcher<IAttributeCollectionView::DoneButtonClickedSlotType> doneButtonClicked;
+  using DoneButtonClickedSlotType =
+      IAttributeCollectionView::DoneButtonClickedSlotType;
+  SlotCatcher<DoneButtonClickedSlotType> doneButtonClicked;
 
-  SlotCatcher<IAttributeCollectionModel::AttributesChangedSlotType> attributesChanged;
-  SlotCatcher<IAttributeCollectionModel::AttrLabelChangedSlotType> attrLabelChanged;
+  using AttributesChangedSlotType =
+      IAttributeCollectionModel::AttributesChangedSlotType;
+  SlotCatcher<AttributesChangedSlotType> attributesChanged;
+
+  using AttrLabelChangedSlotType =
+      IAttributeCollectionModel::AttrLabelChangedSlotType;
+  SlotCatcher<AttrLabelChangedSlotType> attrLabelChanged;
   // endregion
 };
 
@@ -168,7 +175,7 @@ bool operator==(const AttributeViewDisplayBlock& a,
 }
 
 class AttributeCollectionPresenterTest_data_EditMode
-    : public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { };
+    : public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { }; // NOLINT
 
 INSTANTIATE_TEST_CASE_P(AllEditModes,
                         AttributeCollectionPresenterTest_data_EditMode,
@@ -225,7 +232,7 @@ TEST_F(AttributeCollectionPresenterTest,
 }
 
 class AttributeCollectionPresenterTest_data_remove_triads
-    : public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { };
+    : public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { }; // NOLINT
 
 INSTANTIATE_TEST_CASE_P(AllEditModes,
                         AttributeCollectionPresenterTest_data_remove_triads,

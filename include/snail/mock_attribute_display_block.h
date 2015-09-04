@@ -93,7 +93,9 @@ class NullAttributeDisplayBlockVisitor : public IAttributeDisplayBlockVisitor {
     return nullptr;
   }
 
-  void endTraverse(bool) override { }
+  void endTraverse(bool remove_triads) override {
+    (void)remove_triads;
+  }
 };
 
 }  // namespace tests

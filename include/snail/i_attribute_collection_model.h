@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_WORK_ATTRIBUTE_MODEL_H_
-#define INCLUDE_SNAIL_I_WORK_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_COLLECTION_MODEL_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_COLLECTION_MODEL_H_
 
 #include <vector>
 
@@ -36,4 +36,4 @@ class IAttributeCollectionModel : public pfmvp::PfModelWithTriadManager {
 
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_I_WORK_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_COLLECTION_MODEL_H_

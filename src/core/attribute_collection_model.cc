@@ -7,7 +7,8 @@
 #include "src/core/attribute_collection_model.h"
 
 #include <vector>
-#include <iostream>
+#include <map>
+#include <algorithm>
 
 #include "utils/signal_slot_impl.h"
 #include "utils/command.h"
@@ -227,7 +228,8 @@ void AttributeCollectionModelImpl::traverseAttributes(
   clearEmptyAttributes(model);
 }
 
-int AttributeCollectionModelImpl::attrDisplayCount(IAttributeSupplier* supplier) {
+int
+AttributeCollectionModelImpl::attrDisplayCount(IAttributeSupplier* supplier) {
   if (edit_mode_)
     return supplier->attr_count();
 
@@ -253,7 +255,8 @@ void AttributeCollectionModelImpl::mayAddGroupBlockCacheFor(
   }
 }
 
-void AttributeCollectionModelImpl::clearEmptyAttributes(AttributeCollectionModel* model) {
+void AttributeCollectionModelImpl::clearEmptyAttributes(
+    AttributeCollectionModel* model) {
   if (!clear_empty_attrs_)
     return;
 

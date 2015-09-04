@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
-#define INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_COLLECTION_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_ATTRIBUTE_COLLECTION_MODEL_H_
 
 #include "snail/i_attribute_collection_model.h"
 
@@ -29,4 +29,4 @@ class MockAttributeCollectionModel : public IAttributeCollectionModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_ATTRIBUTE_COLLECTION_MODEL_H_

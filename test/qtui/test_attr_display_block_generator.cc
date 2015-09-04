@@ -6,10 +6,11 @@
 // [Desc]
 #include "test/qtui/test_attr_display_block_generator.h"
 
+#include <QWidget>
+
 #include <memory>
 #include <vector>
-
-#include <QWidget>
+#include <algorithm>
 
 #include "test/testutils/gmock_common.h"
 
@@ -25,8 +26,6 @@
 using namespace utils;  // NOLINT
 using namespace utils::tests;  // NOLINT
 using namespace snailcore;  // NOLINT
-
-#include "utils/basic_utils.h"
 
 class AttributeViewTestStub : public IAttributeView
                             , public QWidget {
@@ -154,7 +153,7 @@ void TestAttributePoolImpl::associateAttributeToGroup(
     AttributeViewDisplayBlock* attr_block,
     AttributeGroupDisplayBlock* attr_group) {
   attr_block->is_in_group = true;
-  ++ attr_group->sub_attr_count;
+  ++attr_group->sub_attr_count;
 }
 
 void TestAttributePoolImpl::verifyMocks() {
@@ -210,9 +209,10 @@ void TestAttributePool::verifyMocks() {
 }
 
 // begin of methods for test cases
-void ExpectationHolder::setExpectAA(int row,
-                                    AttributeViewDisplayBlock* left_side_attr,
-                                    AttributeViewDisplayBlock* right_side_attr) {
+void ExpectationHolder::setExpectAA(
+    int row,
+    AttributeViewDisplayBlock* left_side_attr,
+    AttributeViewDisplayBlock* right_side_attr) {
   checkRowExist(row);
   checkAttrBlockExist(left_side_attr);
   checkAttrBlockExist(right_side_attr);
@@ -221,9 +221,10 @@ void ExpectationHolder::setExpectAA(int row,
   setRightExpectation(row, right_side_attr);
 }
 
-void ExpectationHolder::setExpectGA(int row,
-                                    AttributeGroupDisplayBlock* left_group,
-                                    AttributeViewDisplayBlock* right_side_attr) {
+void ExpectationHolder::setExpectGA(
+    int row,
+    AttributeGroupDisplayBlock* left_group,
+    AttributeViewDisplayBlock* right_side_attr) {
   checkRowExist(row);
   checkGroupBlockExist(left_group);
   checkAttrBlockExist(right_side_attr);
@@ -270,7 +271,8 @@ bool ExpectationHolder::isGroupAt(int index) const {
   return row_data.group_block != nullptr;
 }
 
-AttributeGroupDisplayBlock* ExpectationHolder::attrGroupBlockAt(int index) const {
+AttributeGroupDisplayBlock*
+ExpectationHolder::attrGroupBlockAt(int index) const {
   auto row_data = indexToRowData(index);
   return row_data.group_block;
 }
@@ -316,12 +318,14 @@ U8String ExpectationHolder::labelAt(int index) const {
 }
 #endif
 
-void ExpectationHolder::setLeftLabelAt(int row, const utils::U8String& new_label) {
+void ExpectationHolder::setLeftLabelAt(int row,
+                                       const utils::U8String& new_label) {
   position_to_Label[row][AttributeLayout::kLeftLabelColumn] = new_label;
   // checkLabelEmpty(row, AttributeLayout::kLeftLabelColumn, new_label);
 }
 
-void ExpectationHolder::setRightLabelAt(int row, const utils::U8String& new_label) {
+void ExpectationHolder::setRightLabelAt(int row,
+                                        const utils::U8String& new_label) {
   position_to_Label[row][AttributeLayout::kRightLabelColumn] = new_label;
   // checkLabelEmpty(row, AttributeLayout::kRightLabelColumn, new_label);
 }
@@ -361,19 +365,23 @@ bool ExpectationHolder::isGroupAt(int row, int column) const {
   }
 }
 
-void ExpectationHolder::addLeftRowData(int row, AttributeGroupDisplayBlock* group_block) {
+void ExpectationHolder::addLeftRowData(
+    int row, AttributeGroupDisplayBlock* group_block) {
   left_row_data[row] = RowData(group_block);
 }
 
-void ExpectationHolder::addLeftRowData(int row, AttributeViewDisplayBlock* attr_block) {
+void ExpectationHolder::addLeftRowData(
+    int row, AttributeViewDisplayBlock* attr_block) {
   left_row_data[row] = RowData(attr_block);
 }
 
-void ExpectationHolder::addRightRowData(int row, AttributeGroupDisplayBlock* group_block) {
+void ExpectationHolder::addRightRowData(
+    int row, AttributeGroupDisplayBlock* group_block) {
   right_row_data[row] = RowData(group_block);
 }
 
-void ExpectationHolder::addRightRowData(int row, AttributeViewDisplayBlock* attr_block) {
+void ExpectationHolder::addRightRowData(
+    int row, AttributeViewDisplayBlock* attr_block) {
   right_row_data[row] = RowData(attr_block);
 }
 
@@ -385,7 +393,8 @@ void ExpectationHolder::addRightRowData(int row, AttributeViewDisplayBlock* attr
 // is self-checkable code, by using the CONTENT_AT macro, you won't miss use
 // AttrView column with position_to_Label, except the commands, you also won't
 // miss use the values, it's type-checked by compiler
-void ExpectationHolder::setLeftExpectation(int row, AttributeViewDisplayBlock* attr_block) {
+void ExpectationHolder::setLeftExpectation(
+    int row, AttributeViewDisplayBlock* attr_block) {
   if (row < 0)
     return;
 
@@ -398,7 +407,8 @@ void ExpectationHolder::setLeftExpectation(int row, AttributeViewDisplayBlock* a
   addLeftRowData(row, attr_block);
 }
 
-void ExpectationHolder::setLeftExpectation(int row, AttributeGroupDisplayBlock* group_block) {
+void ExpectationHolder::setLeftExpectation(
+    int row, AttributeGroupDisplayBlock* group_block) {
   if (row < 0)
     return;
 
@@ -411,7 +421,8 @@ void ExpectationHolder::setLeftExpectation(int row, AttributeGroupDisplayBlock* 
   addLeftRowData(row, group_block);
 }
 
-void ExpectationHolder::setRightExpectation(int row, AttributeViewDisplayBlock* attr_block) {
+void ExpectationHolder::setRightExpectation(
+    int row, AttributeViewDisplayBlock* attr_block) {
   if (row < 0)
     return;
 
@@ -424,7 +435,8 @@ void ExpectationHolder::setRightExpectation(int row, AttributeViewDisplayBlock* 
   addRightRowData(row, attr_block);
 }
 
-void ExpectationHolder::setRightExpectation(int row, AttributeGroupDisplayBlock* group_block) {
+void ExpectationHolder::setRightExpectation(
+    int row, AttributeGroupDisplayBlock* group_block) {
   if (row < 0)
     return;
 
@@ -439,24 +451,28 @@ void ExpectationHolder::setRightExpectation(int row, AttributeGroupDisplayBlock*
 
 #undef CONTENT_AT
 
-void ExpectationHolder::checkLabelEmpty(int row, int column, const utils::U8String& label) {
+void ExpectationHolder::checkLabelEmpty(int row, int column,
+                                        const utils::U8String& label) {
   if (!label.empty())
     position_empty[row][column] = false;
   else
     position_empty[row][column] = true;
 }
 
-void ExpectationHolder::checkAttrViewEmpty(int row, int column, const QWidget* widget) {
+void ExpectationHolder::checkAttrViewEmpty(int row, int column,
+                                           const QWidget* widget) {
   if (widget != nullptr)
     position_empty[row][column] = false;
 }
 
-void ExpectationHolder::checkAddCommandEmpty(int row, int column, const Command* cmd) {
+void ExpectationHolder::checkAddCommandEmpty(int row, int column,
+                                             const Command* cmd) {
   if (cmd != nullptr)
     position_empty[row][column] = false;
 }
 
-void ExpectationHolder::checkAttrBlockExist(const AttributeViewDisplayBlock* attr_block) {
+void ExpectationHolder::checkAttrBlockExist(
+    const AttributeViewDisplayBlock* attr_block) {
   if (!attr_block)
     return;
 
@@ -479,7 +495,8 @@ void ExpectationHolder::checkAttrBlockExist(const AttributeViewDisplayBlock* att
   }
 }
 
-void ExpectationHolder::checkGroupBlockExist(const AttributeGroupDisplayBlock* group_block) {
+void ExpectationHolder::checkGroupBlockExist(
+    const AttributeGroupDisplayBlock* group_block) {
   if (!group_block)
     return;
 
@@ -490,7 +507,6 @@ void ExpectationHolder::checkGroupBlockExist(const AttributeGroupDisplayBlock* g
           << " is already added to left row" << value.first;
       throw std::logic_error(msg.str());
     }
-
   }
 
   for (auto & value : right_row_data) {
@@ -547,7 +563,8 @@ void ExpectationHolder::initializeIndexToRowData() const {
   }
 }
 
-void ExpectationHolder::checkRowData(const std::map<int, RowData>& row_data) const {
+void ExpectationHolder::checkRowData(
+    const std::map<int, RowData>& row_data) const {
   // check the rows are continue
   std::vector<int> rows;
   for (auto & value : row_data) {
@@ -565,7 +582,6 @@ void ExpectationHolder::checkRowData(const std::map<int, RowData>& row_data) con
         std::ostringstream msg;
         msg << "row 0 must have something if left side is not empty";
         throw std::logic_error(msg.str());
-
       }
     } else {
       int expect_row = prev_row + 1;
@@ -599,7 +615,7 @@ void ExpectationHolder::checkIndexToRowData() const {
         msg << "in group should realy in group";
         throw std::logic_error(msg.str());
       }
-      ++ sub_attr_count;
+      ++sub_attr_count;
     } else {
       if (sub_attr_count) {
         if (sub_attr_count != prev_group.group_block->sub_attr_count) {
@@ -628,5 +644,4 @@ void ExpectationHolder::checkIndexToRowData() const {
       }
     }
   }  // for index
-
 }

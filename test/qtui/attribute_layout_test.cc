@@ -5,12 +5,12 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include <algorithm>
-
 #include <QApplication>
 #include <QLabel>
 #include <QToolButton>
 #include <QAction>
+
+#include <algorithm>
 
 #include "test/testutils/gmock_common.h"
 #include "pfmvp/mock_pf_triad_manager.h"
@@ -75,7 +75,8 @@ void AttributeLayoutTest::layoutAttributes(
         std::cout << "group@" << group_block << " " << group_block->label
                   << " @ index " << index << std::endl;
       }
-      auto priv_data = attr_layout.layoutAttributeGroupDisplayBlock(*group_block);
+      auto priv_data =
+          attr_layout.layoutAttributeGroupDisplayBlock(*group_block);
       group_block->view_priv_data = priv_data;
     } else {
       auto attr_block = expectation.attrViewBlockAt(index);
@@ -473,21 +474,25 @@ TEST_F(AttributeLayoutTest,
 
   auto left_attr0 = attr_pool.createAttr("Attribute 1");
   auto left_attr1 = attr_pool.createAttr("Attribute 1");
-  auto left_attr2 = attr_pool.createAttr("Attribute 2");  // same as begin of group
+  // same as begin of group
+  auto left_attr2 = attr_pool.createAttr("Attribute 2");
 
-  auto left_group0 = attr_pool.createGroup("Attribute 2");  // same name as prev and next
+  // same name as prev and next
+  auto left_group0 = attr_pool.createGroup("Attribute 2");
   auto left_sub_attr00 = attr_pool.createAttr(left_group0, "Attribute 2");
   auto left_sub_attr01 = attr_pool.createAttr(left_group0, "Attribute 2");
   auto left_sub_attr02 = attr_pool.createAttr(left_group0, "Attribute 3");
   auto left_sub_attr03 = attr_pool.createAttr(left_group0, "Attribute 3");
 
-  auto left_group1 = attr_pool.createGroup("Attribute 3");  // same name as prev and next
+  // same name as prev and next
+  auto left_group1 = attr_pool.createGroup("Attribute 3");
   auto left_sub_attr10 = attr_pool.createAttr(left_group1, "Attribute 3");
   auto left_sub_attr11 = attr_pool.createAttr(left_group1, "Attribute 3");
   auto left_sub_attr12 = attr_pool.createAttr(left_group1, "Attribute 4");
   auto left_sub_attr13 = attr_pool.createAttr(left_group1, "Attribute 4");
 
-  auto left_attr3 = attr_pool.createAttr("Attribute 4");  // same as end of group
+  // same as end of group
+  auto left_attr3 = attr_pool.createAttr("Attribute 4");
   auto left_attr4 = attr_pool.createAttr("Attribute 5");
   auto left_attr5 = attr_pool.createAttr("Attribute 6");
 

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef PF_MODEL_WITH_TRIAD_MANAGER_H_
-#define PF_MODEL_WITH_TRIAD_MANAGER_H_
+#ifndef INCLUDE_PFMVP_PF_MODEL_WITH_TRIAD_MANAGER_H_
+#define INCLUDE_PFMVP_PF_MODEL_WITH_TRIAD_MANAGER_H_
 
 #include "utils/basic_utils.h"
 #include "pfmvp/i_pf_model.h"
@@ -39,4 +39,4 @@ class PfModelWithTriadManager : public IPfModel {
 
 }  // namespace pfmvp
 
-#endif  // PF_MODEL_WITH_TRIAD_MANAGER_H_
+#endif  // INCLUDE_PFMVP_PF_MODEL_WITH_TRIAD_MANAGER_H_

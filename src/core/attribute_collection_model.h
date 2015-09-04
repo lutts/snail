@@ -5,10 +5,11 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_WORK_ATTRIBUTE_MODEL_H_
-#define SRC_CORE_WORK_ATTRIBUTE_MODEL_H_
+#ifndef SRC_CORE_ATTRIBUTE_COLLECTION_MODEL_H_
+#define SRC_CORE_ATTRIBUTE_COLLECTION_MODEL_H_
 
 #include <memory>
+#include <vector>
 
 #include "utils/basic_utils.h"
 #include "snail/i_attribute_collection_model.h"
@@ -22,8 +23,9 @@ class AttributeCollectionModelImpl;
 
 class AttributeCollectionModel : public IAttributeCollectionModel {
  public:
-  AttributeCollectionModel(const std::vector<IAttributeSupplier*>& attr_supplier_list,
-                     const IAttributeModelFactory& attr_model_factory);
+  AttributeCollectionModel(
+      const std::vector<IAttributeSupplier*>& attr_supplier_list,
+      const IAttributeModelFactory& attr_model_factory);
   virtual ~AttributeCollectionModel();
 
   bool isEditMode() const override;
@@ -46,4 +48,4 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
 
 }  // namespace snailcore
 
-#endif  // SRC_CORE_WORK_ATTRIBUTE_MODEL_H_
+#endif  // SRC_CORE_ATTRIBUTE_COLLECTION_MODEL_H_

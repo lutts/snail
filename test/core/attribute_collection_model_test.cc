@@ -359,7 +359,7 @@ TEST_F(AttributeCollectionModelTest,
 }
 
 class AttributeCollectionModelTest_BothMode
-    : public AttributeCollectionModelTestBase<::testing::TestWithParam<bool>> { };
+    : public AttributeCollectionModelTestBase<::testing::TestWithParam<bool>> { }; // NOLINT
 
 INSTANTIATE_TEST_CASE_P(BothModes,
                         AttributeCollectionModelTest_BothMode,
@@ -860,11 +860,18 @@ TEST_F(AttributeCollectionModelTest,
   auto attr1_block = supplier1.getAttrBlock(attr1);
 
   // Expectations
-  SlotCatcher<IAttributeModel::DisplayNameChangedSlotType> attr0DisplayNameChanged;
-  SlotCatcher<IAttributeModel::DisplayNameChangedSlotType> attr1DisplayNameChanged;
+  using DisplayNameChangedSlotType =
+      IAttributeModel::DisplayNameChangedSlotType;
+  SlotCatcher<DisplayNameChangedSlotType> attr0DisplayNameChanged;
 
-  MockAttributeModel* attr0_model = dynamic_cast<MockAttributeModel*>(attr0_block.attr_model.get());
-  MockAttributeModel* attr1_model = dynamic_cast<MockAttributeModel*>(attr1_block.attr_model.get());
+  using DisplayNameChangedSlotType =
+      IAttributeModel::DisplayNameChangedSlotType;
+  SlotCatcher<DisplayNameChangedSlotType> attr1DisplayNameChanged;
+
+  MockAttributeModel* attr0_model =
+      dynamic_cast<MockAttributeModel*>(attr0_block.attr_model.get());
+  MockAttributeModel* attr1_model =
+      dynamic_cast<MockAttributeModel*>(attr1_block.attr_model.get());
   EXPECT_CALL(*attr0_model, whenDisplayNameChanged(_, _))
       .WillOnce(SaveArg<0>(&attr0DisplayNameChanged));
   EXPECT_CALL(*attr1_model, whenDisplayNameChanged(_, _))
@@ -1043,7 +1050,7 @@ TEST_F(AttributeCollectionModelTest,
 }
 
 class AttributeCollectionModelTest_ModeCombination
-    : public AttributeCollectionModelTestBase<::testing::TestWithParam<std::pair<bool, bool>>> { };
+    : public AttributeCollectionModelTestBase<::testing::TestWithParam<std::pair<bool, bool>>> { }; // NOLINT
 
 INSTANTIATE_TEST_CASE_P(ModeCombination,
                         AttributeCollectionModelTest_ModeCombination,
@@ -1120,7 +1127,8 @@ TEST_P(AttributeCollectionModelTest_ModeCombination,
 
       EXPECT_CALL(attr_visitor, beginTraverse(2));
       EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
-          .WillOnce(DoAll(SaveArg<0>(&actual_group_block), Return(group_priv_data)));
+          .WillOnce(DoAll(SaveArg<0>(&actual_group_block),
+                          Return(group_priv_data)));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(attr_priv_data));
       EXPECT_CALL(attr_visitor, endTraverse(_));
@@ -1146,7 +1154,8 @@ TEST_P(AttributeCollectionModelTest_ModeCombination,
 
       EXPECT_CALL(attr_visitor, beginTraverse(2));
       EXPECT_CALL(attr_visitor, visitAttributeGroupDisplayBlock(_))
-          .WillOnce(DoAll(SaveArg<0>(&actual_group_block), Return(group_priv_data)));
+          .WillOnce(DoAll(SaveArg<0>(&actual_group_block),
+                          Return(group_priv_data)));
       EXPECT_CALL(attr_visitor, visitAttributeDisplayBlock(attr_block))
           .WillOnce(Return(attr_priv_data));
       EXPECT_CALL(attr_visitor, endTraverse(false));

@@ -5,11 +5,12 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_WORK_ATTRIBUTE_PRESENTER_H_
-#define SRC_QTUI_WORK_ATTRIBUTE_PRESENTER_H_
+#ifndef SRC_QTUI_ATTRIBUTE_COLLECTION_PRESENTER_H_
+#define SRC_QTUI_ATTRIBUTE_COLLECTION_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
+#include "utils/basic_utils.h"
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_attribute_collection_model.h"
 #include "qtui/i_work_attribute_view.h"
@@ -41,10 +42,9 @@ class AttributeCollectionPresenter : public AttributeCollectionPresenterBase
   void endTraverse(bool remove_triads) override;
 
  private:
-  AttributeCollectionPresenter(const AttributeCollectionPresenter&) = delete;
-  AttributeCollectionPresenter& operator=(const AttributeCollectionPresenter&) = delete;
+  SNAIL_DISABLE_COPY(AttributeCollectionPresenter);
 
   IAttributeLayout* attr_layout_;
 };
 
-#endif  // SRC_QTUI_WORK_ATTRIBUTE_PRESENTER_H_
+#endif  // SRC_QTUI_ATTRIBUTE_COLLECTION_PRESENTER_H_

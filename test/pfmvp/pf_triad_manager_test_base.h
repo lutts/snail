@@ -57,7 +57,7 @@ class MockPfViewFactory : public IPfViewFactory {
                                                                         \
      IPfTriadManager* triad_manager() { return triad_manager_; }        \
    private:                                                             \
-   IPfTriadManager* triad_manager_ { nullptr };                         \
+     IPfTriadManager* triad_manager_ { nullptr };                         \
   };                                                                    \
                                                                         \
   class ITest##name##View : public IPfView {                            \

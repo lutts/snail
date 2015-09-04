@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TEST_ATTR_DISPLAY_BLOCK_GENERATOR_H_
-#define TEST_ATTR_DISPLAY_BLOCK_GENERATOR_H_
+#ifndef TEST_QTUI_TEST_ATTR_DISPLAY_BLOCK_GENERATOR_H_
+#define TEST_QTUI_TEST_ATTR_DISPLAY_BLOCK_GENERATOR_H_
 
 #include <memory>
 #include <map>
@@ -111,9 +111,9 @@ class ExpectationHolder {
   class RowData {
    public:
     RowData() = default;
-    RowData(snailcore::AttributeGroupDisplayBlock* group)
+    explicit RowData(snailcore::AttributeGroupDisplayBlock* group)
         : group_block(group) { }
-    RowData(AttributeViewDisplayBlock* attr)
+    explicit RowData(AttributeViewDisplayBlock* attr)
         : attr_block(attr) { }
 
     snailcore::AttributeGroupDisplayBlock* group_block { nullptr };
@@ -125,21 +125,26 @@ class ExpectationHolder {
     }
   };
 
-  void addLeftRowData(int row, snailcore::AttributeGroupDisplayBlock* group_block);
+  void addLeftRowData(int row,
+                      snailcore::AttributeGroupDisplayBlock* group_block);
   void addLeftRowData(int row, AttributeViewDisplayBlock* attr_block);
-  void addRightRowData(int row, snailcore::AttributeGroupDisplayBlock* group_block);
+  void addRightRowData(int row,
+                       snailcore::AttributeGroupDisplayBlock* group_block);
   void addRightRowData(int row, AttributeViewDisplayBlock* attr_block);
 
   void setLeftExpectation(int row, AttributeViewDisplayBlock* attr_block);
-  void setLeftExpectation(int row, snailcore::AttributeGroupDisplayBlock* group_block);
+  void setLeftExpectation(int row,
+                          snailcore::AttributeGroupDisplayBlock* group_block);
   void setRightExpectation(int row, AttributeViewDisplayBlock* attr_block);
-  void setRightExpectation(int row, snailcore::AttributeGroupDisplayBlock* group_block);
+  void setRightExpectation(int row,
+                           snailcore::AttributeGroupDisplayBlock* group_block);
 
   void checkLabelEmpty(int row, int column, const utils::U8String& label);
   void checkAttrViewEmpty(int row, int column, const QWidget* widget);
   void checkAddCommandEmpty(int row, int column, const utils::Command* cmd);
   void checkAttrBlockExist(const AttributeViewDisplayBlock* attr_block);
-  void checkGroupBlockExist(const snailcore::AttributeGroupDisplayBlock* group_block);
+  void checkGroupBlockExist(
+      const snailcore::AttributeGroupDisplayBlock* group_block);
   void checkRowExist(int row);
 
   RowData indexToRowData(int index) const;
@@ -163,4 +168,4 @@ class ExpectationHolder {
   SNAIL_DISABLE_COPY(ExpectationHolder)
 };
 
-#endif  // TEST_ATTR_DISPLAY_BLOCK_GENERATOR_H_
+#endif  // TEST_QTUI_TEST_ATTR_DISPLAY_BLOCK_GENERATOR_H_

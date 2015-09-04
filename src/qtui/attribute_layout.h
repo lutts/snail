@@ -8,8 +8,9 @@
 #ifndef SRC_QTUI_ATTRIBUTE_LAYOUT_H_
 #define SRC_QTUI_ATTRIBUTE_LAYOUT_H_
 
-#include <forward_list>
 #include <QGridLayout>
+
+#include <forward_list>
 
 #include "utils/basic_utils.h"
 #include "qtui/i_work_attribute_view.h"
