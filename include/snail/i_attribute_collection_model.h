@@ -19,10 +19,10 @@ class IAttributeModel;
 class IAttributeDisplayBlockVisitor;
 class UpdateAttrLabelData;
 
-class IWorkAttributeModel : public pfmvp::PfModelWithTriadManager {
+class IAttributeCollectionModel : public pfmvp::PfModelWithTriadManager {
  public:
-  virtual ~IWorkAttributeModel() = default;
-  DEF_MODEL_ID(WorkAttributeModel);
+  virtual ~IAttributeCollectionModel() = default;
+  DEF_MODEL_ID(AttributeCollectionModel);
 
   virtual bool isEditMode() const = 0;
   virtual void switchToEditMode() = 0;

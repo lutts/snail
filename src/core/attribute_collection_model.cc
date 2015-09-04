@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/core/work_attribute_model.h"
+#include "src/core/attribute_collection_model.h"
 
 #include <vector>
 #include <iostream>
@@ -23,14 +23,14 @@ using namespace pfmvp;  // NOLINT
 
 namespace snailcore {
 
-class WorkAttributeModelImpl {
+class AttributeCollectionModelImpl {
  public:
-  WorkAttributeModelImpl(
+  AttributeCollectionModelImpl(
       const std::vector<IAttributeSupplier*>& attr_supplier_list,
       const IAttributeModelFactory& attr_model_factory)
       : attr_supplier_list_(attr_supplier_list)
       , attr_model_factory_(attr_model_factory) { }
-  virtual ~WorkAttributeModelImpl() = default;
+  virtual ~AttributeCollectionModelImpl() = default;
 
   bool isEditMode() const {
     return edit_mode_;
@@ -52,7 +52,7 @@ class WorkAttributeModelImpl {
     AttributesChanged();
   }
 
-  void traverseAttributes(WorkAttributeModel* model,
+  void traverseAttributes(AttributeCollectionModel* model,
                           IAttributeDisplayBlockVisitor* visitor);
   int attrDisplayCount(IAttributeSupplier* supplier);
 
@@ -70,7 +70,7 @@ class WorkAttributeModelImpl {
   bool shouldSetAddCommand(IAttributeSupplier* supplier) {
     return edit_mode_ && (supplier->attr_count() < supplier->max_attrs());
   }
-  void clearEmptyAttributes(WorkAttributeModel* model);
+  void clearEmptyAttributes(AttributeCollectionModel* model);
   void updateAttrLabel(IAttribute* attr);
 
  private:
@@ -83,11 +83,11 @@ class WorkAttributeModelImpl {
       model_->AttributesChanged();
     }
 
-    void set_model(WorkAttributeModelImpl* model) { model_ = model;}
+    void set_model(AttributeCollectionModelImpl* model) { model_ = model;}
     void set_supplier(IAttributeSupplier* supplier) { supplier_ = supplier; }
 
    private:
-    WorkAttributeModelImpl* model_;
+    AttributeCollectionModelImpl* model_;
     IAttributeSupplier* supplier_;
   };
 
@@ -112,19 +112,19 @@ class WorkAttributeModelImpl {
   bool clear_empty_attrs_ { false };
 
  private:
-  SNAIL_SIGSLOT_PIMPL(WorkAttributeModel, AttributesChanged);
-  SNAIL_SIGSLOT_PIMPL(WorkAttributeModel, AttrLabelChanged);
+  SNAIL_SIGSLOT_PIMPL(AttributeCollectionModel, AttributesChanged);
+  SNAIL_SIGSLOT_PIMPL(AttributeCollectionModel, AttrLabelChanged);
 
  private:
-  SNAIL_DISABLE_COPY(WorkAttributeModelImpl)
+  SNAIL_DISABLE_COPY(AttributeCollectionModelImpl)
 
-  friend class WorkAttributeModel;
+  friend class AttributeCollectionModel;
 };
 
-SNAIL_SIGSLOT_PIMPL_RELAY(WorkAttributeModel, AttributesChanged, impl);
-SNAIL_SIGSLOT_PIMPL_RELAY(WorkAttributeModel, AttrLabelChanged, impl);
+SNAIL_SIGSLOT_PIMPL_RELAY(AttributeCollectionModel, AttributesChanged, impl);
+SNAIL_SIGSLOT_PIMPL_RELAY(AttributeCollectionModel, AttrLabelChanged, impl);
 
-void WorkAttributeModelImpl::mayVisitGroupBlock(
+void AttributeCollectionModelImpl::mayVisitGroupBlock(
     IAttributeSupplier* supplier, IAttributeDisplayBlockVisitor* visitor) {
   if (!shouldGenerateGroupBlock(supplier))
     return;
@@ -151,7 +151,7 @@ void WorkAttributeModelImpl::mayVisitGroupBlock(
   } catch (...) { }
 }
 
-void WorkAttributeModelImpl::visitAttributes(
+void AttributeCollectionModelImpl::visitAttributes(
     IAttributeSupplier* supplier, IAttributeDisplayBlockVisitor* visitor) {
   if (shouldAddAnEmptyAttribute(supplier)) {
     supplier->addAttribute();
@@ -198,8 +198,8 @@ void WorkAttributeModelImpl::visitAttributes(
   }
 }
 
-void WorkAttributeModelImpl::traverseAttributes(
-    WorkAttributeModel* model, IAttributeDisplayBlockVisitor* visitor) {
+void AttributeCollectionModelImpl::traverseAttributes(
+    AttributeCollectionModel* model, IAttributeDisplayBlockVisitor* visitor) {
   int total_attrs = 0;
 
   // 1st pass: determine total attributes
@@ -227,7 +227,7 @@ void WorkAttributeModelImpl::traverseAttributes(
   clearEmptyAttributes(model);
 }
 
-int WorkAttributeModelImpl::attrDisplayCount(IAttributeSupplier* supplier) {
+int AttributeCollectionModelImpl::attrDisplayCount(IAttributeSupplier* supplier) {
   if (edit_mode_)
     return supplier->attr_count();
 
@@ -241,7 +241,7 @@ int WorkAttributeModelImpl::attrDisplayCount(IAttributeSupplier* supplier) {
   return count;
 }
 
-void WorkAttributeModelImpl::mayAddGroupBlockCacheFor(
+void AttributeCollectionModelImpl::mayAddGroupBlockCacheFor(
     IAttributeSupplier* supplier) {
   auto iter = group_block_cache_.find(supplier);
   if (iter == group_block_cache_.end()) {
@@ -253,7 +253,7 @@ void WorkAttributeModelImpl::mayAddGroupBlockCacheFor(
   }
 }
 
-void WorkAttributeModelImpl::clearEmptyAttributes(WorkAttributeModel* model) {
+void AttributeCollectionModelImpl::clearEmptyAttributes(AttributeCollectionModel* model) {
   if (!clear_empty_attrs_)
     return;
 
@@ -281,7 +281,7 @@ void WorkAttributeModelImpl::clearEmptyAttributes(WorkAttributeModel* model) {
   clear_empty_attrs_ = false;
 }
 
-void WorkAttributeModelImpl::updateAttrLabel(IAttribute* attr) {
+void AttributeCollectionModelImpl::updateAttrLabel(IAttribute* attr) {
   auto iter = attr_block_cache_.find(attr);
   if (iter == attr_block_cache_.end())
     return;
@@ -297,27 +297,27 @@ void WorkAttributeModelImpl::updateAttrLabel(IAttribute* attr) {
   AttrLabelChanged(update_data);
 }
 
-WorkAttributeModel::WorkAttributeModel(
+AttributeCollectionModel::AttributeCollectionModel(
     const std::vector<IAttributeSupplier*>& attr_supplier_list,
     const IAttributeModelFactory& attr_model_factory)
-    : impl(utils::make_unique<WorkAttributeModelImpl>(
+    : impl(utils::make_unique<AttributeCollectionModelImpl>(
           attr_supplier_list, attr_model_factory)) { }
 
-WorkAttributeModel::~WorkAttributeModel() = default;
+AttributeCollectionModel::~AttributeCollectionModel() = default;
 
-bool WorkAttributeModel::isEditMode() const {
+bool AttributeCollectionModel::isEditMode() const {
   return impl->isEditMode();
 }
 
-void WorkAttributeModel::switchToEditMode() {
+void AttributeCollectionModel::switchToEditMode() {
   return impl->switchToEditMode();
 }
 
-void WorkAttributeModel::switchToDisplayMode() {
+void AttributeCollectionModel::switchToDisplayMode() {
   return impl->switchToDisplayMode();
 }
 
-void WorkAttributeModel::traverseAttributes(
+void AttributeCollectionModel::traverseAttributes(
     IAttributeDisplayBlockVisitor* visitor) {
   impl->traverseAttributes(this, visitor);
 }

@@ -11,22 +11,22 @@
 #include <memory>  // std::shared_ptr
 
 #include "pfmvp/pf_presenter.h"
-#include "snail/i_work_attribute_model.h"
+#include "snail/i_attribute_collection_model.h"
 #include "qtui/i_work_attribute_view.h"
 #include "snail/attribute_display_block.h"
 
-using WorkAttributePresenterBase =
-    pfmvp::PfPresenterT<snailcore::IWorkAttributeModel,
-                        IWorkAttributeView>;
+using AttributeCollectionPresenterBase =
+    pfmvp::PfPresenterT<snailcore::IAttributeCollectionModel,
+                        IAttributeCollectionView>;
 
-class WorkAttributePresenter : public WorkAttributePresenterBase
+class AttributeCollectionPresenter : public AttributeCollectionPresenterBase
                              , public snailcore::IAttributeDisplayBlockVisitor {
  public:
-  WorkAttributePresenter(
+  AttributeCollectionPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
       IAttributeLayout* attr_layout)
-      : WorkAttributePresenterBase(model, view)
+      : AttributeCollectionPresenterBase(model, view)
       , attr_layout_(attr_layout) {
   }
 
@@ -41,8 +41,8 @@ class WorkAttributePresenter : public WorkAttributePresenterBase
   void endTraverse(bool remove_triads) override;
 
  private:
-  WorkAttributePresenter(const WorkAttributePresenter&) = delete;
-  WorkAttributePresenter& operator=(const WorkAttributePresenter&) = delete;
+  AttributeCollectionPresenter(const AttributeCollectionPresenter&) = delete;
+  AttributeCollectionPresenter& operator=(const AttributeCollectionPresenter&) = delete;
 
   IAttributeLayout* attr_layout_;
 };

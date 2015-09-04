@@ -11,20 +11,20 @@
 #include <memory>
 
 #include "utils/basic_utils.h"
-#include "snail/i_work_attribute_model.h"
+#include "snail/i_attribute_collection_model.h"
 
 namespace snailcore {
 
 class IAttributeSupplier;
 class IAttributeModelFactory;
 
-class WorkAttributeModelImpl;
+class AttributeCollectionModelImpl;
 
-class WorkAttributeModel : public IWorkAttributeModel {
+class AttributeCollectionModel : public IAttributeCollectionModel {
  public:
-  WorkAttributeModel(const std::vector<IAttributeSupplier*>& attr_supplier_list,
+  AttributeCollectionModel(const std::vector<IAttributeSupplier*>& attr_supplier_list,
                      const IAttributeModelFactory& attr_model_factory);
-  virtual ~WorkAttributeModel();
+  virtual ~AttributeCollectionModel();
 
   bool isEditMode() const override;
   void switchToEditMode() override;
@@ -33,15 +33,15 @@ class WorkAttributeModel : public IWorkAttributeModel {
   void traverseAttributes(IAttributeDisplayBlockVisitor* visitor) override;
 
  private:
-  std::unique_ptr<WorkAttributeModelImpl> impl;
-  friend class WorkAttributeModelImpl;
+  std::unique_ptr<AttributeCollectionModelImpl> impl;
+  friend class AttributeCollectionModelImpl;
 
  private:
   SNAIL_OVERRIDE_SLOT(AttributesChanged);
   SNAIL_OVERRIDE_SLOT(AttrLabelChanged);
 
  private:
-  SNAIL_DISABLE_COPY(WorkAttributeModel);
+  SNAIL_DISABLE_COPY(AttributeCollectionModel);
 };
 
 }  // namespace snailcore

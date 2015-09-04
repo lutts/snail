@@ -1,4 +1,4 @@
-//-*- TestCaseName: WorkAttributePresenterTest;-*-
+//-*- TestCaseName: AttributeCollectionPresenterTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -9,9 +9,9 @@
 #include "pfmvp/mock_pf_triad_manager.h"
 
 // triad headers
-#include "snail/mock_work_attribute_model.h"
+#include "snail/mock_attribute_collection_model.h"
 #include "qtui/mock_work_attribute_view.h"
-#include "src/qtui/work_attribute_presenter.h"
+#include "src/qtui/attribute_collection_presenter.h"
 
 #include "src/qtui/attr_create_view_args.h"
 
@@ -27,17 +27,17 @@ using namespace pfmvp::tests;  // NOLINT
 using namespace utils;  // NOLINT
 
 template <typename TestBase>
-class WorkAttributePresenterTestBase : public TestBase {
+class AttributeCollectionPresenterTestBase : public TestBase {
  protected:
-  WorkAttributePresenterTestBase() {
+  AttributeCollectionPresenterTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~WorkAttributePresenterTestBase() { }
+  // ~AttributeCollectionPresenterTestBase() { }
   void SetUp() override {
     // Setup fixture
-    model = std::make_shared<MockWorkAttributeModel>();
-    view = std::make_shared<MockWorkAttributeView>();
+    model = std::make_shared<MockAttributeCollectionModel>();
+    view = std::make_shared<MockAttributeCollectionView>();
 
     IAttributeDisplayBlockVisitor* attr_visitor { nullptr };
 
@@ -67,7 +67,7 @@ class WorkAttributePresenterTestBase : public TestBase {
         .WillOnce(SaveArg<0>(&attrLabelChanged));
 
     // Excercise system
-    presenter = std::make_shared<WorkAttributePresenter>(
+    presenter = std::make_shared<AttributeCollectionPresenter>(
         model, view, &attr_layout);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
@@ -79,8 +79,8 @@ class WorkAttributePresenterTestBase : public TestBase {
   // void TearDown() override { }
 
   // region: objects test subject depends on
-  std::shared_ptr<MockWorkAttributeModel> model;
-  std::shared_ptr<MockWorkAttributeView> view;
+  std::shared_ptr<MockAttributeCollectionModel> model;
+  std::shared_ptr<MockAttributeCollectionView> view;
 
   MockAttributeLayout attr_layout;
 
@@ -88,24 +88,24 @@ class WorkAttributePresenterTestBase : public TestBase {
   // endregion
 
   // region: test subject
-  std::shared_ptr<WorkAttributePresenter> presenter;
+  std::shared_ptr<AttributeCollectionPresenter> presenter;
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IWorkAttributeView::EditModeButtonClickedSlotType>
+  SlotCatcher<IAttributeCollectionView::EditModeButtonClickedSlotType>
   editModeButtonClicked;
 
-  SlotCatcher<IWorkAttributeView::DoneButtonClickedSlotType> doneButtonClicked;
+  SlotCatcher<IAttributeCollectionView::DoneButtonClickedSlotType> doneButtonClicked;
 
-  SlotCatcher<IWorkAttributeModel::AttributesChangedSlotType> attributesChanged;
-  SlotCatcher<IWorkAttributeModel::AttrLabelChangedSlotType> attrLabelChanged;
+  SlotCatcher<IAttributeCollectionModel::AttributesChangedSlotType> attributesChanged;
+  SlotCatcher<IAttributeCollectionModel::AttrLabelChangedSlotType> attrLabelChanged;
   // endregion
 };
 
-class WorkAttributePresenterTest
-    : public WorkAttributePresenterTestBase<::testing::Test> { };
+class AttributeCollectionPresenterTest
+    : public AttributeCollectionPresenterTestBase<::testing::Test> { };
 
-TEST_F(WorkAttributePresenterTest,
+TEST_F(AttributeCollectionPresenterTest,
        should_switch_model_to_edit_mode_when_user_click_EditMode_button) { // NOLINT
   // Expectations
 
@@ -115,7 +115,7 @@ TEST_F(WorkAttributePresenterTest,
   editModeButtonClicked();
 }
 
-TEST_F(WorkAttributePresenterTest,
+TEST_F(AttributeCollectionPresenterTest,
        should_switch_model_to_display_mode_when_user_click_Done_button) { // NOLINT
   // Expectations
   EXPECT_CALL(*model, switchToDisplayMode());
@@ -124,7 +124,7 @@ TEST_F(WorkAttributePresenterTest,
   doneButtonClicked();
 }
 
-TEST_F(WorkAttributePresenterTest,
+TEST_F(AttributeCollectionPresenterTest,
        should_re_traverse_attributes_when_attributes_changed) { // NOLINT
   // Expectations
   EXPECT_CALL(*model, traverseAttributes(presenter.get()));
@@ -134,7 +134,7 @@ TEST_F(WorkAttributePresenterTest,
 }
 
 ///////////////////// IAttributeDisplayBlockVisitor test begin //////////////
-TEST_F(WorkAttributePresenterTest,
+TEST_F(AttributeCollectionPresenterTest,
        should_relay_beginAddAttributeDisplayBlock_to_attr_layout) { // NOLINT
   // Setup fixture
   int total_block_count = std::rand();
@@ -146,7 +146,7 @@ TEST_F(WorkAttributePresenterTest,
   presenter->beginTraverse(total_block_count);
 }
 
-TEST_F(WorkAttributePresenterTest,
+TEST_F(AttributeCollectionPresenterTest,
        should_relay_AttributeGroupDisplayBlock_to_attr_layout) { // NOLINT
   // Setup fixture
   AttributeGroupDisplayBlock attr_group_block;
@@ -167,14 +167,14 @@ bool operator==(const AttributeViewDisplayBlock& a,
       (a.view_priv_data == b.view_priv_data);
 }
 
-class WorkAttributePresenterTest_data_EditMode
-    : public WorkAttributePresenterTestBase<::testing::TestWithParam<bool>> { };
+class AttributeCollectionPresenterTest_data_EditMode
+    : public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { };
 
 INSTANTIATE_TEST_CASE_P(AllEditModes,
-                        WorkAttributePresenterTest_data_EditMode,
+                        AttributeCollectionPresenterTest_data_EditMode,
                         ::testing::Bool());
 
-TEST_P(WorkAttributePresenterTest_data_EditMode,
+TEST_P(AttributeCollectionPresenterTest_data_EditMode,
        should_createViewFor_attr_model_before_add_to_attr_layout) { // NOLINT
   // Setup fixture
   auto attr_model = std::make_shared<MockAttributeModel>();
@@ -210,7 +210,7 @@ TEST_P(WorkAttributePresenterTest_data_EditMode,
   presenter->visitAttributeDisplayBlock(attr_block);
 }
 
-TEST_F(WorkAttributePresenterTest,
+TEST_F(AttributeCollectionPresenterTest,
        should_update_label_in_layout_when_LabelChanged) { // NOLINT
   // Setup fixture
   UpdateAttrLabelData label_data;
@@ -224,14 +224,14 @@ TEST_F(WorkAttributePresenterTest,
   attrLabelChanged(label_data);
 }
 
-class WorkAttributePresenterTest_data_remove_triads
-    : public WorkAttributePresenterTestBase<::testing::TestWithParam<bool>> { };
+class AttributeCollectionPresenterTest_data_remove_triads
+    : public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { };
 
 INSTANTIATE_TEST_CASE_P(AllEditModes,
-                        WorkAttributePresenterTest_data_remove_triads,
+                        AttributeCollectionPresenterTest_data_remove_triads,
                         ::testing::Bool());
 
-TEST_P(WorkAttributePresenterTest_data_remove_triads,
+TEST_P(AttributeCollectionPresenterTest_data_remove_triads,
        should_relay_endAddAttributeDisplayBlock_to_attr_layout) { // NOLINT
   // Expectations
   bool remove_triads = GetParam();

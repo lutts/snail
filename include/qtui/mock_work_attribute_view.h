@@ -22,7 +22,7 @@ class MockAttributeLayout : public IAttributeLayout {
   MOCK_METHOD1(endLayout, void(bool remove_triads));
 };
 
-class MockWorkAttributeView : public IWorkAttributeView {
+class MockAttributeCollectionView : public IAttributeCollectionView {
  public:
   SNAIL_MOCK_SLOT(EditModeButtonClicked);
   SNAIL_MOCK_SLOT(DoneButtonClicked);

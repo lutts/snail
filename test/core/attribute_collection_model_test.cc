@@ -1,4 +1,4 @@
-//-*- TestCaseName: WorkAttributeModelTest;-*-
+//-*- TestCaseName: AttributeCollectionModelTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -9,7 +9,7 @@
 #include "pfmvp/mock_pf_triad_manager.h"
 #include "src/utils/utils.h"
 
-#include "src/core/work_attribute_model.h"
+#include "src/core/attribute_collection_model.h"
 #include "core/mock_attribute.h"
 #include "snail/mock_attribute_model.h"
 #include "core/mock_attribute_supplier.h"
@@ -26,19 +26,19 @@ namespace snailcore {
 namespace tests {
 
 template <typename TestBase>
-class WorkAttributeModelTestBase : public TestBase {
+class AttributeCollectionModelTestBase : public TestBase {
  protected:
-  WorkAttributeModelTestBase() {
+  AttributeCollectionModelTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~WorkAttributeModelTestBase() { }
+  // ~AttributeCollectionModelTestBase() { }
   virtual void SetUp() { }
   // virtual void TearDown() { }
 
-  std::unique_ptr<IWorkAttributeModel> createWorkAttributeModel(
+  std::unique_ptr<IAttributeCollectionModel> createAttributeCollectionModel(
       const std::vector<IAttributeSupplier*>& attr_supplier_list) {
-    return utils::make_unique<WorkAttributeModel>(attr_supplier_list,
+    return utils::make_unique<AttributeCollectionModel>(attr_supplier_list,
                                                   attr_model_factory);
   }
 
@@ -47,15 +47,15 @@ class WorkAttributeModelTestBase : public TestBase {
   // endregion
 
   // region: test subject
-  // std::unique_ptr<IWorkAttributeModel> model;
+  // std::unique_ptr<IAttributeCollectionModel> model;
   // endregion
 
   // region: object depends on test subject
   // endregion
 };
 
-class WorkAttributeModelTest
-    : public WorkAttributeModelTestBase<::testing::Test> { };
+class AttributeCollectionModelTest
+    : public AttributeCollectionModelTestBase<::testing::Test> { };
 
 void assertGroupBlockEqual(AttributeGroupDisplayBlock expect,
                            AttributeGroupDisplayBlock actual,
@@ -72,9 +72,9 @@ void assertGroupBlockEqual(AttributeGroupDisplayBlock expect,
   }
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_isEditMode_initially_be_false) { // NOLINT
-  auto model = createWorkAttributeModel({});
+  auto model = createAttributeCollectionModel({});
   // Verify results
   ASSERT_FALSE(model->isEditMode());
 }
@@ -252,7 +252,7 @@ class AttributeSupplierTestStub : public IAttributeSupplier {
 
 }  // namespace
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        test_AttributeSupplierTestStub_max_attrs_gt_1) { // NOLINT
   int expect_max_attrs = 3;
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -341,7 +341,7 @@ TEST_F(WorkAttributeModelTest,
   } catch (...) { }
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        test_AttributeSupplierTestStub_max_attrs_eq_1) { // NOLINT
   // Setup fixture
   AttributeSupplierTestStub supplier(attr_model_factory,
@@ -358,17 +358,17 @@ TEST_F(WorkAttributeModelTest,
   } catch(...) { }
 }
 
-class WorkAttributeModelTest_BothMode
-    : public WorkAttributeModelTestBase<::testing::TestWithParam<bool>> { };
+class AttributeCollectionModelTest_BothMode
+    : public AttributeCollectionModelTestBase<::testing::TestWithParam<bool>> { };
 
 INSTANTIATE_TEST_CASE_P(BothModes,
-                        WorkAttributeModelTest_BothMode,
+                        AttributeCollectionModelTest_BothMode,
                         ::testing::Bool());
 
-TEST_P(WorkAttributeModelTest_BothMode,
+TEST_P(AttributeCollectionModelTest_BothMode,
        should_visit_nothing_when_there_is_no_suppliers) { // NOLINT
   // Setup fixture
-  auto model = createWorkAttributeModel({});
+  auto model = createAttributeCollectionModel({});
   bool edit_mode = GetParam();
   if (edit_mode)
     model->switchToEditMode();
@@ -392,14 +392,14 @@ TEST_P(WorkAttributeModelTest_BothMode,
 
 //////////////// Display Mode Tests Begin ////////////////
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_visit_nothing_with_supplier_whos_max_attr_eq_1_and_attr_count_eq_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 1, false);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
 
   // Expectations
   MockAttributeDisplayBlockVisitor attr_visitor;
@@ -417,7 +417,7 @@ TEST_F(WorkAttributeModelTest,
   model->traverseAttributes(&attr_visitor);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_visit_nothing_with_supplier_whos_max_attr_gt_1_and_attr_count_eq_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
@@ -425,7 +425,7 @@ TEST_F(WorkAttributeModelTest,
                                      0, 2, false);
   supplier_list.push_back(&supplier);
 
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   MockAttributeDisplayBlockVisitor attr_visitor;
 
   // Expectations
@@ -443,14 +443,14 @@ TEST_F(WorkAttributeModelTest,
   model->traverseAttributes(&attr_visitor);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_generate_attr_block_for_attributes_in_supplier_whos_max_attrs_eq_1_and_attr_count_eq_1_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      1, 1, false);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
 
   auto attr = supplier.attributes()[0];
   AttributeDisplayBlock attr_block = supplier.getAttrBlock(attr);
@@ -473,14 +473,14 @@ TEST_F(WorkAttributeModelTest,
   }
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_generate_group_block_without_add_command_for_suppliers_whos_max_attr_gt_1_and_attr_count_gt_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      1, 2, false);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
 
   auto group_block = supplier.getGroupBlock();
   auto attr_block = supplier.getAttrBlock(supplier.attributes()[0]);
@@ -504,14 +504,14 @@ TEST_F(WorkAttributeModelTest,
   }
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_not_generate_group_block_for_supplier_whos_max_attrs_gt_1_but_attr_count_is_0_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 3, false);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
 
   MockAttributeDisplayBlockVisitor attr_visitor;
   // Expectations
@@ -529,14 +529,14 @@ TEST_F(WorkAttributeModelTest,
   model->traverseAttributes(&attr_visitor);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_sort_sub_attrs_by_display_name_for_suppliers_whos_max_attrs_gt_1_in_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 3, false);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
 
   auto attr_c = supplier.addMockAttribute("c");
   auto attr_b = supplier.addMockAttribute("b");
@@ -568,12 +568,12 @@ TEST_F(WorkAttributeModelTest,
 
 //////////////// Display Mode Tests End ////////////////
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IWorkAttributeModel)
+BEGIN_MOCK_LISTENER_DEF(MockListener, IAttributeCollectionModel)
 
 MOCK_METHOD0(AttributesChanged, void());
 MOCK_METHOD1(AttrLabelChanged, void(UpdateAttrLabelData label_data));
 
-BEGIN_BIND_SIGNAL(IWorkAttributeModel)
+BEGIN_BIND_SIGNAL(IAttributeCollectionModel)
 
 BIND_SIGNAL0(AttributesChanged, void);
 BIND_SIGNAL1(AttrLabelChanged, void, UpdateAttrLabelData, label_data);
@@ -581,10 +581,10 @@ BIND_SIGNAL1(AttrLabelChanged, void, UpdateAttrLabelData, label_data);
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_fire_AttributesChanged_when_switch_from_display_mode_to_edit_mode) { // NOLINT
   // Setup fixture
-  auto model = createWorkAttributeModel({});
+  auto model = createAttributeCollectionModel({});
 
   // Expectations
   auto mock_listener = MockListener::attachTo(model.get());
@@ -599,14 +599,14 @@ TEST_F(WorkAttributeModelTest,
 
 //////////////// Edit Mode Tests Begin ////////////////
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_generate_group_block_with_add_command_for_supplier_whos_max_attrs_gt_1_and_attr_count_lt_max_attrs_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      1, 2, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   // Expectations
@@ -636,14 +636,14 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_EQ(expect_group_block, actual_group_block);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_generate_group_block_with_add_command_for_supplier_with_max_attrs_gt_1_and_attr_count_eq_0_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 2, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   // Expectations
@@ -674,14 +674,14 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_EQ(expect_group_block, actual_group_block);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_generate_group_block_without_add_command_for_supplier_whos_max_attrs_gt_1_and_attr_count_eq_max_attrs_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      2, 2, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   auto group_block = supplier.getGroupBlock();
@@ -703,7 +703,7 @@ TEST_F(WorkAttributeModelTest,
   model->traverseAttributes(&attr_visitor);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_attr_block_edit_mode_be_true_when_generate_attr_blocks_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
@@ -711,7 +711,7 @@ TEST_F(WorkAttributeModelTest,
                                      1, 1, true);
 
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   auto attr = supplier.attributes()[0];
@@ -735,14 +735,14 @@ TEST_F(WorkAttributeModelTest,
   }
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_automatically_create_empty_attribute_for_edit_for_suppliers_with_max_attrs_eq_1_and_attr_count_eq_0_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 1, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   // Expectations
@@ -776,14 +776,14 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_EQ(expect_attr, actual_attr);
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_not_automatically_create_empty_attribue_for_suppliers_with_max_attrs_gt_1_and_attr_count_eq_0_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 2, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   // Expectations
@@ -805,14 +805,14 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_EQ(0, supplier.attr_count());
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_add_command_create_an_empty_attribute_and_fire_AttributesChanged_signal_in_edit_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 2, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   // Exercise system
@@ -840,7 +840,7 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_EQ(1, supplier.attr_count());
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_fire_AttrLabelChanged_signal_when_attr_DisplayNameChanged) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
@@ -850,7 +850,7 @@ TEST_F(WorkAttributeModelTest,
                                       0, 1, true);
   supplier_list.push_back(&supplier0);
   supplier_list.push_back(&supplier1);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   auto attr0 = supplier0.addMockAttribute();
@@ -906,14 +906,14 @@ TEST_F(WorkAttributeModelTest,
   attr1DisplayNameChanged();
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_not_sort_attributes_during_edit_mode_session) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 3, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   auto attr_c = supplier.addMockAttribute("c");
@@ -947,10 +947,10 @@ TEST_F(WorkAttributeModelTest,
 
 ///////////// Switch between Display Mode & Edit Mode Tests Begin /////////////
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_fire_AttributesChanged_signal_with_switch_from_edit_mode_to_display_mode) { // NOLINT
   // Setup fixture
-  auto model = createWorkAttributeModel({});
+  auto model = createAttributeCollectionModel({});
   model->switchToEditMode();
 
   // Expectations
@@ -964,14 +964,14 @@ TEST_F(WorkAttributeModelTest,
   ASSERT_FALSE(model->isEditMode());
 }
 
-TEST_F(WorkAttributeModelTest,
+TEST_F(AttributeCollectionModelTest,
        should_clear_empty_attributes_when_switch_from_edit_mode_to_display_mode) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      0, 4, true);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   model->switchToEditMode();
 
   MockPfTriadManager triad_manager;
@@ -1042,25 +1042,25 @@ TEST_F(WorkAttributeModelTest,
   }
 }
 
-class WorkAttributeModelTest_ModeCombination
-    : public WorkAttributeModelTestBase<::testing::TestWithParam<std::pair<bool, bool>>> { };
+class AttributeCollectionModelTest_ModeCombination
+    : public AttributeCollectionModelTestBase<::testing::TestWithParam<std::pair<bool, bool>>> { };
 
 INSTANTIATE_TEST_CASE_P(ModeCombination,
-                        WorkAttributeModelTest_ModeCombination,
+                        AttributeCollectionModelTest_ModeCombination,
                         ::testing::Values(
                              std::make_pair(true, true),
                              std::make_pair(true, false),
                              std::make_pair(false, true),
                              std::make_pair(false, false)));
 
-TEST_P(WorkAttributeModelTest_ModeCombination,
+TEST_P(AttributeCollectionModelTest_ModeCombination,
        should_store_view_priv_data_and_pass_back_when_traverse_again) { // NOLINT
   // Setup fixture
   std::vector<IAttributeSupplier*> supplier_list;
   AttributeSupplierTestStub supplier(attr_model_factory,
                                      1, 2, false);
   supplier_list.push_back(&supplier);
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
 
   bool pass1_edit_mode = std::get<0>(GetParam());
   if (pass1_edit_mode) {
@@ -1163,7 +1163,7 @@ TEST_P(WorkAttributeModelTest_ModeCombination,
 
 ///////////// Switch between Edit Mode & Display Mode Tests End /////////////
 
-TEST_P(WorkAttributeModelTest_BothMode,
+TEST_P(AttributeCollectionModelTest_BothMode,
        should_supplier_traverse_order_be_the_order_of_the_supplier_list) { // NOLINT
   // Setup fixture
   AttributeSupplierTestStub supplier0(attr_model_factory,
@@ -1191,7 +1191,7 @@ TEST_P(WorkAttributeModelTest_BothMode,
   supplier_list.push_back(&supplier1);
   supplier_list.push_back(&supplier2);
 
-  auto model = createWorkAttributeModel(supplier_list);
+  auto model = createAttributeCollectionModel(supplier_list);
   bool edit_mode = GetParam();
   if (edit_mode) {
     model->switchToEditMode();

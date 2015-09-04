@@ -4,14 +4,14 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/work_attribute_presenter.h"
+#include "src/qtui/attribute_collection_presenter.h"
 #include "src/qtui/attr_create_view_args.h"
 #include "snail/i_attribute_model.h"
 #include "qtui/i_attribute_view.h"
 
 using namespace snailcore;  // NOLINT
 
-void WorkAttributePresenter::initialize() {
+void AttributeCollectionPresenter::initialize() {
   view()->setEditMode(model()->isEditMode());
   attr_layout_->set_triad_manager(triad_manager());
 
@@ -44,17 +44,17 @@ void WorkAttributePresenter::initialize() {
 }
 
 //////////////////// IAttributeDisplayBlockVisitor impl begin /////////////
-void WorkAttributePresenter::beginTraverse(
+void AttributeCollectionPresenter::beginTraverse(
     int total_block_count) {
   attr_layout_->beginLayout(total_block_count);
 }
 
-void* WorkAttributePresenter::visitAttributeGroupDisplayBlock(
+void* AttributeCollectionPresenter::visitAttributeGroupDisplayBlock(
     AttributeGroupDisplayBlock attr_group_block) {
   return attr_layout_->layoutAttributeGroupDisplayBlock(attr_group_block);
 }
 
-void* WorkAttributePresenter::visitAttributeDisplayBlock(
+void* AttributeCollectionPresenter::visitAttributeDisplayBlock(
     AttributeDisplayBlock attr_block) {
   auto args = AttrCreateViewArgs::getArgs(attr_block.edit_mode);
   auto attr_view =
@@ -73,11 +73,11 @@ void* WorkAttributePresenter::visitAttributeDisplayBlock(
 }
 
 #if 0
-void WorkAttributePresenter::updateLabel(UpdateAttrLabelData label_data) {
+void AttributeCollectionPresenter::updateLabel(UpdateAttrLabelData label_data) {
 }
 #endif
 
-void WorkAttributePresenter::endTraverse(bool remove_triads) {
+void AttributeCollectionPresenter::endTraverse(bool remove_triads) {
   attr_layout_->endLayout(remove_triads);
 }
 ///////////////////// IAttributeDisplayBlockVisitor impl end ///////////////

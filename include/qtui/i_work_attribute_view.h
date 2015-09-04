@@ -42,9 +42,9 @@ class IAttributeLayout {
   virtual void endLayout(bool remove_triads) = 0;
 };
 
-class IWorkAttributeView : public GenericViewBase {
+class IAttributeCollectionView : public GenericViewBase {
  public:
-  virtual ~IWorkAttributeView() = default;
+  virtual ~IAttributeCollectionView() = default;
 
   SNAIL_SIGSLOT2(EditModeButtonClicked, void());
   SNAIL_SIGSLOT2(DoneButtonClicked, void());

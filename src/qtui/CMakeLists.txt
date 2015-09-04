@@ -33,7 +33,7 @@ SET(qtui_SRCS
   work_name_input_dialog.cc
   candidate_item_qmodel_adapter.cc
   attr_create_view_args.cc
-  work_attribute_presenter.cc
+  attribute_collection_presenter.cc
   attribute_layout.cc
   )
 

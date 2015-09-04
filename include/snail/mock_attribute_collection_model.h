@@ -8,12 +8,12 @@
 #ifndef INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
 #define INCLUDE_SNAIL_MOCK_WORK_ATTRIBUTE_MODEL_H_
 
-#include "snail/i_work_attribute_model.h"
+#include "snail/i_attribute_collection_model.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockWorkAttributeModel : public IWorkAttributeModel {
+class MockAttributeCollectionModel : public IAttributeCollectionModel {
  public:
   MOCK_CONST_METHOD0(isEditMode, bool());
   MOCK_METHOD0(switchToEditMode, void());
