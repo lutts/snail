@@ -10,3 +10,5 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII)
 
 #add_executable(snail main.cc)
 #target_link_libraries(snail snailcore qtuicore Qt5::Widgets)
+
+add_subdirectory(qtpropertybrowser)
