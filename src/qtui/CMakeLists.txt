@@ -10,7 +10,6 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII)
 set(qtui_MOC_HDRS
   qt_uiengine.h
   main_window.h
-  attribute_layout.h
   )
 
 set(qtui_RESOURCES
@@ -32,9 +31,6 @@ SET(qtui_SRCS
   work_view_factory.cc
   work_name_input_dialog.cc
   candidate_item_qmodel_adapter.cc
-  attr_create_view_args.cc
-  attribute_collection_presenter.cc
-  attribute_layout.cc
   )
 
 set(SUBDIRS)
