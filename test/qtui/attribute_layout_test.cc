@@ -361,6 +361,23 @@ TEST_F(AttributeLayoutTest,
   verifyLayoutResult(expect);
 }
 
+// TODO
+TEST_F(AttributeLayoutTest,
+       should_do_normal_split_when_not_cut_at_first_sub_attr_of_a_group) { // NOLINT
+  // Setup fixture
+
+  // Expectations
+
+  // Exercise system
+
+  // Verify results
+
+  // Teardown fixture
+  //  * ensuring runs even when the test is failed
+  //  * do not introduce additional errors
+  FAIL() << "Unfinished Test!";
+}
+
 TEST_F(AttributeLayoutTest,
        should_treat_group_as_normal_attrs_if_group_has_no_sub_attrs_on_even_num_attr) { // NOLINT
   // Setup fixture
@@ -467,6 +484,7 @@ TEST_F(AttributeLayoutTest,
   verifyLayoutResult(expect);
 }
 
+// TODO: name hidden should not cross side
 TEST_F(AttributeLayoutTest,
        should_only_show_the_first_label_and_hide_other_equal_labels_if_there_are_successive_equal_labels) { // NOLINT
   // Setup fixture
