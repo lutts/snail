@@ -4,16 +4,16 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include <iostream>
-#include <memory>
+#include <iostream>  // std::cout
+#include <memory>    // std::shared_ptr
+#include <functional>  // std::function
 
-#include "utils/signal_slot.h"
-#include "utils/signal_slot_impl.h"
+#include <boost/signals2.hpp>
 
-class A : public utils::ITrackable {
+class TrackObject {
  public:
-  A() { std::cout << "construct A" << std::endl; }
-  ~A() { std::cout << "destruct A" << std::endl; }
+  TrackObject() { std::cout << "construct TrackObject" << std::endl; }
+  ~TrackObject() { std::cout << "destruct TrackObject" << std::endl; }
 
   static void* operator new(std::size_t sz) {
     void* p = ::operator new(sz);
@@ -33,6 +33,28 @@ class A : public utils::ITrackable {
   char data[50];
 };
 
+class SignalEmitter {
+ public:
+  using SignalType = boost::signals2::signal<void()>;
+
+  SignalEmitter() = default;
+  virtual ~SignalEmitter() = default;
+
+  boost::signals2::connection
+  registerHandler(std::function<void()> func,
+                  std::shared_ptr<TrackObject> trackobj) {
+    SignalType::slot_type handler(func);
+    return signal_.connect(handler.track_foreign(trackobj));
+  }
+
+  void trigger()  {
+    signal_();
+  }
+
+ private:
+  SignalType signal_;
+};
+
 template <class T>
 struct custom_allocator {
   typedef T value_type;
@@ -49,85 +71,73 @@ struct custom_allocator {
   }
 };
 
-class ISignal2Test {
- public:
-  virtual ~ISignal2Test() = default;
-
-  SNAIL_SIGSLOT2(TestSignal, void());
-
-  virtual void trigger() = 0;
-};
-
-class Signal2Test : public ISignal2Test {
- public:
-  Signal2Test() = default;
-  virtual ~Signal2Test() = default;
-
-  void trigger() override {
-    TestSignal();
-  }
-
-  SNAIL_SIGSLOT_IMPL(TestSignal);
-};
-
 int main() {
-  A* p1 = new A;
-  delete p1;
+  std::cout << "---TestCase1: check wp will hold the memory---" << std::endl;
 
-  A* p2 = new A[10];
-  delete[] p2;
-
-  std::cout << "-------1 begin----------------" << std::endl;
-  std::weak_ptr<A> wp;
-
+  custom_allocator<TrackObject> alloc;
   {
-    auto p3 = std::make_shared<A>();
-    wp = p3;
-  }
-  std::cout << "--------1 end-----------------" << std::endl;
-
-  std::cout << "--------2 begin-----------" << std::endl;
-
-  custom_allocator<A> alloc;
-  {
-    std::weak_ptr<A> wp4;
+    std::weak_ptr<TrackObject> wp4;
 
     {
-      auto p4 = std::allocate_shared<A>(alloc);
+      auto p4 = std::allocate_shared<TrackObject>(alloc);
       wp4 = p4;
     }
-    std::cout << "---------2 end-----------" << std::endl;
+    std::cout << "---TestCase1: expect to free the memory before this line, "
+              << "but wp prevents it from being freed ---"
+              << std::endl;
+  }
+  std::cout
+      << "---TestCase1: the memory is only freed when weak_ptr is out of scope"
+      << ", before this line ---"
+      << std::endl;
+
+  std::cout
+      << "---TestCase2: check signal2 will prevent memory from being freed---"
+      << std::endl;
+  {
+    SignalEmitter signal_emiiter;
+    boost::signals2::connection conn;
+    {
+      auto trackobj = std::allocate_shared<TrackObject>(alloc);
+
+      conn = signal_emiiter.registerHandler(
+          []() {
+            std::cout << "signal triggered" << std::endl;
+          }, trackobj);
+      std::cout << "---TestCase2: after registerHandler: conn.connected: "
+                << conn.connected()
+                << std::endl;
+      signal_emiiter.trigger();
+    }
+    std::cout << "---TestCase2: should free trackobj here, but not---\n";
+    std::cout << "---TestCase2: connected: " << conn.connected() << std::endl;
+    std::cout
+        << "---TestCase2: connected() shows that it's already disconnected"
+        << std::endl;
+    conn.disconnect();
+    std::cout << "--TestCase2: so, conn.disconnect() does nothing, "
+        "the memory is still not freed" << std::endl;
+    signal_emiiter.trigger();
+    std::cout
+        << "---TestCase2: only re-trigger will free memory before this line ---"
+        << std::endl;
   }
 
-  std::cout << "----------3 begin ----------" << std::endl;
+  std::cout << "---TestCase3: check non-make_shared workaround---" << std::endl;
   {
-    Signal2Test test_signal;
+    SignalEmitter signal_emiiter;
     {
-      auto p5 = std::allocate_shared<A>(alloc);
+      std::shared_ptr<TrackObject> trackobj(new TrackObject());
 
-      test_signal.whenTestSignal([]() {
-          std::cout << "signal triggered" << std::endl;
-        }, p5);
-      test_signal.trigger();
+      signal_emiiter.registerHandler(
+          [](){
+            std::cout << "signal triggered" << std::endl;
+          }, trackobj);
+      signal_emiiter.trigger();
     }
-    std::cout << "--------------3 trigger again------------" << std::endl;
-    test_signal.trigger();
-    std::cout << "--------------3 end ---------------" << std::endl;
-  }
-
-  std::cout << "-----------4 begin ---------" << std::endl;
-  {
-    Signal2Test test_signal;
-    {
-      auto p6 = utils::make_trackable<A>();
-
-      test_signal.whenTestSignal([](){
-          std::cout << "signal triggered" << std::endl;
-        }, p6);
-      test_signal.trigger();
-    }
-    std::cout << "--------------3 trigger again------------" << std::endl;
-    test_signal.trigger();
-    std::cout << "--------------3 end ---------------" << std::endl;
+    std::cout << "---TestCase3: without use make_shared, memory will be "
+        "freed before this line---" << std::endl;
+    signal_emiiter.trigger();
+    std::cout << "---TestCase3: re-trigger do nothing ---" << std::endl;
   }
 }
