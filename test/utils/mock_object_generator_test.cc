@@ -15,8 +15,15 @@
 
 class MockDummy {
  public:
+  MockDummy() { }
+  MockDummy(int dummy) : dummy_(dummy) { }
   ~MockDummy() { destruct(); }
   MOCK_METHOD0(destruct, void());
+
+  int dummy() { return dummy_; }
+
+ private:
+  int dummy_ { 0 };
 };
 
 class MockObjectGeneratorTest : public ::testing::Test {
@@ -72,4 +79,17 @@ TEST_F(MockObjectGeneratorTest, should_be_able_to_clear_generated_mocks_and_dest
   // Exercise system
   generator->clear();
   check.Call("barrier");
+}
+
+TEST_F(MockObjectGeneratorTest,
+       should_be_able_to_generate_with_args) { // NOLINT
+  // Expectations
+  int expect_dummy = std::rand();
+
+  // Exercise system
+  auto obj = generator->generate(expect_dummy);
+
+  // Verify results
+  int actual_dummy = obj->dummy();
+  ASSERT_EQ(expect_dummy, actual_dummy);
 }

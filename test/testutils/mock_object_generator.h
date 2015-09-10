@@ -19,7 +19,14 @@ class MockObjectGenerator {
   }
 
   T* generate() {
-    auto obj =  new T();
+    auto obj = new T();
+    mock_objs.push_back(obj);
+    return obj;
+  }
+
+  template <typename... Args>
+  T* generate(Args&&... args) {
+    auto obj =  new T(std::forward<Args>(args)...);
     mock_objs.push_back(obj);
     return obj;
   }
