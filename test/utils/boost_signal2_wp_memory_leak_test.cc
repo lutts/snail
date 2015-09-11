@@ -4,11 +4,11 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+#include <boost/signals2.hpp>
+
 #include <iostream>  // std::cout
 #include <memory>    // std::shared_ptr
 #include <functional>  // std::function
-
-#include <boost/signals2.hpp>
 
 class TrackObject {
  public:

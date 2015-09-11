@@ -16,7 +16,7 @@
 class MockDummy {
  public:
   MockDummy() { }
-  MockDummy(int dummy) : dummy_(dummy) { }
+  explicit MockDummy(int dummy) : dummy_(dummy) { }
   ~MockDummy() { destruct(); }
   MOCK_METHOD0(destruct, void());
 
