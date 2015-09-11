@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_COLLECTION_QMODEL_H_
-#define I_ATTRIBUTE_COLLECTION_QMODEL_H_
+#ifndef INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_QMODEL_H_
+#define INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_QMODEL_H_
+
+#include <vector>
 
 #include "utils/signal_slot.h"
 
@@ -28,7 +30,7 @@ class IAttributeCollectionQModel {
   virtual void switchToEditMode() = 0;
   virtual void switchToDisplayMode() = 0;
   virtual int attrRowCount() const = 0;
-  virtual void addAttributeIfSupplier(int row) = 0;
+  virtual void mayAddAttributeIfSupplier(int row) = 0;
 };
 
-#endif  // I_ATTRIBUTE_COLLECTION_QMODEL_H_
+#endif  // INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_QMODEL_H_

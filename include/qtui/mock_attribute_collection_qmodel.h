@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_
-#define MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_
+#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_
+#define INCLUDE_QTUI_MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_
+
+#include <vector>
 
 #include "qtui/i_attribute_collection_qmodel.h"
 
@@ -20,7 +22,7 @@ class MockAttributeCollectionQModel : public IAttributeCollectionQModel {
   MOCK_METHOD0(switchToEditMode, void());
   MOCK_METHOD0(switchToDisplayMode, void());
   MOCK_CONST_METHOD0(attrRowCount, int());
-  MOCK_METHOD1(addAttributeIfSupplier, void(int row));
+  MOCK_METHOD1(mayAddAttributeIfSupplier, void(int row));
 };
 
-#endif  // MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_
+#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_

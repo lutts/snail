@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_COLLECTION_VIEW_H_
-#define I_ATTRIBUTE_COLLECTION_VIEW_H_
+#ifndef INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_VIEW_H_
+#define INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_VIEW_H_
 
 #include "src/qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
@@ -20,7 +20,7 @@ class IAttributeCollectionView : public GenericViewBase {
 
   SNAIL_SIGSLOT2(SwitchToEditMode, void());
   SNAIL_SIGSLOT2(SwitchToDisplayMode, void());
-  SNAIL_SIGSLOT2(UserClickAddAttribute, void(int row));
+  SNAIL_SIGSLOT2(UserMayClickAddAttribute, void(int row));
 
   virtual void setQModel(IAttributeCollectionQModel* qmodel) = 0;
   virtual void setAttributeDelegate(IAttributeDelegate* attr_delegate) = 0;
@@ -29,4 +29,4 @@ class IAttributeCollectionView : public GenericViewBase {
 };
 
 
-#endif  // I_ATTRIBUTE_COLLECTION_VIEW_H_
+#endif  // INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_VIEW_H_

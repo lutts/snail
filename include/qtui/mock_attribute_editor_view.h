@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_EDITOR_VIEW_H_
-#define MOCK_ATTRIBUTE_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_MOCK_ATTRIBUTE_EDITOR_VIEW_H_
 
 #include "qtui/i_attribute_editor_view.h"
 
@@ -14,4 +14,4 @@ class MockAttributeEditorView : public IAttributeEditorView {
  public:
 };
 
-#endif  // MOCK_ATTRIBUTE_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_EDITOR_VIEW_H_

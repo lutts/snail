@@ -43,4 +43,7 @@ add_gmock_test(candidate_item_qmodel_adapter_test
 add_gmock_test(attribute_collection_presenter_test
   LIBS qtuicore testutils)
 
+add_gmock_test(attribute_collection_qmodel_test
+  LIBS qtuicore testutils qttestutils)
+
 add_subdirectory(preview)

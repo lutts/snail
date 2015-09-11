@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_DELEGATE_H_
-#define MOCK_ATTRIBUTE_DELEGATE_H_
+#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_DELEGATE_H_
+#define INCLUDE_QTUI_MOCK_ATTRIBUTE_DELEGATE_H_
 
 #include "qtui/i_attribute_delegate.h"
 
@@ -16,4 +16,4 @@ class MockAttributeDelegate : public IAttributeDelegate {
   SNAIL_MOCK_SLOT(CloseEditor);
 };
 
-#endif  // MOCK_ATTRIBUTE_DELEGATE_H_
+#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_DELEGATE_H_

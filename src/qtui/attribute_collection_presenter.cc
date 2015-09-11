@@ -14,11 +14,11 @@
 AttributeCollectionPresenter::AttributeCollectionPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<IAttributeCollectionQModel> qmodel,
+    std::shared_ptr<IAttributeCollectionQModel> qmodel,
     std::unique_ptr<IAttributeDelegate> attr_delegate)
     : AttributeCollectionPresenterBase(model, view)
     , qmodel_(std::move(qmodel))
-    , attr_delegate_(std::move(attr_delegate)){ }
+    , attr_delegate_(std::move(attr_delegate)) { }
 
 AttributeCollectionPresenter::~AttributeCollectionPresenter() = default;
 
@@ -67,9 +67,9 @@ void AttributeCollectionPresenter::initialize() {
       },
       shared_from_this());
 
-  view()->whenUserClickAddAttribute(
+  view()->whenUserMayClickAddAttribute(
       [this](int row) {
-        qmodel_->addAttributeIfSupplier(row);
+        qmodel_->mayAddAttributeIfSupplier(row);
       },
       shared_from_this());
 

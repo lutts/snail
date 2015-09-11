@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_COLLECTION_MODEL_H_
-#define I_ATTRIBUTE_COLLECTION_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_COLLECTION_MODEL_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_COLLECTION_MODEL_H_
 
 #include <vector>
 
@@ -34,4 +34,4 @@ class IAttributeCollectionModel : public pfmvp::IPfModel {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_COLLECTION_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_COLLECTION_MODEL_H_

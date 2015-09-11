@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_DELEGATE_H_
-#define I_ATTRIBUTE_DELEGATE_H_
+#ifndef INCLUDE_QTUI_I_ATTRIBUTE_DELEGATE_H_
+#define INCLUDE_QTUI_I_ATTRIBUTE_DELEGATE_H_
 
 #include "utils/signal_slot.h"
 
@@ -26,7 +26,6 @@ class IAttributeDelegate {
                  IAttributeEditorView*(IAttribute* attr));
   SNAIL_SIGSLOT2(CloseEditor,
                  void(IAttributeEditorView*));
-
 };
 
-#endif  // I_ATTRIBUTE_DELEGATE_H_
+#endif  // INCLUDE_QTUI_I_ATTRIBUTE_DELEGATE_H_

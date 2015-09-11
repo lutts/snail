@@ -35,8 +35,7 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockAttributeCollectionModel>();
     view = std::make_shared<MockAttributeCollectionView>();
-    auto qmodel_up = utils::make_unique<MockAttributeCollectionQModel>();
-    qmodel = qmodel_up.get();
+    qmodel = utils::make_trackable<MockAttributeCollectionQModel>();
 
     auto attr_delegate_up = utils::make_unique<MockAttributeDelegate>();
     attr_delegate = attr_delegate_up.get();
@@ -55,7 +54,7 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*qmodel, setAttributeSuppliers(attr_suppliers));
 
     // should set qmodel to view
-    R_EXPECT_CALL(*view, setQModel(qmodel));
+    R_EXPECT_CALL(*view, setQModel(qmodel.get()));
 
     // should set attr delegate to view
     {
@@ -70,22 +69,22 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
       R_EXPECT_CALL(*view, setAttributeDelegate(attr_delegate));
     }
 
-    // TODO: may be just a toggleMode?
+    // TODO(lutts): may be just a toggleMode?
     R_EXPECT_CALL(*view, whenSwitchToEditMode(_, _))
         .WillOnce(SaveArg<0>(&switchToEditMode));
 
     R_EXPECT_CALL(*view, whenSwitchToDisplayMode(_, _))
         .WillOnce(SaveArg<0>(&switchToDisplayMode));
 
-    R_EXPECT_CALL(*view, whenUserClickAddAttribute(_, _))
-        .WillOnce(SaveArg<0>(&userClickAddAttribute));
+    R_EXPECT_CALL(*view, whenUserMayClickAddAttribute(_, _))
+        .WillOnce(SaveArg<0>(&userMayClickAddAttribute));
 
     R_EXPECT_CALL(*qmodel, whenAttributeAdded(_, _))
         .WillOnce(SaveArg<0>(&attributeAdded));
 
     // Excercise system
     presenter = std::make_shared<AttributeCollectionPresenter>(
-        model, view, std::move(qmodel_up), std::move(attr_delegate_up));
+        model, view, qmodel, std::move(attr_delegate_up));
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -97,7 +96,7 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
   std::shared_ptr<MockAttributeCollectionModel> model;
   std::shared_ptr<MockAttributeCollectionView> view;
 
-  MockAttributeCollectionQModel* qmodel;
+  std::shared_ptr<MockAttributeCollectionQModel> qmodel;
   MockAttributeDelegate* attr_delegate;
 
   MockPfTriadManager triad_manager;
@@ -119,9 +118,9 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
       IAttributeCollectionView::SwitchToDisplayModeSlotType;
   SlotCatcher<SwitchToDisplayModeSlotType> switchToDisplayMode;
 
-  using UserClickAddAttributeSlotType =
-      IAttributeCollectionView::UserClickAddAttributeSlotType;
-  SlotCatcher<UserClickAddAttributeSlotType> userClickAddAttribute;
+  using UserMayClickAddAttributeSlotType =
+      IAttributeCollectionView::UserMayClickAddAttributeSlotType;
+  SlotCatcher<UserMayClickAddAttributeSlotType> userMayClickAddAttribute;
 
   using AttributeAddedSlotType =
       IAttributeCollectionQModel::AttributeAddedSlotType;
@@ -145,7 +144,7 @@ TEST_F(AttributeCollectionPresenterTest,
   // Expectations
   EXPECT_CALL(*model, createAttributeModel(dummy_attr))
       .WillOnce(Return(attr_model));
-  // TODO: create with args
+  // TODO(lutts): create with args
   EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, _))
       .WillOnce(Return(attr_editor_view));
 
@@ -223,10 +222,10 @@ TEST_F(AttributeCollectionPresenterTest,
   int row = std::rand();
 
   // Expectations
-  EXPECT_CALL(*qmodel, addAttributeIfSupplier(row));
+  EXPECT_CALL(*qmodel, mayAddAttributeIfSupplier(row));
 
   // Exercise system
-  userClickAddAttribute(row);
+  userMayClickAddAttribute(row);
 }
 
 TEST_F(AttributeCollectionPresenterTest,

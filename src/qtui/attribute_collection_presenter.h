@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_COLLECTION_PRESENTER_H_
-#define ATTRIBUTE_COLLECTION_PRESENTER_H_
+#ifndef SRC_QTUI_ATTRIBUTE_COLLECTION_PRESENTER_H_
+#define SRC_QTUI_ATTRIBUTE_COLLECTION_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -26,14 +26,14 @@ class AttributeCollectionPresenter : public AttributeCollectionPresenterBase {
   AttributeCollectionPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
-      std::unique_ptr<IAttributeCollectionQModel> qmodel,
+      std::shared_ptr<IAttributeCollectionQModel> qmodel,
       std::unique_ptr<IAttributeDelegate> attr_delegate);
   virtual ~AttributeCollectionPresenter();
 
   void initialize() override;
 
  private:
-  std::unique_ptr<IAttributeCollectionQModel> qmodel_;
+  std::shared_ptr<IAttributeCollectionQModel> qmodel_;
   std::unique_ptr<IAttributeDelegate> attr_delegate_;
 
  private:
@@ -41,4 +41,4 @@ class AttributeCollectionPresenter : public AttributeCollectionPresenterBase {
 };
 
 
-#endif  // ATTRIBUTE_COLLECTION_PRESENTER_H_
+#endif  // SRC_QTUI_ATTRIBUTE_COLLECTION_PRESENTER_H_

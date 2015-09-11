@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_MODEL_H_
-#define MOCK_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_H_
 
 #include "snail/i_attribute_model.h"
 
@@ -20,4 +20,4 @@ class MockAttributeModel : public IAttributeModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_H_

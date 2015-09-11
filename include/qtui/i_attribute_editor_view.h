@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_EDITOR_VIEW_H_
-#define I_ATTRIBUTE_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_I_ATTRIBUTE_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_I_ATTRIBUTE_EDITOR_VIEW_H_
 
 #include "src/qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
@@ -17,4 +17,4 @@ class IAttributeEditorView : public GenericViewBase {
 };
 
 
-#endif  // I_ATTRIBUTE_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_I_ATTRIBUTE_EDITOR_VIEW_H_

@@ -32,6 +32,7 @@ SET(qtui_SRCS
   work_name_input_dialog.cc
   candidate_item_qmodel_adapter.cc
   attribute_collection_presenter.cc
+  attribute_collection_qmodel.cc
   )
 
 set(SUBDIRS)
