@@ -21,3 +21,6 @@ add_gmock_test(candidate_item_test
 
 add_gmock_test(candidate_item_any_data_test
   LIBS testutils utils)
+
+add_gmock_test(attribute_collection_model_test
+  LIBS ${COMMON_LIBS})
