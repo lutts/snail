@@ -95,7 +95,6 @@ void AttributeCollectionQModelImpl::clearEmptyAttributes() {
     auto attrs = supplier->attributes();
     for (auto attr : attrs) {
       if (attr->isEmpty()) {
-        qDebug() << "remove attr " << U8StringToQString(attr->displayName());
         supplier->removeAttribute(attr);
       }
     }
