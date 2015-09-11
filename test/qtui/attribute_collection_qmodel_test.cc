@@ -366,41 +366,31 @@ TEST_F(AttributeCollectionModelTest,
   }
 }
 
-TEST_F(AttributeCollectionModelTest,
-       should_aboutToSwitchModel_emit_modelAboutToBeReset_signal) { // NOLINT
-  // Setup fixture
-  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelAboutToBeReset()));
-
-  // Exercise system
-  qmodel->aboutToSwitchMode();
-
-  // Verify results
-  ASSERT_EQ(1, sigspy.count());
-}
-
 void AttributeCollectionModelTest::switchToEditMode() {
-  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelReset()));
+  QSignalSpy aboutToReset_sigspy(qmodel.get(), SIGNAL(modelAboutToBeReset()));
+  QSignalSpy reset_sigspy(qmodel.get(), SIGNAL(modelReset()));
 
   // Expectations
   EXPECT_CALL(*max1_attr0_supplier, addAttributeCalled());
 
   // Exercise system
-  qmodel->aboutToSwitchMode();
   qmodel->switchToEditMode();
 
   // Verify results
-  ASSERT_EQ(1, sigspy.count());
+  ASSERT_EQ(1, aboutToReset_sigspy.count());
+  ASSERT_EQ(1, reset_sigspy.count());
 }
 
 void AttributeCollectionModelTest::switchToDisplayMode() {
-  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelReset()));
+  QSignalSpy aboutToReset_sigspy(qmodel.get(), SIGNAL(modelAboutToBeReset()));
+  QSignalSpy reset_sigspy(qmodel.get(), SIGNAL(modelReset()));
 
   // Exercise system
-  qmodel->aboutToSwitchMode();
   qmodel->switchToDisplayMode();
 
   // Verify results
-  ASSERT_EQ(1, sigspy.count());
+  ASSERT_EQ(1, aboutToReset_sigspy.count());
+  ASSERT_EQ(1, reset_sigspy.count());
 }
 
 TEST_F(AttributeCollectionModelTest,

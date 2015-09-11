@@ -32,7 +32,6 @@ class AttributeCollectionQModel
   // IAttributeCollectionQModel
   void setAttributeSuppliers(
       std::vector<IAttributeSupplier*> attr_suppliers) override;
-  void aboutToSwitchMode() override;
   void switchToEditMode() override;
   void switchToDisplayMode() override;
   int attrRowCount() const override;

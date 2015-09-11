@@ -237,16 +237,14 @@ void AttributeCollectionQModel::setAttributeSuppliers(
   }
 }
 
-void AttributeCollectionQModel::aboutToSwitchMode() {
-  beginResetModel();
-}
-
 void AttributeCollectionQModel::switchToEditMode() {
+  beginResetModel();
   pimpl->switchToEditMode();
   endResetModel();
 }
 
 void AttributeCollectionQModel::switchToDisplayMode() {
+  beginResetModel();
   pimpl->switchToDisplayMode();
   endResetModel();
 }

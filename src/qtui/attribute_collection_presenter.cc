@@ -48,8 +48,6 @@ void AttributeCollectionPresenter::initialize() {
 
   view()->whenSwitchToEditMode(
       [this]() {
-        qmodel_->aboutToSwitchMode();
-        model()->switchToEditMode();
         qmodel_->switchToEditMode();
 
         int row_count = qmodel_->attrRowCount();
@@ -66,8 +64,6 @@ void AttributeCollectionPresenter::initialize() {
           view()->closeAttributeEditor(row);
         }
 
-        qmodel_->aboutToSwitchMode();
-        model()->switchToDisplayMode();
         qmodel_->switchToDisplayMode();
       },
       shared_from_this());

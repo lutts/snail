@@ -18,7 +18,6 @@ class MockAttributeCollectionQModel : public IAttributeCollectionQModel {
 
   MOCK_METHOD1(setAttributeSuppliers,
                void(std::vector<IAttributeSupplier*> attr_suppliers));
-  MOCK_METHOD0(aboutToSwitchMode, void());
   MOCK_METHOD0(switchToEditMode, void());
   MOCK_METHOD0(switchToDisplayMode, void());
   MOCK_CONST_METHOD0(attrRowCount, int());

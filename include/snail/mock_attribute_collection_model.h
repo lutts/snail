@@ -21,8 +21,6 @@ class MockAttributeCollectionModel : public IAttributeCollectionModel {
                      std::vector<IAttributeSupplier*>());
   MOCK_METHOD1(createAttributeModel,
                std::shared_ptr<IAttributeModel>(IAttribute* attr));
-  MOCK_METHOD0(switchToEditMode, void());
-  MOCK_METHOD0(switchToDisplayMode, void());
 };
 
 }  // namespace tests

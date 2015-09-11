@@ -196,8 +196,6 @@ TEST_F(AttributeCollectionPresenterTest,
   {
     InSequence seq;
 
-    EXPECT_CALL(*qmodel, aboutToSwitchMode());
-    EXPECT_CALL(*model, switchToEditMode());
     EXPECT_CALL(*qmodel, switchToEditMode());
     EXPECT_CALL(*qmodel, attrRowCount()).WillOnce(Return(row_count));
 
@@ -227,8 +225,6 @@ TEST_F(AttributeCollectionPresenterTest,
     }
 
     // then operation on the models
-    EXPECT_CALL(*qmodel, aboutToSwitchMode());
-    EXPECT_CALL(*model, switchToDisplayMode());
     EXPECT_CALL(*qmodel, switchToDisplayMode());
   }
 

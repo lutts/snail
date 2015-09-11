@@ -28,7 +28,6 @@ class IAttributeCollectionQModel {
 
   virtual void
   setAttributeSuppliers(std::vector<IAttributeSupplier*> attr_suppliers) = 0;
-  virtual void aboutToSwitchMode() = 0;
   virtual void switchToEditMode() = 0;
   virtual void switchToDisplayMode() = 0;
   virtual int attrRowCount() const = 0;

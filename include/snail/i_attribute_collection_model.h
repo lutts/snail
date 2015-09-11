@@ -28,8 +28,6 @@ class IAttributeCollectionModel : public pfmvp::IPfModel {
   virtual std::vector<IAttributeSupplier*> getAttributeSuppliers() const = 0;
   virtual
   std::shared_ptr<IAttributeModel> createAttributeModel(IAttribute* attr) = 0;
-  virtual void switchToEditMode() = 0;
-  virtual void switchToDisplayMode() = 0;
 };
 
 }  // namespace snailcore
