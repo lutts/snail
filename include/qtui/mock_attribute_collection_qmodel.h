@@ -23,6 +23,8 @@ class MockAttributeCollectionQModel : public IAttributeCollectionQModel {
   MOCK_METHOD0(switchToDisplayMode, void());
   MOCK_CONST_METHOD0(attrRowCount, int());
   MOCK_METHOD1(mayAddAttributeIfSupplier, void(int row));
+
+  MOCK_CONST_METHOD1(attrOfRow, IAttribute*(int row));
 };
 
 #endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_COLLECTION_QMODEL_H_

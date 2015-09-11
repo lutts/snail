@@ -23,7 +23,7 @@ class IAttributeDelegate {
   virtual ~IAttributeDelegate() = default;
 
   SNAIL_SIGSLOT2(CreateEditorFor,
-                 IAttributeEditorView*(IAttribute* attr));
+                 IAttributeEditorView*(int row));
   SNAIL_SIGSLOT2(CloseEditor,
                  void(IAttributeEditorView*));
 };

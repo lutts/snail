@@ -278,7 +278,7 @@ QVariant AttributeCollectionQModel::data(
 Qt::ItemFlags AttributeCollectionQModel::flags(const QModelIndex &index) const {
   auto flags = QAbstractTableModel::flags(index);
 
-  if (pimpl->edit_mode_) {
+  if ((index.column() == 1) && (pimpl->edit_mode_)) {
     flags |= Qt::ItemIsEditable;
   }
 

@@ -13,9 +13,11 @@
 #include "utils/signal_slot.h"
 
 namespace snailcore {
+class IAttribute;
 class IAttributeSupplier;
 }  // namespace snailcore
 
+using snailcore::IAttribute;
 using snailcore::IAttributeSupplier;
 
 class IAttributeCollectionQModel {
@@ -31,6 +33,8 @@ class IAttributeCollectionQModel {
   virtual void switchToDisplayMode() = 0;
   virtual int attrRowCount() const = 0;
   virtual void mayAddAttributeIfSupplier(int row) = 0;
+
+  virtual IAttribute* attrOfRow(int row) const { (void)row; return nullptr; }
 };
 
 #endif  // INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_QMODEL_H_

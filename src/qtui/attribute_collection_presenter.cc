@@ -27,9 +27,14 @@ void AttributeCollectionPresenter::initialize() {
   view()->setQModel(qmodel_.get());
 
   attr_delegate_->whenCreateEditorFor(
-      [this](IAttribute* attr) {
-        auto attr_model = model()->createAttributeModel(attr);
-        return createRawViewFor<IAttributeEditorView>(attr_model);
+      [this](int row) -> IAttributeEditorView* {
+        auto attr = qmodel_->attrOfRow(row);
+        if (attr) {
+          auto attr_model = model()->createAttributeModel(attr);
+          return createRawViewFor<IAttributeEditorView>(attr_model);
+        } else {
+          return nullptr;
+        }
       },
       shared_from_this());
 

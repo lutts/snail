@@ -33,6 +33,7 @@ SET(qtui_SRCS
   candidate_item_qmodel_adapter.cc
   attribute_collection_presenter.cc
   attribute_collection_qmodel.cc
+  attribute_delegate.cc
   )
 
 set(SUBDIRS)

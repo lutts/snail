@@ -158,11 +158,11 @@ class AttributeCollectionModelTest : public ::testing::Test {
                               const utils::U8String& expect_text);
   void checkRowData(std::vector<utils::U8String> expect_row_data[],
                     int expect_row_count);
-  void checkDisplayModelCellNotEditable(int row, int column);
-
+  void assertCellNotEditable(int row, int column);
+  void assertCellEditable(int row, int column);
   void switchToEditMode();
   void switchToDisplayMode();
-  void assertCellEditable(int row, int column);
+
 
   // region: objects test subject depends on
   MockObjectGenerator<MockAttrSupplierTestStub> attr_supplier_generator; // NOLINT
@@ -342,7 +342,7 @@ TEST_F(AttributeCollectionModelTest,
                              utils::sizeof_array(expect_on_display_mode)));
 }
 
-void AttributeCollectionModelTest::checkDisplayModelCellNotEditable(
+void AttributeCollectionModelTest::assertCellNotEditable(
     int row, int column) {
   auto index = qmodel->index(row, column);
   auto flags = qmodel->flags(index);
@@ -350,12 +350,19 @@ void AttributeCollectionModelTest::checkDisplayModelCellNotEditable(
   ASSERT_FALSE(flags & Qt::ItemIsEditable);
 }
 
+void AttributeCollectionModelTest::assertCellEditable(int row, int column) {
+  auto index = qmodel->index(row, column);
+  auto flags = qmodel->flags(index);
+
+  ASSERT_TRUE(flags & Qt::ItemIsEditable);
+}
+
 TEST_F(AttributeCollectionModelTest,
        should_not_editable_in_display_mode) { // NOLINT
   int row_count = qmodel->rowCount();
   for (int row = 0; row < row_count; ++row) {
-    CUSTOM_ASSERT(checkDisplayModelCellNotEditable(row, 0));
-    CUSTOM_ASSERT(checkDisplayModelCellNotEditable(row, 1));
+    CUSTOM_ASSERT(assertCellNotEditable(row, 0));
+    CUSTOM_ASSERT(assertCellNotEditable(row, 1));
   }
 }
 
@@ -411,24 +418,27 @@ TEST_F(AttributeCollectionModelTest,
                              utils::sizeof_array(expect_on_edit_mode)));
 }
 
-void AttributeCollectionModelTest::assertCellEditable(int row, int column) {
-  auto index = qmodel->index(row, column);
-  auto flags = qmodel->flags(index);
-
-  ASSERT_TRUE(flags & Qt::ItemIsEditable);
-}
-
 TEST_F(AttributeCollectionModelTest,
-       check_editable_in_edit_mode) { // NOLINT
+       should_column_0_not_editor_in_edit_mode) { // NOLINT
   // Setup fixture
   switchToEditMode();
 
   // Verify results
   int row_count = qmodel->rowCount();
   for (int row = 0; row < row_count; ++row) {
-    for (int col = 0; col < 2; ++col) {
-      CUSTOM_ASSERT(assertCellEditable(row, col));
-    }
+    CUSTOM_ASSERT(assertCellNotEditable(row, 0));
+  }
+}
+
+TEST_F(AttributeCollectionModelTest,
+       should_column_1_editable_in_edit_mode) { // NOLINT
+  // Setup fixture
+  switchToEditMode();
+
+  // Verify results
+  int row_count = qmodel->rowCount();
+  for (int row = 0; row < row_count; ++row) {
+    CUSTOM_ASSERT(assertCellEditable(row, 1));
   }
 }
 

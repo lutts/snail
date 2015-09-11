@@ -136,12 +136,15 @@ TEST_F(AttributeCollectionPresenterTest, should_construct_properly) { // NOLINT
 TEST_F(AttributeCollectionPresenterTest,
        should_be_able_to_create_attr_editor_view_for_attr_delegate) { // NOLINT
   // Setup fixture
+  int row = std::rand();
   IAttribute* dummy_attr = xtestutils::genDummyPointer<IAttribute>();
   auto attr_model = std::make_shared<MockAttributeModel>();
   std::shared_ptr<IPfModel> attr_pfmodel = attr_model;
   auto attr_editor_view = std::make_shared<MockAttributeEditorView>();
 
   // Expectations
+  EXPECT_CALL(*qmodel, attrOfRow(row))
+      .WillOnce(Return(dummy_attr));
   EXPECT_CALL(*model, createAttributeModel(dummy_attr))
       .WillOnce(Return(attr_model));
   // TODO(lutts): create with args
@@ -149,10 +152,27 @@ TEST_F(AttributeCollectionPresenterTest,
       .WillOnce(Return(attr_editor_view));
 
   // Exercise system
-  auto actual_editor_view = createEditorSignal(dummy_attr);
+  auto actual_editor_view = createEditorSignal(row);
 
   // Verify results
   ASSERT_EQ(attr_editor_view.get(), actual_editor_view);
+}
+
+TEST_F(AttributeCollectionPresenterTest,
+       should_not_create_editor_view_for_supplier_rows) { // NOLINT
+  // Setup fixture
+  int row = std::rand();
+
+  // Expectations
+  EXPECT_CALL(*qmodel, attrOfRow(row)).WillOnce(Return(nullptr));
+  EXPECT_CALL(*model, createAttributeModel(_)).Times(0);
+  EXPECT_CALL(triad_manager, createViewFor(_, _, _, _)).Times(0);
+
+  // Exercise system
+  auto actual_editor_view = createEditorSignal(row);
+
+  // Verify results
+  ASSERT_EQ(nullptr, actual_editor_view);
 }
 
 TEST_F(AttributeCollectionPresenterTest,
