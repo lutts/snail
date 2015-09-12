@@ -24,3 +24,9 @@ add_gmock_test(candidate_item_any_data_test
 
 add_gmock_test(attribute_collection_model_test
   LIBS ${COMMON_LIBS})
+
+add_gmock_test(generic_attribute_supplier_test
+  LIBS ${COMMON_LIBS})
+
+add_gmock_test(generic_attribute_test
+  LIBS ${COMMON_LIBS})
