@@ -1,7 +1,8 @@
 # add boost
-find_package(Boost REQUIRED locale system thread log-mt log_setup)
+find_package(Boost REQUIRED locale system thread log log_setup)
 
-include_directories(${Boost_INCLUDE_DIRS})
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 
 set(SUBDIRS command)
 
