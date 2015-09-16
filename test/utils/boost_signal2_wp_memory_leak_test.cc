@@ -5,6 +5,7 @@
 //
 // [Desc]
 #include <boost/signals2.hpp>
+#include <boost/version.hpp>
 
 #include <iostream>  // std::cout
 #include <memory>    // std::shared_ptr
@@ -72,6 +73,11 @@ struct custom_allocator {
 };
 
 int main() {
+  std::cout << "Boost "
+            << BOOST_VERSION / 100000 << '.'
+            << BOOST_VERSION / 100 % 1000 << '.'
+            << BOOST_VERSION % 100 << std::endl;
+
   std::cout << "---TestCase1: check wp will hold the memory---" << std::endl;
 
   custom_allocator<TrackObject> alloc;
