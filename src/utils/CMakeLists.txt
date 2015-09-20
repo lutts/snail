@@ -1,12 +1,6 @@
 # add boost
-find_package(Boost REQUIRED locale system thread log log_setup)
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
 
 set(SUBDIRS command)
-
-include_directories(SUBDIRS)
 
 set(utils_SRCS)
 foreach (_subdir ${SUBDIRS})
@@ -23,4 +17,4 @@ set(utils_SRCS ${utils_SRCS}
 
 add_library(utils ${utils_SRCS})
 target_link_libraries(utils ${Boost_LIBRARIES} pthread)
-set_target_properties(utils PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")
+#set_target_properties(utils PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")

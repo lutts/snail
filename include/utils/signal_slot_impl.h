@@ -16,12 +16,15 @@
                                                                         \
   void when##sigName(                                                   \
       sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) override {    \
-    sigName##SignalType::slot_type subscriber(handler);             \
+      std::shared_ptr<utils::ITrackable> trackObject) override {        \
+    sigName##SignalType::slot_type subscriber(handler);                 \
         if (trackObject)                                                \
           sigName.connect(subscriber.track_foreign(trackObject));       \
         else                                                            \
           sigName.connect(subscriber);                                  \
+  }                                                                     \
+  void cleanup##sigName() {                                             \
+    sigName.num_slots();                                                \
   }
 
 #define SNAIL_SIGSLOT_IMPL(sigName)                                     \
@@ -38,14 +41,17 @@
                                                                         \
   void when##sigName(                                                   \
       sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) override {    \
+      std::shared_ptr<utils::ITrackable> trackObject) override {        \
     if (sigName.num_slots() >= max_conn_num) return;                    \
     sigName##SignalType::slot_type subscriber(handler);                 \
         if (trackObject)                                                \
           sigName.connect(subscriber.track_foreign(trackObject));       \
         else                                                            \
           sigName.connect(subscriber);                                  \
-}
+  }                                                                     \
+  void cleanup##sigName() {                                             \
+    sigName.num_slots();                                                \
+  }
 
 #define SNAIL_SIGSLOT_IMPL_MAX_CONN(sigName, max_conn_num)              \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \
@@ -68,6 +74,9 @@
           sigName.connect(subscriber.track_foreign(trackObject));       \
         else                                                            \
           sigName.connect(subscriber);                                  \
+  }                                                                     \
+  void cleanup##sigName() {                                             \
+    sigName.num_slots();                                                \
   }
 
 #define SNAIL_SIGSLOT_PIMPL(PrimaryType, sigName)                       \
@@ -96,6 +105,9 @@
           sigName.connect(subscriber.track_foreign(trackObject));       \
         else                                                            \
           sigName.connect(subscriber);                                  \
+  }                                                                     \
+  void cleanup##sigName() {                                             \
+    sigName.num_slots();                                                \
   }
 
 #define SNAIL_SIGSLOT_PIMPL_MAX_CONN(PrimaryType, sigName, max_conn)    \
@@ -117,6 +129,9 @@
       sigName##SlotType handler,                                        \
       std::shared_ptr<utils::ITrackable> trackObject) {             \
     pimpl->when##sigName(handler, trackObject);                         \
+  }                                                                     \
+  void PrimaryType::cleanup##sigName() {                                \
+    pimpl->cleanup##sigName();                                          \
   }
 
 #endif  // INCLUDE_UTILS_SIGNAL_SLOT_IMPL_H_

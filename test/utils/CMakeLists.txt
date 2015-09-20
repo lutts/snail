@@ -2,9 +2,6 @@ include(xTestUtil)
 
 INIT_QGTEST()
 
-# find_package(Qt5Core)
-# add_definitions(-DQT_NO_CAST_FROM_ASCII)
-
 add_gmock_test(singleton_test
   LIBS utils)
 

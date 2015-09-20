@@ -1,7 +1,5 @@
 set(SUBDIRS)
 
-include_directories(SUBDIRS)
-
 set(pfmvp_SRCS)
 foreach (_subdir ${SUBDIRS})
   include(${_subdir}/Sources.cmake)

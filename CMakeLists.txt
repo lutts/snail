@@ -43,6 +43,14 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Gettext REQUIRED)
 add_definitions(-DPACKAGE="${CMAKE_PROJECT_NAME}")
 
+# boost
+find_package(Boost REQUIRED locale system thread log log_setup)
+
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+
+add_definitions(-DBOOST_LOG_DYN_LINK)
+
 add_subdirectory(src)
 add_subdirectory(test)
 

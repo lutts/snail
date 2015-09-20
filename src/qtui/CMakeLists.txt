@@ -3,7 +3,7 @@ add_subdirectory(lib)
 # Widgets finds its own dependencies (QtGui and QtCore).
 find_package(Qt5Widgets REQUIRED)
 
-find_package(Boost REQUIRED system thread)
+#find_package(Boost REQUIRED system thread)
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII)
 
@@ -48,4 +48,4 @@ endforeach()
 
 add_library(qtuicore SHARED ${qtui_SRCS} ${qtui_GEN_MOC_SRCS} ${qtui_GEN_RCS})
 target_link_libraries(qtuicore Qt5::Widgets qtuilib pfmvp ${Boost_LIBRARIES} pthread)
-set_target_properties(qtuicore PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")
+#set_target_properties(qtuicore PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")
