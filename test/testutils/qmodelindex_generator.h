@@ -19,6 +19,8 @@ class QModelIndexGenerator : public QAbstractTableModel {
   QModelIndexGenerator() { }
   virtual ~QModelIndexGenerator() { }
 
+  using QAbstractTableModel::index;
+
   QVariant data(const QModelIndex &index, int role) const override {
     (void)index;
     (void)role;
@@ -32,6 +34,10 @@ class QModelIndexGenerator : public QAbstractTableModel {
   int columnCount(const QModelIndex &parent = QModelIndex()) const override {
     (void)parent;
     return RAND_MAX;
+  }
+
+  QModelIndex index() const {
+    return index(std::rand(), std::rand());
   }
 
  private:
