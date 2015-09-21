@@ -30,3 +30,6 @@ add_gmock_test(generic_attribute_supplier_test
 
 add_gmock_test(generic_attribute_test
   LIBS ${COMMON_LIBS})
+
+add_gmock_test(kbnode_attribute_model_test
+  LIBS ${COMMON_LIBS})

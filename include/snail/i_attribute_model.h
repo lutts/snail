@@ -18,6 +18,8 @@ class IAttributeModel : public pfmvp::IPfModel {
   virtual ~IAttributeModel() = default;
 
   DEF_MODEL_ID(AttributeModel);
+
+  SNAIL_SIGSLOT2(ValidateComplete, void(bool result));
 };
 
 }  // namespace snailcore

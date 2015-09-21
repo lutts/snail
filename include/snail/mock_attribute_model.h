@@ -15,6 +15,7 @@ namespace tests {
 
 class MockAttributeModel : public IAttributeModel {
  public:
+  SNAIL_MOCK_SLOT(ValidateComplete);
 };
 
 }  // namespace tests

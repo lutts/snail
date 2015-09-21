@@ -15,6 +15,10 @@ namespace tests {
 
 class MockKbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
+  // IAttributeModel
+  SNAIL_MOCK_SLOT(ValidateComplete);
+
+  // Self
   MOCK_CONST_METHOD0(getKbNodeProvider, IKbNodeProvider*());
   MOCK_CONST_METHOD0(getKbNodeName, utils::U8String());
   MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));

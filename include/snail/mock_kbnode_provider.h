@@ -20,7 +20,10 @@ class MockKbNodeProvider : public IKbNodeProvider {
 
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_METHOD0(addKbNode, IKbNode*());
-  MOCK_CONST_METHOD0(totalKbNodes, int());
+
+  MOCK_METHOD1(incRef, void(IKbNode* kbnode));
+  MOCK_METHOD1(findKbNodeByName,
+               std::vector<IKbNode*>(const utils::U8String& name));
 };
 
 }  // namespace tests

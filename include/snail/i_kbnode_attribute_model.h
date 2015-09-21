@@ -8,15 +8,14 @@
 #ifndef I_KBNODE_ATTRIBUTE_MODEL_H_
 #define I_KBNODE_ATTRIBUTE_MODEL_H_
 
-#include "pfmvp/i_pf_model.h"
-#include "utils/signal_slot.h"
+#include "snail/i_attribute_model.h"
 
 namespace snailcore {
 
 class IKbNode;
 class IKbNodeProvider;
 
-class IKbNodeAttributeModel : public pfmvp::IPfModel {
+class IKbNodeAttributeModel : public IAttributeModel {
  public:
   enum {
     kSetKbNodeSuccess = 0,
