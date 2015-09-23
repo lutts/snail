@@ -43,7 +43,8 @@ class IKbNodeProvider {
   virtual bool isFilterMode() const = 0;
   virtual KbNodeAddResult addKbNode() = 0;
 
-  virtual IChildNodeIterator* childNodes(IKbNode* parent_node) const = 0;
+  virtual std::unique_ptr<IChildNodeIterator>
+  childNodes(IKbNode* parent_node) const = 0;
 
   // TODO(lutts): do we need to move these internal use API to include/core?
   // internal

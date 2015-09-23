@@ -129,8 +129,7 @@ class KbNodeItem {
       last_item->is_empty_row_ = true;
     }
 
-    std::unique_ptr<IKbNodeProvider::IChildNodeIterator>
-        child_node_iterator(kbnode_provider_->childNodes(kbnode_));
+    auto child_node_iterator = kbnode_provider_->childNodes(kbnode_);
     if (!child_node_iterator)
       return;
 

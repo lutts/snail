@@ -175,8 +175,9 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
 
   MOCK_CONST_METHOD0(isFilterMode, bool());
 
-  IChildNodeIterator* childNodes(IKbNode* parent_node) const override {
-    return new ChildNodeIteratorTestStub(*this, parent_node);
+  std::unique_ptr<IChildNodeIterator>
+  childNodes(IKbNode* parent_node) const override {
+    return utils::make_unique<ChildNodeIteratorTestStub>(*this, parent_node);
   }
 
   void addKbNodeRowData(IKbNode* node,

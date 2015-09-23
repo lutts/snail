@@ -23,7 +23,8 @@ class MockKbNodeProvider : public IKbNodeProvider {
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_CONST_METHOD0(isFilterMode, bool());
   MOCK_METHOD0(addKbNode, KbNodeAddResult());
-  MOCK_CONST_METHOD1(childNodes, IChildNodeIterator*(IKbNode* parent_node));
+  MOCK_CONST_METHOD1(childNodes,
+                     std::unique_ptr<IChildNodeIterator>(IKbNode* parent_node));
 
   MOCK_METHOD1(incRef, void(IKbNode* kbnode));
   MOCK_METHOD1(findKbNodeByName,
