@@ -27,7 +27,7 @@ class IKbNodeTreeQModel {
   virtual bool isAddKbNode(const QModelIndex& index) const = 0;
   virtual void beginResetQModel() = 0;
   virtual void endResetQModel() = 0;
-  virtual void kbNodeAdded(IKbNode* new_kbnode) = 0;
+  virtual void kbNodeAdded(IKbNode* new_kbnode, IKbNode* parent_kbnode) = 0;
 };
 
 #endif  // I_KBNODE_TREE_QMODEL_H_

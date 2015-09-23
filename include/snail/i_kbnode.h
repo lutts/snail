@@ -17,6 +17,7 @@ class IKbNode {
   virtual ~IKbNode() = default;
 
   virtual utils::U8String name() const = 0;
+  virtual bool isCategory() const = 0;
 };
 
 }  // namespace snailcore

@@ -9,6 +9,7 @@
 #define I_KBNODE_PROVIDER_H_
 
 #include <vector>
+#include <iterator>
 
 #include "utils/u8string.h"
 #include "utils/signal_slot.h"
@@ -19,6 +20,19 @@ class IKbNode;
 
 class IKbNodeProvider {
  public:
+  class IChildNodeIterator {
+   public:
+    virtual ~IChildNodeIterator() = default;
+
+    virtual bool hasNext() const = 0;
+    virtual IKbNode* next() = 0;
+  };
+
+  struct KbNodeAddResult {
+    IKbNode* new_kbnode;
+    IKbNode* parent_kbnode;
+  };
+
   virtual ~IKbNodeProvider() = default;
 
   SNAIL_SIGSLOT2(BeginFilter, void());
@@ -26,7 +40,10 @@ class IKbNodeProvider {
 
   // external
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
-  virtual IKbNode* addKbNode() = 0;
+  virtual bool isFilterMode() const = 0;
+  virtual KbNodeAddResult addKbNode() = 0;
+
+  virtual IChildNodeIterator* childNodes(IKbNode* parent_node) const = 0;
 
   // TODO(lutts): do we need to move these internal use API to include/core?
   // internal

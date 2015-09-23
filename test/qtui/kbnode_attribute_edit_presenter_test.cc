@@ -131,15 +131,20 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
 TEST_F(KbNodeAttributeEditPresenterTest,
        should_call_add_kbnode_when_user_clicked_add_kbnode_fake_row) { // NOLINT
+  auto parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
+
+  IKbNodeProvider::KbNodeAddResult
+      expect_kbnode_pair { new_kbnode, parent_kbnode };
+
   auto index = index_generator.index();
 
   // Expectations
   EXPECT_CALL(*kbnode_qmodel, isAddKbNode(index))
       .WillOnce(Return(true));
   EXPECT_CALL(kbnode_provider, addKbNode())
-      .WillOnce(Return(new_kbnode));
-  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode));
+      .WillOnce(Return(expect_kbnode_pair));
+  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode, parent_kbnode));
 
   // Exercise system
   userClickedIndex(index);
@@ -248,12 +253,16 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 TEST_F(KbNodeAttributeEditPresenterTest,
        should_call_addKbNode_in_provider_and_notify_qmodel_when_UserClickAddKbNode) { // NOLINT
   // Setup fixture
+  auto parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
+
+  IKbNodeProvider::KbNodeAddResult
+      expect_kbnode_pair { new_kbnode, parent_kbnode };
 
   // Expectations
   EXPECT_CALL(kbnode_provider, addKbNode())
-      .WillOnce(Return(new_kbnode));
-  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode));
+      .WillOnce(Return(expect_kbnode_pair));
+  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode, parent_kbnode));
 
   // Exercise system
   userClickAddKbNode();

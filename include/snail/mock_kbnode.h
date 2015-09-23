@@ -16,6 +16,7 @@ namespace tests {
 class MockKbNode : public IKbNode {
  public:
   MOCK_CONST_METHOD0(name, utils::U8String());
+  MOCK_CONST_METHOD0(isCategory, bool());
 };
 
 }  // namespace tests
