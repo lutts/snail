@@ -459,9 +459,28 @@ TEST_F(KbNodeTreeQModelTest,
 
   kbnode_provider.addKbNodeRowData(&new_kbnode, &level3_row_data);
 
+  QSignalSpy begin_insert_sigspy(&qmodel,
+                                 SIGNAL(rowsAboutToBeInserted(
+                                     const QModelIndex&, int, int)));
+  QSignalSpy end_insert_sigspy(&qmodel,
+                               SIGNAL(rowsInserted(
+                                   const QModelIndex&, int, int)));
+
   // Exercise system
   qmodel.kbNodeAdded(&new_kbnode, parent_kbnode);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData(filter_mode));
+
+  ASSERT_EQ(1, begin_insert_sigspy.count());
+  ASSERT_EQ(1, end_insert_sigspy.count());
+
+  QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
+  auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
+  ASSERT_EQ(parent_kbnode, qmodel.kbNodeOfIndex(parent_idx));
+
+  int insert_row_first = qvariant_cast<int>(arguments.at(1));
+  int insert_row_last = qvariant_cast<int>(arguments.at(2));
+  ASSERT_EQ(1, insert_row_first);
+  ASSERT_EQ(1, insert_row_last);
 }
