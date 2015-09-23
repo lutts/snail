@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_ID_GENERATOR_H_
-#define KBNODE_ID_GENERATOR_H_
+#ifndef TEST_CORE_KBNODE_ID_GENERATOR_H_
+#define TEST_CORE_KBNODE_ID_GENERATOR_H_
 
 #include <cstdlib>
 
@@ -26,4 +26,4 @@ class KbNodeIdGenerator {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // KBNODE_ID_GENERATOR_H_
+#endif  // TEST_CORE_KBNODE_ID_GENERATOR_H_

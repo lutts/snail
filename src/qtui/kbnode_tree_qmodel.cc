@@ -159,11 +159,7 @@ class KbNodeItem {
 };
 
 class KbNodeTreeQModelImpl {
- public:
-
- private:
   KbNodeItem root_item_;
-  friend class KbNodeTreeQModel;
 };
 
 ////////////////////////////////////////////////////////////////

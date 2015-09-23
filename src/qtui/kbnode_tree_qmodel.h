@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_TREE_QMODEL_H_
-#define KBNODE_TREE_QMODEL_H_
+#ifndef SRC_QTUI_KBNODE_TREE_QMODEL_H_
+#define SRC_QTUI_KBNODE_TREE_QMODEL_H_
 
 #include <QAbstractItemModel>
 
@@ -50,4 +50,4 @@ class KbNodeTreeQModel : public QAbstractItemModel
 };
 
 
-#endif  // KBNODE_TREE_QMODEL_H_
+#endif  // SRC_QTUI_KBNODE_TREE_QMODEL_H_

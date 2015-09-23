@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_ATTRIBUTE_MODEL_H_
-#define I_KBNODE_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_KBNODE_ATTRIBUTE_MODEL_H_
+#define INCLUDE_SNAIL_I_KBNODE_ATTRIBUTE_MODEL_H_
 
 #include "snail/i_attribute_model.h"
 
@@ -35,4 +35,4 @@ class IKbNodeAttributeModel : public IAttributeModel {
 
 }  // namespace snailcore
 
-#endif  // I_KBNODE_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_KBNODE_ATTRIBUTE_MODEL_H_

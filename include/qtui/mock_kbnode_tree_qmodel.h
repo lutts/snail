@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_TREE_QMODEL_H_
-#define MOCK_KBNODE_TREE_QMODEL_H_
+#ifndef INCLUDE_QTUI_MOCK_KBNODE_TREE_QMODEL_H_
+#define INCLUDE_QTUI_MOCK_KBNODE_TREE_QMODEL_H_
 
 #include "qtui/i_kbnode_tree_qmodel.h"
 
@@ -20,4 +20,4 @@ class MockKbNodeTreeQModel : public IKbNodeTreeQModel {
   MOCK_METHOD2(kbNodeAdded, void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
 };
 
-#endif  // MOCK_KBNODE_TREE_QMODEL_H_
+#endif  // INCLUDE_QTUI_MOCK_KBNODE_TREE_QMODEL_H_

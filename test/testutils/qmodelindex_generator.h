@@ -5,12 +5,11 @@
 //
 // [Desc]
 
-#ifndef QMODELINDEX_GENERATOR_H_
-#define QMODELINDEX_GENERATOR_H_
-
-#include <cstdlib>
+#ifndef TEST_TESTUTILS_QMODELINDEX_GENERATOR_H_
+#define TEST_TESTUTILS_QMODELINDEX_GENERATOR_H_
 
 #include <QAbstractTableModel>
+#include <cstdlib>
 
 #include "utils/basic_utils.h"
 
@@ -45,4 +44,4 @@ class QModelIndexGenerator : public QAbstractTableModel {
 };
 
 
-#endif  // QMODELINDEX_GENERATOR_H_
+#endif  // TEST_TESTUTILS_QMODELINDEX_GENERATOR_H_

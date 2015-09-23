@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_ATTRIBUTE_MODEL_H_
-#define MOCK_KBNODE_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_KBNODE_ATTRIBUTE_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_KBNODE_ATTRIBUTE_MODEL_H_
 
 #include "snail/i_kbnode_attribute_model.h"
 
@@ -28,4 +28,4 @@ class MockKbNodeAttributeModel : public IKbNodeAttributeModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_KBNODE_ATTRIBUTE_MODEL_H_

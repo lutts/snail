@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_H_
-#define MOCK_KBNODE_H_
+#ifndef INCLUDE_SNAIL_MOCK_KBNODE_H_
+#define INCLUDE_SNAIL_MOCK_KBNODE_H_
 
 #include "snail/i_kbnode.h"
 
@@ -22,4 +22,4 @@ class MockKbNode : public IKbNode {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_H_
+#endif  // INCLUDE_SNAIL_MOCK_KBNODE_H_

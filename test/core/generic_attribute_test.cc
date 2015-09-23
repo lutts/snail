@@ -23,7 +23,7 @@ namespace tests {
 
 class MockGenericAttribute : public GenericAttribute {
  public:
-  MockGenericAttribute(IAttributeSupplier* supplier)
+  explicit MockGenericAttribute(IAttributeSupplier* supplier)
       : GenericAttribute(supplier) { }
   virtual ~MockGenericAttribute() { }
 

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_TREE_QMODEL_H_
-#define I_KBNODE_TREE_QMODEL_H_
+#ifndef INCLUDE_QTUI_I_KBNODE_TREE_QMODEL_H_
+#define INCLUDE_QTUI_I_KBNODE_TREE_QMODEL_H_
 
 namespace snailcore {
 class IKbNode;
@@ -30,4 +30,4 @@ class IKbNodeTreeQModel {
   virtual void kbNodeAdded(IKbNode* new_kbnode, IKbNode* parent_kbnode) = 0;
 };
 
-#endif  // I_KBNODE_TREE_QMODEL_H_
+#endif  // INCLUDE_QTUI_I_KBNODE_TREE_QMODEL_H_

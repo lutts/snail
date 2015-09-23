@@ -6,6 +6,7 @@
 // [Desc]
 #include "src/core/attribute_collection_model.h"
 
+#include <vector>
 #include "snail/i_attribute_model_factory.h"
 
 namespace snailcore {

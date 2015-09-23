@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KB_GLOBAL_H_
-#define KB_GLOBAL_H_
+#ifndef INCLUDE_CORE_KB_GLOBAL_H_
+#define INCLUDE_CORE_KB_GLOBAL_H_
 
 namespace snailcore {
 
@@ -14,4 +14,4 @@ using KbNodeIdType = int;
 
 }  // namespace snailcore
 
-#endif  // KB_GLOBAL_H_
+#endif  // INCLUDE_CORE_KB_GLOBAL_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_MODEL_FACTORY_H_
-#define MOCK_ATTRIBUTE_MODEL_FACTORY_H_
+#ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_FACTORY_H_
+#define INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_FACTORY_H_
 
 #include "snail/i_attribute_model_factory.h"
 
@@ -22,4 +22,4 @@ class MockAttributeModelFactory : public IAttributeModelFactory {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_MODEL_FACTORY_H_
+#endif  // INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_FACTORY_H_

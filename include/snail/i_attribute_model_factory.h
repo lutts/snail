@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_MODEL_FACTORY_H_
-#define I_ATTRIBUTE_MODEL_FACTORY_H_
+#ifndef INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_FACTORY_H_
+#define INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_FACTORY_H_
 
 namespace snailcore {
 
@@ -23,4 +23,4 @@ class IAttributeModelFactory {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_MODEL_FACTORY_H_
+#endif  // INCLUDE_SNAIL_I_ATTRIBUTE_MODEL_FACTORY_H_

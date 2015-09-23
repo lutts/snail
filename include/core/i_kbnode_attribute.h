@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_ATTRIBUTE_H_
-#define I_KBNODE_ATTRIBUTE_H_
+#ifndef INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
+#define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
 
 #include "src/core/generic_attribute.h"
 #include "core/i_kbnode_attribute_supplier.h"
@@ -17,7 +17,7 @@ class IKbNode;
 
 class IKbNodeAttribute : public GenericAttribute {
  public:
-  IKbNodeAttribute(IKbNodeAttributeSupplier* supplier)
+  explicit IKbNodeAttribute(IKbNodeAttributeSupplier* supplier)
       : GenericAttribute(supplier) { }
   virtual ~IKbNodeAttribute() = default;
 
@@ -27,4 +27,4 @@ class IKbNodeAttribute : public GenericAttribute {
 
 }  // namespace snailcore
 
-#endif  // I_KBNODE_ATTRIBUTE_H_
+#endif  // INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_

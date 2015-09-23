@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
-#define MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
+#ifndef INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
+#define INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
 
 #include "core/i_kbnode_attribute_supplier.h"
 
@@ -27,4 +27,4 @@ class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
+#endif  // INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_

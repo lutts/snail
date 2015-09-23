@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef GENERIC_ATTRIBUTE_H_
-#define GENERIC_ATTRIBUTE_H_
+#ifndef SRC_CORE_GENERIC_ATTRIBUTE_H_
+#define SRC_CORE_GENERIC_ATTRIBUTE_H_
 
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
@@ -15,7 +15,7 @@ namespace snailcore {
 
 class GenericAttribute : public IAttribute {
  public:
-  GenericAttribute(IAttributeSupplier* supplier)
+  explict GenericAttribute(IAttributeSupplier* supplier)
       : supplier_(supplier) { }
   virtual ~GenericAttribute() { }
 
@@ -42,4 +42,4 @@ class GenericAttribute : public IAttribute {
 
 }  // namespace snailcore
 
-#endif  // GENERIC_ATTRIBUTE_H_
+#endif  // SRC_CORE_GENERIC_ATTRIBUTE_H_

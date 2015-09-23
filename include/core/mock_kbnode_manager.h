@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_MANAGER_H_
-#define MOCK_KBNODE_MANAGER_H_
+#ifndef INCLUDE_CORE_MOCK_KBNODE_MANAGER_H_
+#define INCLUDE_CORE_MOCK_KBNODE_MANAGER_H_
 
 #include "core/i_kbnode_manager.h"
 
@@ -22,4 +22,4 @@ class MockKbNodeManager : public IKbNodeManager {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_MANAGER_H_
+#endif  // INCLUDE_CORE_MOCK_KBNODE_MANAGER_H_

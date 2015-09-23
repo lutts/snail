@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef GENERIC_ATTRIBUTE_SUPPLIER_H_
-#define GENERIC_ATTRIBUTE_SUPPLIER_H_
+#ifndef SRC_CORE_GENERIC_ATTRIBUTE_SUPPLIER_H_
+#define SRC_CORE_GENERIC_ATTRIBUTE_SUPPLIER_H_
+
+#include <vector>
 
 #include "snail/i_attribute_supplier.h"
 #include "utils/basic_utils.h"
@@ -78,4 +80,4 @@ class GenericAttributeSupplier : public IAttributeSupplier {
 
 }  // namespace snailcore
 
-#endif  // GENERIC_ATTRIBUTE_SUPPLIER_H_
+#endif  // SRC_CORE_GENERIC_ATTRIBUTE_SUPPLIER_H_

@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_COLLECTION_MODEL_H_
-#define ATTRIBUTE_COLLECTION_MODEL_H_
+#ifndef SRC_CORE_ATTRIBUTE_COLLECTION_MODEL_H_
+#define SRC_CORE_ATTRIBUTE_COLLECTION_MODEL_H_
+
+#include <vector>
 
 #include "utils/basic_utils.h"
 #include "snail/i_attribute_collection_model.h"
@@ -38,4 +40,4 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
 
 }  // namespace snailcore
 
-#endif  // ATTRIBUTE_COLLECTION_MODEL_H_
+#endif  // SRC_CORE_ATTRIBUTE_COLLECTION_MODEL_H_

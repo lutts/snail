@@ -179,7 +179,8 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
     return new ChildNodeIteratorTestStub(*this, parent_node);
   }
 
-  void addKbNodeRowData(IKbNode* node, std::vector<ExpectRowData>* row_data_vec) {
+  void addKbNodeRowData(IKbNode* node,
+                        std::vector<ExpectRowData>* row_data_vec) {
     node_to_row_data_vec_[node] = row_data_vec;
   }
 
@@ -464,5 +465,3 @@ TEST_F(KbNodeTreeQModelTest,
   // Verify results
   CUSTOM_ASSERT(checkRowData(filter_mode));
 }
-
-// TODO: parent() is not tested

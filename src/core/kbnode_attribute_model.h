@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_ATTRIBUTE_MODEL_H_
-#define KBNODE_ATTRIBUTE_MODEL_H_
+#ifndef SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_
+#define SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_
 
 #include "utils/basic_utils.h"
 #include "snail/i_kbnode_attribute_model.h"
@@ -42,4 +42,4 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
 }  // namespace snailcore
 
-#endif  // KBNODE_ATTRIBUTE_MODEL_H_
+#endif  // SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_

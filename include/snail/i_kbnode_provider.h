@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_PROVIDER_H_
-#define I_KBNODE_PROVIDER_H_
+#ifndef INCLUDE_SNAIL_I_KBNODE_PROVIDER_H_
+#define INCLUDE_SNAIL_I_KBNODE_PROVIDER_H_
 
 #include <vector>
 #include <iterator>
@@ -54,4 +54,4 @@ class IKbNodeProvider {
 
 }  // namespace snailcore
 
-#endif  // I_KBNODE_PROVIDER_H_
+#endif  // INCLUDE_SNAIL_I_KBNODE_PROVIDER_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_ATTRIBUTE_SUPPLIER_H_
-#define I_KBNODE_ATTRIBUTE_SUPPLIER_H_
+#ifndef INCLUDE_CORE_I_KBNODE_ATTRIBUTE_SUPPLIER_H_
+#define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_SUPPLIER_H_
 
 #include "src/core/generic_attribute_supplier.h"
 #include "core/kb_global.h"
@@ -24,4 +24,4 @@ class IKbNodeAttributeSupplier : public GenericAttributeSupplier {
 
 }  // namespace snailcore
 
-#endif  // I_KBNODE_ATTRIBUTE_SUPPLIER_H_
+#endif  // INCLUDE_CORE_I_KBNODE_ATTRIBUTE_SUPPLIER_H_

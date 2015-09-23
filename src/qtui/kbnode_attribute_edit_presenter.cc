@@ -12,7 +12,7 @@
 #include "snail/i_kbnode.h"
 #include "snail/i_kbnode_provider.h"
 
-using namespace snailcore;
+using namespace snailcore;  // NOLINT
 
 void KbNodeAttributeEditPresenter::initialize() {
   view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
@@ -22,7 +22,6 @@ void KbNodeAttributeEditPresenter::initialize() {
 
   view()->whenUserClickedIndex(
       [this](const QModelIndex& index) {
-
         on_UserClickedIndex(index);
       },
       shared_from_this());
@@ -93,6 +92,5 @@ void KbNodeAttributeEditPresenter::on_editingFinished(const QString &text) {
     case IKbNodeAttributeModel::kSetKbNodeSuccess:
     default:
       // do nothing
-      ;
   }
 }
