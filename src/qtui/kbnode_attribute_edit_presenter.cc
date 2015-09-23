@@ -90,7 +90,7 @@ void KbNodeAttributeEditPresenter::on_editingFinished(const QString &text) {
       view()->warnNotFound();
       break;
     case IKbNodeAttributeModel::kSetKbNodeSuccess:
-    default:
+    default:;
       // do nothing
   }
 }

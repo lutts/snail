@@ -160,6 +160,7 @@ class KbNodeItem {
 
 class KbNodeTreeQModelImpl {
   KbNodeItem root_item_;
+  friend class KbNodeTreeQModel;
 };
 
 ////////////////////////////////////////////////////////////////

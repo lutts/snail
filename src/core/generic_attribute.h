@@ -15,7 +15,7 @@ namespace snailcore {
 
 class GenericAttribute : public IAttribute {
  public:
-  explict GenericAttribute(IAttributeSupplier* supplier)
+  explicit GenericAttribute(IAttributeSupplier* supplier)
       : supplier_(supplier) { }
   virtual ~GenericAttribute() { }
 
