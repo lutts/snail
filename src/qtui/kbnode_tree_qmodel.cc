@@ -185,6 +185,10 @@ QModelIndex KbNodeTreeQModel::itemToIndex(KbNodeItem* item) const {
   return createIndex(item->row(), 0, item);
 }
 
+void KbNodeTreeQModel::enterAddNewNodeMode() {
+  // TODO(lutts): impl this method
+}
+
 void KbNodeTreeQModel::setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
   return pimpl->root_item_.setKbNodeProvider(kbnode_provider);
 }
@@ -194,6 +198,12 @@ IKbNode* KbNodeTreeQModel::kbNodeOfIndex(const QModelIndex& index) const {
   return item->kbnode();
 }
 
+QModelIndex KbNodeTreeQModel::indexOfKbNode(IKbNode* kbnode) const {
+  // TODO(lutts): impl this method
+  (void)kbnode;
+  return QModelIndex();
+}
+
 bool KbNodeTreeQModel::isAddKbNode(const QModelIndex& index) const {
   auto item = indexToItem(index);
   return item->isAddMore();
@@ -201,6 +211,7 @@ bool KbNodeTreeQModel::isAddKbNode(const QModelIndex& index) const {
 
 void KbNodeTreeQModel::beginResetQModel() {
   beginResetModel();
+  // TODO(lutts): clear all items, all items has to be populated again
 }
 
 void KbNodeTreeQModel::endResetQModel() {

@@ -13,6 +13,16 @@
 class MockKbNodeProviderView : public IKbNodeProviderView {
  public:
   MOCK_METHOD1(showView, bool(bool));
+
+  SNAIL_MOCK_SLOT(UserSelectIndex);
+  SNAIL_MOCK_SLOT(NewKbNodeNameChanged);
+  SNAIL_MOCK_SLOT(UserClickAddButton);
+  SNAIL_MOCK_SLOT(UserReject);
+
+  MOCK_METHOD1(setNewKbNodeName, void(const QString& name));
+  MOCK_METHOD1(setKbNodeTreeQModel, void(IKbNodeTreeQModel* tree_model));
+  MOCK_METHOD1(selectIndex, void(const QModelIndex& index));
+  MOCK_METHOD1(setNameValidateResult, void(bool result));
 };
 
 #endif  // MOCK_KBNODE_PROVIDER_VIEW_H_

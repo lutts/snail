@@ -55,4 +55,7 @@ add_gmock_test(kbnode_attribute_edit_presenter_test
 add_gmock_test(kbnode_tree_qmodel_test
   LIBS qtuicore testutils qttestutils)
 
+add_gmock_test(kbnode_provider_presenter_test
+  LIBS qtuicore testutils)
+
 add_subdirectory(preview)

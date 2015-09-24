@@ -15,6 +15,7 @@ set(core_SRCS ${core_SRCS}
   application_factory.cc
   attribute_collection_model.cc
   kbnode_attribute_model.cc
+  kbnode_provider_model.cc
   )
 
 add_library(snailcore ${core_SRCS})

@@ -23,8 +23,10 @@ class KbNodeTreeQModel : public QAbstractItemModel
   virtual ~KbNodeTreeQModel();
 
   // IKbNodeTreeQModel
+  void enterAddNewNodeMode() override;
   void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
   IKbNode* kbNodeOfIndex(const QModelIndex& index) const override;
+  QModelIndex indexOfKbNode(IKbNode* kbnode) const override;
   bool isAddKbNode(const QModelIndex& index) const override;
   void beginResetQModel() override;
   void endResetQModel() override;

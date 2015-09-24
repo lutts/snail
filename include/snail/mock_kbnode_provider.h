@@ -21,8 +21,10 @@ class MockKbNodeProvider : public IKbNodeProvider {
   SNAIL_MOCK_SLOT(FinishFilter);
 
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
+  MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
   MOCK_CONST_METHOD0(isFilterMode, bool());
-  MOCK_METHOD0(addKbNode, KbNodeAddResult());
+  MOCK_METHOD2(addKbNode,
+               IKbNode*(const utils::U8String& name, IKbNode* parent));
   MOCK_CONST_METHOD1(childNodes,
                      std::unique_ptr<IChildNodeIterator>(IKbNode* parent_node));
 

@@ -13,6 +13,9 @@
 
 namespace snailcore {
 
+class IKbNode;
+class IKbNodeProvider;
+
 class IKbNodeProviderModel : public pfmvp::IPfModel {
  public:
   virtual ~IKbNodeProviderModel() = default;
@@ -21,6 +24,15 @@ class IKbNodeProviderModel : public pfmvp::IPfModel {
 
   SNAIL_SIGSLOT2(KbNodeAdded,
                  void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
+
+  virtual IKbNodeProvider* getKbNodeProvider() const = 0;
+  virtual utils::U8String getFilterPattern() const = 0;
+  virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
+  virtual IKbNode* getNewKbNodeParent() const = 0;
+  virtual void setNewKbNodeParent(IKbNode* kbnode) = 0;
+  virtual void setNewKbNodeName(const utils::U8String& name) = 0;
+  virtual bool isNewKbNodeNameValid() const = 0;
+  virtual void addKbNode() = 0;
 };
 
 }  // namespace snailcore

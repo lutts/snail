@@ -28,11 +28,6 @@ class IKbNodeProvider {
     virtual IKbNode* next() = 0;
   };
 
-  struct KbNodeAddResult {
-    IKbNode* new_kbnode;
-    IKbNode* parent_kbnode;
-  };
-
   virtual ~IKbNodeProvider() = default;
 
   SNAIL_SIGSLOT2(BeginFilter, void());
@@ -40,8 +35,9 @@ class IKbNodeProvider {
 
   // external
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
+  virtual utils::U8String getFilterPattern() const = 0;
   virtual bool isFilterMode() const = 0;
-  virtual KbNodeAddResult addKbNode() = 0;
+  virtual IKbNode* addKbNode(const utils::U8String& name, IKbNode* parent) = 0;
 
   virtual std::unique_ptr<IChildNodeIterator>
   childNodes(IKbNode* parent_node) const = 0;

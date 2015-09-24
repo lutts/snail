@@ -36,6 +36,7 @@ SET(qtui_SRCS
   attribute_delegate.cc
   kbnode_attribute_edit_presenter.cc
   kbnode_tree_qmodel.cc
+  kbnode_provider_presenter.cc
   )
 
 set(SUBDIRS)
