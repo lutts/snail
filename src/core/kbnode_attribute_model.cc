@@ -28,6 +28,12 @@ IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
   return kbnode_provider_.get();
 }
 
+std::shared_ptr<IKbNodeProviderModel>
+KbNodeAttributeModel::createKbNodeProviderModel() const {
+  // TODO(lutts): impl this method
+  return nullptr;
+}
+
 utils::U8String KbNodeAttributeModel::getKbNodeName() const {
   return kbnode_attr_->valueText();
 }

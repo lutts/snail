@@ -24,6 +24,10 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
   virtual ~KbNodeAttributeModel();
 
   IKbNodeProvider* getKbNodeProvider() const override;
+
+  std::shared_ptr<IKbNodeProviderModel>
+  createKbNodeProviderModel() const override;
+
   utils::U8String getKbNodeName() const override;
   void setKbNode(IKbNode* kbnode) override;
   int setKbNodeByName(const utils::U8String& name) override;

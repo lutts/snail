@@ -18,6 +18,9 @@
 #include "src/qtui/kbnode_attribute_edit_presenter.h"
 #include "snail/mock_kbnode.h"
 
+#include "snail/mock_kbnode_provider_model.h"
+#include "qtui/mock_kbnode_provider_view.h"
+
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
 using namespace pfmvp;  // NOLINT
@@ -87,6 +90,9 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
+  void expectationOnAddKbNode();
+  void shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
+
   // region: objects test subject depends on
   std::shared_ptr<MockKbNodeAttributeModel> model;
   std::shared_ptr<MockKbNodeAttributeEditView> view;
@@ -126,28 +132,55 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   using FinishFilterSlotType =
       IKbNodeProvider::FinishFilterSlotType;
   SlotCatcher<FinishFilterSlotType> providerFinishFilter;
+
+  using KbNodeAddedSlotType =
+      IKbNodeProviderModel::KbNodeAddedSlotType;
+  SlotCatcher<KbNodeAddedSlotType> kbNodeAdded;
   // endregion
 };
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_call_add_kbnode_when_user_clicked_add_kbnode_fake_row) { // NOLINT
+void KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
+  auto kbnode_provider_model = std::make_shared<MockKbNodeProviderModel>();
+  std::shared_ptr<IPfModel> kbnode_provider_pfmodel = kbnode_provider_model;
+  auto add_kbnode_dialog_view = std::make_shared<MockKbNodeProviderView>();
+
+  EXPECT_CALL(*model, createKbNodeProviderModel())
+      .WillOnce(Return(kbnode_provider_model));
+  EXPECT_CALL(triad_manager, createViewFor(kbnode_provider_pfmodel, _, _, _))
+      .WillOnce(Return(add_kbnode_dialog_view));
+  EXPECT_CALL(*add_kbnode_dialog_view, showView(true));
+
+  EXPECT_CALL(*kbnode_provider_model, whenKbNodeAdded(_, _))
+      .WillOnce(SaveArg<0>(&kbNodeAdded));
+}
+
+void KbNodeAttributeEditPresenterTest::shouldNotifyKbNodeTreeQModelWhenKbNodeAdded() { // NOLINT
+  // Setup fixture
   auto parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
 
-  IKbNodeProvider::KbNodeAddResult
-      expect_kbnode_pair { new_kbnode, parent_kbnode };
+  // Expectations
+  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode, parent_kbnode));
 
+  // Excercise system
+  kbNodeAdded(new_kbnode, parent_kbnode);
+}
+
+TEST_F(KbNodeAttributeEditPresenterTest,
+       should_call_add_kbnode_when_user_clicked_add_kbnode_fake_row) { // NOLINT
   auto index = index_generator.index();
 
   // Expectations
   EXPECT_CALL(*kbnode_qmodel, isAddKbNode(index))
       .WillOnce(Return(true));
-  EXPECT_CALL(kbnode_provider, addKbNode())
-      .WillOnce(Return(expect_kbnode_pair));
-  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode, parent_kbnode));
+
+  expectationOnAddKbNode();
 
   // Exercise system
   userClickedIndex(index);
+
+  // Verify result
+  shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,
@@ -252,18 +285,12 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
 TEST_F(KbNodeAttributeEditPresenterTest,
        should_call_addKbNode_in_provider_and_notify_qmodel_when_UserClickAddKbNode) { // NOLINT
-  // Setup fixture
-  auto parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
-  auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
-
-  IKbNodeProvider::KbNodeAddResult
-      expect_kbnode_pair { new_kbnode, parent_kbnode };
-
   // Expectations
-  EXPECT_CALL(kbnode_provider, addKbNode())
-      .WillOnce(Return(expect_kbnode_pair));
-  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode, parent_kbnode));
+  expectationOnAddKbNode();
 
   // Exercise system
   userClickAddKbNode();
+
+  // Verify result
+  shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
 }
