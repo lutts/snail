@@ -34,6 +34,7 @@ class KbNodeAttributeEditPresenter : public KbNodeAttributeEditPresenterBase {
  private:
   void on_UserClickedIndex(const QModelIndex& index);
   void on_editingFinished(const QString& text);
+  void addKbNode();
 
   std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel_;
 

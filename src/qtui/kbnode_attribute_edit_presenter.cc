@@ -41,12 +41,7 @@ void KbNodeAttributeEditPresenter::initialize() {
 
   view()->whenUserClickAddKbNode(
       [this]() {
-        auto kbnode_provider = model()->getKbNodeProvider();
-        auto new_kbnode_pair = kbnode_provider->addKbNode();
-        if (new_kbnode_pair.new_kbnode) {
-          kbnode_qmodel_->kbNodeAdded(new_kbnode_pair.new_kbnode,
-                                      new_kbnode_pair.parent_kbnode);
-        }
+        addKbNode();
       },
       shared_from_this());
 
@@ -64,15 +59,19 @@ void KbNodeAttributeEditPresenter::initialize() {
       shared_from_this());
 }
 
+void KbNodeAttributeEditPresenter::addKbNode() {
+  auto kbnode_provider = model()->getKbNodeProvider();
+  auto new_kbnode_pair = kbnode_provider->addKbNode();
+  if (new_kbnode_pair.new_kbnode) {
+    kbnode_qmodel_->kbNodeAdded(new_kbnode_pair.new_kbnode,
+                                new_kbnode_pair.parent_kbnode);
+  }
+}
+
 void KbNodeAttributeEditPresenter::on_UserClickedIndex(
     const QModelIndex& index) {
   if (kbnode_qmodel_->isAddKbNode(index)) {
-    auto kbnode_provider = model()->getKbNodeProvider();
-    auto new_kbnode_pair = kbnode_provider->addKbNode();
-    if (new_kbnode_pair.new_kbnode) {
-      kbnode_qmodel_->kbNodeAdded(new_kbnode_pair.new_kbnode,
-                                  new_kbnode_pair.parent_kbnode);
-    }
+    addKbNode();
   } else {
     auto kbnode = kbnode_qmodel_->kbNodeOfIndex(index);
     model()->setKbNode(kbnode);
