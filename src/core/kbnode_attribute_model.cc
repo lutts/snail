@@ -8,6 +8,7 @@
 #include "core/i_kbnode_attribute.h"
 #include "core/i_kbnode_manager.h"
 #include "snail/i_kbnode_provider.h"
+#include "src/core/kbnode_provider_model.h"
 
 namespace snailcore {
 
@@ -30,8 +31,7 @@ IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
 
 std::shared_ptr<IKbNodeProviderModel>
 KbNodeAttributeModel::createKbNodeProviderModel() const {
-  // TODO(lutts): impl this method
-  return nullptr;
+  return std::make_shared<KbNodeProviderModel>(getKbNodeProvider());
 }
 
 utils::U8String KbNodeAttributeModel::getKbNodeName() const {
