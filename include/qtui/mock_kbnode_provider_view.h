@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_PROVIDER_VIEW_H_
-#define MOCK_KBNODE_PROVIDER_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
+#define INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
 
 #include "qtui/i_kbnode_provider_view.h"
 
@@ -25,4 +25,4 @@ class MockKbNodeProviderView : public IKbNodeProviderView {
   MOCK_METHOD1(setNameValidateResult, void(bool result));
 };
 
-#endif  // MOCK_KBNODE_PROVIDER_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_

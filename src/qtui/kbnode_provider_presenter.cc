@@ -26,16 +26,15 @@ void KbNodeProviderPresenter::initialize() {
   model()->setFilterPattern("");
 
   kbnode_qmodel_->setKbNodeProvider(model()->getKbNodeProvider());
-  kbnode_qmodel_->enterAddNewNodeMode();
   view()->setKbNodeTreeQModel(kbnode_qmodel_.get());
 
   auto new_kbnode_parent = model()->getNewKbNodeParent();
-  auto index = kbnode_qmodel_->indexOfKbNode(new_kbnode_parent);
+  auto index = kbnode_qmodel_->kbNodeToIndex(new_kbnode_parent);
   view()->selectIndex(index);
 
   view()->whenUserSelectIndex(
       [this](const QModelIndex& index) {
-        auto kbnode = kbnode_qmodel_->kbNodeOfIndex(index);
+        auto kbnode = kbnode_qmodel_->indexToKbNode(index);
         model()->setNewKbNodeParent(kbnode);
       },
       shared_from_this());

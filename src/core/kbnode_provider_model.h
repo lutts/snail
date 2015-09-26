@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_PROVIDER_MODEL_H_
-#define KBNODE_PROVIDER_MODEL_H_
+#ifndef SRC_CORE_KBNODE_PROVIDER_MODEL_H_
+#define SRC_CORE_KBNODE_PROVIDER_MODEL_H_
 
 #include "snail/i_kbnode_provider_model.h"
 #include "utils/basic_utils.h"
@@ -18,7 +18,7 @@ class IKbNodeProvider;
 
 class KbNodeProviderModel : public IKbNodeProviderModel {
  public:
-  KbNodeProviderModel(IKbNodeProvider* kbnode_provider);
+  explicit KbNodeProviderModel(IKbNodeProvider* kbnode_provider);
   virtual ~KbNodeProviderModel();
 
   IKbNodeProvider* getKbNodeProvider() const override;
@@ -41,4 +41,4 @@ class KbNodeProviderModel : public IKbNodeProviderModel {
 
 }  // namespace snailcore
 
-#endif  // KBNODE_PROVIDER_MODEL_H_
+#endif  // SRC_CORE_KBNODE_PROVIDER_MODEL_H_

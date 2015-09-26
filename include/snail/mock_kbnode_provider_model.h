@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_PROVIDER_MODEL_H_
-#define MOCK_KBNODE_PROVIDER_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
 
 #include "snail/i_kbnode_provider_model.h"
 
@@ -30,4 +30,4 @@ class MockKbNodeProviderModel : public IKbNodeProviderModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_PROVIDER_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_

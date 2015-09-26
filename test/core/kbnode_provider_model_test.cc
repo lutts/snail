@@ -139,7 +139,8 @@ TEST_F(KbNodeProviderModelTest,
   EXPECT_CALL(kbnode_provider, addKbNode(expect_new_name, expect_parent_kbnode))
       .WillOnce(Return(expect_new_kbnode));
   auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, KbNodeAdded(expect_new_kbnode, expect_parent_kbnode));
+  EXPECT_CALL(*mock_listener,
+              KbNodeAdded(expect_new_kbnode, expect_parent_kbnode));
 
   // Exercise system
   model->addKbNode();

@@ -76,7 +76,7 @@ void KbNodeAttributeEditPresenter::on_UserClickedIndex(
   if (kbnode_qmodel_->isAddKbNode(index)) {
     addKbNode();
   } else {
-    auto kbnode = kbnode_qmodel_->kbNodeOfIndex(index);
+    auto kbnode = kbnode_qmodel_->indexToKbNode(index);
     model()->setKbNode(kbnode);
     view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
   }

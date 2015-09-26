@@ -194,7 +194,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   // Expectations
   EXPECT_CALL(*kbnode_qmodel, isAddKbNode(index))
       .WillOnce(Return(false));
-  EXPECT_CALL(*kbnode_qmodel, kbNodeOfIndex(index))
+  EXPECT_CALL(*kbnode_qmodel, indexToKbNode(index))
       .WillOnce(Return(kbnode));
   EXPECT_CALL(*model, getKbNodeName())
       .WillOnce(Return(kbnode_name.ustr()));

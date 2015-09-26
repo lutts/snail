@@ -13,20 +13,18 @@
 #include "qtui/i_kbnode_tree_qmodel.h"
 #include "utils/basic_utils.h"
 
-class KbNodeTreeQModelImpl;
 class KbNodeItem;
 
-class KbNodeTreeQModel : public QAbstractItemModel
+class KbNodeTreeQModelBase : public QAbstractItemModel
                        , public IKbNodeTreeQModel {
  public:
-  KbNodeTreeQModel();
-  virtual ~KbNodeTreeQModel();
+  KbNodeTreeQModelBase();
+  virtual ~KbNodeTreeQModelBase();
 
   // IKbNodeTreeQModel
-  void enterAddNewNodeMode() override;
   void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
-  IKbNode* kbNodeOfIndex(const QModelIndex& index) const override;
-  QModelIndex indexOfKbNode(IKbNode* kbnode) const override;
+  IKbNode* indexToKbNode(const QModelIndex& index) const override;
+  QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
   bool isAddKbNode(const QModelIndex& index) const override;
   void beginResetQModel() override;
   void endResetQModel() override;
@@ -41,14 +39,41 @@ class KbNodeTreeQModel : public QAbstractItemModel
   int rowCount(const QModelIndex &parent) const override;
   int columnCount(const QModelIndex &parent) const override;
 
- private:
-  SNAIL_DISABLE_COPY(KbNodeTreeQModel);
-
+ protected:
+  KbNodeItem* rootItem() const;
   QModelIndex itemToIndex(KbNodeItem* item) const;
   KbNodeItem* indexToItem(const QModelIndex& index) const;
 
-  std::unique_ptr<KbNodeTreeQModelImpl> pimpl;
-  friend class KbNodeTreeQModelImpl;
+  virtual void clear();
+  virtual std::unique_ptr<KbNodeItem> createRootItem() const;
+
+ private:
+  SNAIL_DISABLE_COPY(KbNodeTreeQModelBase);
+
+  mutable std::unique_ptr<KbNodeItem> root_item_;
+};
+
+class KbNodeTreeQModel : public KbNodeTreeQModelBase {
+ public:
+  KbNodeTreeQModel();
+  ~KbNodeTreeQModel();
+
+ private:
+  bool isAddKbNode(const QModelIndex& index) const override;
+  std::unique_ptr<KbNodeItem> createRootItem() const override;
+};
+
+class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBase {
+ public:
+  KbNodeTreeQModelWithProviderNode();
+  ~KbNodeTreeQModelWithProviderNode();
+  void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
+
+ private:
+  void clear() override;
+  QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
+
+  KbNodeItem* provider_item_ { nullptr };
 };
 
 

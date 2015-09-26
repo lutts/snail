@@ -37,6 +37,7 @@ class ExpectRowData {
   IKbNode* parent_node_ptr;
   bool isAddMore;
   bool isSelectable;
+  bool isVisible;
 
   std::vector<ExpectRowData>* subnodes;
 };
@@ -48,6 +49,7 @@ std::vector<ExpectRowData> level3_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr,
   }
 };
@@ -59,6 +61,7 @@ std::vector<ExpectRowData> level2_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr,
   },
   {
@@ -67,6 +70,7 @@ std::vector<ExpectRowData> level2_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = false,
+    .isVisible = true,
     .subnodes = &level3_row_data,
   },
   {
@@ -75,10 +79,13 @@ std::vector<ExpectRowData> level2_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr,
   }
 };
 
+constexpr static int kEmptySpecialRow = 0;
+constexpr static int kAddMoreSpecialRow = 3;
 std::vector<ExpectRowData> level1_row_data = {
   {  // level1
     .text = "",
@@ -86,6 +93,7 @@ std::vector<ExpectRowData> level1_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr
   },
   {
@@ -93,8 +101,8 @@ std::vector<ExpectRowData> level1_row_data = {
     .node_ptr = nullptr,
     .parent_node_ptr = nullptr,
     .isAddMore = false,
-
     .isSelectable = false,
+    .isVisible = true,
     .subnodes = &level2_row_data,
   },
   {
@@ -103,6 +111,7 @@ std::vector<ExpectRowData> level1_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr,
   },
   {
@@ -111,7 +120,21 @@ std::vector<ExpectRowData> level1_row_data = {
     .parent_node_ptr = nullptr,
     .isAddMore = true,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr,
+  }
+};
+
+#define PROVIDER_NAME "Provider Name"
+std::vector<ExpectRowData> provider_row_data = {
+  {
+    .text = PROVIDER_NAME,
+    .node_ptr = nullptr,
+    .parent_node_ptr = nullptr,
+    .isAddMore = false,
+    .isSelectable = true,
+    .isVisible = true,
+    .subnodes = &level1_row_data,
   }
 };
 
@@ -121,7 +144,69 @@ ExpectRowData root_row_data = {
   .parent_node_ptr = nullptr,
   .isAddMore = false,
   .isSelectable = false,
+  .isVisible = true,
   .subnodes = &level1_row_data,
+};
+
+std::vector<ExpectRowData> level1_row_data_after_reset = {
+  {  // level1
+    .text = "",
+    .node_ptr = nullptr,
+    .parent_node_ptr = nullptr,
+    .isAddMore = false,
+    .isSelectable = true,
+    .isVisible = true,
+    .subnodes = nullptr
+  },
+  {
+    .text = "Level1 Node1 After Reset",
+    .node_ptr = nullptr,
+    .parent_node_ptr = nullptr,
+    .isAddMore = false,
+    .isSelectable = false,
+    .isVisible = true,
+    .subnodes = nullptr,
+  },
+  {
+    .text = "Level1 Node2 After Reset",
+    .node_ptr = nullptr,
+    .parent_node_ptr = nullptr,
+    .isAddMore = false,
+    .isSelectable = true,
+    .isVisible = true,
+    .subnodes = nullptr,
+  },
+  {
+    .text = "Add More...",
+    .node_ptr = nullptr,
+    .parent_node_ptr = nullptr,
+    .isAddMore = true,
+    .isSelectable = true,
+    .isVisible = true,
+    .subnodes = nullptr,
+  }
+};
+
+std::vector<ExpectRowData> provider_row_data_after_reset = {
+  {
+    .text = PROVIDER_NAME,
+    .node_ptr = nullptr,
+    .parent_node_ptr = nullptr,
+    .isAddMore = false,
+    .isSelectable = true,
+    .isVisible = true,
+    .subnodes = &level1_row_data_after_reset,
+  }
+};
+
+ExpectRowData root_row_data_after_reset = {
+  .text = "root idx",
+  .node_ptr = nullptr,
+  .parent_node_ptr = nullptr,
+  .isAddMore = false,
+  .isSelectable = false,
+  .isVisible = true,
+  .subnodes = &level1_row_data_after_reset,
 };
 
 class KbNodeProviderTestStub : public IKbNodeProvider {
@@ -133,12 +218,12 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
         : row_data_(provider.nodeToRowData(parent_node)) {
       if (row_data_->subnodes) {
         max_idx_ = row_data_->subnodes->size() - 1;
-      } else {
-        max_idx_ = -1;
       }
-      if (parent_node == nullptr) {  // root
+
+      if ((row_data_->subnodes == &level1_row_data) ||
+          (row_data_->subnodes == &level1_row_data_after_reset)) {
         cur_idx_ = 1;  // skip empty row
-        --max_idx_;  // skip add more row
+        --max_idx_;     // skip add more row
       }
     }
     virtual ~ChildNodeIteratorTestStub() = default;
@@ -157,6 +242,8 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
       auto kbnode = (*row_data_->subnodes)[cur_idx_].node_ptr;
       ++cur_idx_;
 
+      std::cout << "populate one..." << kbnode->name() << std::endl;
+
       return kbnode;
     }
 
@@ -164,16 +251,18 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
     SNAIL_DISABLE_COPY(ChildNodeIteratorTestStub);
 
     ExpectRowData* row_data_;
-    int cur_idx_ { 0 };
-    int max_idx_ { 0 };
+    mutable int cur_idx_ { 0 };
+    int max_idx_ { -1 };
   };
 
   KbNodeProviderTestStub() {
-    fillNodePtrInRowData(root_row_data.subnodes);
+    fillRowData(&root_row_data);
   }
   virtual ~KbNodeProviderTestStub() = default;
 
-  MOCK_CONST_METHOD0(isFilterMode, bool());
+  utils::U8String name() const {
+    return PROVIDER_NAME;
+  }
 
   std::unique_ptr<IChildNodeIterator>
   childNodes(IKbNode* parent_node) const override {
@@ -184,6 +273,15 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
                         std::vector<ExpectRowData>* row_data_vec) {
     node_to_row_data_vec_[node] = row_data_vec;
   }
+
+  void fillRowData(ExpectRowData* root_rdata) {
+    kbnodes_.clear();
+    node_to_row_data_vec_.clear();
+    fillNodePtrInRowData(root_rdata->subnodes);
+    root_rdata_ = root_rdata;
+  }
+
+  MOCK_CONST_METHOD0(isFilterMode, bool());
 
   // unintrested method, using mocks
   SNAIL_MOCK_SLOT(BeginFilter);
@@ -210,19 +308,23 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
       if (row_data.isAddMore)
         continue;
 
-      kbnodes_.push_back(utils::make_unique<MockKbNode>());
-      auto & last_add = kbnodes_.back();
-      MockKbNode* kbnode = last_add.get();
 
-      EXPECT_CALL(*kbnode, name())
-          .WillRepeatedly(Return(row_data.text));
-      EXPECT_CALL(*kbnode, isCategory())
-          .WillRepeatedly(Return(!row_data.isSelectable));
+      MockKbNode* kbnode = nullptr;
+      if (row_data.text != PROVIDER_NAME) {
+        auto kbnode_up = utils::make_unique<MockKbNode>();
+        kbnode = kbnode_up.get();
+        kbnodes_.push_back(std::move(kbnode_up));
 
-      row_data.node_ptr = kbnode;
-      node_to_row_data_vec_[kbnode] = row_datas;
+        EXPECT_CALL(*kbnode, name())
+            .WillRepeatedly(Return(row_data.text));
+        EXPECT_CALL(*kbnode, isCategory())
+            .WillRepeatedly(Return(!row_data.isSelectable));
 
-      row_data.parent_node_ptr = parent_node;
+        row_data.node_ptr = kbnode;
+        node_to_row_data_vec_[kbnode] = row_datas;
+
+        row_data.parent_node_ptr = parent_node;
+      }
 
       if (row_data.subnodes)
         fillNodePtrInRowData(row_data.subnodes, kbnode);
@@ -230,8 +332,12 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
   }
 
   ExpectRowData* nodeToRowData(IKbNode* node) const {
-    if (!node)
-      return &root_row_data;
+    if (!node) {
+      if ((*root_rdata_->subnodes)[0].text == PROVIDER_NAME)
+        return &(*root_rdata_->subnodes)[0];
+      else
+        return root_rdata_;
+    }
 
     try {
       auto row_data_vec = node_to_row_data_vec_.at(node);
@@ -250,26 +356,39 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
 
   std::vector<std::unique_ptr<MockKbNode>> kbnodes_;
   std::map<IKbNode*, std::vector<ExpectRowData>*> node_to_row_data_vec_;
+  ExpectRowData* root_rdata_ { nullptr };
 };
 
-class KbNodeTreeQModelTest : public ::testing::Test {
+class KbNodeTreeQModelTestBase : public ::testing::Test {
  protected:
-  KbNodeTreeQModelTest() {
+  KbNodeTreeQModelTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~KbNodeTreeQModelTest() { }
+  // ~KbNodeTreeQModelTestBase() { }
   virtual void SetUp() {
-    qmodel.setKbNodeProvider(&kbnode_provider);
+    qmodel = createQModel();
+    qmodel->setKbNodeProvider(&kbnode_provider);
   }
   // virtual void TearDown() { }
 
-  void checkRowData(bool filter_mode);
+  virtual std::unique_ptr<KbNodeTreeQModelBase> createQModel() = 0;
+
+  void expectEmptyRowVisible(bool visible);
+  void expectAddMoreRowVisible(bool visible);
+
+  int visibleNodeCount(const ExpectRowData& row_data);
+
+  void checkRowData(bool after_reset = false);
   void checkRowData(const std::vector<ExpectRowData>& row_data,
-                    const QModelIndex& parent_index,
-                    size_t start_data_idx);
+                    const QModelIndex& parent_index);
   void checkIndexData(const QModelIndex& index,
                       const ExpectRowData& rdata);
+
+  void should_beginResetQModel_emit_modelAboutToReset();
+  void should_endResetQModel_emit_modelReset();
+  void test_dynamically_add_kbnode();
+  void test_dynamically_add_kbnode_in_level1();
 
   // region: objects test subject depends on
   KbNodeProviderTestStub kbnode_provider;
@@ -277,44 +396,67 @@ class KbNodeTreeQModelTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  KbNodeTreeQModel qmodel;
+  std::unique_ptr<KbNodeTreeQModelBase> qmodel;
   // endregion
 
   // region: object depends on test subject
   // endregion
 };
 
-void KbNodeTreeQModelTest::checkRowData(bool filter_mode) {
-  size_t level1_start_idx = 0;
-  if (filter_mode)
-    level1_start_idx = 1;
-
-  // check root
-  int expect_row_count = root_row_data.subnodes->size();
-  if (filter_mode)
-    --expect_row_count;
-  ASSERT_EQ(expect_row_count, qmodel.rowCount(QModelIndex()));
-  ASSERT_EQ(1, qmodel.columnCount(QModelIndex()));
-  QModelIndex expect_parent_idx;
-  ASSERT_EQ(expect_parent_idx, qmodel.parent(QModelIndex()));
-
-  // check sub items
-  checkRowData(*root_row_data.subnodes, QModelIndex(), level1_start_idx);
+void KbNodeTreeQModelTestBase::expectEmptyRowVisible(bool visible) {
+  level1_row_data[kEmptySpecialRow].isVisible = visible;
+  level1_row_data_after_reset[kEmptySpecialRow].isVisible = visible;
 }
 
-void KbNodeTreeQModelTest::checkRowData(
+void KbNodeTreeQModelTestBase::expectAddMoreRowVisible(bool visible) {
+  level1_row_data[kAddMoreSpecialRow].isVisible = visible;
+  level1_row_data_after_reset[kAddMoreSpecialRow].isVisible = visible;
+}
+
+int KbNodeTreeQModelTestBase::visibleNodeCount(const ExpectRowData& row_data) {
+  if (row_data.subnodes == nullptr)
+    return 0;
+
+  int count = 0;
+  for (auto & sub_rdata : *row_data.subnodes) {
+    if (sub_rdata.isVisible)
+      ++count;
+  }
+
+  return count;
+}
+
+void KbNodeTreeQModelTestBase::checkRowData(bool after_reset) {
+  // check root
+  auto root_rdata = &root_row_data;
+  if (after_reset)
+    root_rdata = &root_row_data_after_reset;
+
+  ASSERT_EQ(visibleNodeCount(*root_rdata), qmodel->rowCount(QModelIndex()));
+  ASSERT_EQ(1, qmodel->columnCount(QModelIndex()));
+  QModelIndex expect_parent_idx;
+  ASSERT_EQ(expect_parent_idx, qmodel->parent(QModelIndex()));
+
+  // check sub items
+  checkRowData(*root_rdata->subnodes, QModelIndex());
+}
+
+void KbNodeTreeQModelTestBase::checkRowData(
     const std::vector<ExpectRowData>& row_data,
-    const QModelIndex& parent_index,
-    size_t start_data_idx) {
-  for (size_t idx = start_data_idx; idx < row_data.size(); ++idx) {
+    const QModelIndex& parent_index) {
+  int row = 0;
+  for (size_t idx = 0; idx < row_data.size(); ++idx) {
     auto& rdata = row_data[idx];
 
-    int row = idx - start_data_idx;
-    QModelIndex index = qmodel.index(row, 0, parent_index);
+    if (!rdata.isVisible)
+      continue;
+
+    QModelIndex index = qmodel->index(row, 0, parent_index);
     checkIndexData(index, rdata);
+    ++row;
 
     if (rdata.subnodes) {
-      checkRowData(*rdata.subnodes, index, 0);
+      checkRowData(*rdata.subnodes, index);
     }
   }
 }
@@ -338,7 +480,7 @@ std::ostream &operator<<(std::ostream &os, const QModelIndex& index) {
   return os;
 }
 
-void KbNodeTreeQModelTest::checkIndexData(const QModelIndex& index,
+void KbNodeTreeQModelTestBase::checkIndexData(const QModelIndex& index,
                                           const ExpectRowData& expect_data) {
   auto q_display_text = index.data(Qt::DisplayRole).toString();
   auto actual_display_text = QStringToU8String(q_display_text);
@@ -346,97 +488,79 @@ void KbNodeTreeQModelTest::checkIndexData(const QModelIndex& index,
       << "index: " << index << " text not match"
       << " (text: " << expect_data.text << ")";
 
-  int actual_row_count = qmodel.rowCount(index);
-  int expect_row_count =
-      (expect_data.subnodes == nullptr) ? 0 : expect_data.subnodes->size();
+  int actual_row_count = qmodel->rowCount(index);
+  int expect_row_count = visibleNodeCount(expect_data);
   ASSERT_EQ(expect_row_count, actual_row_count)
       << "index: " << index << " row count not match"
       << " (text: " << expect_data.text << ")";
 
-  int actual_col_count = qmodel.columnCount(index);
+  int actual_col_count = qmodel->columnCount(index);
   ASSERT_EQ(1, actual_col_count)
       << "index: " << index << " col count not match"
       << " (text: " << expect_data.text << ")";
 
-  auto actual_kbnode = qmodel.kbNodeOfIndex(index);
+  auto actual_kbnode = qmodel->indexToKbNode(index);
   ASSERT_EQ(expect_data.node_ptr, actual_kbnode)
       << "index: " << index << " kbnode ptr not match"
       << " (text: " << expect_data.text << ")";
 
-  auto actual_isAddMore = qmodel.isAddKbNode(index);
+  if (expect_data.node_ptr) {
+    QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(expect_data.node_ptr);
+    ASSERT_EQ(index, kbnode_to_index)
+        << "index: " << index << " kbnode index not match"
+        << " (text: " << expect_data.text << ")";
+  }
+
+  auto actual_isAddMore = qmodel->isAddKbNode(index);
   ASSERT_EQ(expect_data.isAddMore, actual_isAddMore)
       << "index: " << index << " isAddMore not match"
       << " (text: " << expect_data.text << ")";
 
-  auto actual_selectable = qmodel.flags(index) & Qt::ItemIsSelectable;
+  auto actual_selectable = qmodel->flags(index) & Qt::ItemIsSelectable;
   ASSERT_EQ(expect_data.isSelectable, actual_selectable)
       << "index: " << index << " isSelectable not match"
       << " (text: " << expect_data.text << ")";
 
-  QModelIndex parent = qmodel.parent(index);
-  auto actual_parent_ptr = qmodel.kbNodeOfIndex(parent);
+  QModelIndex parent = qmodel->parent(index);
+  auto actual_parent_ptr = qmodel->indexToKbNode(parent);
   ASSERT_EQ(expect_data.parent_node_ptr, actual_parent_ptr)
       << "index: " << index << " parent not match"
       << " (text: " << expect_data.text << ")";
 }
 
-TEST_F(KbNodeTreeQModelTest,
-       check_non_filter_mode_row_data) { // NOLINT
-  // Setup fixture
-  bool filter_mode = false;
-
-  EXPECT_CALL(kbnode_provider, isFilterMode())
-      .WillRepeatedly(Return(filter_mode));
-
-  // Verify results
-  CUSTOM_ASSERT(checkRowData(filter_mode));
-}
-
-TEST_F(KbNodeTreeQModelTest,
-       check_filter_mode_row_data) { // NOLINT
-  // Setup fixture
-  bool filter_mode = true;
-
-  EXPECT_CALL(kbnode_provider, isFilterMode())
-      .WillRepeatedly(Return(filter_mode));
-
-  // Verify results
-  CUSTOM_ASSERT(checkRowData(filter_mode));
-}
-
-TEST_F(KbNodeTreeQModelTest,
-       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
-  // Setup fixture
-  QSignalSpy sigspy(&qmodel, SIGNAL(modelAboutToBeReset()));
+void KbNodeTreeQModelTestBase::should_beginResetQModel_emit_modelAboutToReset() { // NOLINT
+  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelAboutToBeReset()));
 
   // Exercise system
-  qmodel.beginResetQModel();
+  qmodel->beginResetQModel();
 
   // Verify results
   ASSERT_EQ(1, sigspy.count());
 }
 
-TEST_F(KbNodeTreeQModelTest,
-       should_endResetQModel_emit_modelReset) { // NOLINT
+void KbNodeTreeQModelTestBase::should_endResetQModel_emit_modelReset() {
   // Setup fixture
-  QSignalSpy sigspy(&qmodel, SIGNAL(modelReset()));
+  // check before reset
+  CUSTOM_ASSERT(checkRowData());
+
+  qmodel->beginResetQModel();
+
+  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelReset()));
 
   // Exercise system
-  qmodel.endResetQModel();
+  qmodel->endResetQModel();
 
   // Verify results
   ASSERT_EQ(1, sigspy.count());
+
+  std::cout << "check after reset" << std::endl;
+  kbnode_provider.fillRowData(&root_row_data_after_reset);
+  CUSTOM_ASSERT(checkRowData(true));
 }
 
-TEST_F(KbNodeTreeQModelTest,
-       test_dynamically_add_kbnode) { // NOLINT
-  // Setup fixture
-  bool filter_mode = true;
-
-  EXPECT_CALL(kbnode_provider, isFilterMode())
-      .WillRepeatedly(Return(filter_mode));
-
-  CUSTOM_ASSERT(checkRowData(filter_mode));
+void KbNodeTreeQModelTestBase::test_dynamically_add_kbnode() {
+  // check before add
+  CUSTOM_ASSERT(checkRowData());
 
   auto new_kbnode_name = xtestutils::genRandomString();
   MockKbNode new_kbnode;
@@ -455,35 +579,255 @@ TEST_F(KbNodeTreeQModelTest,
     .parent_node_ptr = parent_kbnode,
     .isAddMore = false,
     .isSelectable = true,
+    .isVisible = true,
     .subnodes = nullptr,
   };
 
   level3_row_data.push_back(new_row_data);
-
   kbnode_provider.addKbNodeRowData(&new_kbnode, &level3_row_data);
 
-  QSignalSpy begin_insert_sigspy(&qmodel,
+  QSignalSpy begin_insert_sigspy(qmodel.get(),
                                  SIGNAL(rowsAboutToBeInserted(
                                      const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(&qmodel,
+  QSignalSpy end_insert_sigspy(qmodel.get(),
                                SIGNAL(rowsInserted(
                                    const QModelIndex&, int, int)));
 
   // Exercise system
-  qmodel.kbNodeAdded(&new_kbnode, parent_kbnode);
+  qmodel->kbNodeAdded(&new_kbnode, parent_kbnode);
 
   // Verify results
-  CUSTOM_ASSERT(checkRowData(filter_mode));
+  CUSTOM_ASSERT(checkRowData());
 
   ASSERT_EQ(1, begin_insert_sigspy.count());
   ASSERT_EQ(1, end_insert_sigspy.count());
 
   QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
   auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
-  ASSERT_EQ(parent_kbnode, qmodel.kbNodeOfIndex(parent_idx));
+  ASSERT_EQ(parent_kbnode, qmodel->indexToKbNode(parent_idx));
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
   ASSERT_EQ(1, insert_row_first);
   ASSERT_EQ(1, insert_row_last);
+
+  // Teardown fixture
+  level3_row_data.pop_back();
+}
+
+void KbNodeTreeQModelTestBase::test_dynamically_add_kbnode_in_level1() {
+  // check before add
+  CUSTOM_ASSERT(checkRowData());
+
+  auto new_kbnode_name = xtestutils::genRandomString();
+  MockKbNode new_kbnode;
+
+  EXPECT_CALL(new_kbnode, name())
+      .WillRepeatedly(Return(new_kbnode_name));
+  EXPECT_CALL(new_kbnode, isCategory())
+      .WillRepeatedly(Return(false));
+
+  ExpectRowData new_row_data = {
+    .text = new_kbnode_name,
+    .node_ptr = &new_kbnode,
+    .parent_node_ptr = nullptr,
+    .isAddMore = false,
+    .isSelectable = true,
+    .isVisible = true,
+    .subnodes = nullptr,
+  };
+
+  auto insert_pos = level1_row_data.end();
+  --insert_pos;  // before add more row
+
+  level1_row_data.insert(insert_pos, new_row_data);
+  kbnode_provider.addKbNodeRowData(&new_kbnode, &level1_row_data);
+
+  QSignalSpy begin_insert_sigspy(qmodel.get(),
+                                 SIGNAL(rowsAboutToBeInserted(
+                                     const QModelIndex&, int, int)));
+  QSignalSpy end_insert_sigspy(qmodel.get(),
+                               SIGNAL(rowsInserted(
+                                   const QModelIndex&, int, int)));
+
+  // Exercise system
+  qmodel->kbNodeAdded(&new_kbnode, nullptr);
+
+  // Verify results
+  CUSTOM_ASSERT(checkRowData());
+
+  ASSERT_EQ(1, begin_insert_sigspy.count());
+  ASSERT_EQ(1, end_insert_sigspy.count());
+
+  QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
+  auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
+  ASSERT_EQ(nullptr, qmodel->indexToKbNode(parent_idx));
+
+  int insert_row_first = qvariant_cast<int>(arguments.at(1));
+  int insert_row_last = qvariant_cast<int>(arguments.at(2));
+  ASSERT_EQ(2, insert_row_first);
+  ASSERT_EQ(2, insert_row_last);
+
+  // Teardown fixture
+  auto new_kbnode_ptr = &new_kbnode;
+  auto iter = std::find_if(level1_row_data.begin(),
+                           level1_row_data.end(),
+                           [new_kbnode_ptr](const ExpectRowData& item) {
+                             if (item.node_ptr == new_kbnode_ptr)
+                               return true;
+
+                             return false;
+                           });
+  if (iter != level1_row_data.end()) {
+    level1_row_data.erase(iter);
+  }
+}
+
+class KbNodeTreeQModelTest : public KbNodeTreeQModelTestBase {
+ protected:
+  virtual void SetUp() {
+    KbNodeTreeQModelTestBase::SetUp();
+
+    // default special visibilities
+    expectEmptyRowVisible(false);
+    expectAddMoreRowVisible(true);
+  }
+
+  std::unique_ptr<KbNodeTreeQModelBase> createQModel() override {
+    return utils::make_unique<KbNodeTreeQModel>();
+  }
+};
+
+TEST_F(KbNodeTreeQModelTest,
+       check_non_filter_mode_row_data) { // NOLINT
+  // Setup fixture
+  bool filter_mode = false;
+  expectEmptyRowVisible(true);
+
+  EXPECT_CALL(kbnode_provider, isFilterMode())
+      .WillRepeatedly(Return(filter_mode));
+
+  // Verify results
+  CUSTOM_ASSERT(checkRowData());
+}
+
+TEST_F(KbNodeTreeQModelTest,
+       check_filter_mode_row_data) { // NOLINT
+  // Setup fixture
+  bool filter_mode = true;
+
+  EXPECT_CALL(kbnode_provider, isFilterMode())
+      .WillRepeatedly(Return(filter_mode));
+
+  // Verify results
+  CUSTOM_ASSERT(checkRowData());
+}
+
+TEST_F(KbNodeTreeQModelTest,
+       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
+  CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
+}
+
+TEST_F(KbNodeTreeQModelTest,
+       should_endResetQModel_emit_modelReset) { // NOLINT
+  bool filter_mode = true;
+
+  EXPECT_CALL(kbnode_provider, isFilterMode())
+      .WillRepeatedly(Return(filter_mode));
+
+  CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
+}
+
+TEST_F(KbNodeTreeQModelTest,
+       test_dynamically_add_kbnode) { // NOLINT
+  // Setup fixture
+  bool filter_mode = true;
+
+  EXPECT_CALL(kbnode_provider, isFilterMode())
+      .WillRepeatedly(Return(filter_mode));
+
+  CUSTOM_ASSERT(test_dynamically_add_kbnode());
+}
+
+TEST_F(KbNodeTreeQModelTest,
+       test_dynamically_add_kbnode_in_level1) { // NOLINT
+  // Setup fixture
+  bool filter_mode = true;
+
+  EXPECT_CALL(kbnode_provider, isFilterMode())
+      .WillRepeatedly(Return(filter_mode));
+
+  CUSTOM_ASSERT(test_dynamically_add_kbnode_in_level1());
+}
+
+TEST_F(KbNodeTreeQModelTest,
+       should_null_kbnode_to_index_got_invalid_root_idx_in_completion_mode) { // NOLINT
+  QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
+  auto expect_index = QModelIndex();
+
+  ASSERT_EQ(expect_index, kbnode_to_index)
+      << "null node_ptr should got root invalid index in completion mode";
+}
+
+class KbNodeTreeQModelWithProviderNodeTest : public KbNodeTreeQModelTestBase {
+ protected:
+  void SetUp() override {
+    KbNodeTreeQModelTestBase::SetUp();
+
+    // default special visibilities
+    expectEmptyRowVisible(false);
+    expectAddMoreRowVisible(false);
+
+    root_row_data.subnodes = &provider_row_data;
+    root_row_data_after_reset.subnodes = &provider_row_data_after_reset;
+
+    ASSERT_EQ(&level1_row_data, provider_row_data[0].subnodes);
+  }
+
+  void TearDown() override {
+    root_row_data.subnodes = &level1_row_data;
+    root_row_data_after_reset.subnodes = &level1_row_data_after_reset;
+
+    KbNodeTreeQModelTestBase::TearDown();
+  }
+
+  std::unique_ptr<KbNodeTreeQModelBase> createQModel() override {
+    return utils::make_unique<KbNodeTreeQModelWithProviderNode>();
+  }
+};
+
+TEST_F(KbNodeTreeQModelWithProviderNodeTest,
+       should_display_the_provider_name_as_a_visible_root_node) { // NOLINT
+  CUSTOM_ASSERT(checkRowData());
+}
+
+TEST_F(KbNodeTreeQModelWithProviderNodeTest,
+       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
+  CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
+}
+
+TEST_F(KbNodeTreeQModelWithProviderNodeTest,
+       should_endResetQModel_emit_modelReset) { // NOLINT
+  CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
+}
+
+TEST_F(KbNodeTreeQModelWithProviderNodeTest,
+       test_dynamically_add_kbnode) { // NOLINT
+  CUSTOM_ASSERT(test_dynamically_add_kbnode());
+}
+
+TEST_F(KbNodeTreeQModelWithProviderNodeTest,
+       test_dynamically_add_kbnode_in_level1) { // NOLINT
+  CUSTOM_ASSERT(test_dynamically_add_kbnode_in_level1());
+}
+
+TEST_F(KbNodeTreeQModelWithProviderNodeTest,
+       should_null_kbnode_to_index_got_provider_node) { // NOLINT
+  // Setup fixture
+  auto expect_index = qmodel->index(0, 0, QModelIndex());
+
+  // Verify results
+  QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
+  ASSERT_EQ(expect_index, kbnode_to_index)
+      << "null node_ptr should got provider node index in add kbnode mode";
 }

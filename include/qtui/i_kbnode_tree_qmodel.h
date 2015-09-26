@@ -22,11 +22,9 @@ class IKbNodeTreeQModel {
  public:
   virtual ~IKbNodeTreeQModel() = default;
 
-  virtual void enterAddNewNodeMode() = 0;
-
   virtual void setKbNodeProvider(IKbNodeProvider* kbnode_provider) = 0;
-  virtual IKbNode* kbNodeOfIndex(const QModelIndex& index) const = 0;
-  virtual QModelIndex indexOfKbNode(IKbNode* kbnode) const = 0;
+  virtual IKbNode* indexToKbNode(const QModelIndex& index) const = 0;
+  virtual QModelIndex kbNodeToIndex(IKbNode* kbnode) const = 0;
   virtual bool isAddKbNode(const QModelIndex& index) const = 0;
   virtual void beginResetQModel() = 0;
   virtual void endResetQModel() = 0;

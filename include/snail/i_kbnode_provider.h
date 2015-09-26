@@ -34,6 +34,7 @@ class IKbNodeProvider {
   SNAIL_SIGSLOT2(FinishFilter, void());
 
   // external
+  virtual utils::U8String name() const = 0;
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
   virtual utils::U8String getFilterPattern() const = 0;
   virtual bool isFilterMode() const = 0;

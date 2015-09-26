@@ -21,11 +21,23 @@ class KbNodeItem {
   KbNodeItem(IKbNodeProvider* kbnode_provider,
              IKbNode* kbnode, KbNodeItem* parent)
       : kbnode_provider_(kbnode_provider)
-      , kbnode_(kbnode), parent_(parent) { }
+      , kbnode_(kbnode), parent_(parent) {
+    if (kbnode_) {
+      text_ = U8StringToQString(kbnode_->name());
+    }
+  }
   virtual ~KbNodeItem() { }
+
+  virtual std::unique_ptr<KbNodeItem> createKbNodeItem(IKbNode* kbnode) {
+    return utils::make_unique<KbNodeItem>(kbnode_provider_, kbnode, this);
+  }
 
   void setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
     kbnode_provider_ = kbnode_provider;
+  }
+
+  IKbNodeProvider* kbNodeProvider() const {
+    return kbnode_provider_;
   }
 
   IKbNode* kbnode() const {
@@ -33,16 +45,17 @@ class KbNodeItem {
   }
 
   QString text() const {
-    if (is_add_more_)
-      return qApp->translate(0, "Add More...");
+    return text_;
+  }
 
-    if (!kbnode_)
-      return QString();
-
-    return U8StringToQString(kbnode_->name());
+  void setText(const QString& text) {
+    text_ = text;
   }
 
   int row() const {
+    if (cached_row_ >= 0)
+      return cached_row_;
+
     if (!parent_)
       return -1;
 
@@ -54,7 +67,16 @@ class KbNodeItem {
       ++index;
     }
 
+    cached_row_ = index;
     return index;
+  }
+
+  KbNodeItem* parent() const {
+    return parent_;
+  }
+
+  bool isRoot() const {
+    return parent_ == nullptr;
   }
 
   int num_children() const {
@@ -71,21 +93,15 @@ class KbNodeItem {
     return children_[index].get();
   }
 
-  KbNodeItem* parent() const {
-    return parent_;
-  }
-
-  bool isRoot() const {
-    return parent_ == nullptr;
-  }
-
-  bool isAddMore() const {
-    return is_add_more_;
-  }
-
+  // NOTE: null kbnode is NOT handled because there maybe multi null kbnode
+  //       items, and we do NOT know which to return
   KbNodeItem* findByKbNode(IKbNode* kbnode) {
-    if (kbnode == this->kbnode_)
+    if (kbnode == nullptr)
+      return nullptr;
+
+    if (kbnode == this->kbnode_) {
       return this;
+    }
 
     for (auto & item : children_) {
       auto found_item = item->findByKbNode(kbnode);
@@ -96,9 +112,52 @@ class KbNodeItem {
     return nullptr;
   }
 
-  void appendKbNode(IKbNode* kbnode) {
-    children_.push_back(
-        utils::make_unique<KbNodeItem>(kbnode_provider_, kbnode, this));
+  virtual int next_append_pos() {
+    return children_.size();
+  }
+
+  KbNodeItem* appendKbNode(IKbNode* kbnode) {
+    auto pos = children_.begin();
+    std::advance(pos, next_append_pos());
+
+    auto new_item = createKbNodeItem(kbnode);
+    auto new_item_ptr = new_item.get();
+
+    children_.insert(pos, std::move(new_item));
+
+    return new_item_ptr;
+  }
+
+  void clear() {
+    children_.clear();
+    cached_row_ = -1;
+  }
+
+ protected:
+  std::vector<std::unique_ptr<KbNodeItem> >& children() {
+    return children_;
+  }
+
+  virtual void populate_children() {
+#if 1
+    if (isRoot()) {
+      qDebug() << "populate root idx";
+    } else {
+      if (kbnode_) {
+        qDebug() << "populate kbnode: " << U8StringToQString(kbnode_->name());
+      } else {
+        qDebug() << "populate kbnode: " << text_;
+      }
+    }
+#endif
+
+    auto child_node_iterator = kbnode_provider_->childNodes(kbnode_);
+    if (child_node_iterator) {
+      while (child_node_iterator->hasNext()) {
+        auto kbnode = child_node_iterator->next();
+        children_.push_back(createKbNodeItem(kbnode));
+      }
+    }
   }
 
  private:
@@ -108,124 +167,82 @@ class KbNodeItem {
     if (children_.size() > 0)
       return;
 
-    if (is_add_more_)
-      return;
-
-    if (is_empty_row_)
-      return;
-
-    if (isRoot()) {
-      qDebug() << "populate root idx";
-    } else {
-      qDebug() << "populate kbnode: " << U8StringToQString(kbnode_->name());
-    }
-
     auto that = const_cast<KbNodeItem*>(this);
-
-    if (isRoot() && !kbnode_provider_->isFilterMode()) {
-      children_.push_back(
-          utils::make_unique<KbNodeItem>(nullptr, nullptr, that));
-      auto& last_item = children_.back();
-      last_item->is_empty_row_ = true;
-    }
-
-    auto child_node_iterator = kbnode_provider_->childNodes(kbnode_);
-    if (!child_node_iterator)
-      return;
-
-    while (child_node_iterator->hasNext()) {
-      auto kbnode = child_node_iterator->next();
-      children_.push_back(
-          utils::make_unique<KbNodeItem>(kbnode_provider_, kbnode, that));
-    }
-
-    // append "Add More..." as the last row of root index
-    if (isRoot()) {
-      children_.push_back(
-          utils::make_unique<KbNodeItem>(nullptr, nullptr, that));
-      auto& last_item = children_.back();
-      last_item->is_add_more_ = true;
-    }
+    that->populate_children();
   }
 
   IKbNodeProvider* kbnode_provider_ { nullptr };
   IKbNode* kbnode_ { nullptr };
   KbNodeItem* parent_ { nullptr };
-  bool is_add_more_ { false };
-  bool is_empty_row_ { false };
+  QString text_;
+  mutable int cached_row_ { -1 };
 
   mutable std::vector<std::unique_ptr<KbNodeItem> > children_;
 };
 
-class KbNodeTreeQModelImpl {
-  KbNodeItem root_item_;
-  friend class KbNodeTreeQModel;
-};
-
 ////////////////////////////////////////////////////////////////
 
-KbNodeTreeQModel::KbNodeTreeQModel()
-    : pimpl(utils::make_unique<KbNodeTreeQModelImpl>()) { }
+KbNodeTreeQModelBase::KbNodeTreeQModelBase() { }
 
-KbNodeTreeQModel::~KbNodeTreeQModel() = default;
+KbNodeTreeQModelBase::~KbNodeTreeQModelBase() = default;
 
-//////////////// IKbNodeTreeQModel ////////////////
+//////////////// IKbNodeTreeQModelBase ////////////////
 
-KbNodeItem* KbNodeTreeQModel::indexToItem(const QModelIndex& index) const {
+KbNodeItem* KbNodeTreeQModelBase::indexToItem(const QModelIndex& index) const {
   if (!index.isValid())
-    return &pimpl->root_item_;
+    return rootItem();
 
   return reinterpret_cast<KbNodeItem*>(index.internalPointer());
 }
 
-QModelIndex KbNodeTreeQModel::itemToIndex(KbNodeItem* item) const {
+QModelIndex KbNodeTreeQModelBase::itemToIndex(KbNodeItem* item) const {
   if (!item || item->isRoot())
     return QModelIndex();
 
   return createIndex(item->row(), 0, item);
 }
 
-void KbNodeTreeQModel::enterAddNewNodeMode() {
-  // TODO(lutts): impl this method
-}
-
-void KbNodeTreeQModel::setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
-  return pimpl->root_item_.setKbNodeProvider(kbnode_provider);
-}
-
-IKbNode* KbNodeTreeQModel::kbNodeOfIndex(const QModelIndex& index) const {
+IKbNode* KbNodeTreeQModelBase::indexToKbNode(const QModelIndex& index) const {
   auto item = indexToItem(index);
   return item->kbnode();
 }
 
-QModelIndex KbNodeTreeQModel::indexOfKbNode(IKbNode* kbnode) const {
-  // TODO(lutts): impl this method
-  (void)kbnode;
-  return QModelIndex();
+QModelIndex KbNodeTreeQModelBase::kbNodeToIndex(IKbNode* kbnode) const {
+  KbNodeItem* item = nullptr;
+
+  if (kbnode == nullptr)
+    item = rootItem();
+  else
+    item = rootItem()->findByKbNode(kbnode);
+
+  return itemToIndex(item);
 }
 
-bool KbNodeTreeQModel::isAddKbNode(const QModelIndex& index) const {
-  auto item = indexToItem(index);
-  return item->isAddMore();
+void KbNodeTreeQModelBase::setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
+  return rootItem()->setKbNodeProvider(kbnode_provider);
 }
 
-void KbNodeTreeQModel::beginResetQModel() {
+bool KbNodeTreeQModelBase::isAddKbNode(const QModelIndex& index) const {
+  (void)index;
+  return false;
+}
+
+void KbNodeTreeQModelBase::beginResetQModel() {
   beginResetModel();
-  // TODO(lutts): clear all items, all items has to be populated again
+  clear();
 }
 
-void KbNodeTreeQModel::endResetQModel() {
+void KbNodeTreeQModelBase::endResetQModel() {
   endResetModel();
 }
 
-void KbNodeTreeQModel::kbNodeAdded(
+void KbNodeTreeQModelBase::kbNodeAdded(
     IKbNode* new_kbnode, IKbNode* parent_kbnode) {
-  auto parent_item = pimpl->root_item_.findByKbNode(parent_kbnode);
+  auto parent_item = indexToItem(kbNodeToIndex(parent_kbnode));
   if (!parent_item)
     return;
 
-  // append at last
-  int row = parent_item->num_children();
+  int row = parent_item->next_append_pos();
   beginInsertRows(itemToIndex(parent_item), row, row);
   parent_item->appendKbNode(new_kbnode);
   endInsertRows();
@@ -233,9 +250,7 @@ void KbNodeTreeQModel::kbNodeAdded(
 
 //////////////// QAbstractItemModel ////////////////
 
-QVariant KbNodeTreeQModel::data(const QModelIndex &index, int role) const {
-  (void)role;
-
+QVariant KbNodeTreeQModelBase::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
@@ -251,10 +266,10 @@ QVariant KbNodeTreeQModel::data(const QModelIndex &index, int role) const {
   }
 }
 
-Qt::ItemFlags KbNodeTreeQModel::flags(const QModelIndex &index) const {
+Qt::ItemFlags KbNodeTreeQModelBase::flags(const QModelIndex &index) const {
   auto flags = QAbstractItemModel::flags(index);
 
-  auto kbnode = kbNodeOfIndex(index);
+  auto kbnode = indexToKbNode(index);
   if (kbnode && kbnode->isCategory()) {
     flags &= ~Qt::ItemIsSelectable;
   }
@@ -262,7 +277,7 @@ Qt::ItemFlags KbNodeTreeQModel::flags(const QModelIndex &index) const {
   return flags;
 }
 
-QModelIndex KbNodeTreeQModel::index(
+QModelIndex KbNodeTreeQModelBase::index(
     int row, int column, const QModelIndex &parent) const {
   if (!hasIndex(row, column, parent))
     return QModelIndex();
@@ -274,7 +289,7 @@ QModelIndex KbNodeTreeQModel::index(
   return itemToIndex(parent_item->children(row));
 }
 
-QModelIndex KbNodeTreeQModel::parent(const QModelIndex &index) const {
+QModelIndex KbNodeTreeQModelBase::parent(const QModelIndex &index) const {
   if (!index.isValid())
     return QModelIndex();
 
@@ -285,16 +300,143 @@ QModelIndex KbNodeTreeQModel::parent(const QModelIndex &index) const {
   return itemToIndex(item->parent());
 }
 
-int KbNodeTreeQModel::rowCount(const QModelIndex &parent) const {
+int KbNodeTreeQModelBase::rowCount(const QModelIndex &parent) const {
   auto item = indexToItem(parent);
-  if (item->isAddMore()) {
-    return 0;
-  } else {
-    return item->num_children();
-  }
+  return item->num_children();
 }
 
-int KbNodeTreeQModel::columnCount(const QModelIndex &parent) const {
+int KbNodeTreeQModelBase::columnCount(const QModelIndex &parent) const {
   (void)parent;
   return 1;
+}
+
+KbNodeItem* KbNodeTreeQModelBase::rootItem() const {
+  if (!root_item_)
+    root_item_ = createRootItem();
+  return root_item_.get();
+}
+
+std::unique_ptr<KbNodeItem> KbNodeTreeQModelBase::createRootItem() const {
+  return utils::make_unique<KbNodeItem>();
+}
+
+void KbNodeTreeQModelBase::clear() {
+  if (rootItem())
+    rootItem()->clear();
+}
+
+////////////////////////////////////////////////////////////////
+
+class KbNodeItemWithEmptyAddMore : public KbNodeItem {
+ public:
+  KbNodeItemWithEmptyAddMore() = default;
+  KbNodeItemWithEmptyAddMore(IKbNodeProvider* kbnode_provider,
+                             IKbNode* kbnode, KbNodeItem* parent)
+      : KbNodeItem(kbnode_provider, kbnode, parent) { }
+
+  std::unique_ptr<KbNodeItem> createKbNodeItem(IKbNode* kbnode) override {
+    return createItem_(kbnode);
+  }
+
+  bool isAddMore() const {
+    return is_add_more_;
+  }
+
+  int next_append_pos() override {
+    int pos = children().size();
+    if (pos == 0)
+      return pos;
+
+    auto & last = children().back();
+    auto item = static_cast<KbNodeItemWithEmptyAddMore*>(last.get());
+    if (item->is_add_more_)
+      --pos;
+
+    return pos;
+  }
+
+  void populate_children() override {
+    if (is_add_more_)
+      return;
+
+    if (is_empty_row_)
+      return;
+
+    if (isRoot() && !kbNodeProvider()->isFilterMode()) {
+      auto empty_item = createItem_(nullptr);
+      empty_item->is_empty_row_ = true;
+
+      children().push_back(std::move(empty_item));
+    }
+
+    KbNodeItem::populate_children();
+
+    // append "Add More..." as the last row of root index
+    if (isRoot()) {
+      auto add_more_item = createItem_(nullptr);
+      add_more_item->is_add_more_ = true;
+      add_more_item->setText(qApp->translate(0, "Add More..."));
+
+      children().push_back(std::move(add_more_item));
+    }
+  }
+
+ private:
+  std::unique_ptr<KbNodeItemWithEmptyAddMore> createItem_(IKbNode* kbnode) {
+    return utils::make_unique<KbNodeItemWithEmptyAddMore>(kbNodeProvider(),
+                                                          kbnode, this);
+  }
+
+  bool is_add_more_ { false };
+  bool is_empty_row_ { false };
+};
+
+KbNodeTreeQModel::KbNodeTreeQModel()
+    : KbNodeTreeQModelBase() { }
+
+KbNodeTreeQModel::~KbNodeTreeQModel() = default;
+
+std::unique_ptr<KbNodeItem> KbNodeTreeQModel::createRootItem() const {
+  return utils::make_unique<KbNodeItemWithEmptyAddMore>();
+}
+
+bool KbNodeTreeQModel::isAddKbNode(const QModelIndex& index) const {
+  auto item = static_cast<KbNodeItemWithEmptyAddMore*>(indexToItem(index));
+  return item->isAddMore();
+}
+
+////////////////////////////////////////////////////////////////
+
+KbNodeTreeQModelWithProviderNode::KbNodeTreeQModelWithProviderNode()
+    : KbNodeTreeQModelBase() { }
+
+KbNodeTreeQModelWithProviderNode::~KbNodeTreeQModelWithProviderNode() = default;
+
+void KbNodeTreeQModelWithProviderNode::clear() {
+  if (provider_item_)
+    provider_item_->clear();
+}
+
+void KbNodeTreeQModelWithProviderNode::setKbNodeProvider(
+    IKbNodeProvider* kbnode_provider) {
+  if (!provider_item_)
+    provider_item_ = rootItem()->appendKbNode(nullptr);
+
+  if (!provider_item_)
+    return;
+
+  auto text = U8StringToQString(kbnode_provider->name());
+  provider_item_->setText(text);
+  provider_item_->setKbNodeProvider(kbnode_provider);
+
+  KbNodeTreeQModelBase::setKbNodeProvider(kbnode_provider);
+}
+
+QModelIndex KbNodeTreeQModelWithProviderNode::kbNodeToIndex(
+    IKbNode* kbnode) const {
+  if (kbnode == nullptr) {
+    return itemToIndex(provider_item_);
+  }
+
+  return KbNodeTreeQModelBase::kbNodeToIndex(kbnode);
 }

@@ -60,7 +60,6 @@ class KbNodeProviderPresenterTestBase : public TestBase {
 
         // init qmodel
         R_EXPECT_CALL(*kbnode_qmodel, setKbNodeProvider(&kbnode_provider));
-        R_EXPECT_CALL(*kbnode_qmodel, enterAddNewNodeMode());
         R_EXPECT_CALL(*view, setKbNodeTreeQModel(kbnode_qmodel));
       }
 
@@ -69,7 +68,7 @@ class KbNodeProviderPresenterTestBase : public TestBase {
       auto kbnode = xtestutils::genDummyPointer<IKbNode>();
       R_EXPECT_CALL(*model, getNewKbNodeParent())
           .WillOnce(Return(kbnode));
-      R_EXPECT_CALL(*kbnode_qmodel, indexOfKbNode(kbnode))
+      R_EXPECT_CALL(*kbnode_qmodel, kbNodeToIndex(kbnode))
           .WillOnce(Return(index));
       R_EXPECT_CALL(*view, selectIndex(index));
     }
@@ -136,7 +135,7 @@ TEST_F(KbNodeProviderPresenterTest,
   auto index = index_generator.index();
   auto kbnode = xtestutils::genDummyPointer<IKbNode>();
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, kbNodeOfIndex(index))
+  EXPECT_CALL(*kbnode_qmodel, indexToKbNode(index))
       .WillOnce(Return(kbnode));
 
   EXPECT_CALL(*model, setNewKbNodeParent(kbnode));
@@ -146,7 +145,7 @@ TEST_F(KbNodeProviderPresenterTest,
 }
 
 class KbNodeProviderPresenterTest_NameValidateResult
-    : public KbNodeProviderPresenterTestBase<::testing::TestWithParam<bool>> { };
+    : public KbNodeProviderPresenterTestBase<::testing::TestWithParam<bool>> {};
 
 INSTANTIATE_TEST_CASE_P(NameValidateResult,
                         KbNodeProviderPresenterTest_NameValidateResult,
