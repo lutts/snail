@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_GENERIC_ATTRIBUTE_H_
-#define SRC_CORE_GENERIC_ATTRIBUTE_H_
+#ifndef INCLUDE_CORE_GENERIC_ATTRIBUTE_H_
+#define INCLUDE_CORE_GENERIC_ATTRIBUTE_H_
 
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
@@ -23,13 +23,13 @@ class GenericAttribute : public IAttribute {
     return supplier_->name();
   }
 
+  IAttributeSupplier* supplier() const {
+    return supplier_;
+  }
+
  protected:
   void dataChanged() {
     supplier_->attributeChanged(this);
-  }
-
-  IAttributeSupplier* supplier() const {
-    return supplier_;
   }
 
  private:
@@ -42,4 +42,4 @@ class GenericAttribute : public IAttribute {
 
 }  // namespace snailcore
 
-#endif  // SRC_CORE_GENERIC_ATTRIBUTE_H_
+#endif  // INCLUDE_CORE_GENERIC_ATTRIBUTE_H_

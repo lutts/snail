@@ -17,6 +17,9 @@ class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
  public:
   MockKbNodeAttributeSupplier()
       : IKbNodeAttributeSupplier("", 0) { }
+  // IAttributeSupplier mocks
+  MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
+
   // GenericAttributeSupplier mocks
   MOCK_METHOD0(createAttribute, IAttribute*());
 

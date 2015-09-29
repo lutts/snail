@@ -42,3 +42,6 @@ add_gmock_test(kbnode_provider_test
 
 add_gmock_test(kbnode_manager_test
   LIBS ${COMMON_LIBS})
+
+add_gmock_test(kbnode_attribute_test
+  LIBS ${COMMON_LIBS})
