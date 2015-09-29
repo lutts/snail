@@ -7,7 +7,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "src/core/generic_attribute_supplier.h"
+#include "core/generic_attribute_supplier.h"
 #include "snail/mock_attribute.h"
 
 namespace snailcore {

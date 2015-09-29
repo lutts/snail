@@ -8,7 +8,7 @@
 #ifndef INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
 #define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
 
-#include "src/core/generic_attribute.h"
+#include "core/generic_attribute.h"
 #include "core/i_kbnode_attribute_supplier.h"
 
 namespace snailcore {

@@ -7,16 +7,8 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "src/core/generic_attribute.h"
+#include "core/generic_attribute.h"
 #include "snail/mock_attribute_supplier.h"
-
-/*
-1. provide protected dataChanged() to be called by the sub class, which in turn call suppliers attributeChanged();
-2. clear will call dataChanged() automatically, and will call do_clear() of sub class;
-3. isEmpty() is not implemented;
-4. valueText() default to return empty string;
-5. displayName() default to return the supplier's name;
-*/
 
 namespace snailcore {
 namespace tests {
