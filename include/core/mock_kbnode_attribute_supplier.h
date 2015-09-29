@@ -21,7 +21,7 @@ class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
   MOCK_METHOD0(createAttribute, IAttribute*());
 
   // Self
-  MOCK_CONST_METHOD0(getRootKbNodeId, KbNodeIdType());
+  MOCK_CONST_METHOD0(getRootKbNode, IKbNode*());
 };
 
 }  // namespace tests

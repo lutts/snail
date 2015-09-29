@@ -31,11 +31,7 @@ class KbNodeProviderTestBase : public TestBase {
     EXPECT_CALL(root_kbnode_, name())
         .WillRepeatedly(Return(root_kbnode_name_));
 
-    root_kbnode_id_ = KbNodeIdGenerator::gen();
-    EXPECT_CALL(node_manager_, idToKbNode(root_kbnode_id_))
-        .WillRepeatedly(Return(&root_kbnode_));
-
-    kbnode_provider_ = utils::make_unique<KbNodeProvider>(root_kbnode_id_,
+    kbnode_provider_ = utils::make_unique<KbNodeProvider>(&root_kbnode_,
                                                           &node_manager_);
   }
   // virtual void TearDown() { }
@@ -46,7 +42,6 @@ class KbNodeProviderTestBase : public TestBase {
   void checkNonFilterModelKbNodeHierarchy();
 
   // region: objects test subject depends on
-  KbNodeIdType root_kbnode_id_;
   MockKbNode root_kbnode_;
   utils::U8String root_kbnode_name_;
 

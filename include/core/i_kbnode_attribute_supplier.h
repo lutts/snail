@@ -9,9 +9,10 @@
 #define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_SUPPLIER_H_
 
 #include "core/generic_attribute_supplier.h"
-#include "snail/kb_global.h"
 
 namespace snailcore {
+
+class IKbNode;
 
 class IKbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -19,7 +20,7 @@ class IKbNodeAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~IKbNodeAttributeSupplier() = default;
 
-  virtual KbNodeIdType getRootKbNodeId() const = 0;
+  virtual IKbNode* getRootKbNode() const = 0;
 };
 
 }  // namespace snailcore

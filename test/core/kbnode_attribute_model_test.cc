@@ -31,11 +31,11 @@ class KbNodeAttributeModelTest : public ::testing::Test {
     EXPECT_CALL(kbnode_attr, kbnode_supplier())
         .WillRepeatedly(Return(&kbnode_attr_supplier));
 
-    auto root_kbnode_id = KbNodeIdGenerator::gen();
-    EXPECT_CALL(kbnode_attr_supplier, getRootKbNodeId())
-        .WillRepeatedly(Return(root_kbnode_id));
+    auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
+    EXPECT_CALL(kbnode_attr_supplier, getRootKbNode())
+        .WillRepeatedly(Return(root_kbnode));
     // can create kbnode provider only once
-    EXPECT_CALL(kbnode_manager, createKbNodeProvider(root_kbnode_id))
+    EXPECT_CALL(kbnode_manager, createKbNodeProvider(root_kbnode))
         .Times(AtMost(1))
         .WillOnce(Return(kbnode_provider));
 

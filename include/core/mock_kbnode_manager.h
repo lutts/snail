@@ -18,7 +18,7 @@ namespace tests {
 class MockKbNodeManager : public IKbNodeManager {
  public:
   MOCK_METHOD1(createKbNodeProvider,
-               std::shared_ptr<IKbNodeProvider>(KbNodeIdType root_kbnode_id));
+               std::shared_ptr<IKbNodeProvider>(IKbNode* root_kbnode));
   MOCK_METHOD1(idToKbNode, IKbNode*(KbNodeIdType kbnode_id));
   MOCK_METHOD2(findKbNode,
                std::vector<IKbNode*>(const utils::U8String& pattern,

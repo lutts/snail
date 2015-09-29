@@ -38,10 +38,10 @@ class KbNodeIterator :
 }  // namespace
 
 
-KbNodeProvider::KbNodeProvider(KbNodeIdType root_kbnode_id,
+KbNodeProvider::KbNodeProvider(IKbNode* root_kbnode,
                                IKbNodeManager* node_manager)
     : node_manager_(node_manager)
-    , root_kbnode_(node_manager_->idToKbNode(root_kbnode_id)) { }
+    , root_kbnode_(root_kbnode) { }
 
 KbNodeProvider::~KbNodeProvider() = default;
 

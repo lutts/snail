@@ -23,7 +23,7 @@ IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
   if (!kbnode_provider_) {
     auto attr_supplier = kbnode_attr_->kbnode_supplier();
     kbnode_provider_ = kbnode_manager_->createKbNodeProvider(
-        attr_supplier->getRootKbNodeId());
+        attr_supplier->getRootKbNode());
   }
 
   return kbnode_provider_.get();

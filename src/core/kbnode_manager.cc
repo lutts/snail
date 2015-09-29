@@ -31,8 +31,8 @@ void KbNodeManager::erase(IKbNode* parent) {
 }
 
 std::shared_ptr<IKbNodeProvider>
-KbNodeManager::createKbNodeProvider(KbNodeIdType root_kbnode_id) {
-  return std::make_shared<KbNodeProvider>(root_kbnode_id, this);
+KbNodeManager::createKbNodeProvider(IKbNode* root_kbnode) {
+  return std::make_shared<KbNodeProvider>(root_kbnode, this);
 }
 
 IKbNode* KbNodeManager::idToKbNode(KbNodeIdType kbnode_id) {

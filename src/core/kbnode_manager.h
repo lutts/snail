@@ -22,7 +22,7 @@ class KbNodeManager : public IKbNodeManager {
   virtual ~KbNodeManager();
 
   std::shared_ptr<IKbNodeProvider>
-  createKbNodeProvider(KbNodeIdType root_kbnode_id) override;
+  createKbNodeProvider(IKbNode* root_kbnode) override;
   IKbNode* idToKbNode(KbNodeIdType kbnode_id) override;
   std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
                                    const IKbNode* parent_kbnode) override;

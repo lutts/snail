@@ -14,7 +14,6 @@
 #include "snail/i_kbnode_provider.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
-#include "snail/kb_global.h"
 
 namespace snailcore {
 
@@ -22,7 +21,7 @@ class IKbNodeManager;
 
 class KbNodeProvider : public IKbNodeProvider {
  public:
-  KbNodeProvider(KbNodeIdType root_kbnode_id,
+  KbNodeProvider(IKbNode* root_kbnode,
                  IKbNodeManager* node_manager);
   virtual ~KbNodeProvider();
 
