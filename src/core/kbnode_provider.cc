@@ -53,12 +53,15 @@ utils::U8String KbNodeProvider::name() const {
 }
 
 void KbNodeProvider::setFilterPattern(const utils::U8String& filter_pattern) {
+  if (root_kbnode_ == nullptr)
+    return;
+
   if (filter_pattern_ == filter_pattern)
     return;
 
   BeginFilter();
   if (filter_pattern != "")
-    matched_kbnodes_ = node_manager_->findKbNode(filter_pattern);
+    matched_kbnodes_ = node_manager_->findKbNode(filter_pattern, root_kbnode_);
   FinishFilter();
 
   filter_pattern_ = filter_pattern;
@@ -73,10 +76,10 @@ bool KbNodeProvider::isFilterMode() const {
 }
 
 IKbNode* KbNodeProvider::addKbNode(
-    const utils::U8String& name, IKbNode* parent) {
+    const utils::U8String& name, IKbNode* parent, bool is_category) {
   if (parent == nullptr)
     parent = root_kbnode_;
-  return node_manager_->addKbNode(name, parent);
+  return node_manager_->addKbNode(name, parent, is_category);
 }
 
 std::unique_ptr<IKbNodeProvider::IChildNodeIterator>
@@ -100,13 +103,16 @@ void KbNodeProvider::incRef(IKbNode* kbnode) {
 
 std::vector<IKbNode*>
 KbNodeProvider::findKbNodeByName(const utils::U8String& name) {
+  if (root_kbnode_ == nullptr)
+    return std::vector<IKbNode*>();
+
   if (name.empty())
     return std::vector<IKbNode*>();
 
   if (name == filter_pattern_)
     return matched_kbnodes_;
 
-  return node_manager_->findKbNode(name);
+  return node_manager_->findKbNode(name, root_kbnode_);
 }
 
 }  // namespace snailcore

@@ -46,6 +46,12 @@ void KbNodeProviderPresenter::initialize() {
       },
       shared_from_this());
 
+  view()->whenUserToggleCategoryCheckbox(
+      [this](bool checked) {
+        model()->setIsCategory(checked);
+      },
+      shared_from_this());
+
   view()->whenUserClickAddButton(
       [this]() {
         model()->addKbNode();

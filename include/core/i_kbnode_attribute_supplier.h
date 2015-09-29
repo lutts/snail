@@ -9,7 +9,7 @@
 #define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_SUPPLIER_H_
 
 #include "src/core/generic_attribute_supplier.h"
-#include "core/kb_global.h"
+#include "snail/kb_global.h"
 
 namespace snailcore {
 

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_PROVIDER_H_
-#define KBNODE_PROVIDER_H_
+#ifndef SRC_CORE_KBNODE_PROVIDER_H_
+#define SRC_CORE_KBNODE_PROVIDER_H_
 
 #include <vector>
 #include <unordered_map>
@@ -14,7 +14,7 @@
 #include "snail/i_kbnode_provider.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
-#include "core/kb_global.h"
+#include "snail/kb_global.h"
 
 namespace snailcore {
 
@@ -30,7 +30,8 @@ class KbNodeProvider : public IKbNodeProvider {
   void setFilterPattern(const utils::U8String& filter_pattern) override;
   utils::U8String getFilterPattern() const override;
   bool isFilterMode() const override;
-  IKbNode* addKbNode(const utils::U8String& name, IKbNode* parent) override;
+  IKbNode* addKbNode(const utils::U8String& name,
+                     IKbNode* parent, bool is_category) override;
 
   std::unique_ptr<IChildNodeIterator>
   childNodes(IKbNode* parent_node) const override;
@@ -54,4 +55,4 @@ class KbNodeProvider : public IKbNodeProvider {
 
 }  // namespace snailcore
 
-#endif  // KBNODE_PROVIDER_H_
+#endif  // SRC_CORE_KBNODE_PROVIDER_H_

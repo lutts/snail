@@ -43,11 +43,17 @@ bool KbNodeProviderModel::isNewKbNodeNameValid() const {
   return new_name_ != "";
 }
 
+void KbNodeProviderModel::setIsCategory(bool category) {
+  is_category_ = category;
+}
+
 void KbNodeProviderModel::addKbNode() {
   if (!isNewKbNodeNameValid())
     return;
 
-  auto new_kbnode = kbnode_provider_->addKbNode(new_name_, new_kbnode_parent_);
+  auto new_kbnode = kbnode_provider_->addKbNode(new_name_,
+                                                new_kbnode_parent_,
+                                                is_category_);
   if (new_kbnode)
     KbNodeAdded(new_kbnode, new_kbnode_parent_);
 }

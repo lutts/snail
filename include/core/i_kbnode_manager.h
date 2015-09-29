@@ -11,11 +11,13 @@
 #include <memory>
 #include <vector>
 
-#include "core/kb_global.h"
+#include "utils/u8string.h"
+#include "snail/kb_global.h"
 
 namespace snailcore {
 
 class IKbNode;
+class IKbNodeProvider;
 
 class IKbNodeManager {
  public:
@@ -24,9 +26,12 @@ class IKbNodeManager {
   virtual std::shared_ptr<IKbNodeProvider>
   createKbNodeProvider(KbNodeIdType root_kbnode_id) = 0;
   virtual IKbNode* idToKbNode(KbNodeIdType kbnode_id) = 0;
-  virtual std::vector<IKbNode*> findKbNode(const utils::U8String& pattern) = 0;
-  virtual std::vector<IKbNode*> childNodes(IKbNode* parent_node) = 0;
-  virtual IKbNode* addKbNode(const utils::U8String& name, IKbNode* parent) = 0;
+  virtual std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
+                                           const IKbNode* parent_node) = 0;
+  virtual std::vector<IKbNode*> childNodes(const IKbNode* parent_node) = 0;
+  virtual IKbNode* addKbNode(const utils::U8String& name,
+                             const IKbNode* parent,
+                             bool is_category = false) = 0;
   virtual void incRef(IKbNode* kbnode) = 0;
 };
 

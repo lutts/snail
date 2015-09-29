@@ -28,6 +28,7 @@ class KbNodeProviderModel : public IKbNodeProviderModel {
   void setNewKbNodeParent(IKbNode* kbnode) override;
   void setNewKbNodeName(const utils::U8String& name) override;
   bool isNewKbNodeNameValid() const override;
+  void setIsCategory(bool category) override;
   void addKbNode() override;
 
  private:
@@ -37,6 +38,7 @@ class KbNodeProviderModel : public IKbNodeProviderModel {
   IKbNodeProvider* kbnode_provider_ { nullptr };
   IKbNode* new_kbnode_parent_ { nullptr };
   utils::U8String new_name_ { "" };
+  bool is_category_ { false };
 };
 
 }  // namespace snailcore

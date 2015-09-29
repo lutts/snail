@@ -79,6 +79,9 @@ class KbNodeProviderPresenterTestBase : public TestBase {
     R_EXPECT_CALL(*view, whenNewKbNodeNameChanged(_, _))
         .WillOnce(SaveArg<0>(&newKbNodeNameChanged));
 
+    R_EXPECT_CALL(*view, whenUserToggleCategoryCheckbox(_, _))
+        .WillOnce(SaveArg<0>(&userToggleCategoryCheckbox));
+
     R_EXPECT_CALL(*view, whenUserClickAddButton(_, _))
         .WillOnce(SaveArg<0>(&userClickAddButton));
 
@@ -124,6 +127,10 @@ class KbNodeProviderPresenterTestBase : public TestBase {
   using UserRejectSlotType =
       IKbNodeProviderView::UserRejectSlotType;
   SlotCatcher<UserRejectSlotType> userReject;
+
+  using UserToggleCategoryCheckboxSlotType =
+      IKbNodeProviderView::UserToggleCategoryCheckboxSlotType;
+  SlotCatcher<UserToggleCategoryCheckboxSlotType> userToggleCategoryCheckbox;
   // endregion
 };
 
@@ -144,14 +151,14 @@ TEST_F(KbNodeProviderPresenterTest,
   userSelectIndex(index);
 }
 
-class KbNodeProviderPresenterTest_NameValidateResult
+class KbNodeProviderPresenterTest_BoolParam
     : public KbNodeProviderPresenterTestBase<::testing::TestWithParam<bool>> {};
 
-INSTANTIATE_TEST_CASE_P(NameValidateResult,
-                        KbNodeProviderPresenterTest_NameValidateResult,
+INSTANTIATE_TEST_CASE_P(BoolParam,
+                        KbNodeProviderPresenterTest_BoolParam,
                         ::testing::Bool());
 
-TEST_P(KbNodeProviderPresenterTest_NameValidateResult,
+TEST_P(KbNodeProviderPresenterTest_BoolParam,
        should_set_user_entered_new_kbnode_name_to_model_and_update_view_with_validate_status) { // NOLINT
   // Setup fixture
   xtestutils::RandomString new_name;
@@ -169,6 +176,16 @@ TEST_P(KbNodeProviderPresenterTest_NameValidateResult,
 
   // Exercise system
   newKbNodeNameChanged(new_name.qstr());
+}
+
+TEST_P(KbNodeProviderPresenterTest_BoolParam,
+       should_set_isCategory_status_to_model_when_user_toggle_category_checkbox) { // NOLINT
+  bool checked = GetParam();
+  // Expectations
+  EXPECT_CALL(*model, setIsCategory(checked));
+
+  // Exercise system
+  userToggleCategoryCheckbox(checked);
 }
 
 TEST_F(KbNodeProviderPresenterTest,

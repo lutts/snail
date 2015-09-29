@@ -289,8 +289,9 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
 
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
-  MOCK_METHOD2(addKbNode,
-               IKbNode*(const utils::U8String& name, IKbNode* parent));
+  MOCK_METHOD3(addKbNode,
+               IKbNode*(const utils::U8String& name, IKbNode* parent,
+                        bool is_category));
 
   MOCK_METHOD1(incRef, void(IKbNode* kbnode));
   MOCK_METHOD1(findKbNodeByName,

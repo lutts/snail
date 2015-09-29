@@ -24,6 +24,7 @@ class MockKbNodeProviderModel : public IKbNodeProviderModel {
   MOCK_METHOD1(setNewKbNodeParent, void(IKbNode* kbnode));
   MOCK_METHOD1(setNewKbNodeName, void(const utils::U8String& name));
   MOCK_CONST_METHOD0(isNewKbNodeNameValid, bool());
+  MOCK_METHOD1(setIsCategory, void(bool category));
   MOCK_METHOD0(addKbNode, void());
 };
 

@@ -16,6 +16,7 @@ class MockKbNodeProviderView : public IKbNodeProviderView {
 
   SNAIL_MOCK_SLOT(UserSelectIndex);
   SNAIL_MOCK_SLOT(NewKbNodeNameChanged);
+  SNAIL_MOCK_SLOT(UserToggleCategoryCheckbox);
   SNAIL_MOCK_SLOT(UserClickAddButton);
   SNAIL_MOCK_SLOT(UserReject);
 

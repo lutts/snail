@@ -32,6 +32,7 @@ class IKbNodeProviderModel : public pfmvp::IPfModel {
   virtual void setNewKbNodeParent(IKbNode* kbnode) = 0;
   virtual void setNewKbNodeName(const utils::U8String& name) = 0;
   virtual bool isNewKbNodeNameValid() const = 0;
+  virtual void setIsCategory(bool category) = 0;
   virtual void addKbNode() = 0;
 };
 

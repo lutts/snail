@@ -21,6 +21,7 @@ class IKbNodeProviderView : public GenericViewBase {
 
   SNAIL_SIGSLOT2(UserSelectIndex, void(const QModelIndex& index));
   SNAIL_SIGSLOT2(NewKbNodeNameChanged, void(const QString& name));
+  SNAIL_SIGSLOT2(UserToggleCategoryCheckbox, void(bool checked));
   SNAIL_SIGSLOT2(UserClickAddButton, void());
   SNAIL_SIGSLOT2(UserReject, void());
 

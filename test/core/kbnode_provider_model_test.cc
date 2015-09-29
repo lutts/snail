@@ -12,13 +12,14 @@
 namespace snailcore {
 namespace tests {
 
-class KbNodeProviderModelTest : public ::testing::Test {
+template <typename TestBase>
+class KbNodeProviderModelTestBase : public TestBase {
  protected:
-  KbNodeProviderModelTest() {
+  KbNodeProviderModelTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~KbNodeProviderModelTest() { }
+  // ~KbNodeProviderModelTestBase() { }
   virtual void SetUp() {
     model = utils::make_unique<KbNodeProviderModel>(&kbnode_provider);
   }
@@ -35,6 +36,9 @@ class KbNodeProviderModelTest : public ::testing::Test {
   // region: object depends on test subject
   // endregion
 };
+
+class KbNodeProviderModelTest :
+      public KbNodeProviderModelTestBase<::testing::Test> { };
 
 TEST_F(KbNodeProviderModelTest,
        should_be_able_to_get_the_kbnode_provider) { // NOLINT
@@ -124,19 +128,29 @@ BIND_SIGNAL2(KbNodeAdded,
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
+class KbNodeProviderModelTest_BoolParam :
+      public KbNodeProviderModelTestBase<::testing::TestWithParam<bool>> { };
 
-TEST_F(KbNodeProviderModelTest,
-       should_add_kbnode_with_setted_new_name_and_parent_and_emit_KbNodeAdded_when_add_successful) { // NOLINT
+INSTANTIATE_TEST_CASE_P(BoolParam,
+                        KbNodeProviderModelTest_BoolParam,
+                        ::testing::Bool());
+
+TEST_P(KbNodeProviderModelTest_BoolParam,
+       should_add_kbnode_with_use_setted_params_and_emit_KbNodeAdded_when_add_successful) { // NOLINT
   // Setup fixture
   auto expect_parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto expect_new_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto expect_new_name = xtestutils::genRandomString();
+  auto expect_category = GetParam();
 
   model->setNewKbNodeParent(expect_parent_kbnode);
   model->setNewKbNodeName(expect_new_name);
+  model->setIsCategory(expect_category);
 
   // Expectations
-  EXPECT_CALL(kbnode_provider, addKbNode(expect_new_name, expect_parent_kbnode))
+  EXPECT_CALL(kbnode_provider,
+              addKbNode(expect_new_name,
+                        expect_parent_kbnode, expect_category))
       .WillOnce(Return(expect_new_kbnode));
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener,
@@ -149,7 +163,7 @@ TEST_F(KbNodeProviderModelTest,
 TEST_F(KbNodeProviderModelTest,
        should_not_add_kbnode_to_provider_when_name_is_invalid) { // NOLINT
   // Expectations
-  EXPECT_CALL(kbnode_provider, addKbNode(_, _)).Times(0);
+  EXPECT_CALL(kbnode_provider, addKbNode(_, _, _)).Times(0);
 
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener, KbNodeAdded(_, _)).Times(0);
@@ -158,17 +172,20 @@ TEST_F(KbNodeProviderModelTest,
   model->addKbNode();
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_P(KbNodeProviderModelTest_BoolParam,
        should_not_emit_KbNodeAdded_when_add_failed) { // NOLINT
   // Setup fixture
   auto expect_parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto expect_new_name = xtestutils::genRandomString();
+  auto is_category = GetParam();
 
   model->setNewKbNodeParent(expect_parent_kbnode);
   model->setNewKbNodeName(expect_new_name);
+  model->setIsCategory(is_category);
 
   // Expectations
-  EXPECT_CALL(kbnode_provider, addKbNode(expect_new_name, expect_parent_kbnode))
+  EXPECT_CALL(kbnode_provider, addKbNode(expect_new_name,
+                                         expect_parent_kbnode, is_category))
       .WillOnce(Return(nullptr));
 
   auto mock_listener = MockListener::attachTo(model.get());
