@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "utils/basic_utils.h"
+#include "utils/signal_slot_impl.h"
 #include "snail/i_attribute_collection_model.h"
 
 namespace snailcore {
@@ -24,6 +25,7 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
       const IAttributeModelFactory& attr_model_factory);
   virtual ~AttributeCollectionModel();
 
+  void switchMode() override;
   std::vector<IAttributeSupplier*> getAttributeSuppliers() const override;
 
   std::shared_ptr<IAttributeModel>
@@ -34,7 +36,16 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
   const IAttributeModelFactory& attr_model_factory_;
 
  private:
-  SNAIL_DISABLE_COPY(AttributeCollectionModel)
+  SNAIL_DISABLE_COPY(AttributeCollectionModel);
+
+  SNAIL_SIGSLOT_IMPL(ValidateComplete);
+  SNAIL_SIGSLOT_IMPL(SwitchToEditMode);
+  SNAIL_SIGSLOT_IMPL(SwitchToDisplayMode);
+
+  void validateComplete();
+
+  std::vector<IAttributeModel*> attr_models_;
+  bool is_display_mode_ { true };
 };
 
 

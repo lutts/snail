@@ -91,11 +91,11 @@ TEST_F(KbNodeAttributeModelTest,
 
 BEGIN_MOCK_LISTENER_DEF(MockListener, IAttributeModel)
 
-MOCK_METHOD1(ValidateComplete, void(bool result));
+MOCK_METHOD0(ValidateComplete, void());
 
 BEGIN_BIND_SIGNAL(IAttributeModel)
 
-BIND_SIGNAL1(ValidateComplete, void, bool, result);
+BIND_SIGNAL0(ValidateComplete, void);
 
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
@@ -112,10 +112,13 @@ TEST_F(KbNodeAttributeModelTest,
   EXPECT_CALL(*kbnode_provider, incRef(kbnode));
 
   auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(true));
+  EXPECT_CALL(*mock_listener, ValidateComplete());
 
   // Exercise system
   model->setKbNode(kbnode);
+
+  // Verify result
+  ASSERT_TRUE(model->isValid());
 }
 
 TEST_F(KbNodeAttributeModelTest,
@@ -136,12 +139,15 @@ TEST_F(KbNodeAttributeModelTest,
   // Mock::FailUninterestingCalls(kbnode_provider.get());
 
   auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(true));
+  EXPECT_CALL(*mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(expect_name);
 
+  // Verify result
   ASSERT_EQ(expect_result, actual_result);
+
+  ASSERT_TRUE(model->isValid());
 }
 
 TEST_F(KbNodeAttributeModelTest,
@@ -159,13 +165,15 @@ TEST_F(KbNodeAttributeModelTest,
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
 
   auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(false));
+  EXPECT_CALL(*mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(name);
 
   // Verify results
   ASSERT_EQ(expect_result, actual_result);
+
+  ASSERT_FALSE(model->isValid());
 }
 
 TEST_F(KbNodeAttributeModelTest,
@@ -187,13 +195,14 @@ TEST_F(KbNodeAttributeModelTest,
   EXPECT_CALL(*kbnode_provider, incRef(kbnode));
 
   auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(true));
+  EXPECT_CALL(*mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(name);
 
   // Verify results
   ASSERT_EQ(expect_result, actual_result);
+  ASSERT_TRUE(model->isValid());
 }
 
 TEST_F(KbNodeAttributeModelTest,
@@ -213,13 +222,14 @@ TEST_F(KbNodeAttributeModelTest,
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
 
   auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(false));
+  EXPECT_CALL(*mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(name);
 
   // Verify results
   ASSERT_EQ(expect_result, actual_result);
+  ASSERT_FALSE(model->isValid());
 }
 
 }  // namespace tests

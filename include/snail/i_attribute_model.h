@@ -19,7 +19,9 @@ class IAttributeModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(AttributeModel);
 
-  SNAIL_SIGSLOT2(ValidateComplete, void(bool result));
+  SNAIL_SIGSLOT2(ValidateComplete, void());
+
+  virtual bool isValid() const = 0;
 };
 
 }  // namespace snailcore

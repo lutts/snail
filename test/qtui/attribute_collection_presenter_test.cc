@@ -24,13 +24,14 @@ using namespace snailcore::tests;  // NOLINT
 using namespace pfmvp;  // NOLINT
 using namespace pfmvp::tests;  // NOLINT
 
-class AttributeCollectionPresenterTest : public ::testing::Test {
+template <typename TestBase>
+class AttributeCollectionPresenterTestBase : public TestBase {
  protected:
-  AttributeCollectionPresenterTest() {
+  AttributeCollectionPresenterTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~AttributeCollectionPresenterTest() { }
+  // ~AttributeCollectionPresenterTestBase() { }
   virtual void SetUp() {
     // Setup fixture
     model = std::make_shared<MockAttributeCollectionModel>();
@@ -69,15 +70,20 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
       R_EXPECT_CALL(*view, setAttributeDelegate(attr_delegate));
     }
 
-    // TODO(lutts): may be just a toggleMode?
-    R_EXPECT_CALL(*view, whenSwitchToEditMode(_, _))
-        .WillOnce(SaveArg<0>(&switchToEditMode));
-
-    R_EXPECT_CALL(*view, whenSwitchToDisplayMode(_, _))
-        .WillOnce(SaveArg<0>(&switchToDisplayMode));
+    R_EXPECT_CALL(*view, whenUserSwitchMode(_, _))
+        .WillOnce(SaveArg<0>(&userSwitchMode));
 
     R_EXPECT_CALL(*view, whenUserMayClickAddAttribute(_, _))
         .WillOnce(SaveArg<0>(&userMayClickAddAttribute));
+
+    R_EXPECT_CALL(*model, whenSwitchToEditMode(_, _))
+        .WillOnce(SaveArg<0>(&switchToEditMode));
+
+    R_EXPECT_CALL(*model, whenSwitchToDisplayMode(_, _))
+        .WillOnce(SaveArg<0>(&switchToDisplayMode));
+
+    R_EXPECT_CALL(*model, whenValidateComplete(_, _))
+        .WillOnce(SaveArg<0>(&validateComplete));
 
     R_EXPECT_CALL(*qmodel, whenAttributeAdded(_, _))
         .WillOnce(SaveArg<0>(&attributeAdded));
@@ -110,17 +116,25 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
   SlotCatcher<IAttributeDelegate::CreateEditorForSlotType> createEditorSignal;
   SlotCatcher<IAttributeDelegate::CloseEditorSlotType> closeEditorSignal;
 
-  using SwitchToEditModeSlotType =
-      IAttributeCollectionView::SwitchToEditModeSlotType;
-  SlotCatcher<SwitchToEditModeSlotType> switchToEditMode;
-
-  using SwitchToDisplayModeSlotType =
-      IAttributeCollectionView::SwitchToDisplayModeSlotType;
-  SlotCatcher<SwitchToDisplayModeSlotType> switchToDisplayMode;
+  using UserSwitchModeSlotType =
+      IAttributeCollectionView::UserSwitchModeSlotType;
+  SlotCatcher<UserSwitchModeSlotType> userSwitchMode;
 
   using UserMayClickAddAttributeSlotType =
       IAttributeCollectionView::UserMayClickAddAttributeSlotType;
   SlotCatcher<UserMayClickAddAttributeSlotType> userMayClickAddAttribute;
+
+  using SwitchToEditModeSlotType =
+      IAttributeCollectionModel::SwitchToEditModeSlotType;
+  SlotCatcher<SwitchToEditModeSlotType> switchToEditMode;
+
+  using SwitchToDisplayModeSlotType =
+      IAttributeCollectionModel::SwitchToDisplayModeSlotType;
+  SlotCatcher<SwitchToDisplayModeSlotType> switchToDisplayMode;
+
+  using ValidateCompleteSlotType =
+      IAttributeCollectionModel::ValidateCompleteSlotType;
+  SlotCatcher<ValidateCompleteSlotType> validateComplete;
 
   using AttributeAddedSlotType =
       IAttributeCollectionQModel::AttributeAddedSlotType;
@@ -128,10 +142,8 @@ class AttributeCollectionPresenterTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(AttributeCollectionPresenterTest, should_construct_properly) { // NOLINT
-  // See SetUp()
-  SUCCEED();
-}
+class AttributeCollectionPresenterTest :
+    public AttributeCollectionPresenterTestBase<::testing::Test> { };
 
 TEST_F(AttributeCollectionPresenterTest,
        should_be_able_to_create_attr_editor_view_for_attr_delegate) { // NOLINT
@@ -188,11 +200,21 @@ TEST_F(AttributeCollectionPresenterTest,
 }
 
 TEST_F(AttributeCollectionPresenterTest,
-       should_tell_qmodel_enter_edit_mode_and_open_attr_editor_views_in_view_when_user_switch_to_edit_mode) { // NOLINT
+       should_tell_model_when_user_switch_mode) { // NOLINT
+  // Expectations
+  EXPECT_CALL(*model, switchMode());
+
+  // Exercise system
+  userSwitchMode();
+}
+
+TEST_F(AttributeCollectionPresenterTest,
+       should_tell_qmodel_enter_edit_mode_and_open_attr_editor_views_in_view_when_switch_to_edit_mode) { // NOLINT
   // Setup fixture
   int row_count = 3;
 
   // Expectations
+  EXPECT_CALL(*view, switchToEditMode());
   {
     InSequence seq;
 
@@ -214,6 +236,7 @@ TEST_F(AttributeCollectionPresenterTest,
   int row_count = 3;
 
   // Expectations
+  EXPECT_CALL(*view, switchToDisplayMode());
   {
     InSequence seq;
 
@@ -242,16 +265,32 @@ TEST_F(AttributeCollectionPresenterTest,
 
   // Exercise system
   userMayClickAddAttribute(row);
-}
 
-TEST_F(AttributeCollectionPresenterTest,
-       should_open_editor_for_newly_added_attribute) { // NOLINT
-  // Setup fixture
-  int row = std::rand();
+  // should open editor for newly added attribute
+  row = std::rand();
 
   // Expectations
   EXPECT_CALL(*view, openAttributeEditor(row));
 
   // Exercise system
   attributeAdded(row);
+}
+
+class AttributeCollectionPresenterTest_BoolParam :
+    public AttributeCollectionPresenterTestBase<::testing::TestWithParam<bool>> { }; // NOLINT
+
+INSTANTIATE_TEST_CASE_P(BoolParam,
+                        AttributeCollectionPresenterTest_BoolParam,
+                        ::testing::Bool());
+
+TEST_P(AttributeCollectionPresenterTest_BoolParam,
+       should_update_switch_mode_button_state_when_validate_complete) { // NOLINT
+  // Setup fixture
+  auto validate_result = GetParam();
+
+  // Expectations
+  EXPECT_CALL(*view, setSwitchModelButtonEnabled(validate_result));
+
+  // Exercise system
+  validateComplete(validate_result);
 }

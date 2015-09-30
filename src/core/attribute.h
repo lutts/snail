@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_H_
-#define ATTRIBUTE_H_
+#ifndef SRC_CORE_ATTRIBUTE_H_
+#define SRC_CORE_ATTRIBUTE_H_
 
 #include "utils/basic_utils.h"
 #include "core/i_kbnode_attribute.h"
@@ -15,7 +15,7 @@ namespace snailcore {
 
 class KbNodeAttribute : public IKbNodeAttribute {
  public:
-  KbNodeAttribute(IKbNodeAttributeSupplier* attr_supplier);
+  explicit KbNodeAttribute(IKbNodeAttributeSupplier* attr_supplier);
   virtual ~KbNodeAttribute();
 
   // IAttribute
@@ -55,4 +55,4 @@ class KbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
 
 }  // namespace snailcore
 
-#endif  // ATTRIBUTE_H_
+#endif  // SRC_CORE_ATTRIBUTE_H_

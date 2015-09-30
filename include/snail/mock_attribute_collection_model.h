@@ -17,6 +17,11 @@ namespace tests {
 
 class MockAttributeCollectionModel : public IAttributeCollectionModel {
  public:
+  SNAIL_MOCK_SLOT(SwitchToEditMode);
+  SNAIL_MOCK_SLOT(SwitchToDisplayMode);
+  SNAIL_MOCK_SLOT(ValidateComplete);
+
+  MOCK_METHOD0(switchMode, void());
   MOCK_CONST_METHOD0(getAttributeSuppliers,
                      std::vector<IAttributeSupplier*>());
   MOCK_METHOD1(createAttributeModel,

@@ -25,6 +25,11 @@ class IAttributeCollectionModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(AttributeCollectionModel);
 
+  SNAIL_SIGSLOT2(SwitchToEditMode, void());
+  SNAIL_SIGSLOT2(SwitchToDisplayMode, void());
+  SNAIL_SIGSLOT2(ValidateComplete, void(bool validate_result));
+
+  virtual void switchMode() = 0;
   virtual std::vector<IAttributeSupplier*> getAttributeSuppliers() const = 0;
   virtual
   std::shared_ptr<IAttributeModel> createAttributeModel(IAttribute* attr) = 0;

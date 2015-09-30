@@ -46,7 +46,19 @@ void AttributeCollectionPresenter::initialize() {
 
   view()->setAttributeDelegate(attr_delegate_.get());
 
-  view()->whenSwitchToEditMode(
+  view()->whenUserMayClickAddAttribute(
+      [this](int row) {
+        qmodel_->mayAddAttributeIfSupplier(row);
+      },
+      shared_from_this());
+
+  view()->whenUserSwitchMode(
+      [this]() {
+        model()->switchMode();
+      },
+      shared_from_this());
+
+  model()->whenSwitchToEditMode(
       [this]() {
         qmodel_->switchToEditMode();
 
@@ -54,10 +66,12 @@ void AttributeCollectionPresenter::initialize() {
         for (int row = 0; row < row_count; ++row) {
           view()->openAttributeEditor(row);
         }
+
+        view()->switchToEditMode();
       },
       shared_from_this());
 
-  view()->whenSwitchToDisplayMode(
+  model()->whenSwitchToDisplayMode(
       [this]() {
         int row_count = qmodel_->attrRowCount();
         for (int row = 0; row < row_count; ++row) {
@@ -65,12 +79,14 @@ void AttributeCollectionPresenter::initialize() {
         }
 
         qmodel_->switchToDisplayMode();
+
+        view()->switchToDisplayMode();
       },
       shared_from_this());
 
-  view()->whenUserMayClickAddAttribute(
-      [this](int row) {
-        qmodel_->mayAddAttributeIfSupplier(row);
+  model()->whenValidateComplete(
+      [this](bool validate_result) {
+        view()->setSwitchModelButtonEnabled(validate_result);
       },
       shared_from_this());
 

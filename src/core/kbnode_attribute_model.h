@@ -23,6 +23,8 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
                        IKbNodeManager* kbnode_manager);
   virtual ~KbNodeAttributeModel();
 
+  bool isValid() const override;
+
   IKbNodeProvider* getKbNodeProvider() const override;
 
   std::shared_ptr<IKbNodeProviderModel>
@@ -35,9 +37,13 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeModel);
 
+  void validateComplete(bool result);
+
   IKbNodeAttribute* kbnode_attr_;
   IKbNodeManager* kbnode_manager_;
   mutable std::shared_ptr<IKbNodeProvider> kbnode_provider_;
+
+  bool last_validate_result_ { true };
 
  private:
   SNAIL_SIGSLOT_IMPL(ValidateComplete);

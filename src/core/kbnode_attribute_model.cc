@@ -19,6 +19,16 @@ KbNodeAttributeModel::KbNodeAttributeModel(IKbNodeAttribute* kbnode_attr,
 
 KbNodeAttributeModel::~KbNodeAttributeModel() { }
 
+bool KbNodeAttributeModel::isValid() const {
+  return last_validate_result_;
+}
+
+// NOTE: validate and attr empty is not the same thing
+void KbNodeAttributeModel::validateComplete(bool result) {
+  last_validate_result_ = result;
+  ValidateComplete();
+}
+
 IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
   if (!kbnode_provider_) {
     auto attr_supplier = kbnode_attr_->kbnode_supplier();
@@ -47,10 +57,12 @@ void KbNodeAttributeModel::setKbNode(IKbNode* kbnode) {
     kbnode_provider_->setFilterPattern("");
     kbnode_provider_->incRef(kbnode);
 
-    ValidateComplete(true);
+    // if kbnode is nullptr, the validate result is true, but attr will be empty
+    validateComplete(true);
   }
 }
 
+// NOTE: validate false should not update the underlying attribute
 int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
   getKbNodeProvider();
 
@@ -58,22 +70,24 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
     if (kbnode_provider_) {
       kbnode_provider_->setFilterPattern("");
     }
-    ValidateComplete(true);
+
+    validateComplete(true);
     return kSetKbNodeSuccess;
   } else if (kbnode_provider_) {
     auto kbnodes = kbnode_provider_->findKbNodeByName(name);
     if (kbnodes.empty()) {
-      ValidateComplete(false);
+      validateComplete(false);
       return kSetKbNodeNotFound;
     } else if (kbnodes.size() == 1) {
       auto kbnode = kbnodes[0];
       kbnode_attr_->setKbNode(kbnode);
       kbnode_provider_->setFilterPattern("");
       kbnode_provider_->incRef(kbnode);
-      ValidateComplete(true);
+
+      validateComplete(true);
       return kSetKbNodeSuccess;
     } else {  // multi match
-      ValidateComplete(false);
+      validateComplete(false);
       return kSetKbNodeMultpicMatched;
     }
   }

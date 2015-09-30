@@ -18,14 +18,17 @@ class IAttributeCollectionView : public GenericViewBase {
  public:
   virtual ~IAttributeCollectionView() = default;
 
-  SNAIL_SIGSLOT2(SwitchToEditMode, void());
-  SNAIL_SIGSLOT2(SwitchToDisplayMode, void());
+  SNAIL_SIGSLOT2(UserSwitchMode, void());
   SNAIL_SIGSLOT2(UserMayClickAddAttribute, void(int row));
 
   virtual void setQModel(IAttributeCollectionQModel* qmodel) = 0;
   virtual void setAttributeDelegate(IAttributeDelegate* attr_delegate) = 0;
   virtual void openAttributeEditor(int row) = 0;
   virtual void closeAttributeEditor(int row) = 0;
+
+  virtual void switchToDisplayMode() = 0;
+  virtual void switchToEditMode() = 0;
+  virtual void setSwitchModelButtonEnabled(bool enabled) = 0;
 };
 
 

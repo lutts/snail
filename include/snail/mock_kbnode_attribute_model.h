@@ -17,6 +17,7 @@ class MockKbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
   // IAttributeModel
   SNAIL_MOCK_SLOT(ValidateComplete);
+  MOCK_CONST_METHOD0(isValid, bool());
 
   // Self
   MOCK_CONST_METHOD0(getKbNodeProvider, IKbNodeProvider*());
