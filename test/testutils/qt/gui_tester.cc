@@ -141,6 +141,4 @@ void GuiTester::createSingleActionSeq(DelayedAction* action, int delay_msec) {
   runSequence();
 }
 
-
-
-#include "moc_gui_tester_cc.cc"
+#include "gui_tester.moc"

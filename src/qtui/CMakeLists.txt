@@ -1,21 +1,15 @@
+set(CMAKE_AUTOMOC ON)
+
 # Widgets finds its own dependencies (QtGui and QtCore).
 find_package(Qt5Widgets REQUIRED)
 
-#find_package(Boost REQUIRED system thread)
-
 add_definitions(-DQT_NO_CAST_FROM_ASCII)
-
-set(qtui_MOC_HDRS
-  qt_uiengine.h
-  main_window.h
-  )
 
 set(qtui_RESOURCES
   images.qrc
   )
 
 qt5_add_resources(qtui_GEN_RCS ${qtui_RESOURCES})
-qt5_wrap_cpp(qtui_GEN_MOC_SRCS ${qtui_MOC_HDRS})
 
 SET(qtui_SRCS
   qt_uiengine.cc
@@ -46,6 +40,6 @@ foreach (_subdir ${SUBDIRS})
   endforeach()
 endforeach()
 
-add_library(qtuicore SHARED ${qtui_SRCS} ${qtui_GEN_MOC_SRCS} ${qtui_GEN_RCS})
+add_library(qtuicore SHARED ${qtui_SRCS} ${qtui_GEN_RCS})
 target_link_libraries(qtuicore Qt5::Widgets pfmvp ${Boost_LIBRARIES} pthread)
 #set_target_properties(qtuicore PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")

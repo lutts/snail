@@ -42,7 +42,7 @@ class QtUiEngineTest : public QObject, public ::testing::Test {
   std::unique_ptr<QtUiEngine> uiEngine;
 };
 
-#include "moc_qt_uiengine_test.cpp"
+#include "qt_uiengine_test.moc"
 
 class MockListener : public GenericMockListener<MockListener,
                                                 snailcore::IUiEngine> {

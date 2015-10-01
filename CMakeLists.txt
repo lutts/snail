@@ -37,8 +37,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed.
-#set(CMAKE_AUTOMOC ON)
 
 find_package(Gettext REQUIRED)
 add_definitions(-DPACKAGE="${CMAKE_PROJECT_NAME}")
