@@ -49,6 +49,9 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
+add_subdirectory(thirdparty)
+include_directories(thirdparty)
+
 add_subdirectory(src)
 add_subdirectory(test)
 
