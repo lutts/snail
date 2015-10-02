@@ -13,8 +13,6 @@
 #include "qtui/mock_work_view.h"
 #include "src/qtui/work_presenter.h"
 
-#include "qtui/mock_work_basic_info_qmodel.h"
-
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
 using namespace pfmvp;  // NOLINT
@@ -31,15 +29,11 @@ class WorkPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockWorkModel>();
     view = std::make_shared<MockWorkView>();
-    auto basicInfoQModel = utils::make_unique<MockWorkBasicInfoQModel>();
 
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
-    R_EXPECT_CALL(*view, setBasicInfoQModel(basicInfoQModel.get()));
-
     // Excercise system
-    presenter = std::make_shared<WorkPresenter>(model, view,
-                                                std::move(basicInfoQModel));
+    presenter = std::make_shared<WorkPresenter>(model, view);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 

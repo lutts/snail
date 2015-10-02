@@ -22,8 +22,6 @@ class WorkView : public QWidget, public IWorkView {
   WorkView();
   ~WorkView() = default;
 
-  void setBasicInfoQModel(IWorkBasicInfoQModel* model);
-
   QWidget* getWidget() const override {
     auto t = const_cast<WorkView*>(this);
     return static_cast<QWidget*>(t);

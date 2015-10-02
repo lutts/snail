@@ -14,8 +14,6 @@
 #include <QLabel>
 #include <QDebug>
 
-#include "qtui/i_work_basic_info_qmodel.h"
-
 #include "qsint/include/QSint"
 
 WorkView::WorkView() {
@@ -65,44 +63,4 @@ WorkView::WorkView() {
 
   auto label = new QLabel(QStringLiteral("<img src=':images/filesave.png'>Hello!"));
   verticalLayout->addWidget(label);
-
-#if 0
-  auto verticalSpacer = new QSpacerItem(20, 40,
-                                        QSizePolicy::Minimum,
-                                        QSizePolicy::Expanding);
-
-  verticalLayout->addItem(verticalSpacer);
-#endif
-}
-
-/*
-  void MainWindow::adjustTableSize()
-  {
-  ui->tableView->resizeColumnToContents(0);
-  ui->tableView->resizeColumnToContents(1);
-  ui->tableView->resizeColumnToContents(2);
-
-  QRect rect = ui->tableView->geometry();
-  rect.setWidth(2 + ui->tableView->verticalHeader()->width() +
-  ui->tableView->columnWidth(0) + ui->tableView->columnWidth(1) + ui->tableView->columnWidth(2));
-  ui->tableView->setGeometry(rect);
-  }
-*/
-
-void WorkView::setBasicInfoQModel(IWorkBasicInfoQModel* model) {
-  auto tablemodel = dynamic_cast<QAbstractItemModel*>(model);
-  if (basicInfoView && tablemodel) {
-    basicInfoView->setModel(tablemodel);
-
-    basicInfoView->resizeRowsToContents();
-    basicInfoView->resizeColumnsToContents();
-
-    int maxh = 0;
-
-    for (int i = 0; i < tablemodel->rowCount(); ++i)
-      maxh += basicInfoView->rowHeight(i);
-
-    basicInfoView->setMinimumHeight(maxh);
-    basicInfoView->setMaximumHeight(maxh);
-  }
 }

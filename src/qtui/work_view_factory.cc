@@ -12,8 +12,6 @@
 #include "src/qtui/work_view.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
-#include "src/qtui/work_basic_info_qmodel.h"
-
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
 
@@ -29,9 +27,7 @@ class WorkViewFactory : public PfViewFactoryT<IWorkModel> {
                 PfCreateViewArgs* args) override {
     V_UNUSED(args);
     auto view = std::make_shared<WorkView>();
-    return std::make_shared<WorkPresenter>(
-        model, view,
-        utils::make_unique<WorkBasicInfoQModel>(model.get()));
+    return std::make_shared<WorkPresenter>(model, view);
   }
 
  private:
