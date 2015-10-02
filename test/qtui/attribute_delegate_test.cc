@@ -70,7 +70,7 @@ class AttributeEditorViewTestStub : public IAttributeEditorView
   AttributeEditorViewTestStub() { }
   virtual ~AttributeEditorViewTestStub() { }
 
-  QWidget* getWidget() const override {
+  QWidget* getWidget() override {
     auto this_ptr = const_cast<AttributeEditorViewTestStub*>(this);
     return static_cast<QWidget*>(this_ptr);
   }

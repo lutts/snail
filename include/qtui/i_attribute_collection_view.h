@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_VIEW_H_
 #define INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_VIEW_H_
 
-#include "src/qtui/generic_view_base.h"
+#include "qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
 
 class IAttributeCollectionQModel;

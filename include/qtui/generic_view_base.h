@@ -16,7 +16,7 @@ class GenericViewBase : public pfmvp::IPfView {
  public:
   virtual ~GenericViewBase() = default;
 
-  virtual QWidget* getWidget() const { return nullptr; }
+  virtual QWidget* getWidget() { return nullptr; }
 };
 
 #endif  // SRC_QTUI_GENERIC_VIEW_BASE_H_

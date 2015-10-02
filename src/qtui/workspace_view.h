@@ -26,7 +26,7 @@ class WorkSpaceView : public QTabWidget, public IWorkSpaceView {
   void updateWorkViewTitle(IWorkView* work_view,
                            const utils::U8String& new_title) override;
 
-  QWidget* getWidget() const override {
+  QWidget* getWidget() override {
     auto t = const_cast<WorkSpaceView*>(this);
     return static_cast<QWidget*>(t);
   }
