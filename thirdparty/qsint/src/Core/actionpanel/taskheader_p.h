@@ -28,7 +28,8 @@ public:
   void setExpandable(bool expandable);
 
   void setHasEditButton(bool has_edit_button);
-  void setTitleEditable(bool title_editable);
+  void openHeaderTextEditor();
+  void closeHeaderTextEditor();
 
   inline QBoxLayout* headerLayout()
   {
@@ -44,7 +45,6 @@ signals:
 
 public slots:
   void fold();
-  void titleEditFinished();
 
 protected slots:
   void animate();

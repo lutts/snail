@@ -28,6 +28,8 @@ class WorkView : public QWidget, public IWorkView {
  private:
   WorkView(const WorkView& other) = delete;
   WorkView& operator=(const WorkView& other) = delete;
+
+  bool group1_editing { false };
 };
 
 #endif  // SRC_QTUI_WORK_VIEW_H_

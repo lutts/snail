@@ -17,37 +17,40 @@
 #include "qsint/include/QSint"
 
 WorkView::WorkView() {
-  QVBoxLayout *verticalLayout = new QVBoxLayout(this);
+  auto verticalLayout = new QVBoxLayout(this);
 
   QSint::ActionPanel* action_panel = new QSint::ActionPanel(this);
+  QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  sizePolicy.setHorizontalStretch(0);
+  sizePolicy.setVerticalStretch(0);
+  sizePolicy.setHeightForWidth(action_panel->sizePolicy().hasHeightForWidth());
+  action_panel->setSizePolicy(sizePolicy);
 
-  QSint::ActionGroup *group1 = action_panel->createGroup(QPixmap(QStringLiteral(":images/filesave.png")), QStringLiteral("Expandable Group"));
+  // work name & description
+  QSint::ActionGroup *group1 = action_panel->createGroup(QStringLiteral("[Work Name Here]"));
   group1->setHasEditButton(true);
-  group1->setHeaderTextEditable(true);
 
-  group1->addWidget(new QPushButton(QStringLiteral("Just a button"), this));
-  group1->addWidget(new QPushButton(QStringLiteral("Just another button"), this));
+  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
+  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
+  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
+  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
+  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
 
   connect(group1, &QSint::ActionGroup::editButtonClicked,
-          []() {
+          [group1, this]() {
             qDebug() << "edit button clicked";
+            if (!group1_editing) {
+              group1->openHeaderTextEditor();
+              group1->setEditButtonText(QStringLiteral("[Done]"));
+              group1_editing = true;
+            } else {
+              group1->closeHeaderTextEditor();
+              group1->setEditButtonText(QStringLiteral("[Edit]"));
+              group1_editing = false;
+            }
           });
-
-  connect(group1, &QSint::ActionGroup::headerTextChanged,
-          [](const QString& text) {
-            qDebug() << "header text changed, new text: " << text;
-          });
-
-  QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-  //  sizePolicy.setHorizontalStretch(0);
-  //  sizePolicy.setVerticalStretch(0);
-  //  sizePolicy.setHeightForWidth(action_panel->sizePolicy().hasHeightForWidth());
-  action_panel->setSizePolicy(sizePolicy);
 
   action_panel->addStretch();
 
   verticalLayout->addWidget(action_panel);
-
-  auto label = new QLabel(QStringLiteral("<img src=':images/filesave.png'>Hello!"));
-  verticalLayout->addWidget(label);
 }

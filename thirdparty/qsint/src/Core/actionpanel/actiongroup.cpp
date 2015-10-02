@@ -56,8 +56,6 @@ void ActionGroup::init(bool header)
   connect(myHeader, SIGNAL(activated()), this, SLOT(showHide()));
   connect(myHeader, SIGNAL(editButtonClicked()),
           this, SIGNAL(editButtonClicked()));
-  connect(myHeader, SIGNAL(headerTextChanged(const QString&)),
-          this, SIGNAL(headerTextChanged(const QString&)));
 }
 
 void ActionGroup::setScheme(ActionPanelScheme *pointer)
@@ -168,8 +166,8 @@ void ActionGroup::processShow()
     myGroup->show();
     setFixedHeight(m_fullHeight+myHeader->height());
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    setMaximumHeight(9999);
-    setMinimumHeight(0);
+    // setMaximumHeight(9999);
+    // setMinimumHeight(0);
     return;
   }
 
@@ -252,14 +250,24 @@ void ActionGroup::setHasEditButton(bool has_edit_button) {
   myHeader->setHasEditButton(has_edit_button);
 }
 
-void ActionGroup::setHeaderTextEditable(bool header_text_editable) {
-  myHeader->setTitleEditable(header_text_editable);
+void ActionGroup::setEditButtonText(const QString& text) {
+  if (myHeader->editButton)
+    myHeader->editButton->setText(text);
 }
 
+void ActionGroup::openHeaderTextEditor() {
+  myHeader->openHeaderTextEditor();
+}
+
+void ActionGroup::closeHeaderTextEditor() {
+  myHeader->closeHeaderTextEditor();
+}
+
+#if 0
 QSize ActionGroup::minimumSizeHint() const
 {
-    return QSize(200,100);
+    return QSize(200, 100);
 }
-
+#endif
 
 }

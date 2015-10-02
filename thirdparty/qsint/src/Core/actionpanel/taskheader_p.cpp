@@ -93,49 +93,41 @@ void TaskHeader::setHasEditButton(bool has_edit_button) {
   editButton->setText(tr("[Edit]"));
   editButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 
-  connect(editButton, &QSint::ActionLabel::clicked,
-          [this]() {
-            if (myTitleEditor) {
-              myTitle->hide();
-              myTitleEditor->setText(myTitle->text());
-              myTitleEditor->show();
-              myTitleEditor->setFocus();
-            }
+  connect(editButton, SIGNAL(clicked()),
+          this, SIGNAL(editButtonClicked()));
+  headerLayout()->insertWidget(1, editButton);
+}
 
-            emit editButtonClicked();
-          });
+void TaskHeader::openHeaderTextEditor() {
+  if (!myTitleEditor) {
+    myTitleEditor = new QLineEdit(myTitle->text(), this);
+    headerLayout()->insertWidget(1, myTitleEditor);
+
+#if 0
+    connect(myTitleEditor, SIGNAL(editingFinished()),
+            this, SLOT(titleEditFinished()));
+#endif
+  }
+
   if (myTitleEditor) {
-    headerLayout()->insertWidget(2, editButton);
-  } else {
-    headerLayout()->insertWidget(1, editButton);
+    myTitle->hide();
+    myTitleEditor->setText(myTitle->text());
+    myTitleEditor->show();
+    myTitleEditor->setFocus();
   }
 }
 
-void TaskHeader::titleEditFinished() {
-  auto new_text = myTitleEditor->text();
-  myTitle->setText(new_text);
-  myTitle->show();
-  myTitleEditor->hide();
-
-  emit headerTextChanged(new_text);
-}
-
-void TaskHeader::setTitleEditable(bool title_editable) {
-  if (title_editable && myTitleEditor)
-    return;
-
-  if (!title_editable && myTitleEditor) {
+void TaskHeader::closeHeaderTextEditor() {
+  if (myTitleEditor) {
+    myTitleEditor->hide();
     headerLayout()->removeWidget(myTitleEditor);
+
+    myTitle->setText(myTitleEditor->text());
+    myTitle->show();
+
     myTitleEditor->deleteLater();
     myTitleEditor = nullptr;
-    return;
   }
-
-  myTitleEditor = new QLineEdit(myTitle->text(), this);
-  myTitleEditor->hide();
-  connect(myTitleEditor, SIGNAL(editingFinished()),
-          this, SLOT(titleEditFinished()));
-  headerLayout()->insertWidget(1, myTitleEditor);
 }
 
 bool TaskHeader::eventFilter(QObject *obj, QEvent *event)

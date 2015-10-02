@@ -120,11 +120,10 @@ public:
       */
     QString headerText() const;
 
-    QSize minimumSizeHint() const;
+  // QSize minimumSizeHint() const;
 
  signals:
   void editButtonClicked();
-  void headerTextChanged(const QString& text);
 
 public slots:
     /** Expands/collapses the group.
@@ -155,13 +154,21 @@ public slots:
    */
   void setHasEditButton(bool has_edit_button);
 
-  /** set header title editable by click edit button
+  /** Sets text of the edit button.
+      Only valid if the has edit button
 
-      NOTE: should has edit button be true
+      \sa setHasEditButton
+  */
+  void setEditButtonText(const QString& text);
 
-      \sa setHadEditButton
+  /** show header text editor
    */
-  void setHeaderTextEditable(bool header_text_editable);
+  void openHeaderTextEditor();
+
+  /** hide header text editor.
+      header text will update with the text in the editor
+  */
+  void closeHeaderTextEditor();
 
 protected slots:
     void processHide();
