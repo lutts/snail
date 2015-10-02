@@ -19,19 +19,6 @@
 WorkView::WorkView() {
   QVBoxLayout *verticalLayout = new QVBoxLayout(this);
 
-  basicInfoView = new QTableView(this);
-  basicInfoView->verticalHeader()->setVisible(false);
-  basicInfoView->horizontalHeader()->setVisible(false);
-  basicInfoView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-  basicInfoView->setShowGrid(false);
-  basicInfoView->setSelectionMode(QAbstractItemView::NoSelection);
-  basicInfoView->setFrameShape(QFrame::NoFrame);
-  basicInfoView->setFrameShadow(QFrame::Plain);
-  basicInfoView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  basicInfoView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-  verticalLayout->addWidget(basicInfoView);
-
   QSint::ActionPanel* action_panel = new QSint::ActionPanel(this);
 
   QSint::ActionGroup *group1 = action_panel->createGroup(QPixmap(QStringLiteral(":images/filesave.png")), QStringLiteral("Expandable Group"));
