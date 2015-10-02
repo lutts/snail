@@ -13,6 +13,10 @@
 #include "qtui/i_work_view.h"
 #include "utils/signal_slot_impl.h"
 
+namespace QSint {
+class ActionGroup;
+}  // namespace QSint
+
 class WorkView : public QWidget, public IWorkView {
   //  Q_OBJECT
 
@@ -29,7 +33,14 @@ class WorkView : public QWidget, public IWorkView {
   WorkView(const WorkView& other) = delete;
   WorkView& operator=(const WorkView& other) = delete;
 
-  bool group1_editing { false };
+  QSint::ActionGroup* name_desc_group_ { nullptr };
+  // TODO(lutts): this bool var is not need in production code
+  bool name_desc_group_editing_ { false };
+
+  QSint::ActionGroup* parts_group_ { nullptr };
+  QSint::ActionGroup* scores_group_ { nullptr };
+  QSint::ActionGroup* recordings_group_ { nullptr };
+  QSint::ActionGroup* related_work_group_ { nullptr };
 };
 
 #endif  // SRC_QTUI_WORK_VIEW_H_

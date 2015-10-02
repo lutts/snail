@@ -10,7 +10,6 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 
-#include <QPushButton>
 #include <QLabel>
 #include <QDebug>
 
@@ -27,28 +26,39 @@ WorkView::WorkView() {
   action_panel->setSizePolicy(sizePolicy);
 
   // work name & description
-  QSint::ActionGroup *group1 = action_panel->createGroup(QStringLiteral("[Work Name Here]"));
-  group1->setHasEditButton(true);
 
-  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
-  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
-  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
-  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
-  group1->addWidget(new QPushButton(QStringLiteral("PlaceHolder"), this));
+  name_desc_group_ = action_panel->createGroup(QStringLiteral("[Work Name Here]"));
+  name_desc_group_->setHasEditButton(true);
 
-  connect(group1, &QSint::ActionGroup::editButtonClicked,
-          [group1, this]() {
+  name_desc_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
+
+  connect(name_desc_group_, &QSint::ActionGroup::editButtonClicked,
+          [this]() {
             qDebug() << "edit button clicked";
-            if (!group1_editing) {
-              group1->openHeaderTextEditor();
-              group1->setEditButtonText(QStringLiteral("[Done]"));
-              group1_editing = true;
+            if (!name_desc_group_editing_) {
+              name_desc_group_->openHeaderTextEditor();
+              name_desc_group_->setEditButtonText(QStringLiteral("[Done]"));
+              name_desc_group_editing_ = true;
             } else {
-              group1->closeHeaderTextEditor();
-              group1->setEditButtonText(QStringLiteral("[Edit]"));
-              group1_editing = false;
+              name_desc_group_->closeHeaderTextEditor();
+              name_desc_group_->setEditButtonText(QStringLiteral("[Edit]"));
+              name_desc_group_editing_ = false;
             }
           });
+
+  parts_group_ = action_panel->createGroup(tr("Parts"));
+  parts_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
+
+  scores_group_ = action_panel->createGroup(tr("Scores"));
+  scores_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
+  scores_group_->setHasEditButton(true);
+
+  recordings_group_ = action_panel->createGroup(tr("Recordings"));
+  recordings_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
+  recordings_group_->setHasEditButton(true);
+
+  related_work_group_ = action_panel->createGroup(tr("Related Work(s)"));
+  related_work_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
 
   action_panel->addStretch();
 
