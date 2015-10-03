@@ -6,6 +6,7 @@ build: FORCE
 	make -C build
 	cp build/compile_commands.json ./
 
+# TODO(lutts): should not use BUILD_SHARED_LIBS here, pls find a solution
 prepare:
 	-mkdir build
 	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..

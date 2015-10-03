@@ -26,5 +26,5 @@ foreach (_subdir ${SUBDIRS})
   endforeach()
 endforeach()
 
-add_library(qtuicore SHARED ${qtuicore_SRCS} ${qtuicore_GEN_RCS})
+add_library(qtuicore ${qtuicore_SRCS} ${qtuicore_GEN_RCS})
 target_link_libraries(qtuicore Qt5::Core QSCore pfmvp ${Boost_LIBRARIES} pthread)
