@@ -11,7 +11,7 @@
 // triad headers
 #include "snail/mock_attribute_collection_model.h"
 #include "qtui/mock_attribute_collection_view.h"
-#include "src/qtui/attribute_collection_presenter.h"
+#include "src/qtui/core/attribute_collection_presenter.h"
 
 #include "qtui/mock_attribute_collection_qmodel.h"
 #include "qtui/mock_attribute_delegate.h"

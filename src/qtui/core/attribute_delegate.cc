@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/attribute_delegate.h"
+#include "src/qtui/core/attribute_delegate.h"
 #include "qtui/i_attribute_editor_view.h"
 
 QWidget * AttributeDelegate::createEditor(

@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/workspace_view.h"
+#include "src/qtui/ui/workspace_view.h"
 #include "utils/u8string.h"
 
 WorkSpaceView::WorkSpaceView() {

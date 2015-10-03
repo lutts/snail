@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/workspace_presenter.h"
+#include "src/qtui/core/workspace_presenter.h"
 
 using namespace snailcore;  // NOLINT
 using namespace pfmvp;  // NOLINT

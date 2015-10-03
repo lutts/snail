@@ -8,8 +8,8 @@
 
 #include "utils/basic_utils.h"  // utils::make_unique
 #include "snail/i_work_model.h"
-#include "src/qtui/work_presenter.h"
-#include "src/qtui/work_view.h"
+#include "src/qtui/core/work_presenter.h"
+#include "src/qtui/ui/work_view.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
 using namespace pfmvp;  // NOLINT

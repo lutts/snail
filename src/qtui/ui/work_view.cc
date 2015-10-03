@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/work_view.h"
+#include "src/qtui/ui/work_view.h"
 
 #include <QTableView>
 #include <QVBoxLayout>

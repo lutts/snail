@@ -14,7 +14,7 @@
 // triad headers
 #include "snail/mock_work_model.h"
 #include "qtui/mock_work_view.h"
-#include "src/qtui/work_presenter.h"
+#include "src/qtui/core/work_presenter.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT

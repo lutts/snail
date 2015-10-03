@@ -15,7 +15,7 @@
 #include "snail/mock_kbnode_provider.h"
 #include "qtui/mock_kbnode_attribute_edit_view.h"
 #include "qtui/mock_kbnode_tree_qmodel.h"
-#include "src/qtui/kbnode_attribute_edit_presenter.h"
+#include "src/qtui/core/kbnode_attribute_edit_presenter.h"
 #include "snail/mock_kbnode.h"
 
 #include "snail/mock_kbnode_provider_model.h"

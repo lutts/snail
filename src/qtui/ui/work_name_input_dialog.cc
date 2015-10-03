@@ -14,7 +14,7 @@
 #include <QPushButton>
 #include <QDebug>
 
-#include "src/qtui/work_name_input_dialog.h"
+#include "src/qtui/ui/work_name_input_dialog.h"
 
 WorkNameInputDialog::WorkNameInputDialog(QWidget *parent)
     : QDialog(parent) {

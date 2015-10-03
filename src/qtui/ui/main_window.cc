@@ -5,7 +5,7 @@
 //
 // [Desc]
 
-#include "src/qtui/main_window.h"
+#include "src/qtui/ui/main_window.h"
 
 #include <QToolBar>
 #include <QCloseEvent>
@@ -13,10 +13,12 @@
 #include <QDebug>
 
 #include "qtui/i_workspace_view.h"
-#include "src/qtui/work_name_input_dialog.h"
+#include "src/qtui/ui/work_name_input_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
+  Q_INIT_RESOURCE(images);
+
   createToolbars();
 
 #if 0

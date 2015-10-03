@@ -9,7 +9,7 @@
 
 #include "test/testutils/gmock_common.h"
 
-#include "src/qtui/attribute_collection_qmodel.h"
+#include "src/qtui/core/attribute_collection_qmodel.h"
 
 #include "snail/mock_attribute.h"
 #include "snail/mock_attribute_supplier.h"

@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/kbnode_tree_qmodel.h"
+#include "src/qtui/core/kbnode_tree_qmodel.h"
 
 #include <QApplication>
 #include <QDebug>

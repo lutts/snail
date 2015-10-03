@@ -5,8 +5,8 @@
 //
 // [Desc]
 #include "snail/i_workspace_model.h"
-#include "src/qtui/workspace_presenter.h"
-#include "src/qtui/workspace_view.h"
+#include "src/qtui/core/workspace_presenter.h"
+#include "src/qtui/ui/workspace_view.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
 using namespace pfmvp;  // NOLINT

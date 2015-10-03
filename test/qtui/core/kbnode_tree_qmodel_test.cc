@@ -10,7 +10,7 @@
 #include "test/testutils/gmock_common.h"
 #include "test/testutils/qmodelindex_generator.h"
 
-#include "src/qtui/kbnode_tree_qmodel.h"
+#include "src/qtui/core/kbnode_tree_qmodel.h"
 #include "snail/mock_kbnode_provider.h"
 #include "snail/mock_kbnode.h"
 

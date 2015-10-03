@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/attribute_collection_presenter.h"
+#include "src/qtui/core/attribute_collection_presenter.h"
 
 #include "qtui/i_attribute_collection_qmodel.h"
 #include "qtui/i_attribute_delegate.h"

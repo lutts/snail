@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/candidate_item_qmodel_adapter.h"
+#include "src/qtui/core/candidate_item_qmodel_adapter.h"
 #include "snail/candidate_item.h"
 
 using namespace snailcore;  // NOLINT

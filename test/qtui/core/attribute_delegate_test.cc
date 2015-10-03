@@ -9,7 +9,7 @@
 #include <QWidget>
 
 #include "test/testutils/gmock_common.h"
-#include "src/qtui/attribute_delegate.h"
+#include "src/qtui/core/attribute_delegate.h"
 
 #include "qtui/i_attribute_editor_view.h"
 #include "test/testutils/qmodelindex_generator.h"

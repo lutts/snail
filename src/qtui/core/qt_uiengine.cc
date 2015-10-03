@@ -5,12 +5,12 @@
 //
 // [Desc]
 
-#include "src/qtui/qt_uiengine.h"
+#include "src/qtui/core/qt_uiengine.h"
 #include "utils/basic_utils.h"
 
 QtUiEngine::QtUiEngine()
     : qtApplication(utils::make_unique<QApplication>(dummy_argc, nullptr)) {
-  Q_INIT_RESOURCE(images);
+  // Q_INIT_RESOURCE(images);
   qtApplication->setAttribute(Qt::AA_UseHighDpiPixmaps);
   connect(qtApplication.get(), SIGNAL(aboutToQuit()),
           this, SLOT(aboutToQuitApp()));

@@ -13,7 +13,7 @@
 #include "test/testutils/utils.h"
 #include "test/testutils/qt/qt_utils.h"
 
-#include "src/qtui/candidate_item_qmodel_adapter.h"
+#include "src/qtui/core/candidate_item_qmodel_adapter.h"
 #include "test/core/candidate_item_test_helper.h"
 
 using namespace snailcore;  // NOLINT

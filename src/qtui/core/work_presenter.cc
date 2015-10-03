@@ -6,7 +6,7 @@
 // [Desc]
 #include <QString>
 
-#include "src/qtui/work_presenter.h"
+#include "src/qtui/core/work_presenter.h"
 
 void WorkPresenter::initialize() {
   auto work_name = U8StringToQString(model()->name());

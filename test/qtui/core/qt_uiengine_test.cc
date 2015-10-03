@@ -15,7 +15,7 @@
 #include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/slot_catcher.h"
 #include "test/testutils/generic_mock_listener.h"
-#include "src/qtui/qt_uiengine.h"
+#include "src/qtui/core/qt_uiengine.h"
 
 class QtUiEngineTest : public QObject, public ::testing::Test {
   Q_OBJECT

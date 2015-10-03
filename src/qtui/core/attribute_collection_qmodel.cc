@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "src/qtui/attribute_collection_qmodel.h"
+#include "src/qtui/core/attribute_collection_qmodel.h"
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
 

@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/kbnode_provider_presenter.h"
+#include "src/qtui/core/kbnode_provider_presenter.h"
 
 #include <QString>
 #include <QModelIndex>

@@ -5,8 +5,8 @@
 //
 // [Desc]
 #include "snail/i_main_window_model.h"
-#include "src/qtui/main_window_presenter.h"
-#include "src/qtui/main_window.h"
+#include "src/qtui/core/main_window_presenter.h"
+#include "src/qtui/ui/main_window.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
 using namespace pfmvp;  // NOLINT

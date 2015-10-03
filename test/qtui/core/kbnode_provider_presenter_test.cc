@@ -13,7 +13,7 @@
 // triad headers
 #include "snail/mock_kbnode_provider_model.h"
 #include "qtui/mock_kbnode_provider_view.h"
-#include "src/qtui/kbnode_provider_presenter.h"
+#include "src/qtui/core/kbnode_provider_presenter.h"
 
 #include "snail/mock_kbnode_provider.h"
 #include "qtui/mock_kbnode_tree_qmodel.h"

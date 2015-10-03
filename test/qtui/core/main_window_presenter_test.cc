@@ -15,7 +15,7 @@
 
 #include "snail/mock_main_window_model.h"
 #include "qtui/mock_main_window_view.h"
-#include "src/qtui/main_window_presenter.h"
+#include "src/qtui/core/main_window_presenter.h"
 
 #include "snail/mock_workspace_model.h"
 #include "qtui/mock_workspace_view.h"
