@@ -33,6 +33,16 @@ class TriadInfo {
     if (parent_) {
       parent->add_child_triad(this);
     }
+      }
+
+  ~TriadInfo() {
+    ALOGI << "delete triad " << model()->getModelId();
+    if (parent_)
+      parent_->remove_child_triad(this);
+
+    for (auto child : children_) {
+      child->parent_ = nullptr;
+    }
   }
 
   PfPresenter* presenter() const { return presenter_.get(); }
@@ -48,9 +58,15 @@ class TriadInfo {
 
   bool auto_remove_child() const { return auto_remove_child_; }
   TriadInfo* parent() const { return parent_; }
+
   void add_child_triad(TriadInfo* triad) {
     children_.push_front(triad);
   }
+
+  void remove_child_triad(TriadInfo* triad) {
+    children_.remove(triad);
+  }
+
   bool hasChildren() const {
     return !children_.empty();
   }
@@ -80,9 +96,11 @@ class TriadInfo {
   }
 
  private:
+  SNAIL_DISABLE_COPY(TriadInfo);
+
   std::shared_ptr<PfPresenter> presenter_;
-  TriadInfo* parent_;
-  bool auto_remove_child_;
+  TriadInfo* parent_ { nullptr };
+  bool auto_remove_child_ { true };
   std::shared_ptr<PfCreateViewArgsMemento> creation_args_memento_;
 
   std::forward_list<TriadInfo*> children_;
@@ -97,14 +115,14 @@ class PfTriadManagerImpl {
     if (!triad_list_.empty()) {
       ALOGW << "****** triad list not empty when destroy triad manager ******";
       for (auto& triad : triad_list_) {
-        ALOGW << "\t" << triad.model()->getModelId();
-        if (!triad.isRoot()) {
-          auto parent = triad.parent();
+        ALOGW << "\t" << triad->model()->getModelId();
+        if (!triad->isRoot()) {
+          auto parent = triad->parent();
           ALOGW << "\t\t parent: " << parent->model()->getModelId();
         } else {
           ALOGW << "\t\t parent: (none)";
         }
-        ALOGW << "\t\t auto remove child: " << triad.auto_remove_child();
+        ALOGW << "\t\t auto remove child: " << triad->auto_remove_child();
       }
       ALOGW << "************************************************************";
     }
@@ -160,7 +178,8 @@ class PfTriadManagerImpl {
 
   const IPfViewFactoryManager& view_factory_mgr_;
 
-  std::forward_list<TriadInfo> triad_list_;
+  using TriadListItemType = std::unique_ptr<TriadInfo>;
+  std::forward_list<TriadListItemType> triad_list_;
 
   std::unordered_map<IPfModel*, int> model_view_count;
 
@@ -200,8 +219,8 @@ PfTriadManagerImpl::createViewFor(
   TriadInfo* parent_triad = nullptr;
   if (parent) {
     for (auto& triad : triad_list_) {
-      if (triad.presenter() == parent) {
-        parent_triad = &triad;
+      if (triad->presenter() == parent) {
+        parent_triad = triad.get();
         break;
       }
     }
@@ -236,10 +255,11 @@ PfTriadManagerImpl::createViewFor(
       if (orig_args)
         memento = orig_args->getMemento();
 
-      triad_list_.emplace_front(presenter,
-                                parent_triad,
-                                auto_remove_child,
-                                std::move(memento));
+      triad_list_.push_front(
+          utils::make_unique<TriadInfo>(presenter,
+                                        parent_triad,
+                                        auto_remove_child,
+                                        std::move(memento)));
       ++model_view_count[presenter->getModel().get()];
 
       // initialize may create sub-triads, so we need to
@@ -257,8 +277,8 @@ bool PfTriadManagerImpl::isModelExist(IPfModel* model) const {
   auto iter = std::find_if(
       triad_list_.begin(),
       triad_list_.end(),
-      [model](const TriadInfo& triad) {
-        return model == triad.model();
+      [model](const TriadListItemType& triad) {
+        return model == triad->model();
       });
 
   return (iter != triad_list_.end());
@@ -268,8 +288,8 @@ bool PfTriadManagerImpl::isViewExist(IPfView* view) const {
   auto iter = std::find_if(
       triad_list_.begin(),
       triad_list_.end(),
-      [view](const TriadInfo& triad) {
-        return view == triad.view();
+      [view](const TriadListItemType& triad) {
+        return view == triad->view();
       });
 
   return (iter != triad_list_.end());
@@ -325,11 +345,11 @@ void PfTriadManagerImpl::removeTriads(
   }
 
   // 2. move the marked triads to a temorary list
-  std::forward_list<TriadInfo> triads_to_delete;
+  std::forward_list<TriadListItemType> triads_to_delete;
   triad_list_.remove_if(
-      [&triads_to_delete](const TriadInfo& triad){
-        if (triad.is_waiting_delete()) {
-          triads_to_delete.push_front(triad);
+      [&triads_to_delete](TriadListItemType& triad){
+        if (triad->is_waiting_delete()) {
+          triads_to_delete.push_front(std::move(triad));
           return true;
         }
 
@@ -339,8 +359,8 @@ void PfTriadManagerImpl::removeTriads(
   // 3. delete them
   triads_to_delete.reverse();
   triads_to_delete.remove_if(
-      [this](const TriadInfo& triad) {
-        doAboutToDestroyTriad(triad.presenter());
+      [this](const TriadListItemType& triad) {
+        doAboutToDestroyTriad(triad->presenter());
         return true;
       });
 }
@@ -350,8 +370,8 @@ void PfTriadManagerImpl::removeTriadBy(IPfModel* model) {
 
   std::forward_list<TriadInfo*> matched_triads;
   for (auto& triad : triad_list_) {
-    if (triad.model() == model) {
-      matched_triads.push_front(&triad);
+    if (triad->model() == model) {
+      matched_triads.push_front(triad.get());
     }
   }
 
@@ -363,8 +383,8 @@ void PfTriadManagerImpl::removeTriadBy(IPfView* view) {
 
   std::forward_list<TriadInfo*> matched_triads;
   for (auto& triad : triad_list_) {
-    if (triad.view() == view) {
-      matched_triads.push_front(&triad);
+    if (triad->view() == view) {
+      matched_triads.push_front(triad.get());
     }
   }
 
@@ -376,13 +396,13 @@ bool PfTriadManagerImpl::requestRemoveTriadByView(IPfView* view) {
   auto iter = std::find_if(
       triad_list_.begin(),
       triad_list_.end(),
-      [view](const TriadInfo& triad) -> bool {
-        return triad.view() == view;
+      [view](const TriadListItemType& triad) -> bool {
+        return triad->view() == view;
       });
 
   if (iter != triad_list_.end()) {
     auto& triad = *iter;
-    IPfModel* model = triad.model();
+    IPfModel* model = triad->model();
     auto& sig = RequestRemoveModelSignalOf(model);
 
     bool allow_remove = sig(model);
@@ -403,8 +423,8 @@ PfTriadManagerImpl::findViewByModel(IPfModel* model) const {
   std::vector<IPfView*> matched_views;
 
   for (auto& triad : triad_list_) {
-    if (model == triad.model()) {
-      matched_views.push_back(triad.view());
+    if (model == triad->model()) {
+      matched_views.push_back(triad->view());
     }
   }
 
@@ -415,13 +435,13 @@ IPfModel* PfTriadManagerImpl::findModelByView(IPfView* view) const {
   auto iter = std::find_if(
       triad_list_.begin(),
       triad_list_.end(),
-      [view](const TriadInfo& triad) -> bool {
-        return triad.view() == view;
+      [view](const TriadListItemType& triad) -> bool {
+        return triad->view() == view;
       });
 
   if (iter != triad_list_.end()) {
     auto& triad = *iter;
-    return triad.model();
+    return triad->model();
   }
 
   return nullptr;
@@ -433,9 +453,9 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModelAndViewFactory(
   std::vector<IPfView*> matched_views;
 
   for (auto& triad : triad_list_) {
-    if (model == triad.model() &&
-        view_factory_id == triad.view_factory_id()) {
-      matched_views.push_back(triad.view());
+    if (model == triad->model() &&
+        view_factory_id == triad->view_factory_id()) {
+      matched_views.push_back(triad->view());
     }
   }
 
@@ -450,19 +470,19 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
   PfCreateViewArgsMemento default_memento;
 
   for (auto& triad : triad_list_) {
-    if (model == triad.model()) {
+    if (model == triad->model()) {
       int result = IPfTriadManager::kNotMatched;
-      if (triad.memento()) {
-        result = pred(*triad.memento());
+      if (triad->memento()) {
+        result = pred(*(triad->memento()));
       } else {
         result = pred(default_memento);
       }
 
       if (result == IPfTriadManager::kMatchedContinue) {
-        matched_views.push_back(triad.view());
+        matched_views.push_back(triad->view());
         // continue
       } else if (result == IPfTriadManager::kMatchedBreak) {
-        matched_views.push_back(triad.view());
+        matched_views.push_back(triad->view());
         break;
       }
     }

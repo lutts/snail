@@ -7,6 +7,8 @@
 // [Desc]
 #include "test/pfmvp/pf_triad_manager_test_base.h"
 
+#include "src/utils/log/log.h"
+
 namespace pfmvp {
 namespace tests {
 
@@ -23,6 +25,7 @@ class PfTriadManagerAutoRemoveChildTest
   }
 
   virtual void SetUp() {
+    initLog();
     initialize();
   }
 
@@ -30,7 +33,9 @@ class PfTriadManagerAutoRemoveChildTest
       bool root_enable_auto_remove_child = true,
       bool use_parent = true);
 
-  // virtual void TearDown() { }
+  virtual void TearDown() {
+    cleanupLog();
+  }
 };
 
 static DestroyMethodFunc remove_by_model =
@@ -254,6 +259,21 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
 
   ::Mock::VerifyAndClearExpectations(view2);
   ::Mock::VerifyAndClearExpectations(view3);
+}
+
+TEST_F(PfTriadManagerAutoRemoveChildTest,
+       should_removed_triad_will_delete_from_parents_child_lists) { // NOLINT
+  // Setup fixture
+  auto triad_vec = createTestTriadHierachy();
+  auto& root_mvpl_tuple = triad_vec[0];
+  auto& child_mvpl_tuple = triad_vec[1];
+
+  // Exercise system
+  triad_manager->removeTriadBy(std::get<0>(child_mvpl_tuple));
+  triad_manager->removeTriadBy(std::get<0>(root_mvpl_tuple));
+
+  // Verify results
+  // no segment fault means ok
 }
 
 }  // namespace tests
