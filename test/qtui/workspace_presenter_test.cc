@@ -5,6 +5,8 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+#include <QString>
+
 #include "test/testutils/gmock_common.h"
 #include "pfmvp/mock_pf_triad_manager.h"
 

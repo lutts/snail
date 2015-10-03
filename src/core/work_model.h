@@ -28,10 +28,6 @@ class WorkModel : public IWorkModel
   utils::U8String name() const override;
   bool set_name(const utils::U8String& new_name) override;
 
-  // TODO(lutts): impl this
-  std::shared_ptr<IAttributeAdderModel>
-  createAttributeAdderModel() const { return nullptr; }
-
  private:
   WorkModel(const WorkModel& other) = delete;
   WorkModel& operator=(const WorkModel& other) = delete;

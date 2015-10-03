@@ -11,9 +11,15 @@
 #include "qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
 
+class QString;
+
 class IWorkView : public GenericViewBase {
  public:
   virtual ~IWorkView() = default;
+
+  SNAIL_SIGSLOT2(UserSetWorkName, void(const QString& new_name));
+
+  virtual void setWorkName(const QString& work_name) = 0;
 };
 
 

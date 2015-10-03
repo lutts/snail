@@ -18,6 +18,7 @@ SET(qtui_SRCS
   workspace_presenter.cc
   workspace_view.cc
   workspace_view_factory.cc
+  work_presenter.cc
   work_view.cc
   work_view_factory.cc
   work_name_input_dialog.cc

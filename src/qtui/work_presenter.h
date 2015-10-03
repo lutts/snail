@@ -25,8 +25,7 @@ class WorkPresenter : public WorkPresenterBase {
       : WorkPresenterBase(model, view) {
   }
 
-  void initialize() override {
-  }
+  void initialize() override;
 
  private:
   WorkPresenter(const WorkPresenter& other) = delete;
