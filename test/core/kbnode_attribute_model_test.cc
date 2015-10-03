@@ -13,6 +13,8 @@
 #include "core/mock_kbnode_attribute_supplier.h"
 #include "core/mock_kbnode_manager.h"
 #include "snail/mock_kbnode_provider.h"
+#include "snail/mock_kbnode_provider_model.h"
+#include "core/mock_kbnode_provider_model_factory.h"
 
 namespace snailcore {
 namespace tests {
@@ -39,8 +41,8 @@ class KbNodeAttributeModelTest : public ::testing::Test {
         .Times(AtMost(1))
         .WillOnce(Return(kbnode_provider));
 
-    model = utils::make_unique<KbNodeAttributeModel>(&kbnode_attr,
-                                                     &kbnode_manager);
+    model = utils::make_unique<KbNodeAttributeModel>(
+        &kbnode_attr, &kbnode_manager, &kbnode_provider_model_factory);
   }
   // virtual void TearDown() { }
 
@@ -50,6 +52,7 @@ class KbNodeAttributeModelTest : public ::testing::Test {
   MockKbNodeAttribute kbnode_attr;
   MockKbNodeManager kbnode_manager;
   std::shared_ptr<MockKbNodeProvider> kbnode_provider;
+  MockKbNodeProviderModelFactory kbnode_provider_model_factory;
   // endregion
 
   // region: test subject
@@ -230,6 +233,23 @@ TEST_F(KbNodeAttributeModelTest,
   // Verify results
   ASSERT_EQ(expect_result, actual_result);
   ASSERT_FALSE(model->isValid());
+}
+
+TEST_F(KbNodeAttributeModelTest,
+       should_create_kbnode_provider_model_by_the_factory) { // NOLINT
+  // Setup fixture
+  auto expect_provider_model = std::make_shared<MockKbNodeProviderModel>();
+
+  // Expectations
+  EXPECT_CALL(kbnode_provider_model_factory,
+              createKbNodeProviderModel(kbnode_provider.get()))
+      .WillOnce(Return(expect_provider_model));
+
+  // Exercise system
+  auto actual_provider_model = model->createKbNodeProviderModel();
+
+  // Verify results
+  ASSERT_EQ(expect_provider_model, actual_provider_model);
 }
 
 }  // namespace tests

@@ -9,6 +9,8 @@
 
 #include "src/core/kbnode_manager.h"
 #include "snail/i_kbnode.h"
+#include "snail/mock_kbnode_provider.h"
+#include "core/mock_kbnode_provider_factory.h"
 
 std::ostream& operator<< (std::ostream& os,
                           const std::vector<snailcore::IKbNode*>& kbnodes) {
@@ -30,7 +32,8 @@ class KbNodeManagerTest : public ::testing::Test {
   }
   // ~KbNodeManagerTest() { }
   virtual void SetUp() {
-    kbnode_manager_ = utils::make_unique<KbNodeManager>();
+    kbnode_manager_ =
+        utils::make_unique<KbNodeManager>(&kbnode_provider_factory);
     setupTestKbNodes();
   }
   // virtual void TearDown() { }
@@ -42,6 +45,8 @@ class KbNodeManagerTest : public ::testing::Test {
   std::vector<IKbNode*> all_nodes;
   std::map<IKbNode*, std::vector<IKbNode*> > kbnode_to_subnodes;
   std::vector<IKbNode*> expect_search_result;
+
+  MockKbNodeProviderFactory kbnode_provider_factory;
   // endregion
 
   // region: test subject
@@ -51,6 +56,26 @@ class KbNodeManagerTest : public ::testing::Test {
   // region: object depends on test subject
   // endregion
 };
+
+TEST_F(KbNodeManagerTest,
+       should_create_kbnode_provider_by_factory) { // NOLINT
+  // Setup fixture
+  auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
+  auto expect_kbnode_provider = std::make_shared<MockKbNodeProvider>();
+
+  // Expectations
+  EXPECT_CALL(kbnode_provider_factory,
+              createKbNodeProvider(root_kbnode,
+                                   kbnode_manager_.get()))
+      .WillOnce(Return(expect_kbnode_provider));
+
+  // Exercise system
+  auto actual_kbnode_provider =
+      kbnode_manager_->createKbNodeProvider(root_kbnode);
+
+  // Verify results
+  ASSERT_EQ(expect_kbnode_provider, actual_kbnode_provider);
+}
 
 #define SEARCH_STR "lutts"
 

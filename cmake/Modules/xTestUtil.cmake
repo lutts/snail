@@ -108,6 +108,16 @@ function(add_gmock_test target)
   endif(NOT ${QGTEST_DONOT_AUTORUN})
 endfunction(add_gmock_test)
 
+function(add_gmock_unit_test target)
+  set(TEST_SRCS ${target}_test.cc)
+  if (EXISTS ${UNDER_TEST_SOURCE_DIR}/${target}.cc)
+    set(TEST_SRCS ${TEST_SRCS} ${UNDER_TEST_SOURCE_DIR}/${target}.cc)
+  endif()
+  add_gmock_test(${target}_test
+    ${TEST_SRCS}
+    ${ARGN})
+endfunction(add_gmock_unit_test)
+
 # http://snikt.net/index.php/2010/04/01/howto-use-cmake-with-cc-projects
 MACRO(find_doxygen)
   # check if doxygen is even installed

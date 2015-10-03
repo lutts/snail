@@ -16,11 +16,14 @@ namespace snailcore {
 
 class IKbNodeAttribute;
 class IKbNodeManager;
+class IKbNodeProviderModelFactory;
 
 class KbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
-  KbNodeAttributeModel(IKbNodeAttribute* kbnode_attr,
-                       IKbNodeManager* kbnode_manager);
+  KbNodeAttributeModel(
+      IKbNodeAttribute* kbnode_attr,
+      IKbNodeManager* kbnode_manager,
+      IKbNodeProviderModelFactory* kbnode_provider_model_factory);
   virtual ~KbNodeAttributeModel();
 
   bool isValid() const override;
@@ -41,6 +44,8 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
   IKbNodeAttribute* kbnode_attr_;
   IKbNodeManager* kbnode_manager_;
+  IKbNodeProviderModelFactory* kbnode_provider_model_factory_;
+
   mutable std::shared_ptr<IKbNodeProvider> kbnode_provider_;
 
   bool last_validate_result_ { true };

@@ -19,35 +19,37 @@ configure_file (
 
 # set(UITEST_COMMON_LIBS Qt5::Widgets qtuicore qttestutils)
 
-add_gmock_test(qt_uiengine_test
-  LIBS Qt5::Widgets qtuicore)
+set(UNDER_TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/qtui/core)
 
-add_gmock_test(main_window_presenter_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(qt_uiengine
+  LIBS Qt5::Widgets)
 
-add_gmock_test(workspace_presenter_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(main_window_presenter
+  LIBS Qt5::Core testutils)
 
-add_gmock_test(work_presenter_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(workspace_presenter
+  LIBS Qt5::Core testutils)
 
-add_gmock_test(candidate_item_qmodel_adapter_test
-  LIBS qtuicore testutils qttestutils)
+add_gmock_unit_test(work_presenter
+  LIBS Qt5::Core pfmvp ${Boost_LIBRARIES} testutils)
 
-add_gmock_test(attribute_collection_presenter_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(candidate_item_qmodel_adapter
+  LIBS testutils qttestutils)
 
-add_gmock_test(attribute_collection_qmodel_test
-  LIBS qtuicore testutils qttestutils)
+add_gmock_unit_test(attribute_collection_presenter
+  LIBS testutils)
 
-add_gmock_test(attribute_delegate_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(attribute_collection_qmodel
+  LIBS testutils qttestutils)
 
-add_gmock_test(kbnode_attribute_edit_presenter_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(attribute_delegate
+  LIBS Qt5::Widgets testutils)
 
-add_gmock_test(kbnode_tree_qmodel_test
-  LIBS qtuicore testutils qttestutils)
+add_gmock_unit_test(kbnode_attribute_edit_presenter
+  LIBS Qt5::Core testutils)
 
-add_gmock_test(kbnode_provider_presenter_test
-  LIBS qtuicore testutils)
+add_gmock_unit_test(kbnode_tree_qmodel
+  LIBS Qt5::Core testutils qttestutils)
+
+add_gmock_unit_test(kbnode_provider_presenter
+  LIBS Qt5::Core testutils)

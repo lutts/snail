@@ -2,8 +2,9 @@ include(xTestUtil)
 
 INIT_QGTEST()
 
-add_gmock_test(singleton_test
-  LIBS utils)
+set(UNDER_TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/utils)
+
+add_gmock_unit_test(singleton)
 
 add_gmock_test(enum_class_range_test
   LIBS utils)

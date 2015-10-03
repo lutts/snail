@@ -7,13 +7,14 @@
 #include "src/core/kbnode_manager.h"
 
 #include <vector>
-#include "src/core/kbnode_provider.h"
+#include "core/i_kbnode_provider_factory.h"
 #include "src/core/kbnode.h"
 
 namespace snailcore {
 
-KbNodeManager::KbNodeManager()
-    : dummy_root_(new KbNode(0, "", false)) { }
+KbNodeManager::KbNodeManager(IKbNodeProviderFactory* kbnode_provider_factory)
+    : kbnode_provider_factory_(kbnode_provider_factory)
+    , dummy_root_(new KbNode(0, "", false)) { }
 
 KbNodeManager::~KbNodeManager() {
   // NOTE: we do not need to delete the nodes, because KbNodeManager will be a
@@ -32,7 +33,7 @@ void KbNodeManager::erase(IKbNode* parent) {
 
 std::shared_ptr<IKbNodeProvider>
 KbNodeManager::createKbNodeProvider(IKbNode* root_kbnode) {
-  return std::make_shared<KbNodeProvider>(root_kbnode, this);
+  return kbnode_provider_factory_->createKbNodeProvider(root_kbnode, this);
 }
 
 IKbNode* KbNodeManager::idToKbNode(KbNodeIdType kbnode_id) {

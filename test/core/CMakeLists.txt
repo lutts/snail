@@ -4,44 +4,47 @@ INIT_QGTEST()
 
 set(COMMON_LIBS snailcore testutils utils)
 
-add_gmock_test(main_window_model_test
-  LIBS ${COMMON_LIBS})
+set(UNDER_TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/core)
 
-add_gmock_test(workspace_model_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(main_window_model
+  LIBS testutils)
 
-add_gmock_test(work_model_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(workspace_model
+  LIBS testutils)
 
-add_gmock_test(work_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(work_model
+  LIBS testutils)
 
-add_gmock_test(candidate_item_test
-  LIBS testutils utils)
+add_gmock_unit_test(work
+  LIBS testutils)
 
-add_gmock_test(candidate_item_any_data_test
-  LIBS testutils utils)
+add_gmock_unit_test(candidate_item
+  LIBS testutils)
 
-add_gmock_test(attribute_collection_model_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(candidate_item_any_data
+  LIBS testutils)
 
-add_gmock_test(generic_attribute_supplier_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(attribute_collection_model
+  LIBS testutils)
 
-add_gmock_test(generic_attribute_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(generic_attribute_supplier
+  LIBS testutils)
 
-add_gmock_test(kbnode_attribute_model_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(generic_attribute
+  LIBS testutils)
 
-add_gmock_test(kbnode_provider_model_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(kbnode_attribute_model
+  LIBS testutils)
 
-add_gmock_test(kbnode_provider_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(kbnode_provider_model
+  LIBS testutils)
 
-add_gmock_test(kbnode_manager_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(kbnode_provider
+  LIBS testutils)
 
-add_gmock_test(kbnode_attribute_test
-  LIBS ${COMMON_LIBS})
+add_gmock_unit_test(kbnode_manager
+  LIBS testutils)
+
+add_gmock_unit_test(kbnode_attribute
+  ${UNDER_TEST_SOURCE_DIR}/attribute.cc
+  LIBS testutils)

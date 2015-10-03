@@ -16,9 +16,11 @@
 
 namespace snailcore {
 
+class IKbNodeProviderFactory;
+
 class KbNodeManager : public IKbNodeManager {
  public:
-  KbNodeManager();
+  KbNodeManager(IKbNodeProviderFactory* kbnode_provider_factory);
   virtual ~KbNodeManager();
 
   std::shared_ptr<IKbNodeProvider>
@@ -43,6 +45,7 @@ class KbNodeManager : public IKbNodeManager {
 
   KbNodeIdType id { 0 };
 
+  IKbNodeProviderFactory* kbnode_provider_factory_ { nullptr };
   IKbNode* dummy_root_ { nullptr };
 };
 

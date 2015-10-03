@@ -1,5 +1,6 @@
-add_gmock_test(command_processor_test
-  LIBS utils)
+set(UNDER_TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/utils/command)
 
-add_gmock_test(relay_command_test
-  LIBS utils testutils)
+add_gmock_unit_test(command_processor)
+
+add_gmock_unit_test(relay_command
+  LIBS testutils)
