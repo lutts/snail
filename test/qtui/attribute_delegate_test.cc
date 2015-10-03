@@ -62,8 +62,6 @@ BIND_SIGNAL1(CloseEditor,
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-#include "utils/basic_utils.h"
-
 class AttributeEditorViewTestStub : public IAttributeEditorView
                                   , public QWidget {
  public:
