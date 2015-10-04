@@ -210,7 +210,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,
-       should_set_filter_pattern_to_topic_provider) { // NOLINT
+       should_set_filter_pattern_to_kbnode_provider) { // NOLINT
   // Setup fixture
   xtestutils::RandomString pattern;
 
