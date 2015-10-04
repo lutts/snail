@@ -14,7 +14,7 @@
 #include "test/testutils/mock_object_generator.h"
 
 #include "src/core/workspace_model.h"
-#include "snail/mock_work_model_factory.h"
+#include "core/mock_work_model_factory.h"
 #include "snail/mock_work_model.h"
 
 namespace snailcore {

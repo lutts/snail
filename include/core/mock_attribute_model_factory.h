@@ -8,7 +8,7 @@
 #ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_FACTORY_H_
 #define INCLUDE_SNAIL_MOCK_ATTRIBUTE_MODEL_FACTORY_H_
 
-#include "snail/i_attribute_model_factory.h"
+#include "core/i_attribute_model_factory.h"
 
 namespace snailcore {
 namespace tests {

@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include "snail/i_work_model_factory.h"
+#include "core/i_work_model_factory.h"
 
 #include "src/core/work.h"
 #include "src/core/work_model.h"

@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/workspace_model.h"
-#include "snail/i_work_model_factory.h"
+#include "core/i_work_model_factory.h"
 
 // TODO(lutts): remove these header while remove the delete logic bellow
 #include "snail/i_work_model.h"

@@ -7,7 +7,7 @@
 #include "src/core/attribute_collection_model.h"
 
 #include <vector>
-#include "snail/i_attribute_model_factory.h"
+#include "core/i_attribute_model_factory.h"
 #include "snail/i_attribute_model.h"
 
 namespace snailcore {

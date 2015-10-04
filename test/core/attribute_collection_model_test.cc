@@ -8,7 +8,7 @@
 #include "test/testutils/gmock_common.h"
 
 #include "src/core/attribute_collection_model.h"
-#include "snail/mock_attribute_model_factory.h"
+#include "core/mock_attribute_model_factory.h"
 #include "snail/mock_attribute_model.h"
 
 namespace snailcore {
