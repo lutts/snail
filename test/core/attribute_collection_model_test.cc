@@ -81,7 +81,7 @@ void AttributeCollectionModelTest::checkCreateAttributeModel(
   std::shared_ptr<utils::ITrackable> null_trackobj;
 
   // Expectations
-  EXPECT_CALL(attr_model_factory, createModel(attr))
+  EXPECT_CALL(attr_model_factory, createAttributeModel(attr))
       .WillOnce(Return(attr_model));
   EXPECT_CALL(*attr_model, whenValidateComplete(_, null_trackobj))
       .WillOnce(SaveArg<0>(validateComplete));

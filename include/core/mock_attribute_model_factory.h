@@ -15,7 +15,7 @@ namespace tests {
 
 class MockAttributeModelFactory : public IAttributeModelFactory {
  public:
-  MOCK_CONST_METHOD1(createModel,
+  MOCK_CONST_METHOD1(createAttributeModel,
                      std::shared_ptr<IAttributeModel>(IAttribute* attr));
 };
 

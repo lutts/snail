@@ -37,7 +37,7 @@ AttributeCollectionModel::getAttributeSuppliers() const {
 
 std::shared_ptr<IAttributeModel>
 AttributeCollectionModel::createAttributeModel(IAttribute* attr) {
-  auto attr_model = attr_model_factory_.createModel(attr);
+  auto attr_model = attr_model_factory_.createAttributeModel(attr);
   attr_models_.push_back(attr_model.get());
 
   attr_model->whenValidateComplete(
