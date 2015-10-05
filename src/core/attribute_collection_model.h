@@ -21,7 +21,7 @@ class IAttributeModelFactory;
 class AttributeCollectionModel : public IAttributeCollectionModel {
  public:
   AttributeCollectionModel(
-      const std::vector<IAttributeSupplier*>& attr_supplier_list,
+      const std::vector<IAttributeSupplier*>& attr_suppliers,
       const IAttributeModelFactory& attr_model_factory);
   virtual ~AttributeCollectionModel();
 

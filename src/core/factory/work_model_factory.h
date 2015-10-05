@@ -28,7 +28,7 @@ class WorkModelFactory : public IWorkModelFactory {
       const utils::U8String& work_name) {
     auto work = new Work;
     work->set_name(work_name);  // TODO(lutts):
-    auto model = std::make_shared<WorkModel>();
+    auto model = std::make_shared<WorkModel>(nullptr);  // TODO(lutts): pass attr collection model factory here
     model->set_work(work);
     return model;
   }

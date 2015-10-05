@@ -1,6 +1,7 @@
 set(core_SRCS ${core_SRCS}
   main_window_model.cc
   workspace_model.cc
+  work.cc
   work_model.cc
   attribute_collection_model.cc
   kbnode_attribute_model.cc

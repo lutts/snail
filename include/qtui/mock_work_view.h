@@ -15,6 +15,9 @@ class MockWorkView : public IWorkView {
   SNAIL_MOCK_SLOT(UserSetWorkName);
 
   MOCK_METHOD1(setWorkName, void(const QString& work_name));
+
+  MOCK_METHOD1(setWorkAttrCollectionView,
+               void(IAttributeCollectionView* attr_collection_view));
 };
 
 #endif  // INCLUDE_QTUI_MOCK_WORK_VIEW_H_

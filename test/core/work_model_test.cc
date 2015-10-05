@@ -16,6 +16,9 @@
 #include "src/core/work_model.h"
 #include "snail/mock_work.h"
 
+#include "snail/mock_attribute_collection_model.h"
+#include "core/mock_attribute_collection_model_factory.h"
+
 namespace snailcore {
 namespace tests {
 
@@ -30,7 +33,7 @@ class WorkModelTest : public ::testing::Test {
     EXPECT_CALL(work, whenNameChanged(_, _))
         .WillOnce(SaveArg<0>(&workNameChanged));
 
-    auto model = std::make_shared<WorkModel>();
+    auto model = std::make_shared<WorkModel>(&attr_collection_model_factory);
     model->set_work(&work);
     work_model = std::move(model);
   }
@@ -38,6 +41,7 @@ class WorkModelTest : public ::testing::Test {
 
   // region: objects test subject depends on
   MockWork work;
+  MockAttributeCollectionModelFactory attr_collection_model_factory;
   // endregion
 
   // region: test subject
@@ -99,6 +103,31 @@ TEST_F(WorkModelTest, should_relay_NameChanged_signal_fired_by_backing_work) { /
 
   // Exercise system
   workNameChanged(new_name);
+}
+
+TEST_F(WorkModelTest,
+       should_be_able_to_create_attribute_collection_model) { // NOLINT
+  // Setup fixture
+  auto expect_attr_collection_model =
+      std::make_shared<MockAttributeCollectionModel>();
+
+  std::vector<IAttributeSupplier*> attr_suppliers;
+  attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
+  attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
+  attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
+
+  // Expectations
+  EXPECT_CALL(work, attributeSuppliers())
+      .WillOnce(Return(attr_suppliers));
+  EXPECT_CALL(attr_collection_model_factory,
+              createAttributeCollectionModel(attr_suppliers))
+      .WillOnce(Return(expect_attr_collection_model));
+
+  // Exercise system
+  auto attr_collection_model = work_model->createAttributeCollectionModel();
+
+  // Verify results
+  ASSERT_EQ(expect_attr_collection_model, attr_collection_model);
 }
 
 }  // namespace tests

@@ -8,10 +8,14 @@
 #ifndef INCLUDE_SNAIL_I_WORK_H_
 #define INCLUDE_SNAIL_I_WORK_H_
 
+#include <vector>
+
 #include "utils/u8string.h"
 #include "utils/signal_slot.h"
 
 namespace snailcore {
+
+class IAttributeSupplier;
 
 class IWork {
  public:
@@ -21,6 +25,8 @@ class IWork {
 
   virtual bool set_name(const utils::U8String& name) = 0;
   virtual const utils::U8String& name() const = 0;
+
+  virtual std::vector<IAttributeSupplier*> attributeSuppliers() const = 0;
 };
 
 }  // namespace snailcore

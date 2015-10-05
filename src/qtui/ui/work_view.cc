@@ -72,3 +72,9 @@ void WorkView::toggleNameDescEditMode() {
 void WorkView::setWorkName(const QString& work_name) {
   name_desc_group_->setHeaderText(work_name);
 }
+
+void WorkView::setWorkAttrCollectionView(
+    IAttributeCollectionView* attr_collection_view) {
+  // TODO(lutts): impl this method
+  (void)attr_collection_view;
+}

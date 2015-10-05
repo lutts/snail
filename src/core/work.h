@@ -12,31 +12,29 @@
 #include "utils/u8string.h"
 #include "utils/signal_slot_impl.h"
 
+#include "snail/i_attribute_supplier.h"
+
 namespace snailcore {
 
 class Work : public IWork {
  public:
-  Work() = default;
-  virtual ~Work() = default;
+  Work();
+  virtual ~Work();
 
-  bool set_name(const utils::U8String& new_name) {
-    if (this->name_ != new_name) {
-      name_ = new_name;
-      NameChanged(name_);
-      return true;
-    }
+  // IWork
+  bool set_name(const utils::U8String& new_name) override;
+  const utils::U8String& name() const override;
+  std::vector<IAttributeSupplier*> attributeSuppliers() const override;
 
-    return false;
-  }
-  const utils::U8String& name() const {
-    return name_;
-  }
+  void setAttributeSuppliers(
+      std::vector<std::unique_ptr<IAttributeSupplier> >&& attr_suppliers);
 
  private:
   Work(const Work& other) = delete;
   Work& operator=(const Work& other) = delete;
 
   utils::U8String name_;
+  std::vector<std::unique_ptr<IAttributeSupplier> > attr_suppliers_;
 
  private:
   SNAIL_SIGSLOT_IMPL(NameChanged);

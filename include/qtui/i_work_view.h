@@ -12,6 +12,7 @@
 #include "utils/signal_slot.h"
 
 class QString;
+class IAttributeCollectionView;
 
 class IWorkView : public GenericViewBase {
  public:
@@ -20,6 +21,10 @@ class IWorkView : public GenericViewBase {
   SNAIL_SIGSLOT2(UserSetWorkName, void(const QString& new_name));
 
   virtual void setWorkName(const QString& work_name) = 0;
+
+  // sub views
+  virtual void setWorkAttrCollectionView(
+      IAttributeCollectionView* attr_collection_view) = 0;
 };
 
 

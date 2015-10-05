@@ -19,6 +19,8 @@ class MockWork : public IWork {
 
   MOCK_METHOD1(set_name, bool(const utils::U8String& name));
   MOCK_CONST_METHOD0(name, const utils::U8String&());
+
+  MOCK_CONST_METHOD0(attributeSuppliers, std::vector<IAttributeSupplier*>());
 };
 
 }  // namespace tests

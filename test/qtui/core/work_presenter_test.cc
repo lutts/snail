@@ -16,6 +16,9 @@
 #include "qtui/mock_work_view.h"
 #include "src/qtui/core/work_presenter.h"
 
+#include "snail/mock_attribute_collection_model.h"
+#include "qtui/mock_attribute_collection_view.h"
+
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
 using namespace pfmvp;  // NOLINT
@@ -44,6 +47,10 @@ class WorkPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*view, setWorkDescription());
 #endif
 
+
+    // create attribute collection view
+    createAttributeCollectionView(&mock_obj_recorder);
+
     R_EXPECT_CALL(*view, whenUserSetWorkName(_, _))
         .WillOnce(SaveArg<0>(&userSetWorkName));
 
@@ -55,6 +62,8 @@ class WorkPresenterTest : public ::testing::Test {
     VERIFY_RECORDED_MOCK_OBJECTS;
   }
   // virtual void TearDown() { }
+
+  void createAttributeCollectionView(MockObjectRecorder* mock_recorder);
 
   // region: objects test subject depends on
   std::shared_ptr<MockWorkModel> model;
@@ -73,6 +82,22 @@ class WorkPresenterTest : public ::testing::Test {
   SlotCatcher<UserSetWorkNameSlotType> userSetWorkName;
   // endregion
 };
+
+void WorkPresenterTest::createAttributeCollectionView(
+    MockObjectRecorder* mock_recorder) {
+  MockObjectRecorder& mock_obj_recorder = *mock_recorder;
+
+  auto attr_collection_model =
+      std::make_shared<MockAttributeCollectionModel>();
+  auto attr_collection_view = std::make_shared<MockAttributeCollectionView>();
+
+  R_EXPECT_CALL(*model, createAttributeCollectionModel())
+      .WillOnce(Return(attr_collection_model));
+  std::shared_ptr<IPfModel> attr_collection_pmodel = attr_collection_model;
+  R_EXPECT_CALL(triad_manager, createViewFor(attr_collection_pmodel, _, _, _))
+      .WillOnce(Return(attr_collection_view));
+  R_EXPECT_CALL(*view, setWorkAttrCollectionView(attr_collection_view.get()));
+}
 
 TEST_F(WorkPresenterTest,
        should_set_new_name_to_model_when_user_set_work_name) { // NOLINT
