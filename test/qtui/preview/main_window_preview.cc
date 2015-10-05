@@ -10,7 +10,7 @@
 #include "src/utils/log/log.h"
 
 #include "utils/basic_utils.h"
-#include "src/core/application_factory.h"
+#include "src/core/factory/application_factory.h"
 #include "src/pfmvp/pf_triad_manager.h"
 #include "pfmvp/pf_view_factory_manager.h"
 #include "src/core/main_window_model.h"

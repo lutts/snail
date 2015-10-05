@@ -4,14 +4,14 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/core/application_factory.h"
+#include "src/core/factory/application_factory.h"
 
 #include <memory>
 
 #include "utils/basic_utils.h"
 #include "src/core/main_window_model.h"
 #include "src/core/workspace_model.h"
-#include "src/core/work_model_factory.h"
+#include "src/core/factory/work_model_factory.h"
 
 namespace snailcore {
 
