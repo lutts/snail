@@ -27,7 +27,7 @@ class AttributeCollectionModelTest : public ::testing::Test {
     attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
 
     model = utils::make_unique<AttributeCollectionModel>(attr_suppliers,
-                                                         attr_model_factory);
+                                                         &attr_model_factory);
   }
   // virtual void TearDown() { }
 

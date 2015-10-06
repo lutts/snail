@@ -8,14 +8,13 @@
 #ifndef INCLUDE_QTUI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
 #define INCLUDE_QTUI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
 
-#include "qtui/generic_view_base.h"
-#include "utils/signal_slot.h"
+#include "qtui/i_attribute_editor_view.h"
 
 class IKbNodeTreeQModel;
 class QModelIndex;
 class QString;
 
-class IKbNodeAttributeEditView : public GenericViewBase {
+class IKbNodeAttributeEditView : public IAttributeEditorView {
  public:
   virtual ~IKbNodeAttributeEditView() = default;
 

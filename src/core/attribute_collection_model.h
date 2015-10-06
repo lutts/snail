@@ -22,7 +22,7 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
  public:
   AttributeCollectionModel(
       const std::vector<IAttributeSupplier*>& attr_suppliers,
-      const IAttributeModelFactory& attr_model_factory);
+      IAttributeModelFactory* attr_model_factory);
   virtual ~AttributeCollectionModel();
 
   void switchMode() override;
@@ -33,7 +33,7 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
 
  private:
   std::vector<IAttributeSupplier*> attr_suppliers_;
-  const IAttributeModelFactory& attr_model_factory_;
+  IAttributeModelFactory* attr_model_factory_;
 
  private:
   SNAIL_DISABLE_COPY(AttributeCollectionModel);

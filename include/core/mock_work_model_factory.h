@@ -15,8 +15,7 @@ namespace tests {
 
 class MockWorkModelFactory : public IWorkModelFactory {
  public:
-  MOCK_METHOD1(createWorkModel,
-               std::shared_ptr<IWorkModel>(const utils::U8String& work_name));
+  MOCK_METHOD0(createWorkModel, std::shared_ptr<IWorkModel>());
 };
 
 }  // namespace tests

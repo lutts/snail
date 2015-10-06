@@ -10,6 +10,7 @@
 
 #include "core/generic_attribute.h"
 #include "core/i_kbnode_attribute_supplier.h"
+#include "core/i_attribute_visitor.h"
 
 namespace snailcore {
 
@@ -20,6 +21,10 @@ class IKbNodeAttribute : public GenericAttribute {
   explicit IKbNodeAttribute(IKbNodeAttributeSupplier* supplier)
       : GenericAttribute(supplier) { }
   virtual ~IKbNodeAttribute() = default;
+
+  void accept(IAttributeVisitor* visitor) override {
+    visitor->visit(this);
+  }
 
   virtual IKbNodeAttributeSupplier* kbnode_supplier() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;

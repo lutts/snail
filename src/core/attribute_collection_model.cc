@@ -14,7 +14,7 @@ namespace snailcore {
 
 AttributeCollectionModel::AttributeCollectionModel(
     const std::vector<IAttributeSupplier*>& attr_suppliers,
-    const IAttributeModelFactory& attr_model_factory)
+    IAttributeModelFactory* attr_model_factory)
     : attr_suppliers_(attr_suppliers)
     , attr_model_factory_(attr_model_factory) { }
 
@@ -37,7 +37,7 @@ AttributeCollectionModel::getAttributeSuppliers() const {
 
 std::shared_ptr<IAttributeModel>
 AttributeCollectionModel::createAttributeModel(IAttribute* attr) {
-  auto attr_model = attr_model_factory_.createAttributeModel(attr);
+  auto attr_model = attr_model_factory_->createAttributeModel(attr);
   attr_models_.push_back(attr_model.get());
 
   attr_model->whenValidateComplete(

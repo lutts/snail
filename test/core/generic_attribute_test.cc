@@ -31,6 +31,8 @@ class MockGenericAttribute : public GenericAttribute {
     return supplier();
   }
 
+  MOCK_METHOD1(accept, void(IAttributeVisitor* visitor));
+
  private:
   SNAIL_DISABLE_COPY(MockGenericAttribute)
 };

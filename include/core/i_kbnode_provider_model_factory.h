@@ -11,6 +11,7 @@
 namespace snailcore {
 
 class IKbNodeProvider;
+class IKbNodeProviderModel;
 
 class IKbNodeProviderModelFactory {
  public:

@@ -15,6 +15,7 @@
 
 #include "src/core/workspace_model.h"
 #include "core/mock_work_model_factory.h"
+#include "core/mock_work_factory.h"
 #include "snail/mock_work_model.h"
 
 namespace snailcore {
@@ -28,11 +29,13 @@ class WorkSpaceModelTest : public ::testing::Test {
   }
   // ~WorkSpaceModelTest() { }
   virtual void SetUp() {
-    workspace_model = utils::make_unique<WorkSpaceModel>(&work_model_factory);
+    workspace_model = utils::make_unique<WorkSpaceModel>(
+        &work_model_factory, &work_factory);
   }
   // virtual void TearDown() { }
 
   // region: objects test subject depends on
+  MockWorkFactory work_factory;
   MockWorkModelFactory work_model_factory;
   // endregion
 
@@ -75,12 +78,18 @@ class MockListener : public GenericMockListener<MockListener,
 
 TEST_F(WorkSpaceModelTest, should_be_able_to_create_work) { // NOLINT
   // Setup fixture
+  auto work = xtestutils::genDummyPointer<IWork>();
   auto work_model = std::make_shared<MockWorkModel>();
   auto work_name = xtestutils::genRandomString();
 
   // Expectations
-  EXPECT_CALL(work_model_factory, createWorkModel(work_name))
+  EXPECT_CALL(work_factory, createWork(work_name))
+      .WillOnce(Return(work));
+  EXPECT_CALL(work_model_factory, createWorkModel())
       .WillOnce(Return(work_model));
+  EXPECT_CALL(*work_model, set_work(work));
+
+  // TODO: NameChanged
 
   auto mockListener = MockListener::attachTo(workspace_model.get());
   std::shared_ptr<IWorkModel> work_imodel = work_model;

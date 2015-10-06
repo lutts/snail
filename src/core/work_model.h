@@ -26,7 +26,7 @@ class WorkModel : public IWorkModel
       IAttributeCollectionModelFactory* attr_collection_model_factory);
   virtual ~WorkModel();
 
-  void set_work(IWork* work);
+  void set_work(IWork* work) override;
 
   utils::U8String name() const override;
   bool set_name(const utils::U8String& new_name) override;

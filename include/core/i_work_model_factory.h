@@ -10,16 +10,15 @@
 
 #include <memory>
 
-#include "utils/u8string.h"
-
 namespace snailcore {
+
+class IWork;
 
 class IWorkModelFactory {
  public:
   virtual ~IWorkModelFactory() = default;
 
-  virtual std::shared_ptr<IWorkModel> createWorkModel(
-      const utils::U8String& work_name) = 0;
+  virtual std::shared_ptr<IWorkModel> createWorkModel() = 0;
 };
 
 }  // namespace snailcore

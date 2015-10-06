@@ -13,6 +13,8 @@
 
 namespace snailcore {
 
+class IAttributeVisitor;
+
 class GenericAttribute : public IAttribute {
  public:
   explicit GenericAttribute(IAttributeSupplier* supplier)
@@ -26,6 +28,8 @@ class GenericAttribute : public IAttribute {
   IAttributeSupplier* supplier() const {
     return supplier_;
   }
+
+  virtual void accept(IAttributeVisitor* visitor) = 0;
 
  protected:
   void dataChanged() {

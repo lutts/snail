@@ -11,6 +11,8 @@
 #include "core/mock_kbnode_attribute_supplier.h"
 #include "snail/mock_kbnode.h"
 
+#include "core/mock_attribute_visitor.h"
+
 namespace snailcore {
 namespace tests {
 
@@ -106,6 +108,19 @@ TEST_F(KbNodeAttributeTest,
 
   // Verify results
   CUSTOM_ASSERT(checkEmptyState());
+}
+
+TEST_F(KbNodeAttributeTest,
+       should_attribute_visitor_visit_IKbNodeAttribute) { // NOLINT
+  // Setup fixture
+  MockAttributeVisitor visitor;
+
+  // Expectations
+  EXPECT_CALL(visitor, visit(attr.get()));
+
+  // Exercise system
+  GenericAttribute* base_attr = dynamic_cast<GenericAttribute*>(attr.get());
+  base_attr->accept(&visitor);
 }
 
 ////////////////////////////////////////////////

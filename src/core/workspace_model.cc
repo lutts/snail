@@ -6,15 +6,15 @@
 // [Desc]
 #include "src/core/workspace_model.h"
 #include "core/i_work_model_factory.h"
-
-// TODO(lutts): remove these header while remove the delete logic bellow
 #include "snail/i_work_model.h"
-#include "snail/i_work.h"
+#include "core/i_work_factory.h"
 
 namespace snailcore {
 
 void WorkSpaceModel::createWork(const utils::U8String& work_name) {
-  auto work_model = work_model_factory_->createWorkModel(work_name);
+  auto work = work_factory_->createWork(work_name);
+  auto work_model = work_model_factory_->createWorkModel();
+  work_model->set_work(work);
   WorkModelAdded(work_model);
 }
 

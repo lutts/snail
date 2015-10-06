@@ -14,11 +14,15 @@
 namespace snailcore {
 
 class IWorkModelFactory;
+class IWorkFactory;
 
 class WorkSpaceModel : public IWorkSpaceModel {
  public:
-  explicit WorkSpaceModel(IWorkModelFactory* work_model_factory)
-      : work_model_factory_(work_model_factory) { }
+  explicit WorkSpaceModel(
+      IWorkModelFactory* work_model_factory,
+      IWorkFactory* work_factory)
+      : work_model_factory_(work_model_factory)
+      , work_factory_(work_factory) { }
   virtual ~WorkSpaceModel() = default;
 
   void createWork(const utils::U8String& work_name) override;
@@ -29,6 +33,7 @@ class WorkSpaceModel : public IWorkSpaceModel {
   WorkSpaceModel& operator=(const WorkSpaceModel& other) = delete;
 
   IWorkModelFactory* work_model_factory_;
+  IWorkFactory* work_factory_;
 
  private:
   SNAIL_SIGSLOT_IMPL(WorkModelAdded)
