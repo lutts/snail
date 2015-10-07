@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef QTLINEEDIT_H_
-#define QTLINEEDIT_H_
+#ifndef SRC_QTUI_UI_WIDGETS_QTLINEEDIT_H_
+#define SRC_QTUI_UI_WIDGETS_QTLINEEDIT_H_
 
 #include <QLineEdit>
 #include <QTimer>
@@ -47,4 +47,4 @@ class QtLineEdit : public QLineEdit {
 };
 
 
-#endif  // QTLINEEDIT_H_
+#endif  // SRC_QTUI_UI_WIDGETS_QTLINEEDIT_H_

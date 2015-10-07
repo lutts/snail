@@ -64,7 +64,8 @@ void KbNodeAttributeEditView::setKbNodeName(const QString& kbnode_name) {
   line_edit_->setText(kbnode_name);
 }
 
-void KbNodeAttributeEditView::setKbNodeTreeQModel(IKbNodeTreeQModel* kbnode_tree_qmodel) {
+void KbNodeAttributeEditView::setKbNodeTreeQModel(
+    IKbNodeTreeQModel* kbnode_tree_qmodel) {
   auto model = dynamic_cast<QAbstractItemModel*>(kbnode_tree_qmodel);
   auto completer = line_edit_->qtcompleter();
   completer->setModel(model);

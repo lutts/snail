@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "qtcompleter.h"
+#include "src/qtui/ui/widgets/qtcompleter.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -28,9 +28,10 @@ std::unique_ptr<T> make_unique(Args&&... args) {
 
 class QCompleterItemDelegate : public QItemDelegate {
  public:
-  QCompleterItemDelegate(QAbstractItemView *view)
+  explicite QCompleterItemDelegate(QAbstractItemView *view)
       : QItemDelegate(view), view(view) { }
-  void paint(QPainter *p, const QStyleOptionViewItem& opt, const QModelIndex& idx) const {
+  void paint(QPainter *p, const QStyleOptionViewItem& opt,
+             const QModelIndex& idx) const {
     QStyleOptionViewItem optCopy = opt;
     optCopy.showDecorationSelected = true;
     if (view->currentIndex() == idx)
@@ -81,18 +82,18 @@ class QtCompleterImpl : public QObject {
   QtCompleterImpl& operator=(const QtCompleterImpl& other) = delete;
 };
 
-void QtCompleterImpl::setCurrentIndex(QModelIndex index, bool select)
-{
+void QtCompleterImpl::setCurrentIndex(QModelIndex index, bool select) {
   if (!q->popup())
     return;
   if (!select) {
-    popup->selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
+    popup->selectionModel()->setCurrentIndex(index,
+                                             QItemSelectionModel::NoUpdate);
   } else {
     if (!index.isValid())
       popup->selectionModel()->clear();
     else
-      popup->selectionModel()->setCurrentIndex(index, QItemSelectionModel::Select
-                                               | QItemSelectionModel::Rows);
+      popup->selectionModel()->setCurrentIndex(
+          index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
   }
   index = popup->selectionModel()->currentIndex();
   if (!index.isValid())
@@ -137,8 +138,7 @@ void QtCompleterImpl::autoResizePopup(
   showPopup(popupRect);
 }
 
-void QtCompleterImpl::showPopup(const QRect& rect)
-{
+void QtCompleterImpl::showPopup(const QRect& rect) {
   const QRect screen = QApplication::desktop()->availableGeometry(widget);
   Qt::LayoutDirection dir = widget->layoutDirection();
   QPoint pos;
@@ -158,7 +158,8 @@ void QtCompleterImpl::showPopup(const QRect& rect)
   if (rect.isValid()) {
     rh = rect.height();
     w = rect.width();
-    pos = widget->mapToGlobal(dir == Qt::RightToLeft ? rect.bottomRight() : rect.bottomLeft());
+    pos = widget->mapToGlobal(
+        dir == Qt::RightToLeft ? rect.bottomRight() : rect.bottomLeft());
   } else {
     rh = widget->height();
     pos = widget->mapToGlobal(QPoint(0, widget->height() - 2));
@@ -306,7 +307,7 @@ void QtCompleter::setPopup(QAbstractItemView* popup) {
                    d.get(), SLOT(clicked(QModelIndex)));
 #if 0
   QObject::connect(popup->selectionModel(),
-                   SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                   SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
                    d.get(), SLOT(hightlighted(QItemSelection)));
 #endif
 
@@ -339,7 +340,7 @@ void QtCompleter::complete(const QRect& rect) {
 
   if (!d->model || d->model->rowCount(QModelIndex()) == 0) {
     if (d->popup)
-      d->popup->hide(); // no suggestion, hide
+      d->popup->hide();  // no suggestion, hide
     return;
   }
 
@@ -371,7 +372,8 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
       // TODO(lutts): should we normalize curIndex to d->column?
       QModelIndex normalized;
       if (curIndex.isValid() && curIndex.column() != d->column) {
-        normalized = d->model->index(curIndex.row(), d->column, curIndex.parent());
+        normalized = d->model->index(curIndex.row(), d->column,
+                                     curIndex.parent());
       }
       if (normalized.isValid())
         curIndex = normalized;
@@ -386,7 +388,8 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
 
       const int key = ke->key();
       // select the current item
-      if ((key == Qt::Key_Up || key == Qt::Key_Down) && selList.isEmpty() && curIndex.isValid()) {
+      if ((key == Qt::Key_Up || key == Qt::Key_Down) &&
+          selList.isEmpty() && curIndex.isValid()) {
         if ((curIndex.flags() & Qt::ItemIsEnabled)
             && (curIndex.flags() & Qt::ItemIsSelectable)) {
         d->setCurrentIndex(curIndex);
@@ -394,8 +397,9 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
         }
       }
 
-      // Handle popup navigation keys. These are hardcoded because up/down might make the
-      // widget do something else (lineedit cursor moves to home/end on mac, for instance)
+      // Handle popup navigation keys. These are hardcoded because up/down
+      // might make the widget do something else (lineedit cursor moves to
+      // home/end on mac, for instance)
       switch (key) {
         case Qt::Key_End:
         case Qt::Key_Home:
@@ -441,8 +445,9 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
           return false;
       }
 
-      // Send the event to the widget. If the widget accepted the event, do nothing
-      // If the widget did not accept the event, provide a default implementation
+      // Send the event to the widget. If the widget accepted the event,
+      // do nothing If the widget did not accept the event, provide a default
+      // implementation
       d->eatFocusOut = false;
       (static_cast<QObject *>(d->widget))->event(ke);
       d->eatFocusOut = true;
@@ -455,7 +460,8 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
           return true;
       }
 
-      // default implementation for keys not handled by the widget when popup is open
+      // default implementation for keys not handled by the widget when popup
+      // is open
       switch (key) {
         case Qt::Key_Return:
         case Qt::Key_Enter:

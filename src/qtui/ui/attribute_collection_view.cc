@@ -43,7 +43,8 @@ void AttributeCollectionView::setQModel(IAttributeCollectionQModel* qmodel) {
   attr_table_view_->setModel(model);
 }
 
-void AttributeCollectionView::setAttributeDelegate(IAttributeDelegate* attr_delegate) {
+void AttributeCollectionView::setAttributeDelegate(
+    IAttributeDelegate* attr_delegate) {
   auto delegate = dynamic_cast<QAbstractItemDelegate*>(attr_delegate);
   attr_table_view_->setItemDelegateForColumn(1, delegate);
 }

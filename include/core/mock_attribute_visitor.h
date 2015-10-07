@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_VISITOR_H_
-#define MOCK_ATTRIBUTE_VISITOR_H_
+#ifndef INCLUDE_CORE_MOCK_ATTRIBUTE_VISITOR_H_
+#define INCLUDE_CORE_MOCK_ATTRIBUTE_VISITOR_H_
 
 #include "core/i_attribute_visitor.h"
 
@@ -21,4 +21,4 @@ class MockAttributeVisitor : public IAttributeVisitor {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_VISITOR_H_
+#endif  // INCLUDE_CORE_MOCK_ATTRIBUTE_VISITOR_H_

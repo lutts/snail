@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_VISITOR_H_
-#define I_ATTRIBUTE_VISITOR_H_
+#ifndef INCLUDE_CORE_I_ATTRIBUTE_VISITOR_H_
+#define INCLUDE_CORE_I_ATTRIBUTE_VISITOR_H_
 
 namespace snailcore {
 
@@ -21,4 +21,4 @@ class IAttributeVisitor {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_VISITOR_H_
+#endif  // INCLUDE_CORE_I_ATTRIBUTE_VISITOR_H_

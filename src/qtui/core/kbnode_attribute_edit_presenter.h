@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_KBNODE_ATTRIBUTE_EDIT_PRESENTER_H_
-#define SRC_QTUI_KBNODE_ATTRIBUTE_EDIT_PRESENTER_H_
+#ifndef SRC_QTUI_CORE_KBNODE_ATTRIBUTE_EDIT_PRESENTER_H_
+#define SRC_QTUI_CORE_KBNODE_ATTRIBUTE_EDIT_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -42,4 +42,4 @@ class KbNodeAttributeEditPresenter : public KbNodeAttributeEditPresenterBase {
   SNAIL_DISABLE_COPY(KbNodeAttributeEditPresenter);
 };
 
-#endif  // SRC_QTUI_KBNODE_ATTRIBUTE_EDIT_PRESENTER_H_
+#endif  // SRC_QTUI_CORE_KBNODE_ATTRIBUTE_EDIT_PRESENTER_H_

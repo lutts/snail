@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WORK_FACTORY_H_
-#define WORK_FACTORY_H_
+#ifndef SRC_CORE_FACTORY_WORK_FACTORY_H_
+#define SRC_CORE_FACTORY_WORK_FACTORY_H_
 
 #include "core/i_work_factory.h"
 #include "utils/basic_utils.h"
@@ -17,7 +17,7 @@ class KbNodeManager;
 
 class WorkFactory : public IWorkFactory {
  public:
-  WorkFactory(KbNodeManager* kbnode_manager);
+  explicit WorkFactory(KbNodeManager* kbnode_manager);
   virtual ~WorkFactory() = default;
 
   IWork* createWork(const utils::U8String& work_name) override;
@@ -31,4 +31,4 @@ class WorkFactory : public IWorkFactory {
 
 }  // namespace snailcore
 
-#endif  // WORK_FACTORY_H_
+#endif  // SRC_CORE_FACTORY_WORK_FACTORY_H_

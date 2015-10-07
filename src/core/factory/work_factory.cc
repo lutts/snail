@@ -5,6 +5,9 @@
 //
 // [Desc]
 #include "src/core/factory/work_factory.h"
+
+#include <vector>
+
 #include "src/core/work.h"
 #include "src/core/kbnode_manager.h"
 #include "src/core/attribute.h"

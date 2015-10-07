@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_MODEL_FACTORY_H_
-#define ATTRIBUTE_MODEL_FACTORY_H_
+#ifndef SRC_CORE_FACTORY_ATTRIBUTE_MODEL_FACTORY_H_
+#define SRC_CORE_FACTORY_ATTRIBUTE_MODEL_FACTORY_H_
 
 #include "utils/basic_utils.h"
 #include "core/i_attribute_model_factory.h"
@@ -40,4 +40,4 @@ class AttributeModelFactory : public IAttributeModelFactory {
 
 }  // namespace snailcore
 
-#endif  // ATTRIBUTE_MODEL_FACTORY_H_
+#endif  // SRC_CORE_FACTORY_ATTRIBUTE_MODEL_FACTORY_H_

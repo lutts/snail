@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_MOCK_WORK_MODEL_FACTORY_H_
-#define INCLUDE_SNAIL_MOCK_WORK_MODEL_FACTORY_H_
+#ifndef INCLUDE_CORE_MOCK_WORK_MODEL_FACTORY_H_
+#define INCLUDE_CORE_MOCK_WORK_MODEL_FACTORY_H_
 
 #include "core/i_work_model_factory.h"
 
@@ -21,4 +21,4 @@ class MockWorkModelFactory : public IWorkModelFactory {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_MOCK_WORK_MODEL_FACTORY_H_
+#endif  // INCLUDE_CORE_MOCK_WORK_MODEL_FACTORY_H_

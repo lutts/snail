@@ -341,7 +341,7 @@ std::vector<utils::U8String> expect_on_edit_mode_after_click_add_on_attr_count_e
 };
 
 // after add attr, if the supplier is not full, its "Add ..." row is remained
-std::vector<utils::U8String> expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_2_supplier[] = {
+std::vector<utils::U8String> expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_2_supplier[] = { // NOLINT
   { "Supplier_Max_Eq_1_AttrCount_Eq_0", "" },
 
   { "Attribute 01", "Value 1" },

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_WORK_VIEW_H_
-#define SRC_QTUI_WORK_VIEW_H_
+#ifndef SRC_QTUI_UI_WORK_VIEW_H_
+#define SRC_QTUI_UI_WORK_VIEW_H_
 
 #include <QWidget>
 
@@ -52,4 +52,4 @@ class WorkView : public QWidget, public IWorkView {
   SNAIL_SIGSLOT_IMPL(UserSetWorkName);
 };
 
-#endif  // SRC_QTUI_WORK_VIEW_H_
+#endif  // SRC_QTUI_UI_WORK_VIEW_H_

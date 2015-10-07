@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef QTCOMPLETER_H_
-#define QTCOMPLETER_H_
+#ifndef SRC_QTUI_UI_WIDGETS_QTCOMPLETER_H_
+#define SRC_QTUI_UI_WIDGETS_QTCOMPLETER_H_
 
 #include <QObject>
 #include <QRect>
@@ -25,7 +25,7 @@ class QtCompleter : public QObject {
 
  public:
   explicit QtCompleter(QObject* parent = nullptr);
-  QtCompleter(QAbstractItemModel *model, QObject *parent = 0);
+  explicit QtCompleter(QAbstractItemModel *model, QObject *parent = 0);
   virtual ~QtCompleter();
 
   void setWidget(QWidget* widget);
@@ -55,7 +55,7 @@ class QtCompleter : public QObject {
 
  protected:
   bool eventFilter(QObject *o, QEvent *e);
-  bool event(QEvent *);
+  bool event(QEvent *e);
 
  private:
   QtCompleter(const QtCompleter& other) = delete;
@@ -65,4 +65,4 @@ class QtCompleter : public QObject {
   friend class QtCompleterImpl;
 };
 
-#endif  // QTCOMPLETER_H_
+#endif  // SRC_QTUI_UI_WIDGETS_QTCOMPLETER_H_

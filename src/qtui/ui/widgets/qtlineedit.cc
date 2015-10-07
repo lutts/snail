@@ -7,8 +7,8 @@
 #include <QApplication>
 #include <QFocusEvent>
 
-#include "qtlineedit.h"
-#include "qtcompleter.h"
+#include "src/qtui/ui/widgets/qtlineedit.h"
+#include "src/qtui/ui/widgets/qtcompleter.h"
 
 QtLineEdit::QtLineEdit(QWidget* parent)
     : QLineEdit(parent) {

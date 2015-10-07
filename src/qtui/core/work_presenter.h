@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_WORK_PRESENTER_H_
-#define SRC_QTUI_WORK_PRESENTER_H_
+#ifndef SRC_QTUI_CORE_WORK_PRESENTER_H_
+#define SRC_QTUI_CORE_WORK_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -32,4 +32,4 @@ class WorkPresenter : public WorkPresenterBase {
   WorkPresenter& operator=(const WorkPresenter& other) = delete;
 };
 
-#endif  // SRC_QTUI_WORK_PRESENTER_H_
+#endif  // SRC_QTUI_CORE_WORK_PRESENTER_H_

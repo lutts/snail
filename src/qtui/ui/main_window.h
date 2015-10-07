@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_MAIN_WINDOW_H_
-#define SRC_QTUI_MAIN_WINDOW_H_
+#ifndef SRC_QTUI_UI_MAIN_WINDOW_H_
+#define SRC_QTUI_UI_MAIN_WINDOW_H_
 
 #include <QMainWindow>
 
@@ -44,4 +44,4 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   SNAIL_SIGSLOT_COMBINER_IMPL(RequestClose, and_slot_bool_result_combiner)
 };
 
-#endif  // SRC_QTUI_MAIN_WINDOW_H_
+#endif  // SRC_QTUI_UI_MAIN_WINDOW_H_

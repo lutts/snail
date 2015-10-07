@@ -89,7 +89,7 @@ TEST_F(WorkSpaceModelTest, should_be_able_to_create_work) { // NOLINT
       .WillOnce(Return(work_model));
   EXPECT_CALL(*work_model, set_work(work));
 
-  // TODO: NameChanged
+  // TODO(lutts): NameChanged
 
   auto mockListener = MockListener::attachTo(workspace_model.get());
   std::shared_ptr<IWorkModel> work_imodel = work_model;

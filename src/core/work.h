@@ -8,6 +8,8 @@
 #ifndef SRC_CORE_WORK_H_
 #define SRC_CORE_WORK_H_
 
+#include <vector>
+
 #include "snail/i_work.h"
 #include "utils/u8string.h"
 #include "utils/signal_slot_impl.h"

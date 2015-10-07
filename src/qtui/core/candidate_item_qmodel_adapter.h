@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
-#define SRC_QTUI_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#ifndef SRC_QTUI_CORE_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#define SRC_QTUI_CORE_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -40,4 +40,4 @@ class CandidateItemQModelAdapter : public ICandidateItemQModelAdapter
 };
 
 
-#endif  // SRC_QTUI_CANDIDATE_ITEM_QMODEL_ADAPTER_H_
+#endif  // SRC_QTUI_CORE_CANDIDATE_ITEM_QMODEL_ADAPTER_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_PROVIDER_FACTORY_H_
-#define MOCK_KBNODE_PROVIDER_FACTORY_H_
+#ifndef INCLUDE_CORE_MOCK_KBNODE_PROVIDER_FACTORY_H_
+#define INCLUDE_CORE_MOCK_KBNODE_PROVIDER_FACTORY_H_
 
 #include "core/i_kbnode_provider_factory.h"
 
@@ -24,4 +24,4 @@ class MockKbNodeProviderFactory : public IKbNodeProviderFactory {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_PROVIDER_FACTORY_H_
+#endif  // INCLUDE_CORE_MOCK_KBNODE_PROVIDER_FACTORY_H_

@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef MOCK_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
-#define MOCK_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+#ifndef INCLUDE_CORE_MOCK_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+#define INCLUDE_CORE_MOCK_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+
+#include <vector>
 
 #include "core/i_attribute_collection_model_factory.h"
 
@@ -24,4 +26,4 @@ class MockAttributeCollectionModelFactory
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+#endif  // INCLUDE_CORE_MOCK_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_

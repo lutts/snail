@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_WORKSPACE_VIEW_H_
-#define SRC_QTUI_WORKSPACE_VIEW_H_
+#ifndef SRC_QTUI_UI_WORKSPACE_VIEW_H_
+#define SRC_QTUI_UI_WORKSPACE_VIEW_H_
 
 #include <QTabWidget>
 
@@ -42,4 +42,4 @@ class WorkSpaceView : public QTabWidget, public IWorkSpaceView {
   SNAIL_SIGSLOT_IMPL(UserCloseWork)
 };
 
-#endif  // SRC_QTUI_WORKSPACE_VIEW_H_
+#endif  // SRC_QTUI_UI_WORKSPACE_VIEW_H_

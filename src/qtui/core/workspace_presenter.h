@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_WORKSPACE_PRESENTER_H_
-#define SRC_QTUI_WORKSPACE_PRESENTER_H_
+#ifndef SRC_QTUI_CORE_WORKSPACE_PRESENTER_H_
+#define SRC_QTUI_CORE_WORKSPACE_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -36,4 +36,4 @@ class WorkSpacePresenter : public WorkSpacePresenterBase {
   void onWorkModelAdded(std::shared_ptr<snailcore::IWorkModel> work_model);
 };
 
-#endif  // SRC_QTUI_WORKSPACE_PRESENTER_H_
+#endif  // SRC_QTUI_CORE_WORKSPACE_PRESENTER_H_

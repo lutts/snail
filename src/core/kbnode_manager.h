@@ -20,7 +20,7 @@ class IKbNodeProviderFactory;
 
 class KbNodeManager : public IKbNodeManager {
  public:
-  KbNodeManager(IKbNodeProviderFactory* kbnode_provider_factory);
+  explicit KbNodeManager(IKbNodeProviderFactory* kbnode_provider_factory);
   virtual ~KbNodeManager();
 
   std::shared_ptr<IKbNodeProvider>

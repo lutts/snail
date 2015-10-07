@@ -14,7 +14,7 @@ namespace snailcore {
 
 class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
  public:
-  AttributeVisitor(const AttributeModelFactory& factory)
+  explicit AttributeVisitor(const AttributeModelFactory& factory)
       : factory_(factory) { }
   virtual ~AttributeVisitor() = default;
 

@@ -7,6 +7,7 @@
 #include "src/core/factory/application_factory.h"
 
 #include <memory>
+#include <vector>
 
 #include "utils/basic_utils.h"
 #include "src/core/main_window_model.h"

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_WORK_FACTORY_H_
-#define I_WORK_FACTORY_H_
+#ifndef INCLUDE_CORE_I_WORK_FACTORY_H_
+#define INCLUDE_CORE_I_WORK_FACTORY_H_
 
 #include "utils/u8string.h"
 
@@ -23,4 +23,4 @@ class IWorkFactory {
 
 }  // namespace snailcore
 
-#endif  // I_WORK_FACTORY_H_
+#endif  // INCLUDE_CORE_I_WORK_FACTORY_H_

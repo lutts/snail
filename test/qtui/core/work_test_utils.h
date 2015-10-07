@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TEST_QTUI_WORK_TEST_UTILS_H_
-#define TEST_QTUI_WORK_TEST_UTILS_H_
+#ifndef TEST_QTUI_CORE_WORK_TEST_UTILS_H_
+#define TEST_QTUI_CORE_WORK_TEST_UTILS_H_
 
 #include <memory>
 #include "snail/mock_work_model.h"      // MockWork
@@ -22,4 +22,4 @@ static std::shared_ptr<MockWorkModel> createNamedWork() {
   return work;
 }
 
-#endif  // TEST_QTUI_WORK_TEST_UTILS_H_
+#endif  // TEST_QTUI_CORE_WORK_TEST_UTILS_H_

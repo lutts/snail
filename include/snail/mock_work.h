@@ -8,6 +8,8 @@
 #ifndef INCLUDE_SNAIL_MOCK_WORK_H_
 #define INCLUDE_SNAIL_MOCK_WORK_H_
 
+#include <vector>
+
 #include "snail/i_work.h"
 
 namespace snailcore {

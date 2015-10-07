@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_ATTRIBUTE_EDIT_VIEW_H_
-#define KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#ifndef SRC_QTUI_UI_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#define SRC_QTUI_UI_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
 
 #include <QWidget>
 
@@ -44,4 +44,4 @@ class KbNodeAttributeEditView : public IKbNodeAttributeEditView
 };
 
 
-#endif  // KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#endif  // SRC_QTUI_UI_KBNODE_ATTRIBUTE_EDIT_VIEW_H_

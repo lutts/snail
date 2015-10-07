@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_ATTRIBUTE_DELEGATE_H_
-#define SRC_QTUI_ATTRIBUTE_DELEGATE_H_
+#ifndef SRC_QTUI_CORE_ATTRIBUTE_DELEGATE_H_
+#define SRC_QTUI_CORE_ATTRIBUTE_DELEGATE_H_
 
 #include <QStyledItemDelegate>
 
@@ -56,4 +56,4 @@ class AttributeDelegate : public IAttributeDelegate
 };
 
 
-#endif  // SRC_QTUI_ATTRIBUTE_DELEGATE_H_
+#endif  // SRC_QTUI_CORE_ATTRIBUTE_DELEGATE_H_

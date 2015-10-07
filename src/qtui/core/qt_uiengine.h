@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_QT_UIENGINE_H_
-#define SRC_QTUI_QT_UIENGINE_H_
+#ifndef SRC_QTUI_CORE_QT_UIENGINE_H_
+#define SRC_QTUI_CORE_QT_UIENGINE_H_
 
 #include <QApplication>
 
@@ -39,4 +39,4 @@ class QtUiEngine : public QObject, public snailcore::IUiEngine {
   SNAIL_SIGSLOT_IMPL(AboutToQuit)
 };
 
-#endif  // SRC_QTUI_QT_UIENGINE_H_
+#endif  // SRC_QTUI_CORE_QT_UIENGINE_H_

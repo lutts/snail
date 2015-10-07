@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef I_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
-#define I_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+#ifndef INCLUDE_CORE_I_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+#define INCLUDE_CORE_I_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+
+#include <vector>
 
 namespace snailcore {
 
@@ -24,4 +26,4 @@ class IAttributeCollectionModelFactory {
 
 }  // namespace snailcore
 
-#endif  // I_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_
+#endif  // INCLUDE_CORE_I_ATTRIBUTE_COLLECTION_MODEL_FACTORY_H_

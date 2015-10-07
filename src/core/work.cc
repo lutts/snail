@@ -6,6 +6,8 @@
 // [Desc]
 #include "src/core/work.h"
 
+#include <vector>
+
 namespace snailcore {
 
 Work::Work() = default;

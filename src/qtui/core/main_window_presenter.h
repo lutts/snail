@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_MAIN_WINDOW_PRESENTER_H_
-#define SRC_QTUI_MAIN_WINDOW_PRESENTER_H_
+#ifndef SRC_QTUI_CORE_MAIN_WINDOW_PRESENTER_H_
+#define SRC_QTUI_CORE_MAIN_WINDOW_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -58,4 +58,4 @@ class MainWindowPresenter : public MainWindowPresenterBase {
   MainWindowPresenter& operator=(const MainWindowPresenter& other) = delete;
 };
 
-#endif  // SRC_QTUI_MAIN_WINDOW_PRESENTER_H_
+#endif  // SRC_QTUI_CORE_MAIN_WINDOW_PRESENTER_H_

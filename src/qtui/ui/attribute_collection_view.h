@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef ATTRIBUTE_COLLECTION_VIEW_H_
-#define ATTRIBUTE_COLLECTION_VIEW_H_
+#ifndef SRC_QTUI_UI_ATTRIBUTE_COLLECTION_VIEW_H_
+#define SRC_QTUI_UI_ATTRIBUTE_COLLECTION_VIEW_H_
 
 #include <QObject>
 
@@ -48,4 +48,4 @@ class AttributeCollectionView : public IAttributeCollectionView
 };
 
 
-#endif  // ATTRIBUTE_COLLECTION_VIEW_H_
+#endif  // SRC_QTUI_UI_ATTRIBUTE_COLLECTION_VIEW_H_

@@ -28,7 +28,8 @@ WorkView::WorkView() {
 
   // work name & description
 
-  name_desc_group_ = action_panel_->createGroup(QStringLiteral("[Work Name Here]"));
+  name_desc_group_ =
+      action_panel_->createGroup(QStringLiteral("[Work Name Here]"));
   name_desc_group_->setHasEditButton(true);
 
   name_desc_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
@@ -50,7 +51,8 @@ WorkView::WorkView() {
   recordings_group_->setHasEditButton(true);
 
   related_work_group_ = action_panel_->createGroup(tr("Related Work(s)"));
-  related_work_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
+  related_work_group_->addWidget(
+      new QLabel(QStringLiteral("PlaceHolder"), this));
 
   action_panel_->addStretch();
 

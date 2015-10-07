@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_PROVIDER_MODEL_FACTORY_H_
-#define I_KBNODE_PROVIDER_MODEL_FACTORY_H_
+#ifndef INCLUDE_CORE_I_KBNODE_PROVIDER_MODEL_FACTORY_H_
+#define INCLUDE_CORE_I_KBNODE_PROVIDER_MODEL_FACTORY_H_
 
 namespace snailcore {
 
@@ -23,4 +23,4 @@ class IKbNodeProviderModelFactory {
 
 }  // namespace snailcore
 
-#endif  // I_KBNODE_PROVIDER_MODEL_FACTORY_H_
+#endif  // INCLUDE_CORE_I_KBNODE_PROVIDER_MODEL_FACTORY_H_

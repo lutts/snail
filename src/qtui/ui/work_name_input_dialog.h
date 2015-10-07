@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_WORK_NAME_INPUT_DIALOG_H_
-#define SRC_QTUI_WORK_NAME_INPUT_DIALOG_H_
+#ifndef SRC_QTUI_UI_WORK_NAME_INPUT_DIALOG_H_
+#define SRC_QTUI_UI_WORK_NAME_INPUT_DIALOG_H_
 
 #include <QDialog>
 
@@ -23,4 +23,4 @@ class WorkNameInputDialog : public QDialog {
   QLineEdit *workName;
 };
 
-#endif  // SRC_QTUI_WORK_NAME_INPUT_DIALOG_H_
+#endif  // SRC_QTUI_UI_WORK_NAME_INPUT_DIALOG_H_
