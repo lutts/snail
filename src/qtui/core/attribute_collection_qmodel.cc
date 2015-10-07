@@ -222,11 +222,8 @@ int AttributeCollectionQModelImpl::rowOfAttr(IAttribute* attr) {
   return -1;
 }
 
-#include <QDebug>
-
 IAttribute* AttributeCollectionQModelImpl::attrOfRow(int row) {
   auto & row_data = attr_row_data_[row];
-  qDebug() << "attOfRow: row_data" << row_data.columnText(0);
   return row_data.attr();
 }
 
