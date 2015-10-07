@@ -35,8 +35,8 @@ test-%: FORCE
 list-test: FORCE
 	cd build && ctest -N
 
-run: FORCE
-	./build/src/snail
+run: build
+	./build/test/qtui/preview/main_window_preview
 
 index: FORCE
 	gindex-cpp.sh

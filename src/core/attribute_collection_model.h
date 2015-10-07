@@ -44,7 +44,7 @@ class AttributeCollectionModel : public IAttributeCollectionModel {
 
   void validateComplete();
 
-  std::vector<IAttributeModel*> attr_models_;
+  std::vector<std::weak_ptr<IAttributeModel> > attr_models_;
   bool is_display_mode_ { true };
 };
 

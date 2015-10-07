@@ -19,9 +19,9 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
   virtual ~AttributeVisitor() = default;
 
   void visit(IKbNodeAttribute* attr) override {
-    attr_model_ = std::make_shared<KbNodeAttributeModel>(
-        attr, factory_.kbnode_manager_,
-        factory_.kbnode_provider_model_factory_);
+    attr_model_.reset(
+        new KbNodeAttributeModel(attr, factory_.kbnode_manager_,
+                                 factory_.kbnode_provider_model_factory_));
   }
 
  private:

@@ -14,7 +14,9 @@ QWidget * AttributeDelegate::createEditor(
   (void)option;
   IAttributeEditorView* editor = *CreateEditorFor(index.row());
   if (editor) {
-    return editor->getWidget();
+    auto widget = editor->getWidget();
+    widget->setParent(parent);
+    return widget;
   } else {
     return nullptr;
   }

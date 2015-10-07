@@ -14,6 +14,7 @@
 #include "utils/signal_slot_impl.h"
 
 namespace QSint {
+class ActionPanel;
 class ActionGroup;
 }  // namespace QSint
 
@@ -38,6 +39,7 @@ class WorkView : public QWidget, public IWorkView {
   WorkView(const WorkView& other) = delete;
   WorkView& operator=(const WorkView& other) = delete;
 
+  QSint::ActionPanel* action_panel_ { nullptr };
   QSint::ActionGroup* name_desc_group_ { nullptr };
   bool name_desc_group_editing_ { false };
 

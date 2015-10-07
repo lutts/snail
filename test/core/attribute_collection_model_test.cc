@@ -165,6 +165,13 @@ TEST_F(AttributeCollectionModelTest,
   EXPECT_CALL(*mock_listener, ValidateComplete(true));
   attr_model3_valid = true;
   validateComplete3();
+
+  Mock::VerifyAndClearExpectations(mock_listener.get());
+
+  // test delete attr model
+  attr_model2.reset();
+  validateComplete3();
+  validateComplete3();
 }
 
 TEST_F(AttributeCollectionModelTest,

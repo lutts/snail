@@ -14,20 +14,21 @@
 #include <QDebug>
 
 #include "qsint/include/QSint"
+#include "src/qtui/ui/attribute_collection_view.h"
 
 WorkView::WorkView() {
   auto verticalLayout = new QVBoxLayout(this);
 
-  QSint::ActionPanel* action_panel = new QSint::ActionPanel(this);
+  action_panel_ = new QSint::ActionPanel(this);
   QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   sizePolicy.setHorizontalStretch(0);
   sizePolicy.setVerticalStretch(0);
-  sizePolicy.setHeightForWidth(action_panel->sizePolicy().hasHeightForWidth());
-  action_panel->setSizePolicy(sizePolicy);
+  sizePolicy.setHeightForWidth(action_panel_->sizePolicy().hasHeightForWidth());
+  action_panel_->setSizePolicy(sizePolicy);
 
   // work name & description
 
-  name_desc_group_ = action_panel->createGroup(QStringLiteral("[Work Name Here]"));
+  name_desc_group_ = action_panel_->createGroup(QStringLiteral("[Work Name Here]"));
   name_desc_group_->setHasEditButton(true);
 
   name_desc_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
@@ -35,23 +36,25 @@ WorkView::WorkView() {
   connect(name_desc_group_, SIGNAL(editButtonClicked()),
           this, SLOT(toggleNameDescEditMode()));
 
-  parts_group_ = action_panel->createGroup(tr("Parts"));
+  parts_group_ = action_panel_->createGroup(tr("Parts"));
   parts_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
 
-  scores_group_ = action_panel->createGroup(tr("Scores"));
+  scores_group_ = action_panel_->createGroup(tr("Scores"));
   scores_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
   scores_group_->setHasEditButton(true);
 
-  recordings_group_ = action_panel->createGroup(tr("Recordings"));
+  recordings_group_ = new QSint::ActionGroup(tr("Recordings"));
+  action_panel_->addWidget(recordings_group_);
+  // recordings_group_ = action_panel_->createGroup(tr("Recordings"));
   recordings_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
   recordings_group_->setHasEditButton(true);
 
-  related_work_group_ = action_panel->createGroup(tr("Related Work(s)"));
+  related_work_group_ = action_panel_->createGroup(tr("Related Work(s)"));
   related_work_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
 
-  action_panel->addStretch();
+  action_panel_->addStretch();
 
-  verticalLayout->addWidget(action_panel);
+  verticalLayout->addWidget(action_panel_);
 }
 
 void WorkView::toggleNameDescEditMode() {
@@ -75,6 +78,5 @@ void WorkView::setWorkName(const QString& work_name) {
 
 void WorkView::setWorkAttrCollectionView(
     IAttributeCollectionView* attr_collection_view) {
-  // TODO(lutts): impl this method
-  (void)attr_collection_view;
+  action_panel_->insertWidget(1, attr_collection_view->getWidget());
 }

@@ -139,7 +139,7 @@ class KbNodeItem {
   }
 
   virtual void populate_children() {
-#if 1
+#if 0
     if (isRoot()) {
       qDebug() << "populate root idx";
     } else {

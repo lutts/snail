@@ -102,7 +102,10 @@ class AttrSupplierTestStub : public IAttributeSupplier {
   }
 
   AttributeTestStub* addAttribute(const utils::U8String& attr_name,
-                    const utils::U8String& attr_value) {
+                                  const utils::U8String& attr_value) {
+    if (attributes_.size() > static_cast<size_t>(max_attrs_))
+      return nullptr;
+
     auto attr = new AttributeTestStub(attr_name, attr_value, this);
     attributes_.push_back(attr);
 
@@ -158,17 +161,25 @@ class AttributeCollectionModelTest : public ::testing::Test {
                               const utils::U8String& expect_text);
   void checkRowData(std::vector<utils::U8String> expect_row_data[],
                     int expect_row_count);
+  void assertCellNotSelectable(int row, int column);
   void assertCellNotEditable(int row, int column);
   void assertCellEditable(int row, int column);
   void switchToEditMode();
   void switchToDisplayMode();
+
+  void checkClickOnAddAttribute(int row, MockAttrSupplierTestStub* supplier,
+                                std::vector<utils::U8String> expect_row_data[],
+                                int expect_row_count,
+                                bool expect_remove_supplier_row);
 
 
   // region: objects test subject depends on
   MockObjectGenerator<MockAttrSupplierTestStub> attr_supplier_generator; // NOLINT
   MockAttrSupplierTestStub* max1_attr0_supplier { nullptr };
   MockAttrSupplierTestStub* attr_supplier_with_to_be_cleared_attrs { nullptr };
-  MockAttrSupplierTestStub* max_gt_1_attr_lt_max_supplier { nullptr };
+  MockAttrSupplierTestStub* max_gt_1_attrcount_eq_max_minus_1_supplier { nullptr }; // NOLINT
+  MockAttrSupplierTestStub* max_gt_1_attrcount_eq_max_minus_2_supplier { nullptr }; // NOLINT
+  MockAttrSupplierTestStub* max_gt_1_attr_eq_max_supplier { nullptr };
   AttributeTestStub* attr_to_be_clear { nullptr };
   AttributeTestStub* attr_to_change { nullptr };
   // endregion
@@ -198,34 +209,44 @@ void AttributeCollectionModelTest::setupAttributeSuppliers() {
       attr_supplier_generator.generate("Supplier_Max_Gt_1_AttrCount_Eq_0", 3);
   attr_suppliers.push_back(attr_supplier);
 
-  max_gt_1_attr_lt_max_supplier =
-      attr_supplier_generator.generate("Supplier_Max_Gt_1_AttrCount_Lt_Max", 3);
-  attr_supplier = max_gt_1_attr_lt_max_supplier;
+  max_gt_1_attrcount_eq_max_minus_1_supplier =
+      attr_supplier_generator.generate(
+          "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", 3);
+  attr_supplier = max_gt_1_attrcount_eq_max_minus_1_supplier;
   attr_supplier->addAttribute("Attribute 02", "Value 2");
   attr_to_change = attr_supplier->addAttribute("Attribute 03", "Value 3");
   attr_suppliers.push_back(attr_supplier);
 
-  attr_supplier =
-      attr_supplier_generator.generate("Supplier_Max_Gt_1_AttrCount_Eq_Max", 3);
+  max_gt_1_attrcount_eq_max_minus_2_supplier =
+      attr_supplier_generator.generate(
+          "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", 3);
+  attr_supplier = max_gt_1_attrcount_eq_max_minus_2_supplier;
   attr_supplier->addAttribute("Attribute 04", "Value 4");
+  attr_suppliers.push_back(attr_supplier);
+
+  max_gt_1_attr_eq_max_supplier =
+      attr_supplier_generator.generate("Supplier_Max_Gt_1_AttrCount_Eq_Max", 3);
+  attr_supplier = max_gt_1_attr_eq_max_supplier;
   attr_supplier->addAttribute("Attribute 05", "Value 5");
   attr_supplier->addAttribute("Attribute 06", "Value 6");
+  attr_supplier->addAttribute("Attribute 07", "Value 7");
   attr_suppliers.push_back(attr_supplier);
 
   attr_supplier_with_to_be_cleared_attrs =
       attr_supplier_generator.generate("Supplier_With_Duplicated_Named_Attrs",
                                        4);
   attr_supplier = attr_supplier_with_to_be_cleared_attrs;
-  attr_supplier->addAttribute("Attribute 07", "Value 7-1");
+  attr_supplier->addAttribute("Attribute 08", "Value 8-1");
   attr_to_be_clear =
-      attr_supplier->addAttribute("Attribute 08", "Value 8-1-Clear");
-  attr_supplier->addAttribute("Attribute 07", "Value 7-2");
+      attr_supplier->addAttribute("Attribute 09", "Value 9-1-Clear");
   attr_supplier->addAttribute("Attribute 08", "Value 8-2");
+  attr_supplier->addAttribute("Attribute 09", "Value 9-2");
   attr_suppliers.push_back(attr_supplier);
 
   qmodel->setAttributeSuppliers(attr_suppliers);
 }
 
+// attribute supplier rows is never showd in display mode
 std::vector<utils::U8String> expect_on_display_mode[] = {
   { "Attribute 01", "Value 1" },
 
@@ -233,16 +254,19 @@ std::vector<utils::U8String> expect_on_display_mode[] = {
   { "Attribute 03", "Value 3" },
 
   { "Attribute 04", "Value 4" },
+
   { "Attribute 05", "Value 5" },
   { "Attribute 06", "Value 6" },
+  { "Attribute 07", "Value 7" },
 
   // sorted and duplicate attr name is hidded
-  { "Attribute 07", "Value 7-1" },
-  { "",            "Value 7-2" },
-  { "Attribute 08", "Value 8-1-Clear" },
+  { "Attribute 08", "Value 8-1" },
   { "",            "Value 8-2" },
+  { "Attribute 09", "Value 9-1-Clear" },
+  { "",            "Value 9-2" },
 };
 
+// empty attributes is removed whenswitch from edit mode to display mode
 std::vector<utils::U8String>
 expect_on_display_mode_after_switch_from_edit_mode[] = {
   { "Attribute 01", "Value 1" },
@@ -251,15 +275,19 @@ expect_on_display_mode_after_switch_from_edit_mode[] = {
   { "Attribute 03", "Value 3" },
 
   { "Attribute 04", "Value 4" },
+
   { "Attribute 05", "Value 5" },
   { "Attribute 06", "Value 6" },
+  { "Attribute 07", "Value 7" },
 
   // sorted and duplicate attr name is hidded
-  { "Attribute 07", "Value 7-1" },
-  { "",            "Value 7-2" },
-  { "Attribute 08", "Value 8-2" },
+  { "Attribute 08", "Value 8-1" },
+  { "",            "Value 8-2" },
+  { "Attribute 09", "Value 9-2" },
 };
 
+// attribute suppliers whos attr_count < max & max > 1 is showed in edit mode
+// attributes are not sorted by name and name are never hidden
 std::vector<utils::U8String> expect_on_edit_mode[] = {
   { "Supplier_Max_Eq_1_AttrCount_Eq_0", "" },  // 0
 
@@ -270,21 +298,26 @@ std::vector<utils::U8String> expect_on_edit_mode[] = {
   { "Attribute 02", "Value 2" },
   { "Attribute 03", "Value 3" },
 #define ROW_WITH_ATTRIBUTE 4
-#define ROW_WITH_SUPPLIER  5
-  { "Add Supplier_Max_Gt_1_AttrCount_Lt_Max", "" },  // 5
+#define ROW_WITH_SUPPLIER_ATTRCOUNT_EQ_MAX_MINUS_1  5
+  { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", "" },  // 5
 
   { "Attribute 04", "Value 4" },
+#define ROW_WITH_SUPPLIER_ATTRCOUNT_EQ_MAX_MINUS_2  7
+  { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", "" },
+
   { "Attribute 05", "Value 5" },
   { "Attribute 06", "Value 6" },
+  { "Attribute 07", "Value 7" },  // 10
 
-  { "Attribute 07", "Value 7-1" },
-  { "Attribute 08", "Value 8-1-Clear" },  // 10
-  { "Attribute 07", "Value 7-2" },
+  { "Attribute 08", "Value 8-1" },
+  { "Attribute 09", "Value 9-1-Clear" },
   { "Attribute 08", "Value 8-2" },
+  { "Attribute 09", "Value 9-2" },
 };
 
-std::vector<utils::U8String> expect_on_edit_mode_after_click_add[] = {
-  { "Supplier_Max_Eq_1_AttrCount_Eq_0", "" },  // 0
+// after add ,the supplier which becomes full will not show "Add ..." row
+std::vector<utils::U8String> expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_1_supplier[] = { // NOLINT
+  { "Supplier_Max_Eq_1_AttrCount_Eq_0", "" },
 
   { "Attribute 01", "Value 1" },
 
@@ -292,17 +325,45 @@ std::vector<utils::U8String> expect_on_edit_mode_after_click_add[] = {
 
   { "Attribute 02", "Value 2" },
   { "Attribute 03", "Value 3" },
-  { "Supplier_Max_Gt_1_AttrCount_Lt_Max", "" },
-  { "Add Supplier_Max_Gt_1_AttrCount_Lt_Max", "" },  // 5
+  { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", "" },
 
   { "Attribute 04", "Value 4" },
+  { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", "" },
+
   { "Attribute 05", "Value 5" },
   { "Attribute 06", "Value 6" },
+  { "Attribute 07", "Value 7" },
 
-  { "Attribute 07", "Value 7-1" },
-  { "Attribute 08", "Value 8-1-Clear" },  // 10
-  { "Attribute 07", "Value 7-2" },
+  { "Attribute 08", "Value 8-1" },
+  { "Attribute 09", "Value 9-1-Clear" },
   { "Attribute 08", "Value 8-2" },
+  { "Attribute 09", "Value 9-2" },
+};
+
+// after add attr, if the supplier is not full, its "Add ..." row is remained
+std::vector<utils::U8String> expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_2_supplier[] = {
+  { "Supplier_Max_Eq_1_AttrCount_Eq_0", "" },
+
+  { "Attribute 01", "Value 1" },
+
+  { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", ""},
+
+  { "Attribute 02", "Value 2" },
+  { "Attribute 03", "Value 3" },
+  { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", "" },
+
+  { "Attribute 04", "Value 4" },
+  { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", "" },
+  { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", "" },
+
+  { "Attribute 05", "Value 5" },
+  { "Attribute 06", "Value 6" },
+  { "Attribute 07", "Value 7" },  // 10
+
+  { "Attribute 08", "Value 8-1" },
+  { "Attribute 09", "Value 9-1-Clear" },
+  { "Attribute 08", "Value 8-2" },
+  { "Attribute 09", "Value 9-2" },
 };
 
 TEST_F(AttributeCollectionModelTest,
@@ -342,6 +403,14 @@ TEST_F(AttributeCollectionModelTest,
                              utils::sizeof_array(expect_on_display_mode)));
 }
 
+void AttributeCollectionModelTest::assertCellNotSelectable(
+    int row, int column) {
+  auto index = qmodel->index(row, column);
+  auto flags = qmodel->flags(index);
+
+  ASSERT_FALSE(flags & Qt::ItemIsSelectable);
+}
+
 void AttributeCollectionModelTest::assertCellNotEditable(
     int row, int column) {
   auto index = qmodel->index(row, column);
@@ -361,7 +430,10 @@ TEST_F(AttributeCollectionModelTest,
        should_not_editable_in_display_mode) { // NOLINT
   int row_count = qmodel->rowCount();
   for (int row = 0; row < row_count; ++row) {
+    CUSTOM_ASSERT(assertCellNotSelectable(row, 0));
     CUSTOM_ASSERT(assertCellNotEditable(row, 0));
+
+    CUSTOM_ASSERT(assertCellNotSelectable(row, 1));
     CUSTOM_ASSERT(assertCellNotEditable(row, 1));
   }
 }
@@ -416,6 +488,7 @@ TEST_F(AttributeCollectionModelTest,
   // Verify results
   int row_count = qmodel->rowCount();
   for (int row = 0; row < row_count; ++row) {
+    CUSTOM_ASSERT(assertCellNotSelectable(row, 0));
     CUSTOM_ASSERT(assertCellNotEditable(row, 0));
   }
 }
@@ -428,6 +501,7 @@ TEST_F(AttributeCollectionModelTest,
   // Verify results
   int row_count = qmodel->rowCount();
   for (int row = 0; row < row_count; ++row) {
+    CUSTOM_ASSERT(assertCellNotSelectable(row, 1));
     CUSTOM_ASSERT(assertCellEditable(row, 1));
   }
 }
@@ -466,34 +540,9 @@ BIND_SIGNAL1(AttributeAdded, void, int, row);
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-
-TEST_F(AttributeCollectionModelTest,
-       should_add_empty_attribute_when_user_clicked_on_a_supplier_row) { // NOLINT
-  // Setup fixture
-  int row = ROW_WITH_SUPPLIER;
-
-  switchToEditMode();
-
-  QSignalSpy sigspy(qmodel.get(),
-                    SIGNAL(rowsInserted(QModelIndex, int, int)));
-
-  // Expectations
-  EXPECT_CALL(*max_gt_1_attr_lt_max_supplier, addAttributeCalled());
-
-  auto mock_listener = MockListener::attachTo(qmodel.get());
-  EXPECT_CALL(*mock_listener, AttributeAdded(row));
-
-  // Exercise system
-  qmodel->mayAddAttributeIfSupplier(row);
-
-  // Verify result
-  int expect_row_count =
-      utils::sizeof_array(expect_on_edit_mode_after_click_add);
-  CUSTOM_ASSERT(checkRowData(expect_on_edit_mode_after_click_add,
-                             expect_row_count));
-
-  ASSERT_EQ(1, sigspy.count());
-  QList<QVariant> arguments = sigspy.takeFirst();
+void checkRowsInsertRemoveSigspy(QSignalSpy* sigspy, int expect_row) {
+  ASSERT_EQ(1, sigspy->count());
+  QList<QVariant> arguments = sigspy->takeFirst();
   ASSERT_TRUE(arguments.at(0).type() == QVariant::ModelIndex);
   ASSERT_TRUE(arguments.at(1).type() == QVariant::Int);
   ASSERT_TRUE(arguments.at(2).type() == QVariant::Int);
@@ -502,10 +551,80 @@ TEST_F(AttributeCollectionModelTest,
   ASSERT_FALSE(parent.isValid());
 
   int actual_row = qvariant_cast<int>(arguments.at(1));
-  ASSERT_EQ(row, actual_row);
+  ASSERT_EQ(expect_row, actual_row);
 
   actual_row = qvariant_cast<int>(arguments.at(2));
-  ASSERT_EQ(row, actual_row);
+  ASSERT_EQ(expect_row, actual_row);
+}
+
+void AttributeCollectionModelTest::checkClickOnAddAttribute(
+    int row, MockAttrSupplierTestStub* supplier,
+    std::vector<utils::U8String> expect_row_data[],
+    int expect_row_count, bool expect_remove_supplier_row) {
+  // Setup fixture
+  switchToEditMode();
+
+  QSignalSpy rowsAboutToBeInserted_sigspy(
+      qmodel.get(),
+      SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
+  QSignalSpy rowsInserted_sigspy(
+      qmodel.get(),
+      SIGNAL(rowsInserted(const QModelIndex&, int, int)));
+
+  QSignalSpy rowsAboutToBeRemoved_sigspy(
+      qmodel.get(),
+      SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)));
+  QSignalSpy rowsRemoved_sigspy(
+      qmodel.get(),
+      SIGNAL(rowsRemoved(const QModelIndex&, int, int)));
+
+  // Expectations
+  EXPECT_CALL(*supplier, addAttributeCalled());
+
+  auto mock_listener = MockListener::attachTo(qmodel.get());
+  EXPECT_CALL(*mock_listener, AttributeAdded(row));
+
+  // Exercise system
+  qmodel->mayAddAttributeIfSupplier(row);
+
+  // Verify result
+  CUSTOM_ASSERT(checkRowData(expect_row_data, expect_row_count));
+  CUSTOM_ASSERT(checkRowsInsertRemoveSigspy(&rowsAboutToBeInserted_sigspy,
+                                            row));
+  CUSTOM_ASSERT(checkRowsInsertRemoveSigspy(&rowsInserted_sigspy,
+                                            row));
+
+  if (expect_remove_supplier_row) {
+    CUSTOM_ASSERT(checkRowsInsertRemoveSigspy(&rowsAboutToBeRemoved_sigspy,
+                                              row + 1));
+    CUSTOM_ASSERT(checkRowsInsertRemoveSigspy(&rowsRemoved_sigspy,
+                                              row + 1));
+  } else {
+    ASSERT_EQ(0, rowsAboutToBeRemoved_sigspy.count());
+    ASSERT_EQ(0, rowsRemoved_sigspy.count());
+  }
+}
+
+TEST_F(AttributeCollectionModelTest,
+       should_add_empty_attribute_and_remove_supplier_row_when_user_clicked_on_a_supplier_whos_attrcount_eq_max_minus_1) { // NOLINT
+  int expect_row_count =
+      utils::sizeof_array(expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_1_supplier); // NOLINT
+  CUSTOM_ASSERT(checkClickOnAddAttribute(
+      ROW_WITH_SUPPLIER_ATTRCOUNT_EQ_MAX_MINUS_1,
+      max_gt_1_attrcount_eq_max_minus_1_supplier,
+      expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_1_supplier,
+      expect_row_count, true));
+}
+
+TEST_F(AttributeCollectionModelTest,
+       should_add_empty_attribute_but_not_remove_supplier_row_when_user_clicked_on_a_supplier_whos_attrcount_eq_max_minus_2) { // NOLINT
+  int expect_row_count =
+      utils::sizeof_array(expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_2_supplier); // NOLINT
+  CUSTOM_ASSERT(checkClickOnAddAttribute(
+      ROW_WITH_SUPPLIER_ATTRCOUNT_EQ_MAX_MINUS_2,
+      max_gt_1_attrcount_eq_max_minus_2_supplier,
+      expect_on_edit_mode_after_click_add_on_attr_count_eq_max_minus_2_supplier,
+      expect_row_count, false));
 }
 
 TEST_F(AttributeCollectionModelTest,
@@ -519,7 +638,8 @@ TEST_F(AttributeCollectionModelTest,
                     SIGNAL(rowsInserted(QModelIndex, int, int)));
 
   // Expectations
-  EXPECT_CALL(*max_gt_1_attr_lt_max_supplier, addAttributeCalled()).Times(0);
+  EXPECT_CALL(*max_gt_1_attrcount_eq_max_minus_1_supplier,
+              addAttributeCalled()).Times(0);
 
   auto mock_listener = MockListener::attachTo(qmodel.get());
   EXPECT_CALL(*mock_listener, AttributeAdded(row)).Times(0);
@@ -567,4 +687,13 @@ TEST_F(AttributeCollectionModelTest,
       << "expect (" << row_to_change << ", 1) got ("
       << actual_bottomRight_index.row() << ", "
       << actual_bottomRight_index.column() << ")";
+}
+
+TEST_F(AttributeCollectionModelTest,
+       should_be_able_to_got_the_attr_of_a_row) { // NOLINT
+  switchToEditMode();
+
+  ASSERT_EQ(attr_to_change, qmodel->attrOfRow(ROW_WITH_ATTRIBUTE));
+  ASSERT_EQ(nullptr,
+            qmodel->attrOfRow(ROW_WITH_SUPPLIER_ATTRCOUNT_EQ_MAX_MINUS_1));
 }

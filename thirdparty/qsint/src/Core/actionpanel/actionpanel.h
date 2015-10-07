@@ -42,6 +42,10 @@ public:
       */
     void addWidget(QWidget *w);
 
+  /** Insert a widget \a w to the specified location in the ActionPanel's vertical layout
+   */
+  void insertWidget(int index, QWidget *w);
+
     /** Adds a spacer with width \a s to the ActionPanel's vertical layout.
         Normally you should do this after all the ActionGroups were added, in order to
         maintain some space below.

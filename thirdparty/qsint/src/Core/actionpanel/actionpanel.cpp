@@ -57,6 +57,13 @@ void ActionPanel::addWidget(QWidget *w)
     layout()->addWidget(w);
 }
 
+void ActionPanel::insertWidget(int index, QWidget* w) {
+  if (w) {
+    QVBoxLayout* box_layout = static_cast<QVBoxLayout*>(layout());
+    box_layout->insertWidget(index, w);
+  }
+}
+
 void ActionPanel::addStretch(int s)
 {
   ((QVBoxLayout*)layout())->addStretch(s);

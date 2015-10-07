@@ -45,6 +45,11 @@ class GenericAttributeSupplier : public IAttributeSupplier {
   }
 
   IAttribute* addAttribute() override {
+    // TODO(lutts): when add in full state, should we throw expection
+    // currently not, because the UI will ensure this will not happen
+    if (attrs_.size() == static_cast<size_t>(max_attrs_))
+      return nullptr;
+
     auto attr = createAttribute();
     attrs_.push_back(attr);
 

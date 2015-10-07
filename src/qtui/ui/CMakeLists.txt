@@ -19,9 +19,13 @@ SET(qtuiview_SRCS
   work_view.cc
   work_view_factory.cc
   work_name_input_dialog.cc
+  attribute_collection_view.cc
+  attribute_collection_view_factory.cc
+  kbnode_attribute_edit_view.cc
+  kbnode_attribute_edit_view_factory.cc
   )
 
-set(SUBDIRS)
+set(SUBDIRS widgets)
 
 foreach (_subdir ${SUBDIRS})
   include(${_subdir}/Sources.cmake)

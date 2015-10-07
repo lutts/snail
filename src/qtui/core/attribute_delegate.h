@@ -14,6 +14,8 @@
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 
+#include <QDebug>
+
 class AttributeDelegate : public IAttributeDelegate
                         , public QStyledItemDelegate {
  public:
@@ -42,7 +44,7 @@ class AttributeDelegate : public IAttributeDelegate
   void updateEditorGeometry(QWidget *editor,
                             const QStyleOptionViewItem &option,
                             const QModelIndex &index) const override {
-    (void)option;
+    qDebug() << "update editor geometry" << option.rect;
     (void)index;
     editor->setGeometry(option.rect);
   }

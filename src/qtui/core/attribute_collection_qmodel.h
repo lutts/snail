@@ -36,6 +36,7 @@ class AttributeCollectionQModel
   void switchToDisplayMode() override;
   int attrRowCount() const override;
   void mayAddAttributeIfSupplier(int row) override;
+  IAttribute* attrOfRow(int row) const override;
 
   // QAbstractTableModel
   QVariant data(const QModelIndex &index, int role) const override;

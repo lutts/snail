@@ -50,11 +50,6 @@ class GenericAttributeSupplierTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(GenericAttributeSupplierTest, should_construct_properly) { // NOLINT
-  // See SetUp()
-  SUCCEED();
-}
-
 TEST_F(GenericAttributeSupplierTest,
        should_name_be_the_name_passing_to_constructor) { // NOLINT
   ASSERT_EQ(expect_name, supplier->name());
@@ -124,6 +119,26 @@ TEST_F(GenericAttributeSupplierTest,
 
   auto actual_attr_vec = supplier->attributes();
   ASSERT_EQ(expect_attr_vec, actual_attr_vec);
+}
+
+TEST_F(GenericAttributeSupplierTest,
+       should_not_add_attribute_and_not_call_createAttribute_of_sub_class_when_attrcount_eq_max_attrs) { // NOLINT
+  // Setup fixture
+  const int max_attrs = 2;
+  MockGenericAttributeSupplier full_test_supplier{"", max_attrs};
+  for (int i = 0; i < max_attrs; ++i)
+    full_test_supplier.addAttribute();
+
+  ASSERT_EQ(max_attrs, full_test_supplier.attr_count());
+
+  // Expectations
+  EXPECT_CALL(full_test_supplier, createAttribute()).Times(0);
+
+  // Exercise system
+  auto actual_attr = full_test_supplier.addAttribute();
+
+  // Verify results
+  ASSERT_EQ(nullptr, actual_attr);
 }
 
 TEST_F(GenericAttributeSupplierTest,

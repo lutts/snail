@@ -33,7 +33,7 @@ class IAttributeCollectionQModel {
   virtual int attrRowCount() const = 0;
   virtual void mayAddAttributeIfSupplier(int row) = 0;
 
-  virtual IAttribute* attrOfRow(int row) const { (void)row; return nullptr; }
+  virtual IAttribute* attrOfRow(int row) const = 0;
 };
 
 #endif  // INCLUDE_QTUI_I_ATTRIBUTE_COLLECTION_QMODEL_H_

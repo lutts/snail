@@ -25,6 +25,7 @@ class AttributeCollectionQModelImpl {
   void mayAddAttributeIfSupplier(int row);
 
   int rowOfAttr(IAttribute* attr);
+  IAttribute* attrOfRow(int row);
 
  private:
   class AttributeRowData {
@@ -182,21 +183,29 @@ void AttributeCollectionQModelImpl::mayAddAttributeIfSupplier(int row) {
   auto & row_data = attr_row_data_[row];
   auto attr_supplier = row_data.attr_supplier();
   if (attr_supplier) {
-    q_ptr->beginInsertRows(QModelIndex(), row, row);
-
     auto attr = attr_supplier->addAttribute();
+    if (!attr)
+      return;
+
+    q_ptr->beginInsertRows(QModelIndex(), row, row);
 
     QString name = U8StringToQString(attr->displayName());
     QString value = U8StringToQString(attr->valueText());
 
     auto iter = attr_row_data_.begin();
-    for (int i = 0; i < row; ++i) {
-      ++iter;
-    }
+    std::advance(iter, row);
     attr_row_data_.insert(iter, {name, value, attr});
 
     q_ptr->endInsertRows();
     q_ptr->AttributeAdded(row);
+
+    if (attr_supplier->attr_count() == attr_supplier->max_attrs()) {
+      q_ptr->beginRemoveRows(QModelIndex(), row + 1, row + 1);
+      auto iter = attr_row_data_.begin();
+      std::advance(iter, row + 1);
+      attr_row_data_.erase(iter);
+      q_ptr->endRemoveRows();
+    }
   }
 }
 
@@ -211,6 +220,14 @@ int AttributeCollectionQModelImpl::rowOfAttr(IAttribute* attr) {
   }
 
   return -1;
+}
+
+#include <QDebug>
+
+IAttribute* AttributeCollectionQModelImpl::attrOfRow(int row) {
+  auto & row_data = attr_row_data_[row];
+  qDebug() << "attOfRow: row_data" << row_data.columnText(0);
+  return row_data.attr();
 }
 
 AttributeCollectionQModel::AttributeCollectionQModel()
@@ -257,6 +274,10 @@ void AttributeCollectionQModel::mayAddAttributeIfSupplier(int row) {
   pimpl->mayAddAttributeIfSupplier(row);
 }
 
+IAttribute* AttributeCollectionQModel::attrOfRow(int row) const {
+  return pimpl->attrOfRow(row);
+}
+
 
 QVariant AttributeCollectionQModel::data(
     const QModelIndex &index, int role) const {
@@ -279,6 +300,8 @@ Qt::ItemFlags AttributeCollectionQModel::flags(const QModelIndex &index) const {
   if ((index.column() == 1) && (pimpl->edit_mode_)) {
     flags |= Qt::ItemIsEditable;
   }
+
+  flags &= ~Qt::ItemIsSelectable;
 
   return flags;
 }

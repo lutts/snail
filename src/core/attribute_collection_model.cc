@@ -38,7 +38,10 @@ AttributeCollectionModel::getAttributeSuppliers() const {
 std::shared_ptr<IAttributeModel>
 AttributeCollectionModel::createAttributeModel(IAttribute* attr) {
   auto attr_model = attr_model_factory_->createAttributeModel(attr);
-  attr_models_.push_back(attr_model.get());
+  attr_models_.push_back(attr_model);
+
+  // TODO(lutts): do we need to listen to triad manager for the attr_model
+  // destruction? may be to save some memory.
 
   attr_model->whenValidateComplete(
       [this]() {
@@ -51,8 +54,15 @@ AttributeCollectionModel::createAttributeModel(IAttribute* attr) {
 void AttributeCollectionModel::validateComplete() {
   bool valid = true;
 
-  for (auto attr_model : attr_models_) {
-    valid &= attr_model->isValid();
+  auto iter = attr_models_.begin();
+  while (iter != attr_models_.end()) {
+    auto amodel = iter->lock();
+    if (amodel) {
+      valid &= amodel->isValid();
+      ++iter;
+    } else {
+      attr_models_.erase(iter++);
+    }
   }
 
   ValidateComplete(valid);
