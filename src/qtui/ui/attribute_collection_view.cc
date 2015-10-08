@@ -41,6 +41,12 @@ QWidget* AttributeCollectionView::getWidget() {
 void AttributeCollectionView::setQModel(IAttributeCollectionQModel* qmodel) {
   auto model = dynamic_cast<QAbstractItemModel*>(qmodel);
   attr_table_view_->setModel(model);
+
+  int column_count = model->columnCount();
+  for (int col = 0; col < column_count; ++col) {
+    auto header = attr_table_view_->horizontalHeader();
+    header->setSectionResizeMode(col, QHeaderView::Stretch);
+  }
 }
 
 void AttributeCollectionView::setAttributeDelegate(
