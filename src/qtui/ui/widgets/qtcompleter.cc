@@ -28,7 +28,7 @@ std::unique_ptr<T> make_unique(Args&&... args) {
 
 class QCompleterItemDelegate : public QItemDelegate {
  public:
-  explicite QCompleterItemDelegate(QAbstractItemView *view)
+  explicit QCompleterItemDelegate(QAbstractItemView *view)
       : QItemDelegate(view), view(view) { }
   void paint(QPainter *p, const QStyleOptionViewItem& opt,
              const QModelIndex& idx) const {
