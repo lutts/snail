@@ -161,6 +161,8 @@ public slots:
   */
   void setEditButtonText(const QString& text);
 
+  void setEditButtonEnabled(bool enabled);
+
   /** show header text editor
    */
   void openHeaderTextEditor();

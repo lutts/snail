@@ -33,6 +33,5 @@ void AttributeSetView::switchToEditMode() {
 }
 
 void AttributeSetView::setSwitchModelButtonEnabled(bool enabled) {
-  (void)enabled;
-  // TODO(lutts): impl this method
+  action_group_->setEditButtonEnabled(enabled);
 }

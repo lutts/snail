@@ -255,6 +255,11 @@ void ActionGroup::setEditButtonText(const QString& text) {
     myHeader->editButton->setText(text);
 }
 
+void ActionGroup::setEditButtonEnabled(bool enabled) {
+  if (myHeader->editButton)
+    myHeader->editButton->setEnabled(enabled);
+}
+
 void ActionGroup::openHeaderTextEditor() {
   myHeader->openHeaderTextEditor();
 }
