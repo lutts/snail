@@ -11,8 +11,6 @@ SET(qtuicore_SRCS
   candidate_item_qmodel_adapter.cc
   attribute_set_presenter.cc
   attribute_set_layout.cc
-  attribute_collection_presenter.cc
-  attribute_collection_qmodel.cc
   attribute_delegate.cc
   kbnode_attribute_edit_presenter.cc
   kbnode_tree_qmodel.cc

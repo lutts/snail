@@ -36,17 +36,11 @@ add_gmock_unit_test(work_presenter
 add_gmock_unit_test(candidate_item_qmodel_adapter
   LIBS testutils qttestutils)
 
-add_gmock_unit_test(attribute_collection_presenter
-  LIBS testutils)
-
 add_gmock_unit_test(attribute_set_presenter
   LIBS testutils)
 
 add_gmock_unit_test(attribute_set_layout
   LIBS testutils qttestutils Qt5::Widgets QSCore)
-
-add_gmock_unit_test(attribute_collection_qmodel
-  LIBS testutils qttestutils)
 
 add_gmock_unit_test(attribute_delegate
   LIBS Qt5::Widgets testutils)
