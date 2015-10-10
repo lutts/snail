@@ -5,13 +5,13 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include <QApplication>
 #include <QGridLayout>
 #include <QLabel>
 #include <QFrame>
 
 #include "test/testutils/gmock_common.h"
 #include "test/testutils/qt/gui_tester.h"
+#include "test/testutils/qt/gmock_qtapp.h"
 
 #include "src/qtui/core/attribute_set_layout.h"
 #include "test/core/attribute_test_stub.h"
@@ -21,9 +21,6 @@
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
-
-static int dummy_argc { 0 };
-static QApplication app(dummy_argc, nullptr);
 
 class ExpectLayoutData {
  public:

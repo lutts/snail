@@ -75,7 +75,7 @@ function(add_qg_test testname)
 endfunction(add_qg_test)
 
 function(add_gmock_test target)
-  set(options DONOT_AUTORUN)
+  set(options DONOT_AUTORUN NO_GMOCK_MAIN)
   set(multiValueArgs LIBS)
   cmake_parse_arguments(QGTEST "${options}" "" "${multiValueArgs}" ${ARGN})
 
@@ -89,7 +89,11 @@ function(add_gmock_test target)
   endif()
 
   add_executable(${target} ${QGTEST_SRCS})
-  target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_BOTH_LIBRARIES} pthread)
+  if (NOT ${QGTEST_NO_GMOCK_MAIN})
+    target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_BOTH_LIBRARIES} pthread)
+  else(NOT ${QGTEST_NO_GMOCK_MAIN})
+    target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_LIBRARIES} pthread)
+  endif(NOT ${QGTEST_NO_GMOCK_MAIN})
 
   # message("${CMAKE_MEMORYCHECK_COMMAND}")
   # message("${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
