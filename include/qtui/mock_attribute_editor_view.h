@@ -12,6 +12,7 @@
 
 class MockAttributeEditorView : public IAttributeEditorView {
  public:
+  MOCK_METHOD0(getWidget, QWidget*());
 };
 
 #endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_EDITOR_VIEW_H_

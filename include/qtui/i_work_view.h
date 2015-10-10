@@ -12,7 +12,7 @@
 #include "utils/signal_slot.h"
 
 class QString;
-class IAttributeCollectionView;
+class IAttributeSetView;
 
 class IWorkView : public GenericViewBase {
  public:
@@ -23,8 +23,8 @@ class IWorkView : public GenericViewBase {
   virtual void setWorkName(const QString& work_name) = 0;
 
   // sub views
-  virtual void setWorkAttrCollectionView(
-      IAttributeCollectionView* attr_collection_view) = 0;
+  virtual void setWorkAttrSetView(
+      IAttributeSetView* attr_set_view) = 0;
 };
 
 

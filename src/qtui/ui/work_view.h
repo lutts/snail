@@ -29,8 +29,8 @@ class WorkView : public QWidget, public IWorkView {
 
   void setWorkName(const QString& work_name) override;
 
-  void setWorkAttrCollectionView(
-      IAttributeCollectionView* attr_collection_view) override;
+  void setWorkAttrSetView(
+      IAttributeSetView* attr_set_view) override;
 
  private slots:
   void toggleNameDescEditMode();

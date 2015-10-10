@@ -4,6 +4,7 @@ set(core_SRCS ${core_SRCS}
   work.cc
   work_model.cc
   attribute_collection_model.cc
+  attribute_set_model.cc
   kbnode_attribute_model.cc
   kbnode_provider_model.cc
   kbnode_provider.cc

@@ -27,6 +27,9 @@ add_gmock_unit_test(candidate_item_any_data
 add_gmock_unit_test(attribute_collection_model
   LIBS testutils)
 
+add_gmock_unit_test(attribute_set_model
+  LIBS testutils)
+
 add_gmock_unit_test(generic_attribute_supplier
   LIBS testutils)
 

@@ -23,18 +23,18 @@
   virtual void when##sigName(                                           \
       sigName##SlotType handler,                                        \
       std::shared_ptr<utils::ITrackable> trackObject = nullptr) = 0;    \
-  virtual void cleanup##sigName() = 0
+  virtual void cleanup##sigName##Slots() = 0
 
 #define SNAIL_MOCK_SLOT(sigName)                                        \
   MOCK_METHOD2(when##sigName,                                           \
                void(sigName##SlotType, std::shared_ptr<utils::ITrackable>)); \
-  MOCK_METHOD0(cleanup##sigName, void());
+  MOCK_METHOD0(cleanup##sigName##Slots, void());
 
 #define SNAIL_OVERRIDE_SLOT(sigName)                                  \
   void when##sigName(                                                 \
       sigName##SlotType handler,                                      \
       std::shared_ptr<utils::ITrackable> trackObject) override;       \
-  void cleanup##sigName() override;
+  void cleanup##sigName##Slots() override;
 
 // as its name suggests, this macro is used For Test Only, this macro has
 // a default implementation for the whenXXX connection point, so you do not
@@ -49,7 +49,7 @@
     (void)handler;                                                      \
     (void)trackObject;                                                  \
   }                                                                     \
-  virtual void cleanup##sigName() { }                                   \
+  virtual void cleanup##sigName##Slots() { }                            \
 
 namespace utils {
 

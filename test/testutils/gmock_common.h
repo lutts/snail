@@ -37,6 +37,17 @@ using namespace testing::internal;  // NOLINT
 
 using CheckPointType = MockFunction<void(std::string check_point_name)>;
 
+// gmock will generate default return value for simple data types, such as int,
+// or pointer, ComplexReturnValue is used when StrictMock is inappropriate and
+// you want ensure the method is not called unless you set an expection on it
+class ComplexReturnValue {
+ public:
+  explicit ComplexReturnValue(int dummy)
+      : dummy_{dummy} { }
+ private:
+  int dummy_;
+};
+
 class MockObjectRecorder {
  public:
   MockObjectRecorder() = default;

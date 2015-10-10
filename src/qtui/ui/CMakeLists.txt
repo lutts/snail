@@ -21,6 +21,8 @@ SET(qtuiview_SRCS
   work_name_input_dialog.cc
   attribute_collection_view.cc
   attribute_collection_view_factory.cc
+  attribute_set_view.cc
+  attribute_set_view_factory.cc
   kbnode_attribute_edit_view.cc
   kbnode_attribute_edit_view_factory.cc
   )

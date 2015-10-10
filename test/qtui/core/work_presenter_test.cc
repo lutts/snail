@@ -16,8 +16,8 @@
 #include "qtui/mock_work_view.h"
 #include "src/qtui/core/work_presenter.h"
 
-#include "snail/mock_attribute_collection_model.h"
-#include "qtui/mock_attribute_collection_view.h"
+#include "snail/mock_attribute_set_model.h"
+#include "qtui/mock_attribute_set_view.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -48,8 +48,8 @@ class WorkPresenterTest : public ::testing::Test {
 #endif
 
 
-    // create attribute collection view
-    createAttributeCollectionView(&mock_obj_recorder);
+    // create attribute set view
+    createAttributeSetView(&mock_obj_recorder);
 
     R_EXPECT_CALL(*view, whenUserSetWorkName(_, _))
         .WillOnce(SaveArg<0>(&userSetWorkName));
@@ -63,7 +63,7 @@ class WorkPresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  void createAttributeCollectionView(MockObjectRecorder* mock_recorder);
+  void createAttributeSetView(MockObjectRecorder* mock_recorder);
 
   // region: objects test subject depends on
   std::shared_ptr<MockWorkModel> model;
@@ -83,20 +83,20 @@ class WorkPresenterTest : public ::testing::Test {
   // endregion
 };
 
-void WorkPresenterTest::createAttributeCollectionView(
+void WorkPresenterTest::createAttributeSetView(
     MockObjectRecorder* mock_recorder) {
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
-  auto attr_collection_model =
-      std::make_shared<MockAttributeCollectionModel>();
-  auto attr_collection_view = std::make_shared<MockAttributeCollectionView>();
+  auto attr_set_model =
+      std::make_shared<MockAttributeSetModel>();
+  auto attr_set_view = std::make_shared<MockAttributeSetView>();
 
-  R_EXPECT_CALL(*model, createAttributeCollectionModel())
-      .WillOnce(Return(attr_collection_model));
-  std::shared_ptr<IPfModel> attr_collection_pmodel = attr_collection_model;
-  R_EXPECT_CALL(triad_manager, createViewFor(attr_collection_pmodel, _, _, _))
-      .WillOnce(Return(attr_collection_view));
-  R_EXPECT_CALL(*view, setWorkAttrCollectionView(attr_collection_view.get()));
+  R_EXPECT_CALL(*model, createAttributeSetModel())
+      .WillOnce(Return(attr_set_model));
+  std::shared_ptr<IPfModel> attr_set_pmodel = attr_set_model;
+  R_EXPECT_CALL(triad_manager, createViewFor(attr_set_pmodel, _, _, _))
+      .WillOnce(Return(attr_set_view));
+  R_EXPECT_CALL(*view, setWorkAttrSetView(attr_set_view.get()));
 }
 
 TEST_F(WorkPresenterTest,

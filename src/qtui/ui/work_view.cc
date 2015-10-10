@@ -14,7 +14,7 @@
 #include <QDebug>
 
 #include "qsint/include/QSint"
-#include "src/qtui/ui/attribute_collection_view.h"
+#include "src/qtui/ui/attribute_set_view.h"
 
 WorkView::WorkView() {
   auto verticalLayout = new QVBoxLayout(this);
@@ -78,7 +78,7 @@ void WorkView::setWorkName(const QString& work_name) {
   name_desc_group_->setHeaderText(work_name);
 }
 
-void WorkView::setWorkAttrCollectionView(
-    IAttributeCollectionView* attr_collection_view) {
-  action_panel_->insertWidget(1, attr_collection_view->getWidget());
+void WorkView::setWorkAttrSetView(
+    IAttributeSetView* attr_set_view) {
+  action_panel_->insertWidget(1, attr_set_view->getWidget());
 }

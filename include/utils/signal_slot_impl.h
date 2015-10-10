@@ -23,7 +23,7 @@
         else                                                            \
           sigName.connect(subscriber);                                  \
   }                                                                     \
-  void cleanup##sigName() {                                             \
+  void cleanup##sigName##Slots() {                                      \
     sigName.num_slots();                                                \
   }
 
@@ -49,7 +49,7 @@
         else                                                            \
           sigName.connect(subscriber);                                  \
   }                                                                     \
-  void cleanup##sigName() {                                             \
+  void cleanup##sigName##Slots() {                                      \
     sigName.num_slots();                                                \
   }
 
@@ -75,7 +75,7 @@
         else                                                            \
           sigName.connect(subscriber);                                  \
   }                                                                     \
-  void cleanup##sigName() {                                             \
+  void cleanup##sigName##Slots() {                                      \
     sigName.num_slots();                                                \
   }
 
@@ -106,7 +106,7 @@
         else                                                            \
           sigName.connect(subscriber);                                  \
   }                                                                     \
-  void cleanup##sigName() {                                             \
+  void cleanup##sigName##Slots() {                                      \
     sigName.num_slots();                                                \
   }
 
@@ -127,11 +127,11 @@
 #define SNAIL_SIGSLOT_PIMPL_RELAY(PrimaryType, sigName, pimpl)          \
   void PrimaryType::when##sigName(                                      \
       sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) {             \
+      std::shared_ptr<utils::ITrackable> trackObject) {                 \
     pimpl->when##sigName(handler, trackObject);                         \
   }                                                                     \
-  void PrimaryType::cleanup##sigName() {                                \
-    pimpl->cleanup##sigName();                                          \
+  void PrimaryType::cleanup##sigName##Slots() {                         \
+    pimpl->cleanup##sigName##Slots();                                   \
   }
 
 #endif  // INCLUDE_UTILS_SIGNAL_SLOT_IMPL_H_

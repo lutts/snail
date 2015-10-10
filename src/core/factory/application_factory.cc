@@ -16,14 +16,14 @@
 #include "src/core/kbnode_manager.h"
 #include "src/core/kbnode_provider.h"
 #include "src/core/kbnode_provider_model.h"
-#include "src/core/attribute_collection_model.h"
+#include "src/core/attribute_set_model.h"
 #include "src/core/work_model.h"
 
 // factories
 #include "core/i_kbnode_provider_factory.h"
 #include "core/i_kbnode_provider_model_factory.h"
 #include "src/core/factory/attribute_model_factory.h"
-#include "core/i_attribute_collection_model_factory.h"
+#include "core/i_attribute_set_model_factory.h"
 #include "core/i_work_model_factory.h"
 #include "src/core/factory/work_factory.h"
 
@@ -31,7 +31,7 @@ namespace snailcore {
 
 class ApplicationFactoryImpl : public IKbNodeProviderFactory
                              , public IKbNodeProviderModelFactory
-                             , public IAttributeCollectionModelFactory
+                             , public IAttributeSetModelFactory
                              , public IWorkModelFactory {
  public:
   ApplicationFactoryImpl()
@@ -56,11 +56,11 @@ class ApplicationFactoryImpl : public IKbNodeProviderFactory
     return std::make_shared<KbNodeProviderModel>(provider);
   }
 
-  // IAttributeCollectionModelFactory
-  std::shared_ptr<IAttributeCollectionModel>
-  createAttributeCollectionModel(
+  // IAttributeSetModelFactory
+  std::shared_ptr<IAttributeSetModel>
+  createAttributeSetModel(
       const std::vector<IAttributeSupplier*>& attr_suppliers) override {
-    return std::make_shared<AttributeCollectionModel>(
+    return std::make_shared<AttributeSetModel>(
         attr_suppliers, attr_model_factory_.get());
   }
 

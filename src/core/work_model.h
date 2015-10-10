@@ -16,14 +16,14 @@
 
 namespace snailcore {
 
-class IAttributeCollectionModelFactory;
+class IAttributeSetModelFactory;
 
 class WorkModel : public IWorkModel
                 , public utils::ITrackable
                 , public std::enable_shared_from_this<WorkModel> {
  public:
   WorkModel(
-      IAttributeCollectionModelFactory* attr_collection_model_factory);
+      IAttributeSetModelFactory* attr_set_model_factory);
   virtual ~WorkModel();
 
   void set_work(IWork* work) override;
@@ -31,15 +31,15 @@ class WorkModel : public IWorkModel
   utils::U8String name() const override;
   bool set_name(const utils::U8String& new_name) override;
 
-  std::shared_ptr<IAttributeCollectionModel>
-  createAttributeCollectionModel() override;
+  std::shared_ptr<IAttributeSetModel>
+  createAttributeSetModel() override;
 
  private:
   WorkModel(const WorkModel& other) = delete;
   WorkModel& operator=(const WorkModel& other) = delete;
 
   IWork* work_ { nullptr };
-  IAttributeCollectionModelFactory* attr_collection_model_factory_;
+  IAttributeSetModelFactory* attr_set_model_factory_;
 
  private:
   SNAIL_SIGSLOT_IMPL(NameChanged);
