@@ -362,18 +362,6 @@ void AttributeSetLayoutImpl::postRelayout(bool to_edit_mode) {
 }
 
 void AttributeSetLayoutImpl::cleanupDeprecatedLayoutItems(int to_edit_mode) {
-  qDebug() << "===============to_edit_mode = " << to_edit_mode << "========================";
-  for (auto & widget : deprecated_widgets_) {
-    QLabel* label = qobject_cast<QLabel*>(widget);
-    if (label) {
-      qDebug() << "remove QLabel: " << label->text();
-    } else {
-      auto alabel = qobject_cast<QSint::ActionLabel*>(widget);
-      qDebug() << "remove ActionLabel:  " << alabel->text();
-    }
-  }
-  qDebug() << "==========================================";
-
   for (auto & widget : deprecated_widgets_) {
     layout_->removeWidget(widget);
     widget->deleteLater();
