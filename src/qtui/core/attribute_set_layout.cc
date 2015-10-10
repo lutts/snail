@@ -392,6 +392,8 @@ QLabel* AttributeSetLayoutImpl::addLabel(
     const utils::U8String& text, int row, int column) {
   auto qtext = U8StringToQString(text);
   auto label = new QLabel(qtext);
+  label->setTextInteractionFlags(
+      Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
   layout_->addWidget(label, row, column);
   curr_widgets_.push_front(label);
 
