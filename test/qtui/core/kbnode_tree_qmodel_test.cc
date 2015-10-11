@@ -42,172 +42,195 @@ class ExpectRowData {
   std::vector<ExpectRowData>* subnodes;
 };
 
-std::vector<ExpectRowData> level3_row_data = {
-  {
-    .text = "Level3 Node1",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  }
-};
-
-std::vector<ExpectRowData> level2_row_data = {
-  {
-    .text = "Level2 Node1",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  },
-  {
-    .text = "Level2 Node2",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = false,
-    .isVisible = true,
-    .subnodes = &level3_row_data,
-  },
-  {
-    .text = "Level2 Node3",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  }
-};
+std::vector<ExpectRowData> level3_row_data;
+std::vector<ExpectRowData> level2_row_data;
+std::vector<ExpectRowData> level1_row_data;
+std::vector<ExpectRowData> provider_row_data;
+ExpectRowData root_row_data;
+std::vector<ExpectRowData> level1_row_data_after_reset;
+std::vector<ExpectRowData> provider_row_data_after_reset;
+ExpectRowData root_row_data_after_reset;
 
 constexpr static int kEmptySpecialRow = 0;
 constexpr static int kAddMoreSpecialRow = 3;
-std::vector<ExpectRowData> level1_row_data = {
-  {  // level1
-    .text = "(clear)",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr
-  },
-  {
-    .text = "Level1 Node1",
+#define PROVIDER_NAME "Provider Name"
+
+void setupExpectRowDatas() {
+  level3_row_data = {
+    {
+      .text = "Level3 Node1",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    }
+  };
+
+  level2_row_data = {
+    {
+      .text = "Level2 Node1",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    },
+    {
+      .text = "Level2 Node2",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = false,
+      .isVisible = true,
+      .subnodes = &level3_row_data,
+    },
+    {
+      .text = "Level2 Node3",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    }
+  };
+
+  level1_row_data = {
+    {  // level1
+      .text = "(clear)",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr
+    },
+    {
+      .text = "Level1 Node1",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = false,
+      .isVisible = true,
+      .subnodes = &level2_row_data,
+    },
+    {
+      .text = "Level1 Node2",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    },
+    {
+      .text = "Add More...",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = true,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    }
+  };
+
+  provider_row_data = {
+    {
+      .text = PROVIDER_NAME,
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = &level1_row_data,
+    }
+  };
+
+  root_row_data = {
+    .text = "root idx",
     .node_ptr = nullptr,
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = false,
-    .isVisible = true,
-    .subnodes = &level2_row_data,
-  },
-  {
-    .text = "Level1 Node2",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  },
-  {
-    .text = "Add More...",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = true,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  }
-};
-
-#define PROVIDER_NAME "Provider Name"
-std::vector<ExpectRowData> provider_row_data = {
-  {
-    .text = PROVIDER_NAME,
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
     .isVisible = true,
     .subnodes = &level1_row_data,
-  }
-};
+  };
 
-ExpectRowData root_row_data = {
-  .text = "root idx",
-  .node_ptr = nullptr,
-  .parent_node_ptr = nullptr,
-  .isAddMore = false,
-  .isSelectable = false,
-  .isVisible = true,
-  .subnodes = &level1_row_data,
-};
+  level1_row_data_after_reset = {
+    {  // level1
+      .text = "(clear)",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr
+    },
+    {
+      .text = "Level1 Node1 After Reset",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = false,
+      .isVisible = true,
+      .subnodes = nullptr,
+    },
+    {
+      .text = "Level1 Node2 After Reset",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    },
+    {
+      .text = "Add More...",
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = true,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = nullptr,
+    }
+  };
 
-std::vector<ExpectRowData> level1_row_data_after_reset = {
-  {  // level1
-    .text = "(clear)",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr
-  },
-  {
-    .text = "Level1 Node1 After Reset",
+  provider_row_data_after_reset = {
+    {
+      .text = PROVIDER_NAME,
+      .node_ptr = nullptr,
+      .parent_node_ptr = nullptr,
+      .isAddMore = false,
+      .isSelectable = true,
+      .isVisible = true,
+      .subnodes = &level1_row_data_after_reset,
+    }
+  };
+
+  root_row_data_after_reset = {
+    .text = "root idx",
     .node_ptr = nullptr,
     .parent_node_ptr = nullptr,
     .isAddMore = false,
     .isSelectable = false,
     .isVisible = true,
-    .subnodes = nullptr,
-  },
-  {
-    .text = "Level1 Node2 After Reset",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  },
-  {
-    .text = "Add More...",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = true,
-    .isSelectable = true,
-    .isVisible = true,
-    .subnodes = nullptr,
-  }
-};
-
-std::vector<ExpectRowData> provider_row_data_after_reset = {
-  {
-    .text = PROVIDER_NAME,
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
-    .isAddMore = false,
-    .isSelectable = true,
-    .isVisible = true,
     .subnodes = &level1_row_data_after_reset,
-  }
-};
+  };
+}
 
-ExpectRowData root_row_data_after_reset = {
-  .text = "root idx",
-  .node_ptr = nullptr,
-  .parent_node_ptr = nullptr,
-  .isAddMore = false,
-  .isSelectable = false,
-  .isVisible = true,
-  .subnodes = &level1_row_data_after_reset,
-};
+void cleanupExpectRowDatas() {
+  level3_row_data.clear();
+  level2_row_data.clear();
+  level1_row_data.clear();
+  provider_row_data.clear();
+  root_row_data = ExpectRowData();
+  level1_row_data_after_reset.clear();
+  provider_row_data_after_reset.clear();
+  root_row_data_after_reset = ExpectRowData();
+}
 
 class KbNodeProviderTestStub : public IKbNodeProvider {
  public:
@@ -253,10 +276,8 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
     int max_idx_ { -1 };
   };
 
-  KbNodeProviderTestStub() {
-    fillRowData(&root_row_data);
-  }
-  virtual ~KbNodeProviderTestStub() = default;
+  KbNodeProviderTestStub() { }
+  virtual ~KbNodeProviderTestStub() { }
 
   utils::U8String name() const {
     return PROVIDER_NAME;
@@ -365,11 +386,17 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~KbNodeTreeQModelTestBase() { }
-  virtual void SetUp() {
+  void SetUp() override {
     qmodel = createQModel();
+
+    setupExpectRowDatas();
+    kbnode_provider.fillRowData(&root_row_data);
+
     qmodel->setKbNodeProvider(&kbnode_provider);
   }
-  // virtual void TearDown() { }
+  void TearDown() override{
+    cleanupExpectRowDatas();
+  }
 
   virtual std::unique_ptr<KbNodeTreeQModelBase> createQModel() = 0;
 
@@ -392,6 +419,8 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
   // region: objects test subject depends on
   KbNodeProviderTestStub kbnode_provider;
   QModelIndexGenerator index_generator;
+
+  bool always_selectable { false };
   // endregion
 
   // region: test subject
@@ -451,6 +480,7 @@ void KbNodeTreeQModelTestBase::checkRowData(
       continue;
 
     QModelIndex index = qmodel->index(row, 0, parent_index);
+    ASSERT_EQ(row, index.row());
     checkIndexData(index, rdata);
     ++row;
 
@@ -479,8 +509,8 @@ std::ostream &operator<<(std::ostream &os, const QModelIndex& index) {
   return os;
 }
 
-void KbNodeTreeQModelTestBase::checkIndexData(const QModelIndex& index,
-                                          const ExpectRowData& expect_data) {
+void KbNodeTreeQModelTestBase::checkIndexData(
+    const QModelIndex& index, const ExpectRowData& expect_data) {
   auto q_display_text = index.data(Qt::DisplayRole).toString();
   auto actual_display_text = QStringToU8String(q_display_text);
   ASSERT_EQ(expect_data.text, actual_display_text)
@@ -515,8 +545,12 @@ void KbNodeTreeQModelTestBase::checkIndexData(const QModelIndex& index,
       << "index: " << index << " isAddMore not match"
       << " (text: " << expect_data.text << ")";
 
+  bool expect_selectable = expect_data.isSelectable;
+  if (always_selectable)
+    expect_selectable = true;
+
   auto actual_selectable = qmodel->flags(index) & Qt::ItemIsSelectable;
-  ASSERT_EQ(expect_data.isSelectable, actual_selectable)
+  ASSERT_EQ(expect_selectable, actual_selectable)
       << "index: " << index << " isSelectable not match"
       << " (text: " << expect_data.text << ")";
 
@@ -552,7 +586,6 @@ void KbNodeTreeQModelTestBase::should_endResetQModel_emit_modelReset() {
   // Verify results
   ASSERT_EQ(1, sigspy.count());
 
-  std::cout << "check after reset" << std::endl;
   kbnode_provider.fillRowData(&root_row_data_after_reset);
   CUSTOM_ASSERT(checkRowData(true));
 }
@@ -690,7 +723,7 @@ void KbNodeTreeQModelTestBase::test_dynamically_add_kbnode_in_level1() {
 
 class KbNodeTreeQModelTest : public KbNodeTreeQModelTestBase {
  protected:
-  virtual void SetUp() {
+  void SetUp() override {
     KbNodeTreeQModelTestBase::SetUp();
 
     // default special visibilities
@@ -777,6 +810,8 @@ class KbNodeTreeQModelWithProviderNodeTest : public KbNodeTreeQModelTestBase {
  protected:
   void SetUp() override {
     KbNodeTreeQModelTestBase::SetUp();
+
+    always_selectable = true;
 
     // default special visibilities
     expectEmptyRowVisible(false);

@@ -73,6 +73,8 @@ class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBase {
   ~KbNodeTreeQModelWithProviderNode();
   void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
 
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
+
  private:
   void clear() override;
   QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;

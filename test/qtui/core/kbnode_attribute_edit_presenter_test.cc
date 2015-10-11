@@ -5,6 +5,8 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+#include <functional>
+
 #include "test/testutils/gmock_common.h"
 #include "pfmvp/mock_pf_triad_manager.h"
 #include "test/testutils/qmodelindex_generator.h"
@@ -92,7 +94,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  void expectationOnAddKbNode();
+  std::function<void()> expectationOnAddKbNode();
   void shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
 
   // region: objects test subject depends on
@@ -142,19 +144,33 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   // endregion
 };
 
-void KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
+std::function<void()> KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
   auto kbnode_provider_model = std::make_shared<MockKbNodeProviderModel>();
   std::shared_ptr<IPfModel> kbnode_provider_pfmodel = kbnode_provider_model;
   auto add_kbnode_dialog_view = std::make_shared<MockKbNodeProviderView>();
 
-  EXPECT_CALL(*model, createKbNodeProviderModel())
-      .WillOnce(Return(kbnode_provider_model));
-  EXPECT_CALL(triad_manager, createViewFor(kbnode_provider_pfmodel, _, _, _))
-      .WillOnce(Return(add_kbnode_dialog_view));
-  EXPECT_CALL(*add_kbnode_dialog_view, showView(true));
+  {
+    InSequence seq;
 
-  EXPECT_CALL(*kbnode_provider_model, whenKbNodeAdded(_, _))
-      .WillOnce(SaveArg<0>(&kbNodeAdded));
+    EXPECT_CALL(*model, createKbNodeProviderModel())
+        .WillOnce(Return(kbnode_provider_model));
+    EXPECT_CALL(*kbnode_provider_model, whenKbNodeAdded(_, _))
+        .WillOnce(SaveArg<0>(&kbNodeAdded));
+
+    // the following three are showDialog expectations
+    EXPECT_CALL(triad_manager, createViewFor(kbnode_provider_pfmodel, _, _, _))
+        .WillOnce(Return(add_kbnode_dialog_view));
+    EXPECT_CALL(*add_kbnode_dialog_view, showView(true));
+    EXPECT_CALL(triad_manager, removeTriadBy(kbnode_provider_model.get()));
+  }
+
+  // Workaround for gmock InSequence hold shared_ptr problem
+  auto raw_kbnode_provider_model = kbnode_provider_model.get();
+  auto raw_add_kbnode_dialog_view = add_kbnode_dialog_view.get();
+  return [raw_kbnode_provider_model, raw_add_kbnode_dialog_view]() {
+    Mock::VerifyAndClearExpectations(raw_kbnode_provider_model);
+    Mock::VerifyAndClearExpectations(raw_add_kbnode_dialog_view);
+  };
 }
 
 void KbNodeAttributeEditPresenterTest::shouldNotifyKbNodeTreeQModelWhenKbNodeAdded() { // NOLINT
@@ -177,12 +193,13 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   EXPECT_CALL(*kbnode_qmodel, isAddKbNode(index))
       .WillOnce(Return(true));
 
-  expectationOnAddKbNode();
+  auto verifier = expectationOnAddKbNode();
 
   // Exercise system
   userClickedIndex(index);
 
   // Verify result
+  verifier();
   shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
 }
 
@@ -291,11 +308,12 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 TEST_F(KbNodeAttributeEditPresenterTest,
        should_call_addKbNode_in_provider_and_notify_qmodel_when_UserClickAddKbNode) { // NOLINT
   // Expectations
-  expectationOnAddKbNode();
+  auto verifier = expectationOnAddKbNode();
 
   // Exercise system
   userClickAddKbNode();
 
   // Verify result
+  verifier();
   shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
 }

@@ -87,7 +87,11 @@ class TriadManagerHelper {
                                               default_auto_remove_child,
                                               args);
     if (view) {
-      return view->showView(modal);
+      auto result = view->showView(modal);
+      if (modal) {
+        removeTriadBy(model.get());
+      }
+      return result;
     }
 
     return false;

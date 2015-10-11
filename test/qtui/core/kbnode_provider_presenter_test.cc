@@ -51,9 +51,17 @@ class KbNodeProviderPresenterTestBase : public TestBase {
       {
         InSequence seq;
         xtestutils::RandomString filter_pattern;
+        bool init_validate_result = xtestutils::randomBool();
+
+        // use filter pattern as the default new kbnode name
         R_EXPECT_CALL(*model, getFilterPattern())
             .WillOnce(Return(filter_pattern.ustr()));
+        R_EXPECT_CALL(*model, setNewKbNodeName(filter_pattern.ustr()));
+
         R_EXPECT_CALL(*view, setNewKbNodeName(filter_pattern.qstr()));
+        R_EXPECT_CALL(*model, isNewKbNodeNameValid())
+            .WillOnce(Return(init_validate_result));
+        R_EXPECT_CALL(*view, setNameValidateResult(init_validate_result));
 
         // then clear filter pattern (aka. exit filter mode)
         R_EXPECT_CALL(*model, setFilterPattern(""));
@@ -84,9 +92,6 @@ class KbNodeProviderPresenterTestBase : public TestBase {
 
     R_EXPECT_CALL(*view, whenUserClickAddButton(_, _))
         .WillOnce(SaveArg<0>(&userClickAddButton));
-
-    R_EXPECT_CALL(*view, whenUserReject(_, _))
-        .WillOnce(SaveArg<0>(&userReject));
 
     // Excercise system
     presenter = std::make_shared<KbNodeProviderPresenter>(
@@ -123,10 +128,6 @@ class KbNodeProviderPresenterTestBase : public TestBase {
   using UserClickAddButtonSlotType =
       IKbNodeProviderView::UserClickAddButtonSlotType;
   SlotCatcher<UserClickAddButtonSlotType> userClickAddButton;
-
-  using UserRejectSlotType =
-      IKbNodeProviderView::UserRejectSlotType;
-  SlotCatcher<UserRejectSlotType> userReject;
 
   using UserToggleCategoryCheckboxSlotType =
       IKbNodeProviderView::UserToggleCategoryCheckboxSlotType;
@@ -197,13 +198,4 @@ TEST_F(KbNodeProviderPresenterTest,
 
   // Exercise system
   userClickAddButton();
-}
-
-TEST_F(KbNodeProviderPresenterTest,
-       should_destroy_self_triad_when_user_reject_the_dialog) { // NOLINT
-  // Expectations
-  EXPECT_CALL(triad_manager, removeTriadBy(model.get()));
-
-  // Exercise system
-  userReject();
 }

@@ -22,7 +22,12 @@ KbNodeProviderPresenter::KbNodeProviderPresenter(
 KbNodeProviderPresenter::~KbNodeProviderPresenter() = default;
 
 void KbNodeProviderPresenter::initialize() {
-  view()->setNewKbNodeName(U8StringToQString(model()->getFilterPattern()));
+  auto default_new_kbnode_name = model()->getFilterPattern();
+  model()->setNewKbNodeName(default_new_kbnode_name);
+
+  view()->setNewKbNodeName(U8StringToQString(default_new_kbnode_name));
+  view()->setNameValidateResult(model()->isNewKbNodeNameValid());
+
   model()->setFilterPattern("");
 
   kbnode_qmodel_->setKbNodeProvider(model()->getKbNodeProvider());
@@ -55,12 +60,6 @@ void KbNodeProviderPresenter::initialize() {
   view()->whenUserClickAddButton(
       [this]() {
         model()->addKbNode();
-      },
-      shared_from_this());
-
-  view()->whenUserReject(
-      [this]() {
-        removeTriadBy(model());
       },
       shared_from_this());
 }

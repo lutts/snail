@@ -7,7 +7,7 @@
 #include "src/qtui/core/kbnode_tree_qmodel.h"
 
 #include <QObject>
-#include <QDebug>
+// #include <QDebug>
 
 #include <vector>
 
@@ -55,9 +55,6 @@ class KbNodeItem : QObject {
   }
 
   int row() const {
-    if (cached_row_ >= 0)
-      return cached_row_;
-
     if (!parent_)
       return -1;
 
@@ -69,7 +66,6 @@ class KbNodeItem : QObject {
       ++index;
     }
 
-    cached_row_ = index;
     return index;
   }
 
@@ -130,9 +126,13 @@ class KbNodeItem : QObject {
     return new_item_ptr;
   }
 
+  void markAsPopulated() {
+    child_populated_ = true;
+  }
+
   void clear() {
     children_.clear();
-    cached_row_ = -1;
+    child_populated_ = false;
   }
 
  protected:
@@ -141,18 +141,6 @@ class KbNodeItem : QObject {
   }
 
   virtual void populate_children() {
-#if 0
-    if (isRoot()) {
-      qDebug() << "populate root idx";
-    } else {
-      if (kbnode_) {
-        qDebug() << "populate kbnode: " << U8StringToQString(kbnode_->name());
-      } else {
-        qDebug() << "populate kbnode: " << text_;
-      }
-    }
-#endif
-
     auto child_node_iterator = kbnode_provider_->childNodes(kbnode_);
     if (child_node_iterator) {
       while (child_node_iterator->hasNext()) {
@@ -166,18 +154,33 @@ class KbNodeItem : QObject {
   SNAIL_DISABLE_COPY(KbNodeItem);
 
   void lazy_populate_children() const {
-    if (children_.size() > 0)
+    if (child_populated_)
       return;
+
+#if 0
+    qDebug() << "children_.size() == " << children_.size() << " before populate";
+    if (isRoot()) {
+      qDebug() << "populate root idx";
+    } else {
+      if (kbnode_) {
+        qDebug() << "populate kbnode: " << U8StringToQString(kbnode_->name());
+      } else {
+        qDebug() << "populate kbnode: " << text_;
+      }
+    }
+#endif
 
     auto that = const_cast<KbNodeItem*>(this);
     that->populate_children();
+
+    child_populated_ = true;
   }
 
   IKbNodeProvider* kbnode_provider_ { nullptr };
   IKbNode* kbnode_ { nullptr };
   KbNodeItem* parent_ { nullptr };
   QString text_;
-  mutable int cached_row_ { -1 };
+  mutable bool child_populated_ { false };
 
   mutable std::vector<std::unique_ptr<KbNodeItem> > children_;
 };
@@ -356,15 +359,14 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
 
   int next_append_pos() override {
     int pos = children().size();
-    qDebug() << "children size: " << pos << ", isRoot: " << isRoot();
     if (pos == 0)
       return pos;
 
-
     auto & last = children().back();
     auto item = static_cast<KbNodeItemWithEmptyAddMore*>(last.get());
-    if (item->is_add_more_)
+    if (item->is_add_more_) {
       --pos;
+    }
 
     return pos;
   }
@@ -436,6 +438,12 @@ KbNodeTreeQModelWithProviderNode::KbNodeTreeQModelWithProviderNode()
 
 KbNodeTreeQModelWithProviderNode::~KbNodeTreeQModelWithProviderNode() = default;
 
+Qt::ItemFlags KbNodeTreeQModelWithProviderNode::flags(
+    const QModelIndex &index) const {
+  auto flags = KbNodeTreeQModelBase::flags(index);
+  return flags | Qt::ItemIsSelectable;
+}
+
 void KbNodeTreeQModelWithProviderNode::clear() {
   if (provider_item_)
     provider_item_->clear();
@@ -443,8 +451,10 @@ void KbNodeTreeQModelWithProviderNode::clear() {
 
 void KbNodeTreeQModelWithProviderNode::setKbNodeProvider(
     IKbNodeProvider* kbnode_provider) {
-  if (!provider_item_)
+  if (!provider_item_) {
     provider_item_ = rootItem()->appendKbNode(nullptr);
+    rootItem()->markAsPopulated();
+  }
 
   if (!provider_item_)
     return;

@@ -18,7 +18,6 @@ class MockKbNodeProviderView : public IKbNodeProviderView {
   SNAIL_MOCK_SLOT(NewKbNodeNameChanged);
   SNAIL_MOCK_SLOT(UserToggleCategoryCheckbox);
   SNAIL_MOCK_SLOT(UserClickAddButton);
-  SNAIL_MOCK_SLOT(UserReject);
 
   MOCK_METHOD1(setNewKbNodeName, void(const QString& name));
   MOCK_METHOD1(setKbNodeTreeQModel, void(IKbNodeTreeQModel* tree_model));

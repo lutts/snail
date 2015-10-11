@@ -63,13 +63,14 @@ void KbNodeAttributeEditPresenter::initialize() {
 
 void KbNodeAttributeEditPresenter::addKbNode() {
   auto provider_model = model()->createKbNodeProviderModel();
-  showDialog(provider_model);
 
   provider_model->whenKbNodeAdded(
       [this](IKbNode* new_kbnode, IKbNode* parent_kbnode) {
         kbnode_qmodel_->kbNodeAdded(new_kbnode, parent_kbnode);
       },
       shared_from_this());
+
+  showDialog(provider_model);
 }
 
 void KbNodeAttributeEditPresenter::on_UserClickedIndex(

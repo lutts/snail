@@ -23,7 +23,6 @@ class IKbNodeProviderView : public GenericViewBase {
   SNAIL_SIGSLOT2(NewKbNodeNameChanged, void(const QString& name));
   SNAIL_SIGSLOT2(UserToggleCategoryCheckbox, void(bool checked));
   SNAIL_SIGSLOT2(UserClickAddButton, void());
-  SNAIL_SIGSLOT2(UserReject, void());
 
   virtual void setNewKbNodeName(const QString& name) = 0;
   virtual void setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) = 0;
