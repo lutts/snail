@@ -35,6 +35,8 @@ class AttributeSetLayoutImpl : QObject {
 
   AttributeSetLayoutImpl()
       : layout_(new QGridLayout()) {
+    layout_->setHorizontalSpacing(8);
+
     connect(layout_, &QObject::destroyed,
             [this]() {
               layout_ = nullptr;
@@ -69,7 +71,8 @@ class AttributeSetLayoutImpl : QObject {
   void cleanupDeprecatedLayoutItems(int to_edit_mode);
 
  private:
-  QLabel* addLabel(const utils::U8String& text, int row, int column);
+  QLabel* addLabel(const QString& text, int row, int column);
+  QLabel* addNameLabel(const utils::U8String& text, int row);
 
   QGridLayout* layout_;
   QTimer deprecated_layout_item_cleanup_timer_;
@@ -265,7 +268,7 @@ void AttributeSetLayoutImpl::addAttribute(
 }
 
 void AttributeSetLayoutImpl::addAttrRow_editMode(int row, IAttribute* attr) {
-  auto label = addLabel(attr->displayName(), row, kNameColumn);
+  auto label = addNameLabel(attr->displayName(), row);
   attr_to_label_map_[attr] = label;
 
   auto ov = q_ptr->CreateAttrEditor(attr);
@@ -344,8 +347,8 @@ void AttributeSetLayoutImpl::doDisplayModeLayout(
         last_name = name;
       }
 
-      addLabel(name, row, kNameColumn);
-      addLabel(attr->valueText(), row, kValueColumn);
+      addNameLabel(name, row);
+      addLabel(U8StringToQString(attr->valueText()), row, kValueColumn);
       ++row;
     }
   }
@@ -389,15 +392,22 @@ void AttributeSetLayoutImpl::setAttributeSuppliers(
 }
 
 QLabel* AttributeSetLayoutImpl::addLabel(
-    const utils::U8String& text, int row, int column) {
-  auto qtext = U8StringToQString(text);
-  auto label = new QLabel(qtext);
+    const QString& text, int row, int column) {
+  auto label = new QLabel(text);
   label->setTextInteractionFlags(
       Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
   layout_->addWidget(label, row, column);
   curr_widgets_.push_front(label);
 
   return label;
+}
+
+QLabel* AttributeSetLayoutImpl::addNameLabel(
+    const utils::U8String& text, int row) {
+  QString colon_text = U8StringToQString(text);
+  if (!colon_text.isEmpty())
+    colon_text += QStringLiteral(":");
+  return addLabel(colon_text, row, kNameColumn);
 }
 
 AttributeSetLayout::AttributeSetLayout()

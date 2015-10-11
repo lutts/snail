@@ -157,32 +157,32 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     // nothing
 
     // Supplier_Max_Eq_1_AttrCount_Eq_1
-    { "Attribute 01", "Value 1", attr01},
+    { "Attribute 01:", "Value 1", attr01},
 
     // Supplier_Max_Gt_1_AttrCount_Eq_0
     // nothing
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1
-    { "Attribute 02", "Value 2", attr02},
-    { "Attribute 03", "Value 3", attr03},
+    { "Attribute 02:", "Value 2", attr02},
+    { "Attribute 03:", "Value 3", attr03},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2
-    { "Attribute 04", "Value 4", attr04},
+    { "Attribute 04:", "Value 4", attr04},
 
     // Supplier_Max_Gt_1_AttrCount_Eq_Max
-    { "Attribute 05", "Value 5", attr05},
-    { "Attribute 06", "Value 6", attr06},
-    { "Attribute 07", "Value 7", attr07},
+    { "Attribute 05:", "Value 5", attr05},
+    { "Attribute 06:", "Value 6", attr06},
+    { "Attribute 07:", "Value 7", attr07},
 
     // Supplier_With_Duplicated_Named_Attrs
     // sorted and duplicate attr name is hidded
-    { "Attribute 07", "Value 7-1", attr07_1},
+    { "Attribute 07:", "Value 7-1", attr07_1},
     { "",             "Value 7-2", attr07_2},
-    { "Attribute 08", "Value 8-1", attr08_1},
+    { "Attribute 08:", "Value 8-1", attr08_1},
     { "",             "Value 8-2", attr08_2},
 
     // Supplier_With_Attr_Name_Same_As_Previous_Supplier
-    { "Attribute 08", "Value 8-3", attr08_3},
+    { "Attribute 08:", "Value 8-3", attr08_3},
   };
 
   // 1. attribute suppliers whos attr_count < max & max > 1 is showed in edit mode
@@ -192,34 +192,34 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     // nothing
 
     // Supplier_Max_Eq_1_AttrCount_Eq_1
-    { "Attribute 01", "Value 1", attr01},  // 0
+    { "Attribute 01:", "Value 1", attr01},  // 0
 
     // Supplier_Max_Gt_1_AttrCount_Eq_0
     { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", ""},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1
-    { "Attribute 02", "Value 2", attr02},
-    { "Attribute 03", "Value 3", attr03},
+    { "Attribute 02:", "Value 2", attr02},
+    { "Attribute 03:", "Value 3", attr03},
     { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", ""},  // 4
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2
-    { "Attribute 04", "Value 4", attr04},
+    { "Attribute 04:", "Value 4", attr04},
     { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", ""},  // 6
 
     // Supplier_Max_Gt_1_AttrCount_Eq_Max
-    { "Attribute 05", "Value 5", attr05},
-    { "Attribute 06", "Value 6", attr06},
-    { "Attribute 07", "Value 7", attr07},
+    { "Attribute 05:", "Value 5", attr05},
+    { "Attribute 06:", "Value 6", attr06},
+    { "Attribute 07:", "Value 7", attr07},
 
     // Supplier_With_Duplicated_Named_Attrs
     // not sort, not hidden
-    { "Attribute 07", "Value 7-1", attr07_1},
-    { "Attribute 08", "Value 8-1", attr08_1},
-    { "Attribute 07", "Value 7-2", attr07_2},
-    { "Attribute 08", "Value 8-2", attr08_2},
+    { "Attribute 07:", "Value 7-1", attr07_1},
+    { "Attribute 08:", "Value 8-1", attr08_1},
+    { "Attribute 07:", "Value 7-2", attr07_2},
+    { "Attribute 08:", "Value 8-2", attr08_2},
 
     // Supplier_With_Attr_Name_Same_As_Previous_Supplier
-    { "Attribute 08", "Value 8-3", attr08_3},
+    { "Attribute 08:", "Value 8-3", attr08_3},
   };
 
   add_Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1_row = 4;
@@ -231,36 +231,36 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     // nothing
 
     // Supplier_Max_Eq_1_AttrCount_Eq_1
-    { "Attribute 01", "Value 1", attr01},  // 0
+    { "Attribute 01:", "Value 1", attr01},  // 0
 
     // Supplier_Max_Gt_1_AttrCount_Eq_0
     { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", "",},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1
-    { "Attribute 02", "Value 2", attr02},
-    { "Attribute 03", "Value 3", attr03},
+    { "Attribute 02:", "Value 2", attr02},
+    { "Attribute 03:", "Value 3", attr03},
     // an empty attribute is added with the name same as the supplier
-    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", ""},  // 4
+    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1:", ""},  // 4
     // and the "Add ..." row is gone
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2
-    { "Attribute 04", "Value 4", attr04},
+    { "Attribute 04:", "Value 4", attr04},
     { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", ""},
 
     // Supplier_Max_Gt_1_AttrCount_Eq_Max
-    { "Attribute 05", "Value 5", attr05},
-    { "Attribute 06", "Value 6", attr06},
-    { "Attribute 07", "Value 7", attr07},
+    { "Attribute 05:", "Value 5", attr05},
+    { "Attribute 06:", "Value 6", attr06},
+    { "Attribute 07:", "Value 7", attr07},
 
     // Supplier_With_Duplicated_Named_Attrs
     // not sort, not hidden
-    { "Attribute 07", "Value 7-1", attr07_1},
-    { "Attribute 08", "Value 8-1", attr08_1},
-    { "Attribute 07", "Value 7-2", attr07_2},
-    { "Attribute 08", "Value 8-2", attr08_2},
+    { "Attribute 07:", "Value 7-1", attr07_1},
+    { "Attribute 08:", "Value 8-1", attr08_1},
+    { "Attribute 07:", "Value 7-2", attr07_2},
+    { "Attribute 08:", "Value 8-2", attr08_2},
 
     // Supplier_With_Attr_Name_Same_As_Previous_Supplier
-    { "Attribute 08", "Value 8-3", attr08_3},
+    { "Attribute 08:", "Value 8-3", attr08_3},
   };
 
   // after add attr, if the supplier is not full, its "Add ..." row is remained
@@ -269,37 +269,37 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     // nothing
 
     // Supplier_Max_Eq_1_AttrCount_Eq_1
-    { "Attribute 01", "Value 1", attr01},
+    { "Attribute 01:", "Value 1", attr01},
 
     // Supplier_Max_Gt_1_AttrCount_Eq_0
     { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", ""},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1
-    { "Attribute 02", "Value 2", attr02},
-    { "Attribute 03", "Value 3", attr03},
+    { "Attribute 02:", "Value 2", attr02},
+    { "Attribute 03:", "Value 3", attr03},
     { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", ""},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2
-    { "Attribute 04", "Value 4", attr04},
+    { "Attribute 04:", "Value 4", attr04},
     // an empty attribute is added with the name same as the supplier
-    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", ""},
+    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2:", ""},
     // and the "Add..." row is remained
     { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", ""},
 
     // Supplier_Max_Gt_1_AttrCount_Eq_Max
-    { "Attribute 05", "Value 5", attr05},
-    { "Attribute 06", "Value 6", attr06},
-    { "Attribute 07", "Value 7", attr07},
+    { "Attribute 05:", "Value 5", attr05},
+    { "Attribute 06:", "Value 6", attr06},
+    { "Attribute 07:", "Value 7", attr07},
 
     // Supplier_With_Duplicated_Named_Attrs
     // not sort, not hidden
-    { "Attribute 07", "Value 7-1", attr07_1},
-    { "Attribute 08", "Value 8-1", attr08_1},
-    { "Attribute 07", "Value 7-2", attr07_2},
-    { "Attribute 08", "Value 8-2", attr08_2},
+    { "Attribute 07:", "Value 7-1", attr07_1},
+    { "Attribute 08:", "Value 8-1", attr08_1},
+    { "Attribute 07:", "Value 7-2", attr07_2},
+    { "Attribute 08:", "Value 8-2", attr08_2},
 
     // Supplier_With_Attr_Name_Same_As_Previous_Supplier
-    { "Attribute 08", "Value 8-3", attr08_3},
+    { "Attribute 08:", "Value 8-3", attr08_3},
   };
 
   expect_on_edit_mode_after_another_click_add_on_attr_count_eq_max_minus_2_supplier = { // NOLINT
@@ -307,37 +307,37 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     // nothing
 
     // Supplier_Max_Eq_1_AttrCount_Eq_1
-    { "Attribute 01", "Value 1", attr01},
+    { "Attribute 01:", "Value 1", attr01},
 
     // Supplier_Max_Gt_1_AttrCount_Eq_0
     { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", ""},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1
-    { "Attribute 02", "Value 2", attr02},
-    { "Attribute 03", "Value 3", attr03},
+    { "Attribute 02:", "Value 2", attr02},
+    { "Attribute 03:", "Value 3", attr03},
     { "Add Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1", ""},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2
-    { "Attribute 04", "Value 4", attr04},
-    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", ""},
+    { "Attribute 04:", "Value 4", attr04},
+    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2:", ""},
     // another empty attribute is added with the name same as the supplier
-    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2", ""},
+    { "Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_2:", ""},
     // and the "Add..." row is gone
 
     // Supplier_Max_Gt_1_AttrCount_Eq_Max
-    { "Attribute 05", "Value 5", attr05},
-    { "Attribute 06", "Value 6", attr06},
-    { "Attribute 07", "Value 7", attr07},
+    { "Attribute 05:", "Value 5", attr05},
+    { "Attribute 06:", "Value 6", attr06},
+    { "Attribute 07:", "Value 7", attr07},
 
     // Supplier_With_Duplicated_Named_Attrs
     // not sort, not hidden
-    { "Attribute 07", "Value 7-1", attr07_1},
-    { "Attribute 08", "Value 8-1", attr08_1},
-    { "Attribute 07", "Value 7-2", attr07_2},
-    { "Attribute 08", "Value 8-2", attr08_2},
+    { "Attribute 07:", "Value 7-1", attr07_1},
+    { "Attribute 08:", "Value 8-1", attr08_1},
+    { "Attribute 07:", "Value 7-2", attr07_2},
+    { "Attribute 08:", "Value 8-2", attr08_2},
 
     // Supplier_With_Attr_Name_Same_As_Previous_Supplier
-    { "Attribute 08", "Value 8-3", attr08_3},
+    { "Attribute 08:", "Value 8-3", attr08_3},
   };
 }
 
