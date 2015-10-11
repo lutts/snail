@@ -11,7 +11,7 @@
 #include <QHeaderView>
 #include <QLabel>
 
-#include "src/qtui/ui/widgets/qtlineedit.h"
+#include "src/qtui/ui/widgets/filterwidget.h"
 #include "src/qtui/ui/widgets/qtcompleter.h"
 #include "qtui/i_kbnode_tree_qmodel.h"
 
@@ -20,12 +20,12 @@ KbNodeAttributeEditView::KbNodeAttributeEditView() {
   vbox_layout->setMargin(0);
   vbox_layout->setSpacing(0);
 
-  line_edit_ = new QtLineEdit(this);
-  auto completer = new QtCompleter(line_edit_);
-  auto drop_down_tree_view = new QTreeView(line_edit_);
+  filter_widget_ = new FilterWidget(this);
+  auto completer = new QtCompleter(filter_widget_);
+  auto drop_down_tree_view = new QTreeView(filter_widget_);
   drop_down_tree_view->header()->hide();
   completer->setPopup(drop_down_tree_view);
-  line_edit_->setQtCompleter(completer);
+  filter_widget_->setQtCompleter(completer);
 
   QObject::connect(completer, &QtCompleter::clicked,
                    [this](const QModelIndex& index) {
@@ -37,12 +37,12 @@ KbNodeAttributeEditView::KbNodeAttributeEditView() {
                      FilterPatternChanged(filter_pattern);
                    });
 
-  QObject::connect(line_edit_, &QLineEdit::editingFinished,
+  QObject::connect(filter_widget_, &QLineEdit::editingFinished,
                    [this]() {
-                     EditingFinished(line_edit_->text());
+                     EditingFinished(filter_widget_->text());
                    });
 
-  vbox_layout->addWidget(line_edit_);
+  vbox_layout->addWidget(filter_widget_);
 
   err_msg_label_ = new QLabel(this);
   err_msg_label_->hide();
@@ -61,13 +61,13 @@ KbNodeAttributeEditView::KbNodeAttributeEditView() {
 KbNodeAttributeEditView::~KbNodeAttributeEditView() = default;
 
 void KbNodeAttributeEditView::setKbNodeName(const QString& kbnode_name) {
-  line_edit_->setText(kbnode_name);
+  filter_widget_->setText(kbnode_name);
 }
 
 void KbNodeAttributeEditView::setKbNodeTreeQModel(
     IKbNodeTreeQModel* kbnode_tree_qmodel) {
   auto model = dynamic_cast<QAbstractItemModel*>(kbnode_tree_qmodel);
-  auto completer = line_edit_->qtcompleter();
+  auto completer = filter_widget_->qtcompleter();
   completer->setModel(model);
 }
 

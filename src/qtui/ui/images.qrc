@@ -3,5 +3,6 @@
         <file>images/filesave.png</file>
         <file>images/redo.png</file>
         <file>images/undo.png</file>
+        <file>images/find.png</file>
     </qresource>
 </RCC>

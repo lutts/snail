@@ -1,4 +1,4 @@
 set(widgets_SRCS
-  qtlineedit.cc
+  filterwidget.cc
   qtcompleter.cc
 )

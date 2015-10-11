@@ -15,7 +15,7 @@
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 
-class QtLineEdit;
+class FilterWidget;
 class QLabel;
 
 class KbNodeAttributeEditView : public IKbNodeAttributeEditView
@@ -40,7 +40,7 @@ class KbNodeAttributeEditView : public IKbNodeAttributeEditView
   SNAIL_SIGSLOT_IMPL(EditingFinished);
   SNAIL_SIGSLOT_IMPL(UserClickAddKbNode);
 
-  QtLineEdit* line_edit_;
+  FilterWidget* filter_widget_;
   QLabel* err_msg_label_;
 };
 
