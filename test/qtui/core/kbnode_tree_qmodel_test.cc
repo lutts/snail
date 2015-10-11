@@ -242,8 +242,6 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
       auto kbnode = (*row_data_->subnodes)[cur_idx_].node_ptr;
       ++cur_idx_;
 
-      std::cout << "populate one..." << kbnode->name() << std::endl;
-
       return kbnode;
     }
 
@@ -638,6 +636,12 @@ void KbNodeTreeQModelTestBase::test_dynamically_add_kbnode_in_level1() {
     .subnodes = nullptr,
   };
 
+  int expect_insert_row = 0;
+  for (auto & row_data : level1_row_data) {
+    if (row_data.isVisible && !row_data.isAddMore)
+      ++expect_insert_row;
+  }
+
   auto insert_pos = level1_row_data.end();
   --insert_pos;  // before add more row
 
@@ -666,8 +670,8 @@ void KbNodeTreeQModelTestBase::test_dynamically_add_kbnode_in_level1() {
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
-  ASSERT_EQ(2, insert_row_first);
-  ASSERT_EQ(2, insert_row_last);
+  ASSERT_EQ(expect_insert_row, insert_row_first);
+  ASSERT_EQ(expect_insert_row, insert_row_last);
 
   // Teardown fixture
   auto new_kbnode_ptr = &new_kbnode;
@@ -690,7 +694,7 @@ class KbNodeTreeQModelTest : public KbNodeTreeQModelTestBase {
     KbNodeTreeQModelTestBase::SetUp();
 
     // default special visibilities
-    expectEmptyRowVisible(false);
+    expectEmptyRowVisible(true);
     expectAddMoreRowVisible(true);
   }
 
@@ -703,7 +707,6 @@ TEST_F(KbNodeTreeQModelTest,
        check_non_filter_mode_row_data) { // NOLINT
   // Setup fixture
   bool filter_mode = false;
-  expectEmptyRowVisible(true);
 
   EXPECT_CALL(kbnode_provider, isFilterMode())
       .WillRepeatedly(Return(filter_mode));

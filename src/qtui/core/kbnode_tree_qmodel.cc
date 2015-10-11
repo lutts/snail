@@ -344,8 +344,10 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
 
   int next_append_pos() override {
     int pos = children().size();
+    qDebug() << "children size: " << pos << ", isRoot: " << isRoot();
     if (pos == 0)
       return pos;
+
 
     auto & last = children().back();
     auto item = static_cast<KbNodeItemWithEmptyAddMore*>(last.get());
@@ -362,7 +364,7 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
     if (is_empty_row_)
       return;
 
-    if (isRoot() && !kbNodeProvider()->isFilterMode()) {
+    if (isRoot()) {
       auto empty_item = createItem_(nullptr);
       empty_item->is_empty_row_ = true;
 
