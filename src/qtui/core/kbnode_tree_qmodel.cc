@@ -258,6 +258,10 @@ QVariant KbNodeTreeQModelBase::data(const QModelIndex &index, int role) const {
   if (!item || item->isRoot())
     return QVariant();
 
+  return itemData(item, role);
+}
+
+QVariant KbNodeTreeQModelBase::itemData(KbNodeItem* item, int role) const {
   switch (role) {
     case Qt::DisplayRole:
       return item->text();
@@ -342,6 +346,10 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
     return is_add_more_;
   }
 
+  bool isSpecial() const {
+    return is_add_more_ || is_empty_row_;
+  }
+
   int next_append_pos() override {
     int pos = children().size();
     qDebug() << "children size: " << pos << ", isRoot: " << isRoot();
@@ -397,6 +405,15 @@ KbNodeTreeQModel::KbNodeTreeQModel()
     : KbNodeTreeQModelBase() { }
 
 KbNodeTreeQModel::~KbNodeTreeQModel() = default;
+
+QVariant KbNodeTreeQModel::itemData(KbNodeItem* item, int role) const {
+  auto our_item = static_cast<KbNodeItemWithEmptyAddMore*>(item);
+  if (our_item->isSpecial() && role == Qt::TextAlignmentRole) {
+    return static_cast<int>(Qt::AlignCenter | Qt::AlignVCenter);
+  }
+
+  return KbNodeTreeQModelBase::itemData(item, role);
+}
 
 std::unique_ptr<KbNodeItem> KbNodeTreeQModel::createRootItem() const {
   return utils::make_unique<KbNodeItemWithEmptyAddMore>();

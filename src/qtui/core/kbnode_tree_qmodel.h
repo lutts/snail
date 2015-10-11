@@ -44,6 +44,8 @@ class KbNodeTreeQModelBase : public QAbstractItemModel
   QModelIndex itemToIndex(KbNodeItem* item) const;
   KbNodeItem* indexToItem(const QModelIndex& index) const;
 
+  virtual QVariant itemData(KbNodeItem* item, int role) const;
+
   virtual void clear();
   virtual std::unique_ptr<KbNodeItem> createRootItem() const;
 
@@ -57,6 +59,8 @@ class KbNodeTreeQModel : public KbNodeTreeQModelBase {
  public:
   KbNodeTreeQModel();
   ~KbNodeTreeQModel();
+
+  QVariant itemData(KbNodeItem* item, int role) const override;
 
  private:
   bool isAddKbNode(const QModelIndex& index) const override;
