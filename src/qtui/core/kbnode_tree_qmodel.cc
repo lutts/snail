@@ -6,7 +6,7 @@
 // [Desc]
 #include "src/qtui/core/kbnode_tree_qmodel.h"
 
-#include <QApplication>
+#include <QObject>
 #include <QDebug>
 
 #include <vector>
@@ -15,7 +15,9 @@
 #include "snail/i_kbnode_provider.h"
 #include "snail/i_kbnode.h"
 
-class KbNodeItem {
+class KbNodeItem : QObject {
+  Q_OBJECT
+
  public:
   KbNodeItem() = default;
   KbNodeItem(IKbNodeProvider* kbnode_provider,
@@ -179,6 +181,8 @@ class KbNodeItem {
 
   mutable std::vector<std::unique_ptr<KbNodeItem> > children_;
 };
+
+#include "kbnode_tree_qmodel.moc"
 
 ////////////////////////////////////////////////////////////////
 
@@ -375,6 +379,7 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
     if (isRoot()) {
       auto empty_item = createItem_(nullptr);
       empty_item->is_empty_row_ = true;
+      empty_item->setText(tr("(clear)"));
 
       children().push_back(std::move(empty_item));
     }
@@ -385,7 +390,7 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
     if (isRoot()) {
       auto add_more_item = createItem_(nullptr);
       add_more_item->is_add_more_ = true;
-      add_more_item->setText(qApp->translate(0, "Add More..."));
+      add_more_item->setText(tr("Add More..."));
 
       children().push_back(std::move(add_more_item));
     }

@@ -88,7 +88,7 @@ constexpr static int kEmptySpecialRow = 0;
 constexpr static int kAddMoreSpecialRow = 3;
 std::vector<ExpectRowData> level1_row_data = {
   {  // level1
-    .text = "",
+    .text = "(clear)",
     .node_ptr = nullptr,
     .parent_node_ptr = nullptr,
     .isAddMore = false,
@@ -150,7 +150,7 @@ ExpectRowData root_row_data = {
 
 std::vector<ExpectRowData> level1_row_data_after_reset = {
   {  // level1
-    .text = "",
+    .text = "(clear)",
     .node_ptr = nullptr,
     .parent_node_ptr = nullptr,
     .isAddMore = false,
@@ -301,7 +301,7 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
   void fillNodePtrInRowData(std::vector<ExpectRowData>* row_datas,
                             IKbNode* parent_node = nullptr) {
     for (auto & row_data : *row_datas) {
-      if (row_data.text == "")
+      if (row_data.text == "(clear)")
         continue;
 
       if (row_data.isAddMore)
