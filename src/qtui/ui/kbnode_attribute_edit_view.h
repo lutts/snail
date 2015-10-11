@@ -28,8 +28,9 @@ class KbNodeAttributeEditView : public IKbNodeAttributeEditView
 
   void setKbNodeName(const QString& kbnode_name) override;
   void setKbNodeTreeQModel(IKbNodeTreeQModel* kbnode_tree_qmodel) override;
-  void warnMultipleMatch() override;
-  void warnNotFound() override;
+  void warnMultipleMatch(const QString& provider_name) override;
+  void warnNotFound(const QString& provider_name) override;
+  void clearWarningMessages() override;
 
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeEditView);

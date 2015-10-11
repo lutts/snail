@@ -20,8 +20,9 @@ class MockKbNodeAttributeEditView : public IKbNodeAttributeEditView {
   MOCK_METHOD1(setKbNodeName, void(const QString& kbnode_name));
   MOCK_METHOD1(setKbNodeTreeQModel,
                void(IKbNodeTreeQModel* kbnode_tree_qmodel));
-  MOCK_METHOD0(warnMultipleMatch, void());
-  MOCK_METHOD0(warnNotFound, void());
+  MOCK_METHOD1(warnMultipleMatch, void(const QString& provider_name));
+  MOCK_METHOD1(warnNotFound, void(const QString& provider_name));
+  MOCK_METHOD0(clearWarningMessages, void());
 };
 
 #endif  // INCLUDE_QTUI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_

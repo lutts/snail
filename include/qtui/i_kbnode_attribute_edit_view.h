@@ -25,8 +25,9 @@ class IKbNodeAttributeEditView : public IAttributeEditorView {
 
   virtual void setKbNodeName(const QString& kbnode_name) = 0;
   virtual void setKbNodeTreeQModel(IKbNodeTreeQModel* kbnode_tree_qmodel) = 0;
-  virtual void warnMultipleMatch() = 0;
-  virtual void warnNotFound() = 0;
+  virtual void warnMultipleMatch(const QString& provider_name) = 0;
+  virtual void warnNotFound(const QString& provider_name) = 0;
+  virtual void clearWarningMessages() = 0;
 };
 
 

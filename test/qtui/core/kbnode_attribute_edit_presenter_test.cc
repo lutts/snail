@@ -87,6 +87,8 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
     EXPECT_CALL(*model, getKbNodeProvider())
         .WillRepeatedly(Return(&kbnode_provider));
+    EXPECT_CALL(kbnode_provider, name())
+        .WillRepeatedly(Return(provider_name.ustr()));
   }
   // virtual void TearDown() { }
 
@@ -97,6 +99,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   std::shared_ptr<MockKbNodeAttributeModel> model;
   std::shared_ptr<MockKbNodeAttributeEditView> view;
 
+  xtestutils::RandomString provider_name;
   MockKbNodeProvider kbnode_provider;
   MockKbNodeTreeQModel* kbnode_qmodel;
 
@@ -203,6 +206,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
     EXPECT_CALL(*model, setKbNode(kbnode));
     EXPECT_CALL(*view, setKbNodeName(kbnode_name.qstr()));
+    EXPECT_CALL(*view, clearWarningMessages());
   }
 
   // Exercise system
@@ -216,6 +220,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
   // Expectations
   EXPECT_CALL(kbnode_provider, setFilterPattern(pattern.ustr()));
+  EXPECT_CALL(*view, clearWarningMessages());
 
   // Exercise system
   filterPatternChanged(pattern.qstr());
@@ -247,7 +252,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   // Expectations
   EXPECT_CALL(*model, setKbNodeByName(text.ustr()))
       .WillOnce(Return(IKbNodeAttributeModel::kSetKbNodeMultpicMatched));
-  EXPECT_CALL(*view, warnMultipleMatch());
+  EXPECT_CALL(*view, warnMultipleMatch(provider_name.qstr()));
 
   // Exercise system
   editingFinished(text.qstr());
@@ -261,7 +266,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   // Expectations
   EXPECT_CALL(*model, setKbNodeByName(text.ustr()))
       .WillOnce(Return(IKbNodeAttributeModel::kSetKbNodeNotFound));
-  EXPECT_CALL(*view, warnNotFound());
+  EXPECT_CALL(*view, warnNotFound(provider_name.qstr()));
 
   // Exercise system
   editingFinished(text.qstr());
@@ -277,7 +282,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
       .WillOnce(Return(IKbNodeAttributeModel::kSetKbNodeSuccess));
   // TODO(lutts): if find by the text got only one entry, do we need to
   // automatically select this only one entry?
-  EXPECT_CALL(*view, warnMultipleMatch()).Times(0);
+  EXPECT_CALL(*view, clearWarningMessages());
 
   // Exercise system
   editingFinished(text.qstr());

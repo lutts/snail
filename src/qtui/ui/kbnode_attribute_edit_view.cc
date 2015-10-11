@@ -71,13 +71,18 @@ void KbNodeAttributeEditView::setKbNodeTreeQModel(
   completer->setModel(model);
 }
 
-void KbNodeAttributeEditView::warnMultipleMatch() {
-  // TODO(lutts): write a good description
-  err_msg_label_->setText(tr("Multiple XXX matched the entered value"));
+void KbNodeAttributeEditView::warnMultipleMatch(const QString& provider_name) {
+  (void)provider_name;
+  err_msg_label_->setText(
+      tr("Entered value matched multiple candidate, \nplease select one from the drop down list.")); // NOLINT;
   err_msg_label_->show();
 }
 
-void KbNodeAttributeEditView::warnNotFound() {
-  err_msg_label_->setText(tr("<html><head/><body><p><a href=\"#add_kbnode\"><span style=\" text-decoration: underline; color:#0000ff;\">Add XXX</span></a></p></body></html>")); // NOLINT
+void KbNodeAttributeEditView::warnNotFound(const QString& provider_name) {
+  err_msg_label_->setText(tr("<html><head/><body><p>Entered value not found, you can <a href=\"#add_kbnode\"><span style=\" text-decoration: underline; color:#0000ff;\">add new %1 value</span></a></p></body></html>").arg(provider_name)); // NOLINT
   err_msg_label_->show();
+}
+
+void KbNodeAttributeEditView::clearWarningMessages() {
+  err_msg_label_->hide();
 }

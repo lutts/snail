@@ -31,6 +31,7 @@ void KbNodeAttributeEditPresenter::initialize() {
       [this](const QString& pattern) {
         auto kbnode_provider = model()->getKbNodeProvider();
         kbnode_provider->setFilterPattern(QStringToU8String(pattern));
+        view()->clearWarningMessages();
       },
       shared_from_this());
 
@@ -79,19 +80,23 @@ void KbNodeAttributeEditPresenter::on_UserClickedIndex(
     auto kbnode = kbnode_qmodel_->indexToKbNode(index);
     model()->setKbNode(kbnode);
     view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
+    view()->clearWarningMessages();
   }
 }
 
 void KbNodeAttributeEditPresenter::on_editingFinished(const QString &text) {
   int ret = model()->setKbNodeByName(QStringToU8String(text));
+  auto kbnode_provider = model()->getKbNodeProvider();
+  QString provider_name = U8StringToQString(kbnode_provider->name());
   switch (ret) {
     case IKbNodeAttributeModel::kSetKbNodeMultpicMatched:
-      view()->warnMultipleMatch();
+      view()->warnMultipleMatch(provider_name);
       break;
     case IKbNodeAttributeModel::kSetKbNodeNotFound:
-      view()->warnNotFound();
+      view()->warnNotFound(provider_name);
       break;
     case IKbNodeAttributeModel::kSetKbNodeSuccess:
+      view()->clearWarningMessages();
     default: { }
       // do nothing
   }
