@@ -82,6 +82,10 @@ class KbNodeItem : QObject {
     return children_.size();
   }
 
+  bool children_populated() const {
+    return children_populated_;
+  }
+
   KbNodeItem* children(int index) const {
     lazy_populate_children();
 
@@ -127,12 +131,12 @@ class KbNodeItem : QObject {
   }
 
   void markAsPopulated() {
-    child_populated_ = true;
+    children_populated_ = true;
   }
 
   void clear() {
     children_.clear();
-    child_populated_ = false;
+    children_populated_ = false;
   }
 
  protected:
@@ -145,6 +149,7 @@ class KbNodeItem : QObject {
     if (child_node_iterator) {
       while (child_node_iterator->hasNext()) {
         auto kbnode = child_node_iterator->next();
+        // qDebug() << "\t " << U8StringToQString(kbnode->name());
         children_.push_back(createKbNodeItem(kbnode));
       }
     }
@@ -154,11 +159,10 @@ class KbNodeItem : QObject {
   SNAIL_DISABLE_COPY(KbNodeItem);
 
   void lazy_populate_children() const {
-    if (child_populated_)
+    if (children_populated_)
       return;
 
 #if 0
-    qDebug() << "children_.size() == " << children_.size() << " before populate";
     if (isRoot()) {
       qDebug() << "populate root idx";
     } else {
@@ -173,14 +177,14 @@ class KbNodeItem : QObject {
     auto that = const_cast<KbNodeItem*>(this);
     that->populate_children();
 
-    child_populated_ = true;
+    children_populated_ = true;
   }
 
   IKbNodeProvider* kbnode_provider_ { nullptr };
   IKbNode* kbnode_ { nullptr };
   KbNodeItem* parent_ { nullptr };
   QString text_;
-  mutable bool child_populated_ { false };
+  mutable bool children_populated_ { false };
 
   mutable std::vector<std::unique_ptr<KbNodeItem> > children_;
 };
@@ -247,6 +251,12 @@ void KbNodeTreeQModelBase::kbNodeAdded(
     IKbNode* new_kbnode, IKbNode* parent_kbnode) {
   auto parent_item = indexToItem(kbNodeToIndex(parent_kbnode));
   if (!parent_item)
+    return;
+
+  if (parent_item->isRoot() && (parent_kbnode != nullptr))
+    return;  // NOT found
+
+  if (!parent_item->children_populated())
     return;
 
   int row = parent_item->next_append_pos();
