@@ -265,7 +265,8 @@ QAbstractItemView* QtCompleter::popup() const {
 
 void QtCompleter::setPopup(QAbstractItemView* popup) {
   if (d->popup) {
-    disconnect(d->popup->selectionModel(), 0, d.get(), 0);
+    if (d->popup->selectionModel())
+      disconnect(d->popup->selectionModel(), 0, d.get(), 0);
     disconnect(d->popup, 0, d.get(), 0);
   }
 
@@ -305,11 +306,12 @@ void QtCompleter::setPopup(QAbstractItemView* popup) {
 
   QObject::connect(popup, SIGNAL(clicked(QModelIndex)),
                    d.get(), SLOT(clicked(QModelIndex)));
-#if 0
-  QObject::connect(popup->selectionModel(),
-                   SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
-                   d.get(), SLOT(hightlighted(QItemSelection)));
-#endif
+
+  if (popup->selectionModel()) {
+    QObject::connect(popup->selectionModel(),
+                     SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+                     d.get(), SLOT(hightlighted(QItemSelection)));
+  }
 
   QObject::connect(this, SIGNAL(clicked(QModelIndex)),
                    popup, SLOT(hide()));
