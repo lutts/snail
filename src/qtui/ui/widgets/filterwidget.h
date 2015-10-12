@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef FILTERWIDGET_H_
-#define FILTERWIDGET_H_
+#ifndef SRC_QTUI_UI_WIDGETS_FILTERWIDGET_H_
+#define SRC_QTUI_UI_WIDGETS_FILTERWIDGET_H_
 
 #include <QLineEdit>
 #include <QTimer>
@@ -50,4 +50,4 @@ class FilterWidget : public QLineEdit {
 };
 
 
-#endif  // FILTERWIDGET_H_
+#endif  // SRC_QTUI_UI_WIDGETS_FILTERWIDGET_H_

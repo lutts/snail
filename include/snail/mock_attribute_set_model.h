@@ -8,6 +8,8 @@
 #ifndef INCLUDE_SNAIL_MOCK_ATTRIBUTE_SET_MODEL_H_
 #define INCLUDE_SNAIL_MOCK_ATTRIBUTE_SET_MODEL_H_
 
+#include <vector>
+
 #include "snail/i_attribute_set_model.h"
 
 namespace snailcore {

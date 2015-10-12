@@ -185,7 +185,7 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     { "Attribute 08:", "Value 8-3", attr08_3},
   };
 
-  // 1. attribute suppliers whos attr_count < max & max > 1 is showed in edit mode
+  // 1. attribute suppliers whos attr_count < max & max > 1 is showed
   // 2. attributes are not sorted by name and name are never hidden
   expect_on_edit_mode = {
     // Supplier_Max_Eq_1_AttrCount_Eq_0
@@ -234,7 +234,7 @@ void AttributeSetLayoutTest::initExpectLayoutDatas() {
     { "Attribute 01:", "Value 1", attr01},  // 0
 
     // Supplier_Max_Gt_1_AttrCount_Eq_0
-    { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", "",},
+    { "Add Supplier_Max_Gt_1_AttrCount_Eq_0", ""},
 
     // Supplier_Max_Gt_1_AttrCount_EQ_Max_minus_1
     { "Attribute 02:", "Value 2", attr02},
@@ -690,5 +690,5 @@ TEST_F(AttributeSetLayoutTest,
   }
 
   // Verify results
-  CUSTOM_ASSERT(checkLayoutData(expect_on_edit_mode,true));
+  CUSTOM_ASSERT(checkLayoutData(expect_on_edit_mode, true));
 }

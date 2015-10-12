@@ -359,7 +359,8 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
 
     qmodel->setKbNodeProvider(&kbnode_provider);
   }
-  void TearDown() override{
+
+  void TearDown() override {
     cleanupExpectRowDatas();
   }
 
@@ -414,8 +415,9 @@ bool KbNodeTreeQModelTestBase::shouldRowVisible(const ExpectRowData& row_data) {
       return show_add_more_row;
     else
       return false;
-  } else
+  } else {
     return true;
+  }
 }
 
 int KbNodeTreeQModelTestBase::expectNodeCount(const ExpectRowData& row_data) {

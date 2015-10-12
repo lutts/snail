@@ -15,6 +15,7 @@
 #include <forward_list>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 #include "qsint/include/QSint"
 #include "snail/i_attribute_supplier.h"

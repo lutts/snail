@@ -8,6 +8,8 @@
 #ifndef TEST_CORE_ATTRIBUTE_TEST_STUB_H_
 #define TEST_CORE_ATTRIBUTE_TEST_STUB_H_
 
+#include <vector>
+
 #include "utils/basic_utils.h"
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"

@@ -5,6 +5,9 @@
 //
 // [Desc]
 #include "src/core/attribute_set_model.h"
+
+#include <vector>
+
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
 #include "core/i_attribute_model_factory.h"

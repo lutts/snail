@@ -8,6 +8,8 @@
 #ifndef SRC_CORE_ATTRIBUTE_SET_MODEL_H_
 #define SRC_CORE_ATTRIBUTE_SET_MODEL_H_
 
+#include <vector>
+
 #include "snail/i_attribute_set_model.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"

@@ -8,6 +8,8 @@
 #ifndef SRC_QTUI_CORE_ATTRIBUTE_SET_LAYOUT_H_
 #define SRC_QTUI_CORE_ATTRIBUTE_SET_LAYOUT_H_
 
+#include <vector>
+
 #include "qtui/i_attribute_set_layout.h"
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"

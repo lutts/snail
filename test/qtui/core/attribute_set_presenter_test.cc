@@ -46,7 +46,8 @@ class AttributeSetPresenterTest : public ::testing::Test {
 
     R_EXPECT_CALL(*model, getAttributeSuppliers())
         .WillOnce(Return(attr_suppliers));
-    R_EXPECT_CALL(*attr_set_layout, setAttributeSuppliers(attr_suppliers, false));
+    R_EXPECT_CALL(*attr_set_layout,
+                  setAttributeSuppliers(attr_suppliers, false));
 
     R_EXPECT_CALL(*view, whenUserSwitchMode(_, _))
         .WillOnce(SaveArg<0>(&userSwitchMode));

@@ -8,6 +8,8 @@
 #ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_LAYOUT_H_
 #define INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_LAYOUT_H_
 
+#include <vector>
+
 #include "qtui/i_attribute_set_layout.h"
 
 class MockAttributeSetLayout : public IAttributeSetLayout {

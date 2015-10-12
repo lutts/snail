@@ -144,7 +144,8 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   // endregion
 };
 
-std::function<void()> KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
+std::function<void()>
+KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
   auto kbnode_provider_model = std::make_shared<MockKbNodeProviderModel>();
   std::shared_ptr<IPfModel> kbnode_provider_pfmodel = kbnode_provider_model;
   auto add_kbnode_dialog_view = std::make_shared<MockKbNodeProviderView>();

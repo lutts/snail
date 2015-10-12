@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_PROVIDER_VIEW_H_
-#define KBNODE_PROVIDER_VIEW_H_
+#ifndef SRC_QTUI_UI_KBNODE_PROVIDER_VIEW_H_
+#define SRC_QTUI_UI_KBNODE_PROVIDER_VIEW_H_
 
 #include "qtui/i_kbnode_provider_view.h"
 #include "utils/basic_utils.h"
@@ -42,4 +42,4 @@ class KbNodeProviderView : public IKbNodeProviderView {
 };
 
 
-#endif  // KBNODE_PROVIDER_VIEW_H_
+#endif  // SRC_QTUI_UI_KBNODE_PROVIDER_VIEW_H_

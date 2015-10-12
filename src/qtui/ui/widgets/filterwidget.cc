@@ -10,8 +10,8 @@
 #include <QToolButton>
 #include <QWidgetAction>
 
-#include "filterwidget.h"
-#include "qtcompleter.h"
+#include "src/qtui/ui/widgets/filterwidget.h"
+#include "src/qtui/ui/widgets/qtcompleter.h"
 
 FilterWidget::FilterWidget(QWidget* parent)
     : QLineEdit(parent) {

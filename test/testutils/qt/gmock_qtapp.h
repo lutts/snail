@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef GMOCK_QTAPP_H_
-#define GMOCK_QTAPP_H_
+#ifndef TEST_TESTUTILS_QT_GMOCK_QTAPP_H_
+#define TEST_TESTUTILS_QT_GMOCK_QTAPP_H_
 
 #include <QApplication>
 
@@ -37,4 +37,4 @@ GTEST_API_ int main(int argc, char** argv) {
   return RUN_ALL_TESTS();
 }
 
-#endif  // GMOCK_QTAPP_H_
+#endif  // TEST_TESTUTILS_QT_GMOCK_QTAPP_H_
