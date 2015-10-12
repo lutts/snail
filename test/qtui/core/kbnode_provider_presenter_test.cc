@@ -53,6 +53,11 @@ class KbNodeProviderPresenterTestBase : public TestBase {
         xtestutils::RandomString filter_pattern;
         bool init_validate_result = xtestutils::randomBool();
 
+        // tell view the provider name
+        xtestutils::RandomString provider_name;
+        EXPECT_CALL(*model, name()).WillOnce(Return(provider_name.ustr()));
+        EXPECT_CALL(*view, setProviderName(provider_name.qstr()));
+
         // use filter pattern as the default new kbnode name
         R_EXPECT_CALL(*model, getFilterPattern())
             .WillOnce(Return(filter_pattern.ustr()));

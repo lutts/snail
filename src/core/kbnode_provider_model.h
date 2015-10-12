@@ -21,6 +21,7 @@ class KbNodeProviderModel : public IKbNodeProviderModel {
   explicit KbNodeProviderModel(IKbNodeProvider* kbnode_provider);
   virtual ~KbNodeProviderModel();
 
+  utils::U8String name() const override;
   IKbNodeProvider* getKbNodeProvider() const override;
   utils::U8String getFilterPattern() const override;
   void setFilterPattern(const utils::U8String& filter_pattern) override;

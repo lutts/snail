@@ -7,8 +7,9 @@
 #include "src/qtui/ui/kbnode_provider_view.h"
 
 #include <QDialog>
-#include <QVBoxLayout>
+#include <QFormLayout>
 #include <QTreeView>
+#include <QHeaderView>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QDialogButtonBox>
@@ -23,6 +24,10 @@ class KbNodeProviderViewImpl : public QDialog {
  public:
   KbNodeProviderViewImpl();
   virtual ~KbNodeProviderViewImpl() = default;
+
+  void setProviderName(const QString& provider_name) {
+    setWindowTitle(tr("Add %1").arg(provider_name));
+  }
 
  private:
   SNAIL_DISABLE_COPY(KbNodeProviderViewImpl);
@@ -39,26 +44,27 @@ class KbNodeProviderViewImpl : public QDialog {
 
 KbNodeProviderViewImpl::KbNodeProviderViewImpl()
     : QDialog(nullptr) {
-  QVBoxLayout *v_layout = new QVBoxLayout(this);
+  auto layout_ = new QFormLayout(this);
 
   tree_view_ = new QTreeView(this);
-  v_layout->addWidget(tree_view_);
+  tree_view_->header()->hide();
+  layout_->addRow(tr("Parent Node: "), tree_view_);
 
   kbnode_name_editor_ = new QLineEdit(this);
   connect(kbnode_name_editor_, &QLineEdit::textEdited,
           [this](const QString &text) {
             q_ptr->NewKbNodeNameChanged(text);
           });
-  v_layout->addWidget(kbnode_name_editor_);
+  layout_->addRow(tr("Node Name: "), kbnode_name_editor_);
 
   auto category_checkbox = new QCheckBox(this);
   connect(category_checkbox, &QCheckBox::stateChanged,
           [this](int state) {
             q_ptr->UserToggleCategoryCheckbox(state == Qt::Checked);
           });
-  v_layout->addWidget(category_checkbox);
+  layout_->addRow(tr("Category: "), category_checkbox);
 
-  v_layout->addStretch();
+  // v_layout->addStretch();
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
   buttonBox->setObjectName(QStringLiteral("buttonBox"));
@@ -77,7 +83,7 @@ KbNodeProviderViewImpl::KbNodeProviderViewImpl()
   QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  v_layout->addWidget(buttonBox);
+  layout_->addRow(buttonBox);
 }
 
 KbNodeProviderView::KbNodeProviderView()
@@ -92,6 +98,10 @@ bool KbNodeProviderView::showView(bool modal) {
   return impl->exec() == QDialog::Accepted;
 }
 
+void KbNodeProviderView::setProviderName(const QString& provider_name) {
+  impl->setProviderName(provider_name);
+}
+
 void KbNodeProviderView::setNewKbNodeName(const QString& name) {
   impl->kbnode_name_editor_->setText(name);
 }
@@ -102,6 +112,7 @@ void KbNodeProviderView::setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) {
     return;
 
   impl->tree_view_->setModel(model);
+  impl->tree_view_->expandToDepth(0);
   QObject::connect(
       impl->tree_view_->selectionModel(),
       &QItemSelectionModel::currentChanged,

@@ -23,6 +23,7 @@ class KbNodeProviderView : public IKbNodeProviderView {
   bool showView(bool modal) override;
 
   // IKbNodeProviderView
+  void setProviderName(const QString& provider_name) override;
   void setNewKbNodeName(const QString& name) override;
   void setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) override;
   void selectIndex(const QModelIndex& index) override;

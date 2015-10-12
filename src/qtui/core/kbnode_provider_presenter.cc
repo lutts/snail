@@ -22,6 +22,8 @@ KbNodeProviderPresenter::KbNodeProviderPresenter(
 KbNodeProviderPresenter::~KbNodeProviderPresenter() = default;
 
 void KbNodeProviderPresenter::initialize() {
+  view()->setProviderName(U8StringToQString(model()->name()));
+
   auto default_new_kbnode_name = model()->getFilterPattern();
   model()->setNewKbNodeName(default_new_kbnode_name);
 

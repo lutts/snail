@@ -25,6 +25,7 @@ class IKbNodeProviderModel : public pfmvp::IPfModel {
   SNAIL_SIGSLOT2(KbNodeAdded,
                  void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
 
+  virtual utils::U8String name() const = 0;
   virtual IKbNodeProvider* getKbNodeProvider() const = 0;
   virtual utils::U8String getFilterPattern() const = 0;
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;

@@ -41,6 +41,21 @@ class KbNodeProviderModelTest :
       public KbNodeProviderModelTestBase<::testing::Test> { };
 
 TEST_F(KbNodeProviderModelTest,
+       should_model_name_be_provider_name) { // NOLINT
+  // Setup fixture
+  auto provider_name = xtestutils::genRandomString();
+
+  // Expectations
+  EXPECT_CALL(kbnode_provider, name()).WillOnce(Return(provider_name));
+
+  // Exercise system
+  auto actual_name = model->name();
+
+  // Verify results
+  ASSERT_EQ(provider_name, actual_name);
+}
+
+TEST_F(KbNodeProviderModelTest,
        should_be_able_to_get_the_kbnode_provider) { // NOLINT
   ASSERT_EQ(&kbnode_provider, model->getKbNodeProvider());
 }

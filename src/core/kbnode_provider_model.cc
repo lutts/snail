@@ -14,6 +14,10 @@ KbNodeProviderModel::KbNodeProviderModel(IKbNodeProvider* kbnode_provider)
 
 KbNodeProviderModel::~KbNodeProviderModel() = default;
 
+utils::U8String KbNodeProviderModel::name() const {
+  return kbnode_provider_->name();
+}
+
 IKbNodeProvider* KbNodeProviderModel::getKbNodeProvider() const {
   return kbnode_provider_;
 }
