@@ -262,7 +262,7 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
 }
 
 TEST_F(PfTriadManagerAutoRemoveChildTest,
-       should_removed_triad_will_delete_from_parents_child_lists) { // NOLINT
+       should_be_able_to_remove_child_before_remove_parent) { // NOLINT
   // Setup fixture
   auto triad_vec = createTestTriadHierachy();
   auto& root_mvpl_tuple = triad_vec[0];
