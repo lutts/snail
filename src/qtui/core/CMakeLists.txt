@@ -14,6 +14,7 @@ SET(qtuicore_SRCS
   kbnode_attribute_edit_presenter.cc
   kbnode_tree_qmodel.cc
   kbnode_provider_presenter.cc
+  kbnode_link_attribute_inline_editor_presenter.cc
   )
 
 set(SUBDIRS)
