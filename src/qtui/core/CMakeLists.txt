@@ -8,7 +8,6 @@ SET(qtuicore_SRCS
   qt_uiengine.cc
   workspace_presenter.cc
   work_presenter.cc
-  candidate_item_qmodel_adapter.cc
   attribute_set_presenter.cc
   attribute_set_layout.cc
   attribute_delegate.cc

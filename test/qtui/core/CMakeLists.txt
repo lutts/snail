@@ -33,9 +33,6 @@ add_gmock_unit_test(workspace_presenter
 add_gmock_unit_test(work_presenter
   LIBS Qt5::Core pfmvp ${Boost_LIBRARIES} testutils)
 
-add_gmock_unit_test(candidate_item_qmodel_adapter
-  LIBS testutils qttestutils)
-
 add_gmock_unit_test(attribute_set_presenter
   LIBS testutils)
 

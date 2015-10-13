@@ -18,12 +18,6 @@ add_gmock_unit_test(work_model
 add_gmock_unit_test(work
   LIBS testutils)
 
-add_gmock_unit_test(candidate_item
-  LIBS testutils)
-
-add_gmock_unit_test(candidate_item_any_data
-  LIBS testutils)
-
 add_gmock_unit_test(attribute_set_model
   LIBS testutils)
 
