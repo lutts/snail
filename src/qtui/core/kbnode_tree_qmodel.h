@@ -15,11 +15,11 @@
 
 class KbNodeItem;
 
-class KbNodeTreeQModelBase : public QAbstractItemModel
+class KbNodeTreeQModelBasic : public QAbstractItemModel
                        , public IKbNodeTreeQModel {
  public:
-  KbNodeTreeQModelBase();
-  virtual ~KbNodeTreeQModelBase();
+  KbNodeTreeQModelBasic();
+  virtual ~KbNodeTreeQModelBasic();
 
   // IKbNodeTreeQModel
   void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
@@ -50,15 +50,15 @@ class KbNodeTreeQModelBase : public QAbstractItemModel
   virtual std::unique_ptr<KbNodeItem> createRootItem() const;
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeTreeQModelBase);
+  SNAIL_DISABLE_COPY(KbNodeTreeQModelBasic);
 
   mutable std::unique_ptr<KbNodeItem> root_item_;
 };
 
-class KbNodeTreeQModel : public KbNodeTreeQModelBase {
+class KbNodeTreeQModelWithClearAndAddMoreRow : public KbNodeTreeQModelBasic {
  public:
-  KbNodeTreeQModel();
-  ~KbNodeTreeQModel();
+  KbNodeTreeQModelWithClearAndAddMoreRow();
+  ~KbNodeTreeQModelWithClearAndAddMoreRow();
 
   QVariant itemData(KbNodeItem* item, int role) const override;
 
@@ -67,7 +67,7 @@ class KbNodeTreeQModel : public KbNodeTreeQModelBase {
   std::unique_ptr<KbNodeItem> createRootItem() const override;
 };
 
-class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBase {
+class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBasic {
  public:
   KbNodeTreeQModelWithProviderNode();
   ~KbNodeTreeQModelWithProviderNode();

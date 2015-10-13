@@ -193,32 +193,32 @@ class KbNodeItem : QObject {
 
 ////////////////////////////////////////////////////////////////
 
-KbNodeTreeQModelBase::KbNodeTreeQModelBase() { }
+KbNodeTreeQModelBasic::KbNodeTreeQModelBasic() { }
 
-KbNodeTreeQModelBase::~KbNodeTreeQModelBase() = default;
+KbNodeTreeQModelBasic::~KbNodeTreeQModelBasic() = default;
 
-//////////////// IKbNodeTreeQModelBase ////////////////
+//////////////// IKbNodeTreeQModelBasic ////////////////
 
-KbNodeItem* KbNodeTreeQModelBase::indexToItem(const QModelIndex& index) const {
+KbNodeItem* KbNodeTreeQModelBasic::indexToItem(const QModelIndex& index) const {
   if (!index.isValid())
     return rootItem();
 
   return reinterpret_cast<KbNodeItem*>(index.internalPointer());
 }
 
-QModelIndex KbNodeTreeQModelBase::itemToIndex(KbNodeItem* item) const {
+QModelIndex KbNodeTreeQModelBasic::itemToIndex(KbNodeItem* item) const {
   if (!item || item->isRoot())
     return QModelIndex();
 
   return createIndex(item->row(), 0, item);
 }
 
-IKbNode* KbNodeTreeQModelBase::indexToKbNode(const QModelIndex& index) const {
+IKbNode* KbNodeTreeQModelBasic::indexToKbNode(const QModelIndex& index) const {
   auto item = indexToItem(index);
   return item->kbnode();
 }
 
-QModelIndex KbNodeTreeQModelBase::kbNodeToIndex(IKbNode* kbnode) const {
+QModelIndex KbNodeTreeQModelBasic::kbNodeToIndex(IKbNode* kbnode) const {
   KbNodeItem* item = nullptr;
 
   if (kbnode == nullptr)
@@ -229,25 +229,25 @@ QModelIndex KbNodeTreeQModelBase::kbNodeToIndex(IKbNode* kbnode) const {
   return itemToIndex(item);
 }
 
-void KbNodeTreeQModelBase::setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
+void KbNodeTreeQModelBasic::setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
   return rootItem()->setKbNodeProvider(kbnode_provider);
 }
 
-bool KbNodeTreeQModelBase::isAddKbNode(const QModelIndex& index) const {
+bool KbNodeTreeQModelBasic::isAddKbNode(const QModelIndex& index) const {
   (void)index;
   return false;
 }
 
-void KbNodeTreeQModelBase::beginResetQModel() {
+void KbNodeTreeQModelBasic::beginResetQModel() {
   beginResetModel();
   clear();
 }
 
-void KbNodeTreeQModelBase::endResetQModel() {
+void KbNodeTreeQModelBasic::endResetQModel() {
   endResetModel();
 }
 
-void KbNodeTreeQModelBase::kbNodeAdded(
+void KbNodeTreeQModelBasic::kbNodeAdded(
     IKbNode* new_kbnode, IKbNode* parent_kbnode) {
   auto parent_item = indexToItem(kbNodeToIndex(parent_kbnode));
   if (!parent_item)
@@ -267,7 +267,7 @@ void KbNodeTreeQModelBase::kbNodeAdded(
 
 //////////////// QAbstractItemModel ////////////////
 
-QVariant KbNodeTreeQModelBase::data(const QModelIndex &index, int role) const {
+QVariant KbNodeTreeQModelBasic::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
@@ -278,7 +278,7 @@ QVariant KbNodeTreeQModelBase::data(const QModelIndex &index, int role) const {
   return itemData(item, role);
 }
 
-QVariant KbNodeTreeQModelBase::itemData(KbNodeItem* item, int role) const {
+QVariant KbNodeTreeQModelBasic::itemData(KbNodeItem* item, int role) const {
   switch (role) {
     case Qt::DisplayRole:
       return item->text();
@@ -287,7 +287,7 @@ QVariant KbNodeTreeQModelBase::itemData(KbNodeItem* item, int role) const {
   }
 }
 
-Qt::ItemFlags KbNodeTreeQModelBase::flags(const QModelIndex &index) const {
+Qt::ItemFlags KbNodeTreeQModelBasic::flags(const QModelIndex &index) const {
   auto flags = QAbstractItemModel::flags(index);
 
   auto kbnode = indexToKbNode(index);
@@ -298,7 +298,7 @@ Qt::ItemFlags KbNodeTreeQModelBase::flags(const QModelIndex &index) const {
   return flags;
 }
 
-QModelIndex KbNodeTreeQModelBase::index(
+QModelIndex KbNodeTreeQModelBasic::index(
     int row, int column, const QModelIndex &parent) const {
   if (!hasIndex(row, column, parent))
     return QModelIndex();
@@ -310,7 +310,7 @@ QModelIndex KbNodeTreeQModelBase::index(
   return itemToIndex(parent_item->children(row));
 }
 
-QModelIndex KbNodeTreeQModelBase::parent(const QModelIndex &index) const {
+QModelIndex KbNodeTreeQModelBasic::parent(const QModelIndex &index) const {
   if (!index.isValid())
     return QModelIndex();
 
@@ -321,27 +321,27 @@ QModelIndex KbNodeTreeQModelBase::parent(const QModelIndex &index) const {
   return itemToIndex(item->parent());
 }
 
-int KbNodeTreeQModelBase::rowCount(const QModelIndex &parent) const {
+int KbNodeTreeQModelBasic::rowCount(const QModelIndex &parent) const {
   auto item = indexToItem(parent);
   return item->num_children();
 }
 
-int KbNodeTreeQModelBase::columnCount(const QModelIndex &parent) const {
+int KbNodeTreeQModelBasic::columnCount(const QModelIndex &parent) const {
   (void)parent;
   return 1;
 }
 
-KbNodeItem* KbNodeTreeQModelBase::rootItem() const {
+KbNodeItem* KbNodeTreeQModelBasic::rootItem() const {
   if (!root_item_)
     root_item_ = createRootItem();
   return root_item_.get();
 }
 
-std::unique_ptr<KbNodeItem> KbNodeTreeQModelBase::createRootItem() const {
+std::unique_ptr<KbNodeItem> KbNodeTreeQModelBasic::createRootItem() const {
   return utils::make_unique<KbNodeItem>();
 }
 
-void KbNodeTreeQModelBase::clear() {
+void KbNodeTreeQModelBasic::clear() {
   if (rootItem())
     rootItem()->clear();
 }
@@ -418,25 +418,29 @@ class KbNodeItemWithEmptyAddMore : public KbNodeItem {
   bool is_empty_row_ { false };
 };
 
-KbNodeTreeQModel::KbNodeTreeQModel()
-    : KbNodeTreeQModelBase() { }
+KbNodeTreeQModelWithClearAndAddMoreRow::KbNodeTreeQModelWithClearAndAddMoreRow()
+    : KbNodeTreeQModelBasic() { }
 
-KbNodeTreeQModel::~KbNodeTreeQModel() = default;
+KbNodeTreeQModelWithClearAndAddMoreRow::
+~KbNodeTreeQModelWithClearAndAddMoreRow() = default;
 
-QVariant KbNodeTreeQModel::itemData(KbNodeItem* item, int role) const {
+QVariant KbNodeTreeQModelWithClearAndAddMoreRow::itemData(
+    KbNodeItem* item, int role) const {
   auto our_item = static_cast<KbNodeItemWithEmptyAddMore*>(item);
   if (our_item->isSpecial() && role == Qt::TextAlignmentRole) {
     return static_cast<int>(Qt::AlignCenter | Qt::AlignVCenter);
   }
 
-  return KbNodeTreeQModelBase::itemData(item, role);
+  return KbNodeTreeQModelBasic::itemData(item, role);
 }
 
-std::unique_ptr<KbNodeItem> KbNodeTreeQModel::createRootItem() const {
+std::unique_ptr<KbNodeItem>
+KbNodeTreeQModelWithClearAndAddMoreRow::createRootItem() const {
   return utils::make_unique<KbNodeItemWithEmptyAddMore>();
 }
 
-bool KbNodeTreeQModel::isAddKbNode(const QModelIndex& index) const {
+bool KbNodeTreeQModelWithClearAndAddMoreRow::isAddKbNode(
+    const QModelIndex& index) const {
   auto item = static_cast<KbNodeItemWithEmptyAddMore*>(indexToItem(index));
   return item->isAddMore();
 }
@@ -444,13 +448,13 @@ bool KbNodeTreeQModel::isAddKbNode(const QModelIndex& index) const {
 ////////////////////////////////////////////////////////////////
 
 KbNodeTreeQModelWithProviderNode::KbNodeTreeQModelWithProviderNode()
-    : KbNodeTreeQModelBase() { }
+    : KbNodeTreeQModelBasic() { }
 
 KbNodeTreeQModelWithProviderNode::~KbNodeTreeQModelWithProviderNode() = default;
 
 Qt::ItemFlags KbNodeTreeQModelWithProviderNode::flags(
     const QModelIndex &index) const {
-  auto flags = KbNodeTreeQModelBase::flags(index);
+  auto flags = KbNodeTreeQModelBasic::flags(index);
   return flags | Qt::ItemIsSelectable;
 }
 
@@ -473,7 +477,7 @@ void KbNodeTreeQModelWithProviderNode::setKbNodeProvider(
   provider_item_->setText(text);
   provider_item_->setKbNodeProvider(kbnode_provider);
 
-  KbNodeTreeQModelBase::setKbNodeProvider(kbnode_provider);
+  KbNodeTreeQModelBasic::setKbNodeProvider(kbnode_provider);
 }
 
 QModelIndex KbNodeTreeQModelWithProviderNode::kbNodeToIndex(
@@ -482,5 +486,5 @@ QModelIndex KbNodeTreeQModelWithProviderNode::kbNodeToIndex(
     return itemToIndex(provider_item_);
   }
 
-  return KbNodeTreeQModelBase::kbNodeToIndex(kbnode);
+  return KbNodeTreeQModelBasic::kbNodeToIndex(kbnode);
 }

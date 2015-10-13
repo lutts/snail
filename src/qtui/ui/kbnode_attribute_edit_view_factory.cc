@@ -29,7 +29,8 @@ class KbNodeAttributeEditViewFactory
                 PfCreateViewArgs* args) override {
     (void)args;
     auto view = std::make_shared<KbNodeAttributeEditView>();
-    auto kbnode_tree_model = utils::make_unique<KbNodeTreeQModel>();
+    auto kbnode_tree_model =
+        utils::make_unique<KbNodeTreeQModelWithClearAndAddMoreRow>();
     return std::make_shared<KbNodeAttributeEditPresenter>(
         model, view, std::move(kbnode_tree_model));
   }

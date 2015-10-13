@@ -364,7 +364,9 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
     cleanupExpectRowDatas();
   }
 
-  virtual std::unique_ptr<KbNodeTreeQModelBase> createQModel() = 0;
+  virtual std::unique_ptr<KbNodeTreeQModelBasic> createQModel() {
+    return utils::make_unique<KbNodeTreeQModelBasic>();
+  }
 
   bool shouldRowVisible(const ExpectRowData& row_data);
   int expectNodeCount(const ExpectRowData& row_data);
@@ -395,12 +397,12 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
   QModelIndexGenerator index_generator;
 
   bool always_selectable { false };
-  bool show_clear_row { true };
-  bool show_add_more_row { true };
+  bool show_clear_row { false };
+  bool show_add_more_row { false };
   // endregion
 
   // region: test subject
-  std::unique_ptr<KbNodeTreeQModelBase> qmodel;
+  std::unique_ptr<KbNodeTreeQModelBasic> qmodel;
   // endregion
 
   // region: object depends on test subject
@@ -769,7 +771,56 @@ void KbNodeTreeQModelTestBase::test_add_kbnode_to_expanded_root_node() {
   ASSERT_EQ(expect_insert_row, insert_row_last);
 }
 
-class KbNodeTreeQModelTest : public KbNodeTreeQModelTestBase {
+TEST_F(KbNodeTreeQModelTestBase,
+       check_row_data) { // NOLINT
+  CUSTOM_ASSERT(checkRowData());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
+  CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       should_endResetQModel_emit_modelReset) { // NOLINT
+  CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       test_add_kbnode_to_not_visible_parent_kbnode) { // NOLINT
+  CUSTOM_ASSERT(test_add_kbnode_to_not_visible_parent_kbnode());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       test_add_kbnode_to_visible_but_children_not_populated_kbnode) { // NOLINT
+  CUSTOM_ASSERT(test_add_kbnode_to_visible_but_children_not_populated_kbnode());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       test_add_kbnode_to_children_populated_parent_kbnode) { // NOLINT
+  CUSTOM_ASSERT(test_add_kbnode_to_children_populated_parent_kbnode());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       test_add_kbnode_to_unexpanded_root_node) { // NOLINT
+  CUSTOM_ASSERT(test_add_kbnode_to_unexpanded_root_node());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       test_add_kbnode_to_expanded_root_node) { // NOLINT
+  CUSTOM_ASSERT(test_add_kbnode_to_expanded_root_node());
+}
+
+TEST_F(KbNodeTreeQModelTestBase,
+       should_null_kbnode_to_index_got_invalid_root_idx) { // NOLINT
+  QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
+  auto expect_index = QModelIndex();
+
+  ASSERT_EQ(expect_index, kbnode_to_index)
+      << "null node_ptr should got root invalid index in completion mode";
+}
+
+class KbNodeTreeQModelWithClearAndAddMoreRowTest : public KbNodeTreeQModelTestBase {
  protected:
   void SetUp() override {
     KbNodeTreeQModelTestBase::SetUp();
@@ -778,53 +829,53 @@ class KbNodeTreeQModelTest : public KbNodeTreeQModelTestBase {
     show_add_more_row = true;
   }
 
-  std::unique_ptr<KbNodeTreeQModelBase> createQModel() override {
-    return utils::make_unique<KbNodeTreeQModel>();
+  std::unique_ptr<KbNodeTreeQModelBasic> createQModel() override {
+    return utils::make_unique<KbNodeTreeQModelWithClearAndAddMoreRow>();
   }
 };
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        check_row_data) { // NOLINT
   CUSTOM_ASSERT(checkRowData());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
   CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        should_endResetQModel_emit_modelReset) { // NOLINT
   CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        test_add_kbnode_to_not_visible_parent_kbnode) { // NOLINT
   CUSTOM_ASSERT(test_add_kbnode_to_not_visible_parent_kbnode());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        test_add_kbnode_to_visible_but_children_not_populated_kbnode) { // NOLINT
   CUSTOM_ASSERT(test_add_kbnode_to_visible_but_children_not_populated_kbnode());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        test_add_kbnode_to_children_populated_parent_kbnode) { // NOLINT
   CUSTOM_ASSERT(test_add_kbnode_to_children_populated_parent_kbnode());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        test_add_kbnode_to_unexpanded_root_node) { // NOLINT
   CUSTOM_ASSERT(test_add_kbnode_to_unexpanded_root_node());
 }
 
-TEST_F(KbNodeTreeQModelTest,
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
        test_add_kbnode_to_expanded_root_node) { // NOLINT
   CUSTOM_ASSERT(test_add_kbnode_to_expanded_root_node());
 }
 
-TEST_F(KbNodeTreeQModelTest,
-       should_null_kbnode_to_index_got_invalid_root_idx_in_completion_mode) { // NOLINT
+TEST_F(KbNodeTreeQModelWithClearAndAddMoreRowTest,
+       should_null_kbnode_to_index_got_invalid_root_idx) { // NOLINT
   QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
   auto expect_index = QModelIndex();
 
@@ -855,7 +906,7 @@ class KbNodeTreeQModelWithProviderNodeTest : public KbNodeTreeQModelTestBase {
     KbNodeTreeQModelTestBase::TearDown();
   }
 
-  std::unique_ptr<KbNodeTreeQModelBase> createQModel() override {
+  std::unique_ptr<KbNodeTreeQModelBasic> createQModel() override {
     return utils::make_unique<KbNodeTreeQModelWithProviderNode>();
   }
 
