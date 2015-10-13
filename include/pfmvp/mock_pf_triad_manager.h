@@ -49,7 +49,18 @@ class MockPfTriadManager : public IPfTriadManager {
                      std::vector<IPfView*>(
                          IPfModel* model,
                          MementoPredicate pred));
+
+  template <typename V>
+  void expectationsOnShowModalDialog(std::shared_ptr<IPfModel> pfmodel,
+                                     std::shared_ptr<V> pfview) {
+    EXPECT_CALL(*this, createViewFor(pfmodel, _, _, _))
+        .WillOnce(Return(pfview));
+    EXPECT_CALL(*pfview, showView(true));
+    EXPECT_CALL(*this, removeTriadBy(pfmodel.get()));
+  }
 };
+
+
 
 }  // namespace tests
 }  // namespace pfmvp

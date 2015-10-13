@@ -147,7 +147,6 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 std::function<void()>
 KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
   auto kbnode_provider_model = std::make_shared<MockKbNodeProviderModel>();
-  std::shared_ptr<IPfModel> kbnode_provider_pfmodel = kbnode_provider_model;
   auto add_kbnode_dialog_view = std::make_shared<MockKbNodeProviderView>();
 
   {
@@ -159,10 +158,8 @@ KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
         .WillOnce(SaveArg<0>(&kbNodeAdded));
 
     // the following three are showDialog expectations
-    EXPECT_CALL(triad_manager, createViewFor(kbnode_provider_pfmodel, _, _, _))
-        .WillOnce(Return(add_kbnode_dialog_view));
-    EXPECT_CALL(*add_kbnode_dialog_view, showView(true));
-    EXPECT_CALL(triad_manager, removeTriadBy(kbnode_provider_model.get()));
+    triad_manager.expectationsOnShowModalDialog<MockKbNodeProviderView>(
+        kbnode_provider_model, add_kbnode_dialog_view);
   }
 
   // Workaround for gmock InSequence hold shared_ptr problem
