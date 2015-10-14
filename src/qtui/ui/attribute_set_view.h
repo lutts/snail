@@ -18,11 +18,11 @@ namespace QSint {
 class ActionGroup;
 }  // namespace QSint
 
-class AttributeSetView : public IAttributeSetView
-                              , public QObject {
+class AttributeSetViewForWorkView : public IAttributeSetView
+                                  , public QObject {
  public:
-  AttributeSetView();
-  virtual ~AttributeSetView() = default;
+  AttributeSetViewForWorkView();
+  virtual ~AttributeSetViewForWorkView() = default;
 
   QWidget* getWidget() override;
   QWidget* getAttributeSetContainer() {
@@ -37,7 +37,7 @@ class AttributeSetView : public IAttributeSetView
   QWidget* attr_set_container_;
 
  private:
-  SNAIL_DISABLE_COPY(AttributeSetView);
+  SNAIL_DISABLE_COPY(AttributeSetViewForWorkView);
 
   SNAIL_SIGSLOT_IMPL(UserSwitchMode);
 };

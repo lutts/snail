@@ -8,7 +8,7 @@
 
 #include "qsint/include/QSint"
 
-AttributeSetView::AttributeSetView()
+AttributeSetViewForWorkView::AttributeSetViewForWorkView()
     : action_group_(new QSint::ActionGroup(tr("Attributes")))
     , attr_set_container_(new QWidget(action_group_)) {
   action_group_->setHasEditButton(true);
@@ -20,18 +20,18 @@ AttributeSetView::AttributeSetView()
                    });
 }
 
-QWidget* AttributeSetView::getWidget() {
+QWidget* AttributeSetViewForWorkView::getWidget() {
   return action_group_;
 }
 
-void AttributeSetView::switchToDisplayMode() {
+void AttributeSetViewForWorkView::switchToDisplayMode() {
   action_group_->setEditButtonText(QStringLiteral("[Edit]"));
 }
 
-void AttributeSetView::switchToEditMode() {
+void AttributeSetViewForWorkView::switchToEditMode() {
   action_group_->setEditButtonText(QStringLiteral("[Done]"));
 }
 
-void AttributeSetView::setSwitchModelButtonEnabled(bool enabled) {
+void AttributeSetViewForWorkView::setSwitchModelButtonEnabled(bool enabled) {
   action_group_->setEditButtonEnabled(enabled);
 }

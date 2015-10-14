@@ -19,26 +19,27 @@
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
 
-class AttributeSetViewFactory : public PfViewFactoryT<IAttributeSetModel> {
+class AttributeSetViewForWorkViewFactory
+    : public PfViewFactoryT<IAttributeSetModel> {
  public:
-  AttributeSetViewFactory() = default;
-  virtual ~AttributeSetViewFactory() = default;
+  AttributeSetViewForWorkViewFactory() = default;
+  virtual ~AttributeSetViewForWorkViewFactory() = default;
 
-  DEF_VIEW_FACTORY_ID(AttributeSetViewFactory)
+  DEF_VIEW_FACTORY_ID(AttributeSetViewForWorkViewFactory)
 
   std::shared_ptr<PfPresenter>
   createViewFor(std::shared_ptr<IAttributeSetModel> model,
                 PfCreateViewArgs* args) override {
     (void)args;
-    auto view = std::make_shared<AttributeSetView>();
+    auto view = std::make_shared<AttributeSetViewForWorkView>();
     auto layout = std::make_shared<AttributeSetLayout>();
     view->getAttributeSetContainer()->setLayout(layout->layout());
     return std::make_shared<AttributeSetPresenter>(model, view, layout);
   }
 
  private:
-  SNAIL_DISABLE_COPY(AttributeSetViewFactory);
+  SNAIL_DISABLE_COPY(AttributeSetViewForWorkViewFactory);
 };
 
-static view_factory_t<IAttributeSetModel, AttributeSetViewFactory>
+static view_factory_t<IAttributeSetModel, AttributeSetViewForWorkViewFactory>
 g_attributeset_view_factory;
