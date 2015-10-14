@@ -62,7 +62,7 @@ class WorkPresenterTest : public ::testing::Test {
     VERIFY_RECORDED_MOCK_OBJECTS;
 
     ASSERT_EQ(PF_VIEW_FACTORY(AttributeSetViewForWorkViewFactory),
-              create_view_args.view_factory_id());
+              create_attr_set_view_args.view_factory_id());
   }
   // virtual void TearDown() { }
 
@@ -73,7 +73,7 @@ class WorkPresenterTest : public ::testing::Test {
   std::shared_ptr<MockWorkView> view;
 
   MockPfTriadManager triad_manager;
-  PfCreateViewArgs create_view_args;
+  PfCreateViewArgs create_attr_set_view_args;
   // endregion
 
   // region: test subject
@@ -101,8 +101,9 @@ void WorkPresenterTest::createAttributeSetView(
       .WillOnce(Return(attr_set_model));
   std::shared_ptr<IPfModel> attr_set_pmodel = attr_set_model;
   R_EXPECT_CALL(triad_manager, createViewFor(attr_set_pmodel, _, _, _))
-      .WillOnce(DoAll(SaveArgPointee<kCreateViewArgsIdx>(&create_view_args),
-                      Return(attr_set_view)));
+      .WillOnce(DoAll(
+          SaveArgPointee<kCreateViewArgsIdx>(&create_attr_set_view_args),
+          Return(attr_set_view)));
   R_EXPECT_CALL(*view, setWorkAttrSetView(attr_set_view.get()));
 }
 

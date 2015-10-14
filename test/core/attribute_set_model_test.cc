@@ -29,6 +29,8 @@ class AttributeSetModelTest : public ::testing::Test {
     setupAttributeSuppliers();
     model = utils::make_unique<AttributeSetModel>(attr_suppliers,
                                                   &attr_model_factory);
+    // default to display mode
+    ASSERT_FALSE(model->isEditMode());
   }
   // void TearDown() override { }
 
@@ -104,6 +106,7 @@ void AttributeSetModelTest::switchToEditMode() {
   model->switchMode();
 
   // Verify result
+  ASSERT_TRUE(model->isEditMode());
   Mock::VerifyAndClearExpectations(max_1_attr_0_supplier);
 }
 
@@ -181,6 +184,7 @@ void AttributeSetModelTest::switchToDisplayMode() {
 
   model->switchMode();
 
+  ASSERT_FALSE(model->isEditMode());
   Mock::VerifyAndClearExpectations(max_1_attr_0_supplier);
 }
 

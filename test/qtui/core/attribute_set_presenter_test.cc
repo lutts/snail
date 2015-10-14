@@ -44,10 +44,18 @@ class AttributeSetPresenterTest : public ::testing::Test {
     attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
     attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
 
+    bool edit_mode = xtestutils::randomBool();
+    R_EXPECT_CALL(*model, isEditMode()).WillOnce(Return(edit_mode));
+
     R_EXPECT_CALL(*model, getAttributeSuppliers())
         .WillOnce(Return(attr_suppliers));
     R_EXPECT_CALL(*attr_set_layout,
-                  setAttributeSuppliers(attr_suppliers, false));
+                  setAttributeSuppliers(attr_suppliers, edit_mode));
+    if (edit_mode) {
+      EXPECT_CALL(*view, switchToEditMode());
+    } else {
+      EXPECT_CALL(*view, switchToDisplayMode());
+    }
 
     R_EXPECT_CALL(*view, whenUserSwitchMode(_, _))
         .WillOnce(SaveArg<0>(&userSwitchMode));

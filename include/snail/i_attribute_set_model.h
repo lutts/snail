@@ -29,6 +29,7 @@ class IAttributeSetModel : public pfmvp::IPfModel {
   SNAIL_SIGSLOT2(SwitchToDisplayMode, void());
   SNAIL_SIGSLOT2(ValidateComplete, void(bool validate_result));
 
+  virtual bool isEditMode() const = 0;
   virtual std::vector<IAttributeSupplier*> getAttributeSuppliers() const = 0;
   virtual void switchMode() = 0;
   virtual

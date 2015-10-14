@@ -21,6 +21,7 @@ class MockAttributeSetModel : public IAttributeSetModel {
   SNAIL_MOCK_SLOT(SwitchToDisplayMode);
   SNAIL_MOCK_SLOT(ValidateComplete);
 
+  MOCK_CONST_METHOD0(isEditMode, bool());
   MOCK_CONST_METHOD0(getAttributeSuppliers, std::vector<IAttributeSupplier*>());
   MOCK_METHOD0(switchMode, void());
   MOCK_METHOD1(createAttributeModel,

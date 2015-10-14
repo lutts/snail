@@ -23,7 +23,7 @@ AttributeSetPresenter::AttributeSetPresenter(
 AttributeSetPresenter::~AttributeSetPresenter() = default;
 
 void AttributeSetPresenter::initialize() {
-  resetAttrSuppliers(false);
+  resetAttrSuppliers(model()->isEditMode());
 
   view()->whenUserSwitchMode(
       [this]() {
@@ -34,14 +34,12 @@ void AttributeSetPresenter::initialize() {
   model()->whenSwitchToEditMode(
       [this]() {
         resetAttrSuppliers(true);
-        view()->switchToEditMode();
       },
       shared_from_this());
 
   model()->whenSwitchToDisplayMode(
       [this]() {
         resetAttrSuppliers(false);
-        view()->switchToDisplayMode();
       },
       shared_from_this());
 
@@ -68,4 +66,8 @@ void AttributeSetPresenter::initialize() {
 void AttributeSetPresenter::resetAttrSuppliers(bool edit_mode) {
   attr_set_layout_->setAttributeSuppliers(
       model()->getAttributeSuppliers(), edit_mode);
+  if (edit_mode)
+    view()->switchToEditMode();
+  else
+    view()->switchToDisplayMode();
 }

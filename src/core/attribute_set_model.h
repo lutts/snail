@@ -24,6 +24,7 @@ class AttributeSetModel : public IAttributeSetModel {
                     IAttributeModelFactory* attr_model_factory);
   virtual ~AttributeSetModel();
 
+  bool isEditMode() const override { return edit_mode_; }
   std::vector<IAttributeSupplier*> getAttributeSuppliers() const override;
   void switchMode() override;
 
