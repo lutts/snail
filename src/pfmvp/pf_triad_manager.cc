@@ -234,6 +234,10 @@ PfTriadManagerImpl::createViewFor(
   IPfViewFactory* view_factory =
       view_factory_mgr_.getViewFactory(model->getModelId(),
                                        args->view_factory_id());
+  if (!view_factory) {
+    ALOGW << "view factory '" << args->view_factory_id()
+          << "' for model " << model->getModelId() << " not found!";
+  }
 
   if (model && view_factory) {
     ALOGI << "create view for model " << model->getModelId()

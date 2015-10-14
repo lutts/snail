@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "pfmvp/i_pf_model.h"
+#include "pfmvp/pf_view_factory_id.h"
 #include "utils/u8string.h"
 
 namespace pfmvp {
@@ -47,11 +48,6 @@ class PfViewFactoryT : public IPfViewFactory {
   virtual std::shared_ptr<PfPresenter>
   createViewFor(std::shared_ptr<ModelType> model, PfCreateViewArgs* args) = 0;
 };
-
-#define INVALID_PF_VIEW_FACTORY_ID utils::U8String { "" }
-#define isViewFactoryIdValid(id) (id != INVALID_PF_VIEW_FACTORY_ID)
-
-#define PF_VIEW_FACTORY(factory) (#factory)
 
 #define DEF_VIEW_FACTORY_ID(id)                                 \
   const ViewFactoryIdType& getViewFactoryId() const override {  \
