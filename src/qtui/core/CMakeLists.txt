@@ -10,7 +10,6 @@ SET(qtuicore_SRCS
   work_presenter.cc
   attribute_set_presenter.cc
   attribute_set_layout.cc
-  attribute_delegate.cc
   kbnode_attribute_edit_presenter.cc
   kbnode_tree_qmodel.cc
   kbnode_provider_presenter.cc

@@ -40,9 +40,6 @@ add_gmock_unit_test(attribute_set_layout
   LIBS testutils qttestutils Qt5::Widgets QSCore
   NO_GMOCK_MAIN)
 
-add_gmock_unit_test(attribute_delegate
-  LIBS Qt5::Widgets testutils)
-
 add_gmock_unit_test(kbnode_attribute_edit_presenter
   LIBS Qt5::Core testutils)
 
