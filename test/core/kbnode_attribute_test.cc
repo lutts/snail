@@ -58,7 +58,7 @@ TEST_F(KbNodeAttributeTest,
 
 TEST_F(KbNodeAttributeTest,
        should_be_able_to_get_back_the_kbnode_supplier) { // NOLINT
-  ASSERT_EQ(&attr_supplier, attr->kbnode_supplier());
+  ASSERT_EQ(&attr_supplier, attr->supplier());
 }
 
 void KbNodeAttributeTest::setupNonEmptyState() {
@@ -168,7 +168,6 @@ TEST_F(KbNodeAttributeSupplierTest,
   ASSERT_NE(nullptr, actual_attr);
 
   ASSERT_EQ(attr_supplier.get(), actual_attr->supplier());
-  ASSERT_EQ(attr_supplier.get(), actual_attr->kbnode_supplier());
 }
 
 }  // namespace tests

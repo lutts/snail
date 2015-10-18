@@ -10,6 +10,7 @@ set(core_SRCS ${core_SRCS}
   kbnode_manager.cc
   attribute.cc
   kbnode_link_attribute_inline_editor_model.cc
+  kbnode_link_attribute_popup_editor_model.cc
   )
 
 set(SUBDIRS factory)

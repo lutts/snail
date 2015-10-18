@@ -24,7 +24,7 @@ class KbNodeAttribute : public IKbNodeAttribute {
   void clear() override;
 
   // IKbNodeAttribute
-  IKbNodeAttributeSupplier* kbnode_supplier() const override;
+  IKbNodeAttributeSupplier* supplier() const override;
   void setKbNode(IKbNode* kbnode) override;
 
  private:

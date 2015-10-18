@@ -22,6 +22,8 @@ class MockAttribute : public IAttribute {
   MOCK_CONST_METHOD0(isEmpty, bool());
   MOCK_METHOD0(clear, void());
 
+  MOCK_METHOD0(clone, IAttribute*());
+
   MOCK_METHOD0(destroy, void());
 };
 

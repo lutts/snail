@@ -19,6 +19,9 @@ namespace snailcore {
 class IKbNode;
 class IKbNodeProvider;
 
+/** A Node tree is a tree of nodes with name and short descriptions
+ *
+ */
 class IKbNodeManager {
  public:
   virtual ~IKbNodeManager() = default;

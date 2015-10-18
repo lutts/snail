@@ -20,6 +20,8 @@ class IAttribute {
   virtual utils::U8String valueText() const = 0;
   virtual bool isEmpty() const = 0;
   virtual void clear() = 0;
+
+  virtual IAttribute* clone() { return nullptr; }  // TODO(lutts): impl this method in subclasses
 };
 
 }  // namespace snailcore

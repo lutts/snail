@@ -26,7 +26,7 @@ class IKbNodeAttribute : public GenericAttribute {
     visitor->visit(this);
   }
 
-  virtual IKbNodeAttributeSupplier* kbnode_supplier() const = 0;
+  virtual IKbNodeAttributeSupplier* supplier() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;
 };
 

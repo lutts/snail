@@ -27,10 +27,6 @@ class MockGenericAttribute : public GenericAttribute {
     dataChanged();
   }
 
-  IAttributeSupplier* getSupplier() {
-    return supplier();
-  }
-
   MOCK_METHOD1(accept, void(IAttributeVisitor* visitor));
 
  private:
@@ -84,11 +80,6 @@ TEST_F(GenericAttributeTest,
 
   // Exercise system
   attr->trigger_dataChanged();
-}
-
-TEST_F(GenericAttributeTest,
-       should_supplier_be_the_supplier_passed_to_constructor) { // NOLINT
-  ASSERT_EQ(&attr_supplier, attr->getSupplier());
 }
 
 }  // namespace tests

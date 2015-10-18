@@ -20,6 +20,9 @@ class IKbNodeLinkAttribute : public GenericAttribute {
       : GenericAttribute(supplier) { }
   virtual ~IKbNodeLinkAttribute() = default;
 
+  virtual IKbNodeLinkAttributeSupplier* supplier() const = 0;
+  virtual IAttribute* valueAttr() = 0;
+
   void accept(IAttributeVisitor* visitor) override {
     (void)visitor;
     // TODO(lutts): impl this method

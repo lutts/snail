@@ -16,6 +16,16 @@ namespace tests {
 class MockKbNodeLinkAttributePopupEditorModel
     : public IKbNodeLinkAttributePopupEditorModel {
  public:
+  SNAIL_MOCK_SLOT(LinkTypeChanged);
+  SNAIL_MOCK_SLOT(ValidateComplete);
+
+  MOCK_METHOD0(createValueKbNodeAttrModel, std::shared_ptr<IAttributeModel>());
+  MOCK_CONST_METHOD0(getLinkTypeProvider, IKbNodeProvider*());
+  MOCK_CONST_METHOD0(getCurrentLinkType, IKbNode*());
+  MOCK_METHOD0(getCurrentLinkAttrSetModel,
+               std::shared_ptr<IAttributeSetModel>());
+  MOCK_METHOD1(setLinkType, void(IKbNode* link_type));
+  MOCK_METHOD0(editFinished, void());
 };
 
 }  // namespace tests

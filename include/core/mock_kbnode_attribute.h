@@ -22,7 +22,7 @@ class MockKbNodeAttribute : public IKbNodeAttribute {
   MOCK_METHOD0(clear, void());
 
   // Self
-  MOCK_CONST_METHOD0(kbnode_supplier, IKbNodeAttributeSupplier*());
+  MOCK_CONST_METHOD0(supplier, IKbNodeAttributeSupplier*());
   MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));
 };
 

@@ -12,11 +12,15 @@
 
 namespace snailcore {
 
+class IKbNodeProvider;
+
 class IKbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
   IKbNodeLinkAttributeSupplier(const utils::U8String& name, int max_attrs)
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~IKbNodeLinkAttributeSupplier() = default;
+
+  virtual IKbNodeProvider* getLinkTypeProvider() const = 0;
 };
 
 }  // namespace snailcore

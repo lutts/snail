@@ -20,6 +20,10 @@ class MockKbNodeLinkAttribute : public IKbNodeLinkAttribute {
   MOCK_CONST_METHOD0(valueText, utils::U8String());
   MOCK_CONST_METHOD0(isEmpty, bool());
   MOCK_METHOD0(clear, void());
+
+  // self
+  MOCK_CONST_METHOD0(supplier, IKbNodeLinkAttributeSupplier*());
+  MOCK_METHOD0(valueAttr, IAttribute*());
 };
 
 }  // namespace tests

@@ -30,7 +30,7 @@ class KbNodeAttributeModelTest : public ::testing::Test {
     kbnode_provider = std::make_shared<MockKbNodeProvider>();
 
     // get kbnode provider mocks
-    EXPECT_CALL(kbnode_attr, kbnode_supplier())
+    EXPECT_CALL(kbnode_attr, supplier())
         .WillRepeatedly(Return(&kbnode_attr_supplier));
 
     auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();

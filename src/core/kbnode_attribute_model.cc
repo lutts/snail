@@ -34,7 +34,7 @@ void KbNodeAttributeModel::validateComplete(bool result) {
 
 IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
   if (!kbnode_provider_) {
-    auto attr_supplier = kbnode_attr_->kbnode_supplier();
+    auto attr_supplier = kbnode_attr_->supplier();
     kbnode_provider_ = kbnode_manager_->createKbNodeProvider(
         attr_supplier->getRootKbNode());
   }

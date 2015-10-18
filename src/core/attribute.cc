@@ -32,7 +32,7 @@ void KbNodeAttribute::clear() {
 
 
 // IKbNodeAttribute
-IKbNodeAttributeSupplier* KbNodeAttribute::kbnode_supplier() const {
+IKbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
   return attr_supplier_;
 }
 

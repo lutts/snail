@@ -25,10 +25,6 @@ class GenericAttribute : public IAttribute {
     return supplier_->name();
   }
 
-  IAttributeSupplier* supplier() const {
-    return supplier_;
-  }
-
   virtual void accept(IAttributeVisitor* visitor) = 0;
 
  protected:
