@@ -16,11 +16,11 @@ namespace snailcore {
 class IKbNode;
 class IKbNodeProvider;
 
-class IKbNodeProviderModel : public pfmvp::IPfModel {
+class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
  public:
-  virtual ~IKbNodeProviderModel() = default;
+  virtual ~ISimpleKbNodeAdderModel() = default;
 
-  DEF_MODEL_ID(KbNodeProviderModel);
+  DEF_MODEL_ID(SimpleKbNodeAdderModel);
 
   SNAIL_SIGSLOT2(KbNodeAdded,
                  void(IKbNode* new_kbnode, IKbNode* parent_kbnode));

@@ -1,4 +1,4 @@
-//-*- TestCaseName: KbNodeProviderPresenterTest;-*-
+//-*- TestCaseName: SimpleKbNodeAdderPresenterTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -11,9 +11,9 @@
 #include "test/testutils/random_string.h"
 
 // triad headers
-#include "snail/mock_kbnode_provider_model.h"
-#include "qtui/mock_kbnode_provider_view.h"
-#include "src/qtui/core/kbnode_provider_presenter.h"
+#include "snail/mock_simple_kbnode_adder_model.h"
+#include "qtui/mock_simple_kbnode_adder_view.h"
+#include "src/qtui/core/simple_kbnode_adder_presenter.h"
 
 #include "snail/mock_kbnode_provider.h"
 #include "qtui/mock_kbnode_tree_qmodel.h"
@@ -24,17 +24,17 @@ using namespace pfmvp;  // NOLINT
 using namespace pfmvp::tests;  // NOLINT
 
 template <typename TestBase>
-class KbNodeProviderPresenterTestBase : public TestBase {
+class SimpleKbNodeAdderPresenterTestBase : public TestBase {
  protected:
-  KbNodeProviderPresenterTestBase() {
+  SimpleKbNodeAdderPresenterTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~KbNodeProviderPresenterTestBase() { }
+  // ~SimpleKbNodeAdderPresenterTestBase() { }
   virtual void SetUp() {
     // Setup fixture
-    model = std::make_shared<MockKbNodeProviderModel>();
-    view = std::make_shared<MockKbNodeProviderView>();
+    model = std::make_shared<MockSimpleKbNodeAdderModel>();
+    view = std::make_shared<MockSimpleKbNodeAdderView>();
     auto kbnode_qmodel_up = utils::make_unique<MockKbNodeTreeQModel>();
     kbnode_qmodel = kbnode_qmodel_up.get();
 
@@ -99,7 +99,7 @@ class KbNodeProviderPresenterTestBase : public TestBase {
         .WillOnce(SaveArg<0>(&userClickAddButton));
 
     // Excercise system
-    presenter = std::make_shared<KbNodeProviderPresenter>(
+    presenter = std::make_shared<SimpleKbNodeAdderPresenter>(
         model, view, std::move(kbnode_qmodel_up));
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
@@ -109,8 +109,8 @@ class KbNodeProviderPresenterTestBase : public TestBase {
   // virtual void TearDown() { }
 
   // region: objects test subject depends on
-  std::shared_ptr<MockKbNodeProviderModel> model;
-  std::shared_ptr<MockKbNodeProviderView> view;
+  std::shared_ptr<MockSimpleKbNodeAdderModel> model;
+  std::shared_ptr<MockSimpleKbNodeAdderView> view;
 
   MockKbNodeProvider kbnode_provider;
   MockKbNodeTreeQModel* kbnode_qmodel;
@@ -120,30 +120,30 @@ class KbNodeProviderPresenterTestBase : public TestBase {
   // endregion
 
   // region: test subject
-  std::shared_ptr<KbNodeProviderPresenter> presenter;
+  std::shared_ptr<SimpleKbNodeAdderPresenter> presenter;
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IKbNodeProviderView::UserSelectIndexSlotType> userSelectIndex;
+  SlotCatcher<ISimpleKbNodeAdderView::UserSelectIndexSlotType> userSelectIndex;
 
   using NewKbNodeNameChangedSlotType =
-      IKbNodeProviderView::NewKbNodeNameChangedSlotType;
+      ISimpleKbNodeAdderView::NewKbNodeNameChangedSlotType;
   SlotCatcher<NewKbNodeNameChangedSlotType> newKbNodeNameChanged;
 
   using UserClickAddButtonSlotType =
-      IKbNodeProviderView::UserClickAddButtonSlotType;
+      ISimpleKbNodeAdderView::UserClickAddButtonSlotType;
   SlotCatcher<UserClickAddButtonSlotType> userClickAddButton;
 
   using UserToggleCategoryCheckboxSlotType =
-      IKbNodeProviderView::UserToggleCategoryCheckboxSlotType;
+      ISimpleKbNodeAdderView::UserToggleCategoryCheckboxSlotType;
   SlotCatcher<UserToggleCategoryCheckboxSlotType> userToggleCategoryCheckbox;
   // endregion
 };
 
-class KbNodeProviderPresenterTest
-    : public KbNodeProviderPresenterTestBase<::testing::Test> { };
+class SimpleKbNodeAdderPresenterTest
+    : public SimpleKbNodeAdderPresenterTestBase<::testing::Test> { };
 
-TEST_F(KbNodeProviderPresenterTest,
+TEST_F(SimpleKbNodeAdderPresenterTest,
        should_set_current_select_kbnode_as_new_kbnode_parent) { // NOLINT
   auto index = index_generator.index();
   auto kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -157,14 +157,14 @@ TEST_F(KbNodeProviderPresenterTest,
   userSelectIndex(index);
 }
 
-class KbNodeProviderPresenterTest_BoolParam
-    : public KbNodeProviderPresenterTestBase<::testing::TestWithParam<bool>> {};
+class SimpleKbNodeAdderPresenterTest_BoolParam
+    : public SimpleKbNodeAdderPresenterTestBase<::testing::TestWithParam<bool>> {};
 
 INSTANTIATE_TEST_CASE_P(BoolParam,
-                        KbNodeProviderPresenterTest_BoolParam,
+                        SimpleKbNodeAdderPresenterTest_BoolParam,
                         ::testing::Bool());
 
-TEST_P(KbNodeProviderPresenterTest_BoolParam,
+TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
        should_set_user_entered_new_kbnode_name_to_model_and_update_view_with_validate_status) { // NOLINT
   // Setup fixture
   xtestutils::RandomString new_name;
@@ -184,7 +184,7 @@ TEST_P(KbNodeProviderPresenterTest_BoolParam,
   newKbNodeNameChanged(new_name.qstr());
 }
 
-TEST_P(KbNodeProviderPresenterTest_BoolParam,
+TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
        should_set_isCategory_status_to_model_when_user_toggle_category_checkbox) { // NOLINT
   bool checked = GetParam();
   // Expectations
@@ -194,7 +194,7 @@ TEST_P(KbNodeProviderPresenterTest_BoolParam,
   userToggleCategoryCheckbox(checked);
 }
 
-TEST_F(KbNodeProviderPresenterTest,
+TEST_F(SimpleKbNodeAdderPresenterTest,
        should_call_model_addKbNode_when_user_click_Add_button) { // NOLINT
   // Setup fixture
 

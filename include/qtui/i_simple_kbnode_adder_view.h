@@ -15,9 +15,9 @@ class IKbNodeTreeQModel;
 class QString;
 class QModelIndex;
 
-class IKbNodeProviderView : public GenericViewBase {
+class ISimpleKbNodeAdderView : public GenericViewBase {
  public:
-  virtual ~IKbNodeProviderView() = default;
+  virtual ~ISimpleKbNodeAdderView() = default;
 
   SNAIL_SIGSLOT2(UserSelectIndex, void(const QModelIndex& index));
   SNAIL_SIGSLOT2(NewKbNodeNameChanged, void(const QString& name));

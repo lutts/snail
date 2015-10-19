@@ -23,7 +23,7 @@ SET(qtuiview_SRCS
   attribute_set_view_factory.cc
   kbnode_attribute_edit_view.cc
   kbnode_attribute_edit_view_factory.cc
-  kbnode_provider_view.cc
+  simple_kbnode_adder_view.cc
   kbnode_provider_view_factory.cc
   )
 

@@ -8,9 +8,9 @@
 #ifndef INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
 #define INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
 
-#include "qtui/i_kbnode_provider_view.h"
+#include "qtui/i_simple_kbnode_adder_view.h"
 
-class MockKbNodeProviderView : public IKbNodeProviderView {
+class MockSimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
  public:
   MOCK_METHOD1(showView, bool(bool));
 

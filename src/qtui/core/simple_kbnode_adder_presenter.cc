@@ -4,24 +4,24 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/core/kbnode_provider_presenter.h"
+#include "src/qtui/core/simple_kbnode_adder_presenter.h"
 
 #include <QString>
 #include <QModelIndex>
 
 #include "qtui/i_kbnode_tree_qmodel.h"
 
-KbNodeProviderPresenter::KbNodeProviderPresenter(
+SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
     std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel)
-    : KbNodeProviderPresenterBase(model, view)
+    : SimpleKbNodeAdderPresenterBase(model, view)
     , kbnode_qmodel_(std::move(kbnode_qmodel)) {
 }
 
-KbNodeProviderPresenter::~KbNodeProviderPresenter() = default;
+SimpleKbNodeAdderPresenter::~SimpleKbNodeAdderPresenter() = default;
 
-void KbNodeProviderPresenter::initialize() {
+void SimpleKbNodeAdderPresenter::initialize() {
   view()->setProviderName(U8StringToQString(model()->name()));
 
   auto default_new_kbnode_name = model()->getFilterPattern();

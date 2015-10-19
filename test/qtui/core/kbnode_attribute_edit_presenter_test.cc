@@ -20,8 +20,8 @@
 #include "src/qtui/core/kbnode_attribute_edit_presenter.h"
 #include "snail/mock_kbnode.h"
 
-#include "snail/mock_kbnode_provider_model.h"
-#include "qtui/mock_kbnode_provider_view.h"
+#include "snail/mock_simple_kbnode_adder_model.h"
+#include "qtui/mock_simple_kbnode_adder_view.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -139,26 +139,26 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   SlotCatcher<FinishFilterSlotType> providerFinishFilter;
 
   using KbNodeAddedSlotType =
-      IKbNodeProviderModel::KbNodeAddedSlotType;
+      ISimpleKbNodeAdderModel::KbNodeAddedSlotType;
   SlotCatcher<KbNodeAddedSlotType> kbNodeAdded;
   // endregion
 };
 
 std::function<void()>
 KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
-  auto kbnode_provider_model = std::make_shared<MockKbNodeProviderModel>();
-  auto add_kbnode_dialog_view = std::make_shared<MockKbNodeProviderView>();
+  auto kbnode_provider_model = std::make_shared<MockSimpleKbNodeAdderModel>();
+  auto add_kbnode_dialog_view = std::make_shared<MockSimpleKbNodeAdderView>();
 
   {
     InSequence seq;
 
-    EXPECT_CALL(*model, createKbNodeProviderModel())
+    EXPECT_CALL(*model, createSimpleKbNodeAdderModel())
         .WillOnce(Return(kbnode_provider_model));
     EXPECT_CALL(*kbnode_provider_model, whenKbNodeAdded(_, _))
         .WillOnce(SaveArg<0>(&kbNodeAdded));
 
     // the following three are showDialog expectations
-    triad_manager.expectationsOnShowModalDialog<MockKbNodeProviderView>(
+    triad_manager.expectationsOnShowModalDialog<MockSimpleKbNodeAdderView>(
         kbnode_provider_model, add_kbnode_dialog_view);
   }
 

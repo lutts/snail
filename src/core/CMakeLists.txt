@@ -5,7 +5,7 @@ set(core_SRCS ${core_SRCS}
   work_model.cc
   attribute_set_model.cc
   kbnode_attribute_model.cc
-  kbnode_provider_model.cc
+  simple_kbnode_adder_model.cc
   kbnode_provider.cc
   kbnode_manager.cc
   attribute.cc

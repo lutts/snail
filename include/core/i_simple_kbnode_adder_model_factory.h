@@ -11,14 +11,14 @@
 namespace snailcore {
 
 class IKbNodeProvider;
-class IKbNodeProviderModel;
+class ISimpleKbNodeAdderModel;
 
-class IKbNodeProviderModelFactory {
+class ISimpleKbNodeAdderModelFactory {
  public:
-  virtual ~IKbNodeProviderModelFactory() = default;
+  virtual ~ISimpleKbNodeAdderModelFactory() = default;
 
-  virtual std::shared_ptr<IKbNodeProviderModel>
-  createKbNodeProviderModel(IKbNodeProvider* provider) const = 0;
+  virtual std::shared_ptr<ISimpleKbNodeAdderModel>
+  createSimpleKbNodeAdderModel(IKbNodeProvider* provider) const = 0;
 };
 
 }  // namespace snailcore

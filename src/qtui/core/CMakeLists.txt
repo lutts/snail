@@ -12,7 +12,7 @@ SET(qtuicore_SRCS
   attribute_set_layout.cc
   kbnode_attribute_edit_presenter.cc
   kbnode_tree_qmodel.cc
-  kbnode_provider_presenter.cc
+  simple_kbnode_adder_presenter.cc
   kbnode_link_attribute_inline_editor_presenter.cc
   kbnode_link_attribute_popup_editor_presenter.cc
   )

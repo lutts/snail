@@ -8,7 +8,7 @@
 #ifndef SRC_CORE_KBNODE_PROVIDER_MODEL_H_
 #define SRC_CORE_KBNODE_PROVIDER_MODEL_H_
 
-#include "snail/i_kbnode_provider_model.h"
+#include "snail/i_simple_kbnode_adder_model.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 
@@ -17,11 +17,11 @@ namespace snailcore {
 class IKbNodeProvider;
 class IKbNodeManager;
 
-class KbNodeProviderModel : public IKbNodeProviderModel {
+class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  public:
-  explicit KbNodeProviderModel(IKbNodeProvider* kbnode_provider,
+  explicit SimpleKbNodeAdderModel(IKbNodeProvider* kbnode_provider,
                                IKbNodeManager* kbnode_manager);
-  virtual ~KbNodeProviderModel();
+  virtual ~SimpleKbNodeAdderModel();
 
   utils::U8String name() const override;
   IKbNodeProvider* getKbNodeProvider() const override;
@@ -35,7 +35,7 @@ class KbNodeProviderModel : public IKbNodeProviderModel {
   void addKbNode() override;
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeProviderModel);
+  SNAIL_DISABLE_COPY(SimpleKbNodeAdderModel);
   SNAIL_SIGSLOT_IMPL(KbNodeAdded);
 
   IKbNodeProvider* kbnode_provider_ { nullptr };

@@ -15,13 +15,13 @@
 
 #include "src/core/kbnode_manager.h"
 #include "src/core/kbnode_provider.h"
-#include "src/core/kbnode_provider_model.h"
+#include "src/core/simple_kbnode_adder_model.h"
 #include "src/core/attribute_set_model.h"
 #include "src/core/work_model.h"
 
 // factories
 #include "core/i_kbnode_provider_factory.h"
-#include "core/i_kbnode_provider_model_factory.h"
+#include "core/i_simple_kbnode_adder_model_factory.h"
 #include "src/core/factory/attribute_model_factory.h"
 #include "core/i_attribute_set_model_factory.h"
 #include "core/i_work_model_factory.h"
@@ -30,7 +30,7 @@
 namespace snailcore {
 
 class ApplicationFactoryImpl : public IKbNodeProviderFactory
-                             , public IKbNodeProviderModelFactory
+                             , public ISimpleKbNodeAdderModelFactory
                              , public IAttributeSetModelFactory
                              , public IWorkModelFactory {
  public:
@@ -50,10 +50,10 @@ class ApplicationFactoryImpl : public IKbNodeProviderFactory
     return std::make_shared<KbNodeProvider>(root_kbnode, kbnode_manager);
   }
 
-  // IKbNodeProviderModelFactory
-  std::shared_ptr<IKbNodeProviderModel>
-  createKbNodeProviderModel(IKbNodeProvider* provider) const override {
-    return std::make_shared<KbNodeProviderModel>(provider,
+  // ISimpleKbNodeAdderModelFactory
+  std::shared_ptr<ISimpleKbNodeAdderModel>
+  createSimpleKbNodeAdderModel(IKbNodeProvider* provider) const override {
+    return std::make_shared<SimpleKbNodeAdderModel>(provider,
                                                  kbnode_manager_.get());
   }
 

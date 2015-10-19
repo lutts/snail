@@ -1,4 +1,4 @@
-//-*- TestCaseName: KbNodeProviderModelTest;-*-
+//-*- TestCaseName: SimpleKbNodeAdderModelTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -6,7 +6,7 @@
 //
 // [Desc]
 #include "test/testutils/gmock_common.h"
-#include "src/core/kbnode_provider_model.h"
+#include "src/core/simple_kbnode_adder_model.h"
 #include "snail/mock_kbnode_provider.h"
 #include "core/mock_kbnode_manager.h"
 
@@ -14,16 +14,16 @@ namespace snailcore {
 namespace tests {
 
 template <typename TestBase>
-class KbNodeProviderModelTestBase : public TestBase {
+class SimpleKbNodeAdderModelTestBase : public TestBase {
  protected:
-  KbNodeProviderModelTestBase() {
+  SimpleKbNodeAdderModelTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~KbNodeProviderModelTestBase() { }
+  // ~SimpleKbNodeAdderModelTestBase() { }
   virtual void SetUp() {
     // TODO(lutts): kbnode manager may be get from kbnode provider
-    model = utils::make_unique<KbNodeProviderModel>(&kbnode_provider,
+    model = utils::make_unique<SimpleKbNodeAdderModel>(&kbnode_provider,
                                                     &kbnode_manager);
   }
   // virtual void TearDown() { }
@@ -34,17 +34,17 @@ class KbNodeProviderModelTestBase : public TestBase {
   // endregion
 
   // region: test subject
-  std::unique_ptr<KbNodeProviderModel> model;
+  std::unique_ptr<SimpleKbNodeAdderModel> model;
   // endregion
 
   // region: object depends on test subject
   // endregion
 };
 
-class KbNodeProviderModelTest :
-      public KbNodeProviderModelTestBase<::testing::Test> { };
+class SimpleKbNodeAdderModelTest :
+      public SimpleKbNodeAdderModelTestBase<::testing::Test> { };
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_model_name_be_provider_name) { // NOLINT
   // Setup fixture
   auto provider_name = xtestutils::genRandomString();
@@ -59,12 +59,12 @@ TEST_F(KbNodeProviderModelTest,
   ASSERT_EQ(provider_name, actual_name);
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_be_able_to_get_the_kbnode_provider) { // NOLINT
   ASSERT_EQ(&kbnode_provider, model->getKbNodeProvider());
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_filter_pattern_be_provider_filter_pattern) { // NOLINT
   // Setup fixture
   auto expect_pattern = xtestutils::genRandomString();
@@ -80,7 +80,7 @@ TEST_F(KbNodeProviderModelTest,
   ASSERT_EQ(expect_pattern, actual_pattern);
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_setFilterPattern_set_to_provider) { // NOLINT
   // Setup fixture
   auto filter_pattern = xtestutils::genRandomString();
@@ -92,7 +92,7 @@ TEST_F(KbNodeProviderModelTest,
   model->setFilterPattern(filter_pattern);
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_be_able_to_set_and_get_new_kbnode_parent) { // NOLINT
   // Setup fixture
   auto expect_kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -107,7 +107,7 @@ TEST_F(KbNodeProviderModelTest,
   ASSERT_EQ(expect_kbnode, model->getNewKbNodeParent());
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_validate_false_when_set_an_empty_name) { // NOLINT
   // initially false
   ASSERT_EQ(false, model->isNewKbNodeNameValid());
@@ -119,7 +119,7 @@ TEST_F(KbNodeProviderModelTest,
   ASSERT_EQ(false, model->isNewKbNodeNameValid());
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_validate_true_when_set_an_non_empty_name) { // NOLINT
   // Setup fixture
   auto name = xtestutils::genRandomString();
@@ -134,12 +134,12 @@ TEST_F(KbNodeProviderModelTest,
   ASSERT_EQ(true, model->isNewKbNodeNameValid());
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IKbNodeProviderModel)
+BEGIN_MOCK_LISTENER_DEF(MockListener, ISimpleKbNodeAdderModel)
 
 MOCK_METHOD2(KbNodeAdded,
                void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
 
-BEGIN_BIND_SIGNAL(IKbNodeProviderModel)
+BEGIN_BIND_SIGNAL(ISimpleKbNodeAdderModel)
 
 BIND_SIGNAL2(KbNodeAdded,
              void, IKbNode*, new_kbnode, IKbNode*, parent_kbnode);
@@ -147,14 +147,14 @@ BIND_SIGNAL2(KbNodeAdded,
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-class KbNodeProviderModelTest_BoolParam :
-      public KbNodeProviderModelTestBase<::testing::TestWithParam<bool>> { };
+class SimpleKbNodeAdderModelTest_BoolParam :
+      public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool>> { };
 
 INSTANTIATE_TEST_CASE_P(BoolParam,
-                        KbNodeProviderModelTest_BoolParam,
+                        SimpleKbNodeAdderModelTest_BoolParam,
                         ::testing::Bool());
 
-TEST_P(KbNodeProviderModelTest_BoolParam,
+TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
        should_add_kbnode_with_use_setted_params_and_emit_KbNodeAdded_when_add_successful) { // NOLINT
   // Setup fixture
   auto expect_parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -179,7 +179,7 @@ TEST_P(KbNodeProviderModelTest_BoolParam,
   model->addKbNode();
 }
 
-TEST_F(KbNodeProviderModelTest,
+TEST_F(SimpleKbNodeAdderModelTest,
        should_not_add_kbnode_to_provider_when_name_is_invalid) { // NOLINT
   // Expectations
   EXPECT_CALL(kbnode_manager, addKbNode(_, _, _)).Times(0);
@@ -191,7 +191,7 @@ TEST_F(KbNodeProviderModelTest,
   model->addKbNode();
 }
 
-TEST_P(KbNodeProviderModelTest_BoolParam,
+TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
        should_not_emit_KbNodeAdded_when_add_failed) { // NOLINT
   // Setup fixture
   auto expect_parent_kbnode = xtestutils::genDummyPointer<IKbNode>();

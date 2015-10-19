@@ -15,7 +15,7 @@ namespace snailcore {
 class IKbNode;
 class IKbNodeProvider;
 
-class IKbNodeProviderModel;
+class ISimpleKbNodeAdderModel;
 
 class IKbNodeAttributeModel : public IAttributeModel {
  public:
@@ -31,7 +31,7 @@ class IKbNodeAttributeModel : public IAttributeModel {
 
   virtual IKbNodeProvider* getKbNodeProvider() const = 0;
   virtual
-  std::shared_ptr<IKbNodeProviderModel> createKbNodeProviderModel() const = 0;
+  std::shared_ptr<ISimpleKbNodeAdderModel> createSimpleKbNodeAdderModel() const = 0;
 
   virtual utils::U8String getKbNodeName() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;

@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/ui/kbnode_provider_view.h"
+#include "src/qtui/ui/simple_kbnode_adder_view.h"
 
 #include <QDialog>
 #include <QFormLayout>
@@ -18,31 +18,31 @@
 #include "utils/basic_utils.h"
 #include "qtui/i_kbnode_tree_qmodel.h"
 
-class KbNodeProviderViewImpl : public QDialog {
+class SimpleKbNodeAdderViewImpl : public QDialog {
   Q_OBJECT
 
  public:
-  KbNodeProviderViewImpl();
-  virtual ~KbNodeProviderViewImpl() = default;
+  SimpleKbNodeAdderViewImpl();
+  virtual ~SimpleKbNodeAdderViewImpl() = default;
 
   void setProviderName(const QString& provider_name) {
     setWindowTitle(tr("Add %1").arg(provider_name));
   }
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeProviderViewImpl);
+  SNAIL_DISABLE_COPY(SimpleKbNodeAdderViewImpl);
 
   QTreeView* tree_view_;
   QLineEdit* kbnode_name_editor_;
   QPushButton *add_button;
 
-  KbNodeProviderView* q_ptr;
-  friend class KbNodeProviderView;
+  SimpleKbNodeAdderView* q_ptr;
+  friend class SimpleKbNodeAdderView;
 };
 
-#include "kbnode_provider_view.moc"
+#include "simple_kbnode_adder_view.moc"
 
-KbNodeProviderViewImpl::KbNodeProviderViewImpl()
+SimpleKbNodeAdderViewImpl::SimpleKbNodeAdderViewImpl()
     : QDialog(nullptr) {
   auto layout_ = new QFormLayout(this);
 
@@ -86,27 +86,27 @@ KbNodeProviderViewImpl::KbNodeProviderViewImpl()
   layout_->addRow(buttonBox);
 }
 
-KbNodeProviderView::KbNodeProviderView()
-    : impl(utils::make_unique<KbNodeProviderViewImpl>()) {
+SimpleKbNodeAdderView::SimpleKbNodeAdderView()
+    : impl(utils::make_unique<SimpleKbNodeAdderViewImpl>()) {
   impl->q_ptr = this;
 }
 
-KbNodeProviderView::~KbNodeProviderView() = default;
+SimpleKbNodeAdderView::~SimpleKbNodeAdderView() = default;
 
-bool KbNodeProviderView::showView(bool modal) {
+bool SimpleKbNodeAdderView::showView(bool modal) {
   (void)modal;
   return impl->exec() == QDialog::Accepted;
 }
 
-void KbNodeProviderView::setProviderName(const QString& provider_name) {
+void SimpleKbNodeAdderView::setProviderName(const QString& provider_name) {
   impl->setProviderName(provider_name);
 }
 
-void KbNodeProviderView::setNewKbNodeName(const QString& name) {
+void SimpleKbNodeAdderView::setNewKbNodeName(const QString& name) {
   impl->kbnode_name_editor_->setText(name);
 }
 
-void KbNodeProviderView::setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) {
+void SimpleKbNodeAdderView::setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) {
   auto model = dynamic_cast<QAbstractItemModel*>(tree_model);
   if (!model)
     return;
@@ -122,10 +122,10 @@ void KbNodeProviderView::setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) {
       });
 }
 
-void KbNodeProviderView::selectIndex(const QModelIndex& index) {
+void SimpleKbNodeAdderView::selectIndex(const QModelIndex& index) {
   impl->tree_view_->setCurrentIndex(index);
 }
 
-void KbNodeProviderView::setNameValidateResult(bool result) {
+void SimpleKbNodeAdderView::setNameValidateResult(bool result) {
   impl->add_button->setEnabled(result);
 }

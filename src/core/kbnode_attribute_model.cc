@@ -8,14 +8,14 @@
 #include "core/i_kbnode_attribute.h"
 #include "core/i_kbnode_manager.h"
 #include "snail/i_kbnode_provider.h"
-#include "core/i_kbnode_provider_model_factory.h"
+#include "core/i_simple_kbnode_adder_model_factory.h"
 
 namespace snailcore {
 
 KbNodeAttributeModel::KbNodeAttributeModel(
     IKbNodeAttribute* kbnode_attr,
     IKbNodeManager* kbnode_manager,
-    IKbNodeProviderModelFactory* kbnode_provider_model_factory)
+    ISimpleKbNodeAdderModelFactory* kbnode_provider_model_factory)
     : kbnode_attr_(kbnode_attr)
     , kbnode_manager_(kbnode_manager)
     , kbnode_provider_model_factory_(kbnode_provider_model_factory) { }
@@ -42,10 +42,10 @@ IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
   return kbnode_provider_.get();
 }
 
-std::shared_ptr<IKbNodeProviderModel>
-KbNodeAttributeModel::createKbNodeProviderModel() const {
+std::shared_ptr<ISimpleKbNodeAdderModel>
+KbNodeAttributeModel::createSimpleKbNodeAdderModel() const {
   return kbnode_provider_model_factory_->
-      createKbNodeProviderModel(getKbNodeProvider());
+      createSimpleKbNodeAdderModel(getKbNodeProvider());
 }
 
 utils::U8String KbNodeAttributeModel::getKbNodeName() const {

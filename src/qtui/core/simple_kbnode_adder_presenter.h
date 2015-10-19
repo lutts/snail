@@ -11,25 +11,25 @@
 #include <memory>  // std::shared_ptr
 
 #include "pfmvp/pf_presenter.h"
-#include "snail/i_kbnode_provider_model.h"
-#include "qtui/i_kbnode_provider_view.h"
+#include "snail/i_simple_kbnode_adder_model.h"
+#include "qtui/i_simple_kbnode_adder_view.h"
 
-using KbNodeProviderPresenterBase =
-    pfmvp::PfPresenterT<snailcore::IKbNodeProviderModel,
-                        IKbNodeProviderView>;
+using SimpleKbNodeAdderPresenterBase =
+    pfmvp::PfPresenterT<snailcore::ISimpleKbNodeAdderModel,
+                        ISimpleKbNodeAdderView>;
 
-class KbNodeProviderPresenter : public KbNodeProviderPresenterBase {
+class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
  public:
-  KbNodeProviderPresenter(
+  SimpleKbNodeAdderPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
       std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel);
-  ~KbNodeProviderPresenter();
+  ~SimpleKbNodeAdderPresenter();
 
   void initialize() override;
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeProviderPresenter);
+  SNAIL_DISABLE_COPY(SimpleKbNodeAdderPresenter);
 
   std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel_;
 };

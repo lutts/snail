@@ -4,57 +4,57 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/core/kbnode_provider_model.h"
+#include "src/core/simple_kbnode_adder_model.h"
 #include "snail/i_kbnode_provider.h"
 #include "core/i_kbnode_manager.h"
 
 namespace snailcore {
 
-KbNodeProviderModel::KbNodeProviderModel(IKbNodeProvider* kbnode_provider,
+SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(IKbNodeProvider* kbnode_provider,
                                          IKbNodeManager* kbnode_manager)
     : kbnode_provider_(kbnode_provider)
     , kbnode_manager_(kbnode_manager) { }
 
-KbNodeProviderModel::~KbNodeProviderModel() = default;
+SimpleKbNodeAdderModel::~SimpleKbNodeAdderModel() = default;
 
-utils::U8String KbNodeProviderModel::name() const {
+utils::U8String SimpleKbNodeAdderModel::name() const {
   return kbnode_provider_->name();
 }
 
-IKbNodeProvider* KbNodeProviderModel::getKbNodeProvider() const {
+IKbNodeProvider* SimpleKbNodeAdderModel::getKbNodeProvider() const {
   return kbnode_provider_;
 }
 
-utils::U8String KbNodeProviderModel::getFilterPattern() const {
+utils::U8String SimpleKbNodeAdderModel::getFilterPattern() const {
   return kbnode_provider_->getFilterPattern();
 }
 
-void KbNodeProviderModel::setFilterPattern(
+void SimpleKbNodeAdderModel::setFilterPattern(
     const utils::U8String& filter_pattern) {
   kbnode_provider_->setFilterPattern(filter_pattern);
 }
 
-IKbNode* KbNodeProviderModel::getNewKbNodeParent() const {
+IKbNode* SimpleKbNodeAdderModel::getNewKbNodeParent() const {
   return new_kbnode_parent_;
 }
 
-void KbNodeProviderModel::setNewKbNodeParent(IKbNode* kbnode) {
+void SimpleKbNodeAdderModel::setNewKbNodeParent(IKbNode* kbnode) {
   new_kbnode_parent_ = kbnode;
 }
 
-void KbNodeProviderModel::setNewKbNodeName(const utils::U8String& name) {
+void SimpleKbNodeAdderModel::setNewKbNodeName(const utils::U8String& name) {
   new_name_ = name;
 }
 
-bool KbNodeProviderModel::isNewKbNodeNameValid() const {
+bool SimpleKbNodeAdderModel::isNewKbNodeNameValid() const {
   return new_name_ != "";
 }
 
-void KbNodeProviderModel::setIsCategory(bool category) {
+void SimpleKbNodeAdderModel::setIsCategory(bool category) {
   is_category_ = category;
 }
 
-void KbNodeProviderModel::addKbNode() {
+void SimpleKbNodeAdderModel::addKbNode() {
   if (!isNewKbNodeNameValid())
     return;
 

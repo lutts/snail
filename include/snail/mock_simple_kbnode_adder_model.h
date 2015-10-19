@@ -8,12 +8,12 @@
 #ifndef INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
 #define INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
 
-#include "snail/i_kbnode_provider_model.h"
+#include "snail/i_simple_kbnode_adder_model.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeProviderModel : public IKbNodeProviderModel {
+class MockSimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  public:
   SNAIL_MOCK_SLOT(KbNodeAdded);
 

@@ -11,7 +11,7 @@
 #include "utils/u8string.h"
 #include "snail/i_kbnode.h"
 #include "snail/i_kbnode_provider.h"
-#include "snail/i_kbnode_provider_model.h"
+#include "snail/i_simple_kbnode_adder_model.h"
 
 using namespace snailcore;  // NOLINT
 
@@ -62,7 +62,7 @@ void KbNodeAttributeEditPresenter::initialize() {
 }
 
 void KbNodeAttributeEditPresenter::addKbNode() {
-  auto provider_model = model()->createKbNodeProviderModel();
+  auto provider_model = model()->createSimpleKbNodeAdderModel();
 
   provider_model->whenKbNodeAdded(
       [this](IKbNode* new_kbnode, IKbNode* parent_kbnode) {

@@ -21,8 +21,8 @@ class MockKbNodeAttributeModel : public IKbNodeAttributeModel {
 
   // Self
   MOCK_CONST_METHOD0(getKbNodeProvider, IKbNodeProvider*());
-  MOCK_CONST_METHOD0(createKbNodeProviderModel,
-                     std::shared_ptr<IKbNodeProviderModel>());
+  MOCK_CONST_METHOD0(createSimpleKbNodeAdderModel,
+                     std::shared_ptr<ISimpleKbNodeAdderModel>());
 
   MOCK_CONST_METHOD0(getKbNodeName, utils::U8String());
   MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));

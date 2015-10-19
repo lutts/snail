@@ -8,16 +8,16 @@
 #ifndef INCLUDE_CORE_MOCK_KBNODE_PROVIDER_MODEL_FACTORY_H_
 #define INCLUDE_CORE_MOCK_KBNODE_PROVIDER_MODEL_FACTORY_H_
 
-#include "core/i_kbnode_provider_model_factory.h"
+#include "core/i_simple_kbnode_adder_model_factory.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeProviderModelFactory : public IKbNodeProviderModelFactory {
+class MockSimpleKbNodeAdderModelFactory : public ISimpleKbNodeAdderModelFactory {
  public:
   MOCK_CONST_METHOD1(
-      createKbNodeProviderModel,
-      std::shared_ptr<IKbNodeProviderModel>(IKbNodeProvider* provider));
+      createSimpleKbNodeAdderModel,
+      std::shared_ptr<ISimpleKbNodeAdderModel>(IKbNodeProvider* provider));
 };
 
 }  // namespace tests
