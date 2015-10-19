@@ -21,7 +21,7 @@ class SimpleKbNodeAdderModelTestBase : public TestBase {
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~SimpleKbNodeAdderModelTestBase() { }
-  virtual void SetUp() {
+  void SetUp() override {
     // TODO(lutts): kbnode manager may be get from kbnode provider
     model = utils::make_unique<SimpleKbNodeAdderModel>(&kbnode_provider,
                                                     &kbnode_manager);
@@ -147,8 +147,8 @@ BIND_SIGNAL2(KbNodeAdded,
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-class SimpleKbNodeAdderModelTest_BoolParam :
-      public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool>> { };
+class SimpleKbNodeAdderModelTest_BoolParam
+    : public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool> > { };
 
 INSTANTIATE_TEST_CASE_P(BoolParam,
                         SimpleKbNodeAdderModelTest_BoolParam,
@@ -174,6 +174,35 @@ TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener,
               KbNodeAdded(expect_new_kbnode, expect_parent_kbnode));
+
+  // Exercise system
+  model->addKbNode();
+}
+
+TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
+       should_use_provider_root_kbnode_as_parent_when_user_setted_parent_is_nullptr) { // NOLINT
+  // Setup fixture
+  auto expect_new_kbnode = xtestutils::genDummyPointer<IKbNode>();
+  auto expect_new_name = xtestutils::genRandomString();
+  auto expect_category = GetParam();
+
+  model->setNewKbNodeParent(nullptr);
+  model->setNewKbNodeName(expect_new_name);
+  model->setIsCategory(expect_category);
+
+  IKbNode* root_kbnode = xtestutils::genDummyPointer<IKbNode>();
+
+  EXPECT_CALL(kbnode_provider, getRootItem())
+      .WillOnce(Return(root_kbnode));
+
+  // Expectations
+  EXPECT_CALL(kbnode_manager,
+              addKbNode(expect_new_name, root_kbnode, expect_category))
+      .WillOnce(Return(expect_new_kbnode));
+
+  auto mock_listener = MockListener::attachTo(model.get());
+  EXPECT_CALL(*mock_listener,
+              KbNodeAdded(expect_new_kbnode, nullptr));
 
   // Exercise system
   model->addKbNode();

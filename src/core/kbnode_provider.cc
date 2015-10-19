@@ -75,13 +75,6 @@ bool KbNodeProvider::isFilterMode() const {
   return filter_pattern_ != "";
 }
 
-IKbNode* KbNodeProvider::addKbNode(
-    const utils::U8String& name, IKbNode* parent, bool is_category) {
-  if (parent == nullptr)
-    parent = root_kbnode_;
-  return node_manager_->addKbNode(name, parent, is_category);
-}
-
 std::unique_ptr<IKbNodeProvider::IChildNodeIterator>
 KbNodeProvider::childNodes(IKbNode* parent_node) const {
   if (isFilterMode()) {

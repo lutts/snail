@@ -214,41 +214,6 @@ TEST_F(KbNodeProviderTest,
   CUSTOM_ASSERT(checkNonFilterModelKbNodeHierarchy());
 }
 
-class KbNodeProviderTest_BoolParam :
-      public KbNodeProviderTestBase<::testing::TestWithParam<bool>> { };
-
-INSTANTIATE_TEST_CASE_P(BoolParam,
-                        KbNodeProviderTest_BoolParam,
-                        ::testing::Bool());
-
-TEST_P(KbNodeProviderTest_BoolParam,
-       should_addKbNode_actual_call_node_manager_addKbNode) { // NOLINT
-  // Setup fixture
-  auto expect_name = xtestutils::genRandomString();
-  auto foo1_parent_node = xtestutils::genDummyPointer<IKbNode>();
-  auto foo1_child_node = xtestutils::genDummyPointer<IKbNode>();
-  auto root_child_node = xtestutils::genDummyPointer<IKbNode>();
-  auto is_category = GetParam();
-
-  // Expectations
-  EXPECT_CALL(node_manager_, addKbNode(expect_name,
-                                       foo1_parent_node, is_category))
-      .WillOnce(Return(foo1_child_node));
-  // when called with null parent, root is the actual parent
-  EXPECT_CALL(node_manager_, addKbNode(expect_name, &root_kbnode_, is_category))
-      .WillOnce(Return(root_child_node));
-
-  // Exercise system
-  auto actual_foo1_child_node =
-      kbnode_provider_->addKbNode(expect_name, foo1_parent_node, is_category);
-  auto actual_root_child_node =
-      kbnode_provider_->addKbNode(expect_name, nullptr, is_category);
-
-  // Verify results
-  ASSERT_EQ(foo1_child_node, actual_foo1_child_node);
-  ASSERT_EQ(root_child_node, actual_root_child_node);
-}
-
 TEST_F(KbNodeProviderTest,
        should_incRef_call_node_manager_incRef) { // NOLINT
   // Setup fixture

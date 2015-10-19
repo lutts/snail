@@ -38,9 +38,7 @@ class IKbNodeProvider {
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
   virtual utils::U8String getFilterPattern() const = 0;
   virtual bool isFilterMode() const = 0;
-  virtual IKbNode* addKbNode(const utils::U8String& name,
-                             IKbNode* parent, bool is_category) = 0;
-
+  virtual IKbNode* getRootItem() const = 0;
   virtual std::unique_ptr<IChildNodeIterator>
   childNodes(IKbNode* parent_node) const = 0;
 

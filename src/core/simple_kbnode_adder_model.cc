@@ -58,15 +58,13 @@ void SimpleKbNodeAdderModel::addKbNode() {
   if (!isNewKbNodeNameValid())
     return;
 
-#if 0
-  IKbNode* kbnode_parent = new_kbnode_parent_;
-  if (!kbnode_parent)
-    kbnode_parent = kbnode_provider_->getRootKbNode();
-#endif
+  IKbNode* actual_kbnode_parent = new_kbnode_parent_;
+  if (!actual_kbnode_parent)
+    actual_kbnode_parent = kbnode_provider_->getRootItem();
 
   auto new_kbnode = kbnode_manager_->addKbNode(new_name_,
-                                                new_kbnode_parent_,
-                                                is_category_);
+                                               actual_kbnode_parent,
+                                               is_category_);
   if (new_kbnode)
     KbNodeAdded(new_kbnode, new_kbnode_parent_);
 }

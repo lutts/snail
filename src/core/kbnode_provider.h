@@ -29,8 +29,8 @@ class KbNodeProvider : public IKbNodeProvider {
   void setFilterPattern(const utils::U8String& filter_pattern) override;
   utils::U8String getFilterPattern() const override;
   bool isFilterMode() const override;
-  IKbNode* addKbNode(const utils::U8String& name,
-                     IKbNode* parent, bool is_category) override;
+
+  IKbNode* getRootItem() const { return nullptr; }
 
   std::unique_ptr<IChildNodeIterator>
   childNodes(IKbNode* parent_node) const override;
