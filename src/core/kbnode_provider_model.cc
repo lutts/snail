@@ -6,11 +6,14 @@
 // [Desc]
 #include "src/core/kbnode_provider_model.h"
 #include "snail/i_kbnode_provider.h"
+#include "core/i_kbnode_manager.h"
 
 namespace snailcore {
 
-KbNodeProviderModel::KbNodeProviderModel(IKbNodeProvider* kbnode_provider)
-    : kbnode_provider_(kbnode_provider) { }
+KbNodeProviderModel::KbNodeProviderModel(IKbNodeProvider* kbnode_provider,
+                                         IKbNodeManager* kbnode_manager)
+    : kbnode_provider_(kbnode_provider)
+    , kbnode_manager_(kbnode_manager) { }
 
 KbNodeProviderModel::~KbNodeProviderModel() = default;
 
@@ -55,7 +58,13 @@ void KbNodeProviderModel::addKbNode() {
   if (!isNewKbNodeNameValid())
     return;
 
-  auto new_kbnode = kbnode_provider_->addKbNode(new_name_,
+#if 0
+  IKbNode* kbnode_parent = new_kbnode_parent_;
+  if (!kbnode_parent)
+    kbnode_parent = kbnode_provider_->getRootKbNode();
+#endif
+
+  auto new_kbnode = kbnode_manager_->addKbNode(new_name_,
                                                 new_kbnode_parent_,
                                                 is_category_);
   if (new_kbnode)

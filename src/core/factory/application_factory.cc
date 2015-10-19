@@ -53,7 +53,8 @@ class ApplicationFactoryImpl : public IKbNodeProviderFactory
   // IKbNodeProviderModelFactory
   std::shared_ptr<IKbNodeProviderModel>
   createKbNodeProviderModel(IKbNodeProvider* provider) const override {
-    return std::make_shared<KbNodeProviderModel>(provider);
+    return std::make_shared<KbNodeProviderModel>(provider,
+                                                 kbnode_manager_.get());
   }
 
   // IAttributeSetModelFactory

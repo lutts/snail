@@ -8,6 +8,7 @@
 #include "test/testutils/gmock_common.h"
 #include "src/core/kbnode_provider_model.h"
 #include "snail/mock_kbnode_provider.h"
+#include "core/mock_kbnode_manager.h"
 
 namespace snailcore {
 namespace tests {
@@ -21,12 +22,15 @@ class KbNodeProviderModelTestBase : public TestBase {
   }
   // ~KbNodeProviderModelTestBase() { }
   virtual void SetUp() {
-    model = utils::make_unique<KbNodeProviderModel>(&kbnode_provider);
+    // TODO(lutts): kbnode manager may be get from kbnode provider
+    model = utils::make_unique<KbNodeProviderModel>(&kbnode_provider,
+                                                    &kbnode_manager);
   }
   // virtual void TearDown() { }
 
   // region: objects test subject depends on
   MockKbNodeProvider kbnode_provider;
+  MockKbNodeManager kbnode_manager;
   // endregion
 
   // region: test subject
@@ -163,7 +167,7 @@ TEST_P(KbNodeProviderModelTest_BoolParam,
   model->setIsCategory(expect_category);
 
   // Expectations
-  EXPECT_CALL(kbnode_provider,
+  EXPECT_CALL(kbnode_manager,
               addKbNode(expect_new_name,
                         expect_parent_kbnode, expect_category))
       .WillOnce(Return(expect_new_kbnode));
@@ -178,7 +182,7 @@ TEST_P(KbNodeProviderModelTest_BoolParam,
 TEST_F(KbNodeProviderModelTest,
        should_not_add_kbnode_to_provider_when_name_is_invalid) { // NOLINT
   // Expectations
-  EXPECT_CALL(kbnode_provider, addKbNode(_, _, _)).Times(0);
+  EXPECT_CALL(kbnode_manager, addKbNode(_, _, _)).Times(0);
 
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener, KbNodeAdded(_, _)).Times(0);
@@ -199,7 +203,7 @@ TEST_P(KbNodeProviderModelTest_BoolParam,
   model->setIsCategory(is_category);
 
   // Expectations
-  EXPECT_CALL(kbnode_provider, addKbNode(expect_new_name,
+  EXPECT_CALL(kbnode_manager, addKbNode(expect_new_name,
                                          expect_parent_kbnode, is_category))
       .WillOnce(Return(nullptr));
 

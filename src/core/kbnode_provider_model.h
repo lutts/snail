@@ -15,10 +15,12 @@
 namespace snailcore {
 
 class IKbNodeProvider;
+class IKbNodeManager;
 
 class KbNodeProviderModel : public IKbNodeProviderModel {
  public:
-  explicit KbNodeProviderModel(IKbNodeProvider* kbnode_provider);
+  explicit KbNodeProviderModel(IKbNodeProvider* kbnode_provider,
+                               IKbNodeManager* kbnode_manager);
   virtual ~KbNodeProviderModel();
 
   utils::U8String name() const override;
@@ -37,6 +39,7 @@ class KbNodeProviderModel : public IKbNodeProviderModel {
   SNAIL_SIGSLOT_IMPL(KbNodeAdded);
 
   IKbNodeProvider* kbnode_provider_ { nullptr };
+  IKbNodeManager* kbnode_manager_ { nullptr };
   IKbNode* new_kbnode_parent_ { nullptr };
   utils::U8String new_name_ { "" };
   bool is_category_ { false };
