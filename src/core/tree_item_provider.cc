@@ -94,18 +94,4 @@ void TreeItemProvider::incRef(IKbNode* kbnode) {
   node_manager_->incRef(kbnode);
 }
 
-std::vector<IKbNode*>
-TreeItemProvider::findItemByName(const utils::U8String& name) {
-  if (root_kbnode_ == nullptr)
-    return std::vector<IKbNode*>();
-
-  if (name.empty())
-    return std::vector<IKbNode*>();
-
-  if (name == filter_pattern_)
-    return matched_kbnodes_;
-
-  return node_manager_->findKbNode(name, root_kbnode_);
-}
-
 }  // namespace snailcore

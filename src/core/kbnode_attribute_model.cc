@@ -78,7 +78,8 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
     validateComplete(true);
     return kSetKbNodeSuccess;
   } else if (kbnode_provider_) {
-    auto kbnodes = kbnode_provider_->findItemByName(name);
+    auto kbnodes =
+        kbnode_manager_->findKbNode(name, kbnode_provider_->getRootItem());
     if (kbnodes.empty()) {
       validateComplete(false);
       return kSetKbNodeNotFound;

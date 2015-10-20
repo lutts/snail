@@ -45,8 +45,6 @@ class ITreeItemProvider {
   // TODO(lutts): do we need to move these internal use API to include/core?
   // internal
   virtual void incRef(IKbNode* kbnode) = 0;
-  virtual
-  std::vector<IKbNode*> findItemByName(const utils::U8String& name) = 0;
 };
 
 }  // namespace snailcore

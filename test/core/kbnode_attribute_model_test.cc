@@ -28,18 +28,20 @@ class KbNodeAttributeModelTest : public ::testing::Test {
   // ~KbNodeAttributeModelTest() { }
   virtual void SetUp() {
     kbnode_provider = std::make_shared<MockTreeItemProvider>();
+    root_kbnode = xtestutils::genDummyPointer<IKbNode>();
 
     // get kbnode provider mocks
     EXPECT_CALL(kbnode_attr, supplier())
         .WillRepeatedly(Return(&kbnode_attr_supplier));
 
-    auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
     EXPECT_CALL(kbnode_attr_supplier, getRootKbNode())
         .WillRepeatedly(Return(root_kbnode));
     // can create kbnode provider only once
     EXPECT_CALL(kbnode_manager, createTreeItemProvider(root_kbnode))
         .Times(AtMost(1))
         .WillOnce(Return(kbnode_provider));
+    EXPECT_CALL(*kbnode_provider, getRootItem())
+        .WillRepeatedly(Return(root_kbnode));
 
     model = utils::make_unique<KbNodeAttributeModel>(
         &kbnode_attr, &kbnode_manager, &kbnode_provider_model_factory);
@@ -51,6 +53,8 @@ class KbNodeAttributeModelTest : public ::testing::Test {
   MockKbNodeAttributeSupplier kbnode_attr_supplier;
   MockKbNodeAttribute kbnode_attr;
   MockKbNodeManager kbnode_manager;
+
+  IKbNode* root_kbnode;
   std::shared_ptr<MockTreeItemProvider> kbnode_provider;
   MockSimpleKbNodeAdderModelFactory kbnode_provider_model_factory;
   // endregion
@@ -136,7 +140,7 @@ TEST_F(KbNodeAttributeModelTest,
 
   EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
 
-  EXPECT_CALL(*kbnode_provider, findItemByName(expect_name)).Times(0);
+  EXPECT_CALL(kbnode_manager, findKbNode(_, _)).Times(0);
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
   // unfortunately, FailUninterestingCalls is private
   // Mock::FailUninterestingCalls(kbnode_provider.get());
@@ -162,7 +166,7 @@ TEST_F(KbNodeAttributeModelTest,
   std::vector<IKbNode*> kbnodes;
 
   // Expectations
-  EXPECT_CALL(*kbnode_provider, findItemByName(name))
+  EXPECT_CALL(kbnode_manager, findKbNode(name, root_kbnode))
       .WillOnce(Return(kbnodes));
 
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
@@ -190,7 +194,7 @@ TEST_F(KbNodeAttributeModelTest,
   kbnodes.push_back(kbnode);
 
   // Expectations
-  EXPECT_CALL(*kbnode_provider, findItemByName(name))
+  EXPECT_CALL(kbnode_manager, findKbNode(name, root_kbnode))
       .WillOnce(Return(kbnodes));
 
   EXPECT_CALL(kbnode_attr, setKbNode(kbnode));
@@ -219,7 +223,7 @@ TEST_F(KbNodeAttributeModelTest,
   kbnodes.push_back(xtestutils::genDummyPointer<IKbNode>());
 
   // Expectations
-  EXPECT_CALL(*kbnode_provider, findItemByName(name))
+  EXPECT_CALL(kbnode_manager, findKbNode(name, root_kbnode))
       .WillOnce(Return(kbnodes));
 
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);

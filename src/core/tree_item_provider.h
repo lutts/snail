@@ -30,13 +30,12 @@ class TreeItemProvider : public ITreeItemProvider {
   utils::U8String getFilterPattern() const override;
   bool isFilterMode() const override;
 
-  IKbNode* getRootItem() const { return nullptr; }
+  IKbNode* getRootItem() const { return nullptr; }  // TODO(lutts): impl this
 
   std::unique_ptr<IChildItemIterator>
   childItems(IKbNode* parent_node) const override;
 
   void incRef(IKbNode* kbnode) override;
-  std::vector<IKbNode*> findItemByName(const utils::U8String& name) override;
 
  private:
   SNAIL_DISABLE_COPY(TreeItemProvider);
