@@ -90,8 +90,4 @@ TreeItemProvider::childItems(IKbNode* parent_node) const {
   }
 }
 
-void TreeItemProvider::incRef(IKbNode* kbnode) {
-  node_manager_->incRef(kbnode);
-}
-
 }  // namespace snailcore

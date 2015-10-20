@@ -27,8 +27,6 @@ class MockTreeItemProvider : public ITreeItemProvider {
   MOCK_CONST_METHOD0(getRootItem, IKbNode*());
   MOCK_CONST_METHOD1(childItems,
                      std::unique_ptr<IChildItemIterator>(IKbNode* parent_node));
-
-  MOCK_METHOD1(incRef, void(IKbNode* kbnode));
 };
 
 }  // namespace tests

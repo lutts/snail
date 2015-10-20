@@ -41,10 +41,6 @@ class ITreeItemProvider {
   virtual IKbNode* getRootItem() const = 0;
   virtual std::unique_ptr<IChildItemIterator>
   childItems(IKbNode* parent_node) const = 0;
-
-  // TODO(lutts): do we need to move these internal use API to include/core?
-  // internal
-  virtual void incRef(IKbNode* kbnode) = 0;
 };
 
 }  // namespace snailcore

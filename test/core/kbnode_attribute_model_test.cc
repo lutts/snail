@@ -116,7 +116,7 @@ TEST_F(KbNodeAttributeModelTest,
   EXPECT_CALL(kbnode_attr, setKbNode(kbnode));
   // quit filter mode
   EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
-  EXPECT_CALL(*kbnode_provider, incRef(kbnode));
+  EXPECT_CALL(kbnode_manager, incRef(kbnode));
 
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener, ValidateComplete());
@@ -199,7 +199,7 @@ TEST_F(KbNodeAttributeModelTest,
 
   EXPECT_CALL(kbnode_attr, setKbNode(kbnode));
   EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
-  EXPECT_CALL(*kbnode_provider, incRef(kbnode));
+  EXPECT_CALL(kbnode_manager, incRef(kbnode));
 
   auto mock_listener = MockListener::attachTo(model.get());
   EXPECT_CALL(*mock_listener, ValidateComplete());

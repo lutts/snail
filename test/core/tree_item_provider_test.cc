@@ -214,17 +214,5 @@ TEST_F(TreeItemProviderTest,
   CUSTOM_ASSERT(checkNonFilterModelKbNodeHierarchy());
 }
 
-TEST_F(TreeItemProviderTest,
-       should_incRef_call_node_manager_incRef) { // NOLINT
-  // Setup fixture
-  auto kbnode = xtestutils::genDummyPointer<IKbNode>();
-
-  // Expectations
-  EXPECT_CALL(node_manager_, incRef(kbnode));
-
-  // Exercise system
-  kbnode_provider_->incRef(kbnode);
-}
-
 }  // namespace tests
 }  // namespace snailcore

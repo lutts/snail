@@ -59,7 +59,7 @@ void KbNodeAttributeModel::setKbNode(IKbNode* kbnode) {
     kbnode_attr_->setKbNode(kbnode);
     // quit filter mode
     kbnode_provider_->setFilterPattern("");
-    kbnode_provider_->incRef(kbnode);
+    kbnode_manager_->incRef(kbnode);
 
     // if kbnode is nullptr, the validate result is true, but attr will be empty
     validateComplete(true);
@@ -87,7 +87,7 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
       auto kbnode = kbnodes[0];
       kbnode_attr_->setKbNode(kbnode);
       kbnode_provider_->setFilterPattern("");
-      kbnode_provider_->incRef(kbnode);
+      kbnode_manager_->incRef(kbnode);
 
       validateComplete(true);
       return kSetKbNodeSuccess;

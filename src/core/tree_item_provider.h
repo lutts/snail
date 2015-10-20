@@ -35,8 +35,6 @@ class TreeItemProvider : public ITreeItemProvider {
   std::unique_ptr<IChildItemIterator>
   childItems(IKbNode* parent_node) const override;
 
-  void incRef(IKbNode* kbnode) override;
-
  private:
   SNAIL_DISABLE_COPY(TreeItemProvider);
 
