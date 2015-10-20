@@ -16,7 +16,7 @@
 #include "src/qtui/core/simple_kbnode_adder_presenter.h"
 
 #include "snail/mock_tree_item_provider.h"
-#include "qtui/mock_kbnode_tree_qmodel.h"
+#include "qtui/mock_tree_item_qmodel.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -35,7 +35,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
     // Setup fixture
     model = std::make_shared<MockSimpleKbNodeAdderModel>();
     view = std::make_shared<MockSimpleKbNodeAdderView>();
-    auto kbnode_qmodel_up = utils::make_unique<MockKbNodeTreeQModel>();
+    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel>();
     kbnode_qmodel = kbnode_qmodel_up.get();
 
     // Expectations
@@ -113,7 +113,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
   std::shared_ptr<MockSimpleKbNodeAdderView> view;
 
   MockTreeItemProvider kbnode_provider;
-  MockKbNodeTreeQModel* kbnode_qmodel;
+  MockTreeItemQModel* kbnode_qmodel;
   QModelIndexGenerator index_generator;
 
   MockPfTriadManager triad_manager;

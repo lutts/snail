@@ -13,7 +13,7 @@
 
 #include "src/qtui/ui/widgets/filterwidget.h"
 #include "src/qtui/ui/widgets/qtcompleter.h"
-#include "qtui/i_kbnode_tree_qmodel.h"
+#include "qtui/i_tree_item_qmodel.h"
 
 KbNodeAttributeEditView::KbNodeAttributeEditView() {
   QVBoxLayout* vbox_layout = new QVBoxLayout();
@@ -65,7 +65,7 @@ void KbNodeAttributeEditView::setKbNodeName(const QString& kbnode_name) {
 }
 
 void KbNodeAttributeEditView::setKbNodeTreeQModel(
-    IKbNodeTreeQModel* kbnode_tree_qmodel) {
+    ITreeItemQModel* kbnode_tree_qmodel) {
   auto model = dynamic_cast<QAbstractItemModel*>(kbnode_tree_qmodel);
   auto completer = filter_widget_->qtcompleter();
   completer->setModel(model);

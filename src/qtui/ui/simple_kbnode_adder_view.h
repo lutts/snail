@@ -25,7 +25,7 @@ class SimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
   // ISimpleKbNodeAdderView
   void setProviderName(const QString& provider_name) override;
   void setNewKbNodeName(const QString& name) override;
-  void setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) override;
+  void setKbNodeTreeQModel(ITreeItemQModel* tree_model) override;
   void selectIndex(const QModelIndex& index) override;
   void setNameValidateResult(bool result) override;
 

@@ -27,7 +27,7 @@ class KbNodeAttributeEditView : public IKbNodeAttributeEditView
   QWidget* getWidget() override { return this; }
 
   void setKbNodeName(const QString& kbnode_name) override;
-  void setKbNodeTreeQModel(IKbNodeTreeQModel* kbnode_tree_qmodel) override;
+  void setKbNodeTreeQModel(ITreeItemQModel* kbnode_tree_qmodel) override;
   void warnMultipleMatch(const QString& provider_name) override;
   void warnNotFound(const QString& provider_name) override;
   void clearWarningMessages() override;

@@ -23,7 +23,7 @@ class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
   SimpleKbNodeAdderPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
-      std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel);
+      std::unique_ptr<ITreeItemQModel> kbnode_qmodel);
   ~SimpleKbNodeAdderPresenter();
 
   void initialize() override;
@@ -31,7 +31,7 @@ class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
  private:
   SNAIL_DISABLE_COPY(SimpleKbNodeAdderPresenter);
 
-  std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel_;
+  std::unique_ptr<ITreeItemQModel> kbnode_qmodel_;
 };
 
 #endif  // SRC_QTUI_CORE_KBNODE_PROVIDER_PRESENTER_H_

@@ -9,12 +9,12 @@
 #include <QString>
 #include <QModelIndex>
 
-#include "qtui/i_kbnode_tree_qmodel.h"
+#include "qtui/i_tree_item_qmodel.h"
 
 SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<IKbNodeTreeQModel> kbnode_qmodel)
+    std::unique_ptr<ITreeItemQModel> kbnode_qmodel)
     : SimpleKbNodeAdderPresenterBase(model, view)
     , kbnode_qmodel_(std::move(kbnode_qmodel)) {
 }

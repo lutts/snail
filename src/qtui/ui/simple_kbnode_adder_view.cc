@@ -16,7 +16,7 @@
 #include <QPushButton>
 
 #include "utils/basic_utils.h"
-#include "qtui/i_kbnode_tree_qmodel.h"
+#include "qtui/i_tree_item_qmodel.h"
 
 class SimpleKbNodeAdderViewImpl : public QDialog {
   Q_OBJECT
@@ -106,7 +106,7 @@ void SimpleKbNodeAdderView::setNewKbNodeName(const QString& name) {
   impl->kbnode_name_editor_->setText(name);
 }
 
-void SimpleKbNodeAdderView::setKbNodeTreeQModel(IKbNodeTreeQModel* tree_model) {
+void SimpleKbNodeAdderView::setKbNodeTreeQModel(ITreeItemQModel* tree_model) {
   auto model = dynamic_cast<QAbstractItemModel*>(tree_model);
   if (!model)
     return;

@@ -5,23 +5,23 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_CORE_KBNODE_TREE_QMODEL_H_
-#define SRC_QTUI_CORE_KBNODE_TREE_QMODEL_H_
+#ifndef SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_
+#define SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_
 
 #include <QAbstractItemModel>
 
-#include "qtui/i_kbnode_tree_qmodel.h"
+#include "qtui/i_tree_item_qmodel.h"
 #include "utils/basic_utils.h"
 
 class KbNodeItem;
 
-class KbNodeTreeQModelBasic : public QAbstractItemModel
-                       , public IKbNodeTreeQModel {
+class TreeItemQModel : public QAbstractItemModel
+                       , public ITreeItemQModel {
  public:
-  KbNodeTreeQModelBasic();
-  virtual ~KbNodeTreeQModelBasic();
+  TreeItemQModel();
+  virtual ~TreeItemQModel();
 
-  // IKbNodeTreeQModel
+  // ITreeItemQModel
   void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
   IKbNode* indexToKbNode(const QModelIndex& index) const override;
   QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
@@ -50,15 +50,15 @@ class KbNodeTreeQModelBasic : public QAbstractItemModel
   virtual std::unique_ptr<KbNodeItem> createRootItem() const;
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeTreeQModelBasic);
+  SNAIL_DISABLE_COPY(TreeItemQModel);
 
   mutable std::unique_ptr<KbNodeItem> root_item_;
 };
 
-class KbNodeTreeQModelWithClearAndAddMoreRow : public KbNodeTreeQModelBasic {
+class TreeItemQModelWithClearAndAddMoreRow : public TreeItemQModel {
  public:
-  KbNodeTreeQModelWithClearAndAddMoreRow();
-  ~KbNodeTreeQModelWithClearAndAddMoreRow();
+  TreeItemQModelWithClearAndAddMoreRow();
+  ~TreeItemQModelWithClearAndAddMoreRow();
 
   QVariant itemData(KbNodeItem* item, int role) const override;
 
@@ -67,10 +67,10 @@ class KbNodeTreeQModelWithClearAndAddMoreRow : public KbNodeTreeQModelBasic {
   std::unique_ptr<KbNodeItem> createRootItem() const override;
 };
 
-class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBasic {
+class TreeItemQModelWithProviderNode : public TreeItemQModel {
  public:
-  KbNodeTreeQModelWithProviderNode();
-  ~KbNodeTreeQModelWithProviderNode();
+  TreeItemQModelWithProviderNode();
+  ~TreeItemQModelWithProviderNode();
   void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
 
   Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -83,4 +83,4 @@ class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBasic {
 };
 
 
-#endif  // SRC_QTUI_CORE_KBNODE_TREE_QMODEL_H_
+#endif  // SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_

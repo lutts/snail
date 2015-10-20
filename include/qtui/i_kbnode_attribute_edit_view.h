@@ -10,7 +10,7 @@
 
 #include "qtui/i_attribute_editor_view.h"
 
-class IKbNodeTreeQModel;
+class ITreeItemQModel;
 class QModelIndex;
 class QString;
 
@@ -24,7 +24,7 @@ class IKbNodeAttributeEditView : public IAttributeEditorView {
   SNAIL_SIGSLOT2(UserClickAddKbNode, void());
 
   virtual void setKbNodeName(const QString& kbnode_name) = 0;
-  virtual void setKbNodeTreeQModel(IKbNodeTreeQModel* kbnode_tree_qmodel) = 0;
+  virtual void setKbNodeTreeQModel(ITreeItemQModel* kbnode_tree_qmodel) = 0;
   virtual void warnMultipleMatch(const QString& provider_name) = 0;
   virtual void warnNotFound(const QString& provider_name) = 0;
   virtual void clearWarningMessages() = 0;

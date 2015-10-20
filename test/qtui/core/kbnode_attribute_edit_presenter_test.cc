@@ -16,7 +16,7 @@
 #include "snail/mock_kbnode_attribute_model.h"
 #include "snail/mock_tree_item_provider.h"
 #include "qtui/mock_kbnode_attribute_edit_view.h"
-#include "qtui/mock_kbnode_tree_qmodel.h"
+#include "qtui/mock_tree_item_qmodel.h"
 #include "src/qtui/core/kbnode_attribute_edit_presenter.h"
 #include "snail/mock_kbnode.h"
 
@@ -39,7 +39,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockKbNodeAttributeModel>();
     view = std::make_shared<MockKbNodeAttributeEditView>();
-    auto kbnode_qmodel_up = utils::make_unique<MockKbNodeTreeQModel>();
+    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel>();
     kbnode_qmodel = kbnode_qmodel_up.get();
 
     // Expectations
@@ -95,7 +95,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   // virtual void TearDown() { }
 
   std::function<void()> expectationOnAddKbNode();
-  void shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
+  void shouldNotifyTreeItemQModelWhenKbNodeAdded();
 
   // region: objects test subject depends on
   std::shared_ptr<MockKbNodeAttributeModel> model;
@@ -103,7 +103,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
   xtestutils::RandomString provider_name;
   MockTreeItemProvider kbnode_provider;
-  MockKbNodeTreeQModel* kbnode_qmodel;
+  MockTreeItemQModel* kbnode_qmodel;
 
   MockPfTriadManager triad_manager;
   QModelIndexGenerator index_generator;
@@ -171,7 +171,7 @@ KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
   };
 }
 
-void KbNodeAttributeEditPresenterTest::shouldNotifyKbNodeTreeQModelWhenKbNodeAdded() { // NOLINT
+void KbNodeAttributeEditPresenterTest::shouldNotifyTreeItemQModelWhenKbNodeAdded() { // NOLINT
   // Setup fixture
   auto parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -198,7 +198,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
   // Verify result
   verifier();
-  shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
+  shouldNotifyTreeItemQModelWhenKbNodeAdded();
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,
@@ -313,5 +313,5 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
   // Verify result
   verifier();
-  shouldNotifyKbNodeTreeQModelWhenKbNodeAdded();
+  shouldNotifyTreeItemQModelWhenKbNodeAdded();
 }

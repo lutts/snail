@@ -14,7 +14,7 @@
 #include "qtui/mock_kbnode_link_attribute_popup_editor_view.h"
 #include "src/qtui/core/kbnode_link_attribute_popup_editor_presenter.h"
 
-#include "qtui/mock_kbnode_tree_qmodel.h"
+#include "qtui/mock_tree_item_qmodel.h"
 #include "snail/mock_attribute_model.h"
 #include "qtui/mock_attribute_editor_view.h"
 #include "snail/mock_attribute_set_model.h"
@@ -36,7 +36,7 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockKbNodeLinkAttributePopupEditorModel>();
     view = std::make_shared<MockKbNodeLinkAttributePopupEditorView>();
-    auto link_type_qmodel_up = utils::make_unique<MockKbNodeTreeQModel>();
+    auto link_type_qmodel_up = utils::make_unique<MockTreeItemQModel>();
     link_type_qmodel = link_type_qmodel_up.get();
 
     // Expectations
@@ -82,7 +82,7 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
 
   PfCreateViewArgs create_attr_set_view_args;
 
-  MockKbNodeTreeQModel* link_type_qmodel;
+  MockTreeItemQModel* link_type_qmodel;
   QModelIndexGenerator index_generator;
   // endregion
 

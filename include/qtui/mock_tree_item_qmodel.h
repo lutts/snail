@@ -5,12 +5,12 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_KBNODE_TREE_QMODEL_H_
-#define INCLUDE_QTUI_MOCK_KBNODE_TREE_QMODEL_H_
+#ifndef INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
+#define INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
 
-#include "qtui/i_kbnode_tree_qmodel.h"
+#include "qtui/i_tree_item_qmodel.h"
 
-class MockKbNodeTreeQModel : public IKbNodeTreeQModel {
+class MockTreeItemQModel : public ITreeItemQModel {
  public:
   MOCK_METHOD1(setTreeItemProvider, void(ITreeItemProvider* kbnode_provider));
   MOCK_CONST_METHOD1(indexToKbNode, IKbNode*(const QModelIndex& index));
@@ -21,4 +21,4 @@ class MockKbNodeTreeQModel : public IKbNodeTreeQModel {
   MOCK_METHOD2(kbNodeAdded, void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
 };
 
-#endif  // INCLUDE_QTUI_MOCK_KBNODE_TREE_QMODEL_H_
+#endif  // INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_

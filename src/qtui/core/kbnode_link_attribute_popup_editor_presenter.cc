@@ -8,7 +8,7 @@
 #include "pfmvp/i_pf_create_view_args.h"
 #include "snail/i_attribute_model.h"
 #include "qtui/i_attribute_editor_view.h"
-#include "qtui/i_kbnode_tree_qmodel.h"
+#include "qtui/i_tree_item_qmodel.h"
 #include "snail/i_attribute_set_model.h"
 #include "qtui/i_attribute_set_view.h"
 
@@ -18,7 +18,7 @@ KbNodeLinkAttributePopupEditorPresenter::
 KbNodeLinkAttributePopupEditorPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<IKbNodeTreeQModel> link_type_qmodel)
+    std::unique_ptr<ITreeItemQModel> link_type_qmodel)
     : KbNodeLinkAttributePopupEditorPresenterBase(model, view)
     , link_type_qmodel_(std::move(link_type_qmodel)) { }
 

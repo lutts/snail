@@ -43,7 +43,7 @@ add_gmock_unit_test(attribute_set_layout
 add_gmock_unit_test(kbnode_attribute_edit_presenter
   LIBS Qt5::Core testutils)
 
-add_gmock_unit_test(kbnode_tree_qmodel
+add_gmock_unit_test(tree_item_qmodel
   LIBS Qt5::Core testutils qttestutils)
 
 add_gmock_unit_test(simple_kbnode_adder_presenter

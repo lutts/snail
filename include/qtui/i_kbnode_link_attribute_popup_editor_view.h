@@ -14,7 +14,7 @@
 #include "utils/signal_slot.h"
 
 class IAttributeEditorView;
-class IKbNodeTreeQModel;
+class ITreeItemQModel;
 class IAttributeSetView;
 
 class IKbNodeLinkAttributePopupEditorView : public GenericViewBase {
@@ -25,7 +25,7 @@ class IKbNodeLinkAttributePopupEditorView : public GenericViewBase {
   SNAIL_SIGSLOT2(UserClickDone, void());
 
   virtual void setValueAttrEditor(IAttributeEditorView* value_attr_view) = 0;
-  virtual void setLinkTypeQModel(IKbNodeTreeQModel* link_type_qmodel) = 0;
+  virtual void setLinkTypeQModel(ITreeItemQModel* link_type_qmodel) = 0;
   virtual void setCurrentLinkType(
       const QModelIndex& current_link_type_index) = 0;
   virtual void setLinkAttributeSetView(
