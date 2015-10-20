@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/core/tree_item_provider.h"
+#include "src/core/kbnode_item_provider.h"
 #include "core/i_kbnode_manager.h"
 #include "snail/i_kbnode.h"
 
@@ -23,7 +23,7 @@ class KbNodeIterator :
     return cur_idx_ < kbnodes_.size();
   }
 
-  IKbNode* next() {
+  ITreeItem* next() {
     if (!hasNext())
       return nullptr;
 
@@ -38,21 +38,21 @@ class KbNodeIterator :
 }  // namespace
 
 
-TreeItemProvider::TreeItemProvider(IKbNode* root_kbnode,
+KbNodeItemProvider::KbNodeItemProvider(IKbNode* root_kbnode,
                                IKbNodeManager* node_manager)
     : node_manager_(node_manager)
     , root_kbnode_(root_kbnode) { }
 
-TreeItemProvider::~TreeItemProvider() = default;
+KbNodeItemProvider::~KbNodeItemProvider() = default;
 
-utils::U8String TreeItemProvider::name() const {
+utils::U8String KbNodeItemProvider::name() const {
   if (root_kbnode_)
     return root_kbnode_->name();
   else
     return "";
 }
 
-void TreeItemProvider::setFilterPattern(const utils::U8String& filter_pattern) {
+void KbNodeItemProvider::setFilterPattern(const utils::U8String& filter_pattern) {
   if (root_kbnode_ == nullptr)
     return;
 
@@ -67,16 +67,17 @@ void TreeItemProvider::setFilterPattern(const utils::U8String& filter_pattern) {
   filter_pattern_ = filter_pattern;
 }
 
-utils::U8String TreeItemProvider::getFilterPattern() const {
+utils::U8String KbNodeItemProvider::getFilterPattern() const {
   return filter_pattern_;
 }
 
-bool TreeItemProvider::isFilterMode() const {
+bool KbNodeItemProvider::isFilterMode() const {
   return filter_pattern_ != "";
 }
 
 std::unique_ptr<ITreeItemProvider::IChildItemIterator>
-TreeItemProvider::childItems(IKbNode* parent_node) const {
+KbNodeItemProvider::childItems(ITreeItem* parent_item) const {
+  IKbNode* parent_node = static_cast<IKbNode*>(parent_item);
   if (isFilterMode()) {
     if (parent_node == nullptr)
       return utils::make_unique<KbNodeIterator>(matched_kbnodes_);

@@ -7,6 +7,7 @@
 #include "src/core/simple_kbnode_adder_model.h"
 #include "snail/i_tree_item_provider.h"
 #include "core/i_kbnode_manager.h"
+#include "snail/i_kbnode.h"
 
 namespace snailcore {
 
@@ -59,8 +60,10 @@ void SimpleKbNodeAdderModel::addKbNode() {
     return;
 
   IKbNode* actual_kbnode_parent = new_kbnode_parent_;
-  if (!actual_kbnode_parent)
-    actual_kbnode_parent = kbnode_provider_->getRootItem();
+  if (!actual_kbnode_parent) {
+    actual_kbnode_parent =
+        static_cast<IKbNode*>(kbnode_provider_->getRootItem());
+  }
 
   auto new_kbnode = kbnode_manager_->addKbNode(new_name_,
                                                actual_kbnode_parent,

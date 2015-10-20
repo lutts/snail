@@ -24,7 +24,7 @@ SET(qtuiview_SRCS
   kbnode_attribute_edit_view.cc
   kbnode_attribute_edit_view_factory.cc
   simple_kbnode_adder_view.cc
-  kbnode_provider_view_factory.cc
+  simple_kbnode_adder_view_factory.cc
   )
 
 set(SUBDIRS widgets)

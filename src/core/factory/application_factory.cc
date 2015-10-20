@@ -14,13 +14,11 @@
 #include "src/core/workspace_model.h"
 
 #include "src/core/kbnode_manager.h"
-#include "src/core/tree_item_provider.h"
 #include "src/core/simple_kbnode_adder_model.h"
 #include "src/core/attribute_set_model.h"
 #include "src/core/work_model.h"
 
 // factories
-#include "core/i_kbnode_provider_factory.h"
 #include "core/i_simple_kbnode_adder_model_factory.h"
 #include "src/core/factory/attribute_model_factory.h"
 #include "core/i_attribute_set_model_factory.h"
@@ -29,26 +27,19 @@
 
 namespace snailcore {
 
-class ApplicationFactoryImpl : public ITreeItemProviderFactory
-                             , public ISimpleKbNodeAdderModelFactory
-                             , public IAttributeSetModelFactory
-                             , public IWorkModelFactory {
+class ApplicationFactoryImpl
+    : public ISimpleKbNodeAdderModelFactory
+    , public IAttributeSetModelFactory
+    , public IWorkModelFactory {
  public:
   ApplicationFactoryImpl()
-      : kbnode_manager_(utils::make_unique<KbNodeManager>(this))
+      : kbnode_manager_(utils::make_unique<KbNodeManager>())
       , attr_model_factory_(
           utils::make_unique<AttributeModelFactory>(
               kbnode_manager_.get(), this))
       , work_factory_(utils::make_unique<WorkFactory>(kbnode_manager_.get())) {
   }
   ~ApplicationFactoryImpl() = default;
-
-  // ITreeItemProviderFactory
-  std::shared_ptr<ITreeItemProvider> createTreeItemProvider(
-      IKbNode* root_kbnode,
-      IKbNodeManager* kbnode_manager) const override {
-    return std::make_shared<TreeItemProvider>(root_kbnode, kbnode_manager);
-  }
 
   // ISimpleKbNodeAdderModelFactory
   std::shared_ptr<ISimpleKbNodeAdderModel>

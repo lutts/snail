@@ -9,6 +9,7 @@
 #include "core/i_kbnode_manager.h"
 #include "snail/i_tree_item_provider.h"
 #include "core/i_simple_kbnode_adder_model_factory.h"
+#include "snail/i_kbnode.h"
 
 namespace snailcore {
 
@@ -78,8 +79,8 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
     validateComplete(true);
     return kSetKbNodeSuccess;
   } else if (kbnode_provider_) {
-    auto kbnodes =
-        kbnode_manager_->findKbNode(name, kbnode_provider_->getRootItem());
+    auto parent_kbnode = static_cast<IKbNode*>(kbnode_provider_->getRootItem());
+    auto kbnodes = kbnode_manager_->findKbNode(name, parent_kbnode);
     if (kbnodes.empty()) {
       validateComplete(false);
       return kSetKbNodeNotFound;

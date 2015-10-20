@@ -9,6 +9,7 @@
 #include "src/core/simple_kbnode_adder_model.h"
 #include "snail/mock_tree_item_provider.h"
 #include "core/mock_kbnode_manager.h"
+#include "snail/mock_kbnode.h"
 
 namespace snailcore {
 namespace tests {
@@ -190,14 +191,14 @@ TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
   model->setNewKbNodeName(expect_new_name);
   model->setIsCategory(expect_category);
 
-  IKbNode* root_kbnode = xtestutils::genDummyPointer<IKbNode>();
+  MockKbNode root_kbnode;
 
   EXPECT_CALL(kbnode_provider, getRootItem())
-      .WillOnce(Return(root_kbnode));
+      .WillOnce(Return(&root_kbnode));
 
   // Expectations
   EXPECT_CALL(kbnode_manager,
-              addKbNode(expect_new_name, root_kbnode, expect_category))
+              addKbNode(expect_new_name, &root_kbnode, expect_category))
       .WillOnce(Return(expect_new_kbnode));
 
   auto mock_listener = MockListener::attachTo(model.get());

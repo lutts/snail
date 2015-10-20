@@ -6,7 +6,7 @@ set(core_SRCS ${core_SRCS}
   attribute_set_model.cc
   kbnode_attribute_model.cc
   simple_kbnode_adder_model.cc
-  tree_item_provider.cc
+  kbnode_item_provider.cc
   kbnode_manager.cc
   attribute.cc
   kbnode_link_attribute_inline_editor_model.cc

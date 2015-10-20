@@ -24,9 +24,9 @@ class MockTreeItemProvider : public ITreeItemProvider {
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
   MOCK_CONST_METHOD0(isFilterMode, bool());
-  MOCK_CONST_METHOD0(getRootItem, IKbNode*());
+  MOCK_CONST_METHOD0(getRootItem, ITreeItem*());
   MOCK_CONST_METHOD1(childItems,
-                     std::unique_ptr<IChildItemIterator>(IKbNode* parent_node));
+                     std::unique_ptr<IChildItemIterator>(ITreeItem* parent_item));
 };
 
 }  // namespace tests

@@ -17,26 +17,27 @@
 
 namespace snailcore {
 
+class IKbNode;
 class IKbNodeManager;
 
-class TreeItemProvider : public ITreeItemProvider {
+class KbNodeItemProvider : public ITreeItemProvider {
  public:
-  TreeItemProvider(IKbNode* root_kbnode,
+  KbNodeItemProvider(IKbNode* root_kbnode,
                  IKbNodeManager* node_manager);
-  virtual ~TreeItemProvider();
+  virtual ~KbNodeItemProvider();
 
   utils::U8String name() const override;
   void setFilterPattern(const utils::U8String& filter_pattern) override;
   utils::U8String getFilterPattern() const override;
   bool isFilterMode() const override;
 
-  IKbNode* getRootItem() const { return nullptr; }  // TODO(lutts): impl this
+  ITreeItem* getRootItem() const { return nullptr; }  // TODO(lutts): impl this
 
   std::unique_ptr<IChildItemIterator>
-  childItems(IKbNode* parent_node) const override;
+  childItems(ITreeItem* parent_item) const override;
 
  private:
-  SNAIL_DISABLE_COPY(TreeItemProvider);
+  SNAIL_DISABLE_COPY(KbNodeItemProvider);
 
   SNAIL_SIGSLOT_IMPL(BeginFilter);
   SNAIL_SIGSLOT_IMPL(FinishFilter);

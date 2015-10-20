@@ -33,10 +33,11 @@ add_gmock_unit_test(kbnode_attribute_model
 add_gmock_unit_test(simple_kbnode_adder_model
   LIBS testutils)
 
-add_gmock_unit_test(tree_item_provider
+add_gmock_unit_test(kbnode_item_provider
   LIBS testutils)
 
 add_gmock_unit_test(kbnode_manager
+  ${UNDER_TEST_SOURCE_DIR}/kbnode_item_provider.cc
   LIBS testutils)
 
 add_gmock_unit_test(kbnode_attribute

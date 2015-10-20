@@ -16,7 +16,7 @@
 
 namespace snailcore {
 
-class IKbNode;
+class ITreeItem;
 
 class ITreeItemProvider {
  public:
@@ -25,7 +25,7 @@ class ITreeItemProvider {
     virtual ~IChildItemIterator() = default;
 
     virtual bool hasNext() const = 0;
-    virtual IKbNode* next() = 0;
+    virtual ITreeItem* next() = 0;
   };
 
   virtual ~ITreeItemProvider() = default;
@@ -38,9 +38,9 @@ class ITreeItemProvider {
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
   virtual utils::U8String getFilterPattern() const = 0;
   virtual bool isFilterMode() const = 0;
-  virtual IKbNode* getRootItem() const = 0;
+  virtual ITreeItem* getRootItem() const = 0;
   virtual std::unique_ptr<IChildItemIterator>
-  childItems(IKbNode* parent_node) const = 0;
+  childItems(ITreeItem* parent_item) const = 0;
 };
 
 }  // namespace snailcore

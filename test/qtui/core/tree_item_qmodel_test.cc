@@ -279,7 +279,8 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
   }
 
   std::unique_ptr<IChildItemIterator>
-  childItems(IKbNode* parent_node) const override {
+  childItems(ITreeItem* parent_item) const override {
+    auto parent_node = static_cast<IKbNode*>(parent_item);  // TODO(lutts): remove this
     return utils::make_unique<ChildNodeIteratorTestStub>(*this, parent_node);
   }
 
