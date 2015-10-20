@@ -447,23 +447,23 @@ bool TreeItemQModelImplWithClearAndAddMoreRow::isAddMore(
 
 ////////////////////////////////////////////////////////////////
 
-TreeItemQModelImplWithProviderNode::TreeItemQModelImplWithProviderNode()
+TreeItemQModelImplWithProviderRoot::TreeItemQModelImplWithProviderRoot()
     : TreeItemQModelImpl() { }
 
-TreeItemQModelImplWithProviderNode::~TreeItemQModelImplWithProviderNode() = default;
+TreeItemQModelImplWithProviderRoot::~TreeItemQModelImplWithProviderRoot() = default;
 
-Qt::ItemFlags TreeItemQModelImplWithProviderNode::flags(
+Qt::ItemFlags TreeItemQModelImplWithProviderRoot::flags(
     const QModelIndex &index) const {
   auto flags = TreeItemQModelImpl::flags(index);
   return flags | Qt::ItemIsSelectable;
 }
 
-void TreeItemQModelImplWithProviderNode::clear() {
+void TreeItemQModelImplWithProviderRoot::clear() {
   if (provider_item_)
     provider_item_->clear();
 }
 
-void TreeItemQModelImplWithProviderNode::setTreeItemProvider(
+void TreeItemQModelImplWithProviderRoot::setTreeItemProvider(
     ITreeItemProvider* item_provider) {
   if (!provider_item_) {
     provider_item_ = rootItem()->appendTreeItem(nullptr);
@@ -480,7 +480,7 @@ void TreeItemQModelImplWithProviderNode::setTreeItemProvider(
   TreeItemQModelImpl::setTreeItemProvider(item_provider);
 }
 
-QModelIndex TreeItemQModelImplWithProviderNode::itemToIndex(
+QModelIndex TreeItemQModelImplWithProviderRoot::itemToIndex(
     ITreeItem* tree_item) const {
   if (tree_item == nullptr) {
     return qtItemToIndex(provider_item_);

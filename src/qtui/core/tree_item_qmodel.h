@@ -72,12 +72,12 @@ class TreeItemQModelWithClearAndAddMoreRow
 };
 
 template <typename RealItemType>
-class TreeItemQModelWithProviderNode : public TreeItemQModel<RealItemType> {
+class TreeItemQModelWithProviderRoot : public TreeItemQModel<RealItemType> {
  public:
-  TreeItemQModelWithProviderNode()
+  TreeItemQModelWithProviderRoot()
       : TreeItemQModel<RealItemType>(
-            utils::make_unique<TreeItemQModelImplWithProviderNode>()) { }
-  ~TreeItemQModelWithProviderNode() = default;
+            utils::make_unique<TreeItemQModelImplWithProviderRoot>()) { }
+  ~TreeItemQModelWithProviderRoot() = default;
 };
 
 

@@ -72,10 +72,10 @@ class TreeItemQModelImplWithClearAndAddMoreRow : public TreeItemQModelImpl {
   std::unique_ptr<QtTreeItem> createRootItem() const override;
 };
 
-class TreeItemQModelImplWithProviderNode : public TreeItemQModelImpl {
+class TreeItemQModelImplWithProviderRoot : public TreeItemQModelImpl {
  public:
-  TreeItemQModelImplWithProviderNode();
-  ~TreeItemQModelImplWithProviderNode();
+  TreeItemQModelImplWithProviderRoot();
+  ~TreeItemQModelImplWithProviderRoot();
   void setTreeItemProvider(ITreeItemProvider* item_provider) override;
 
   Qt::ItemFlags flags(const QModelIndex &index) const override;

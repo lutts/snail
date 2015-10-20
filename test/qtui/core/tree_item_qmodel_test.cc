@@ -917,7 +917,7 @@ class TreeItemQModelWithProviderItemTest : public TreeItemQModelTestBase {
   }
 
   std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithProviderNode<ITreeItem>>();
+    return utils::make_unique<TreeItemQModelWithProviderRoot<ITreeItem>>();
   }
 
   int adjustLevel(int level) override {
