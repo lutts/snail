@@ -24,6 +24,11 @@ class ITreeItemQModel {
  public:
   virtual ~ITreeItemQModel() = default;
 
+#if 0
+  static_assert(std::is_base_of<ITreeItem, RealItemType,
+                "RealItemType must be derived from ITreeItem");
+#endif
+
   virtual QAbstractItemModel* qmodel() const = 0;
 
   virtual void setTreeItemProvider(ITreeItemProvider* item_provider) = 0;
