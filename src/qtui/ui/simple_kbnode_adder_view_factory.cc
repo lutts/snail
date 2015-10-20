@@ -11,11 +11,8 @@
 #include "src/qtui/core/simple_kbnode_adder_presenter.h"
 #include "src/qtui/ui/simple_kbnode_adder_view.h"
 #include "pfmvp/pf_view_factory_manager.h"
+#include "snail/i_kbnode.h"
 #include "src/qtui/core/tree_item_qmodel.h"
-
-namespace snailcore {
-class IKbNode;
-}  // namespace snailcore
 
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT

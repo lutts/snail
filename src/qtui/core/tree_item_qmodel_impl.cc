@@ -14,8 +14,6 @@
 #include "utils/basic_utils.h"
 #include "snail/i_tree_item_provider.h"
 #include "snail/i_tree_item.h"
-#include "snail/i_kbnode.h"  // TODO(lutts): remove this
-using snailcore::IKbNode;
 
 class QtTreeItem : QObject {
   Q_OBJECT
@@ -147,7 +145,7 @@ class QtTreeItem : QObject {
   }
 
   virtual void populate_children() {
-    auto child_node_iterator = item_provider_->childItems(static_cast<IKbNode*>(tree_item_)); // TODO: remove static_cast
+    auto child_node_iterator = item_provider_->childItems(tree_item_);
     if (child_node_iterator) {
       while (child_node_iterator->hasNext()) {
         auto item = child_node_iterator->next();

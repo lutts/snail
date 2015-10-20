@@ -11,7 +11,6 @@
 #include "src/qtui/core/tree_item_qmodel_impl.h"
 #include "utils/basic_utils.h"
 #include "qtui/i_tree_item_qmodel.h"
-#include "snail/i_kbnode.h"
 
 template <typename RealItemType>
 class TreeItemQModel : public ITreeItemQModel<RealItemType> {
