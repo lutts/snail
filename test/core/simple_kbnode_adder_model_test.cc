@@ -73,24 +73,14 @@ TEST_F(SimpleKbNodeAdderModelTest,
   // Expectations
   EXPECT_CALL(kbnode_provider, getFilterPattern())
       .WillOnce(Return(expect_pattern));
+  // clear after get
+  EXPECT_CALL(kbnode_provider, setFilterPattern(""));
 
   // Exercise system
-  auto actual_pattern = model->getFilterPattern();
+  auto actual_pattern = model->getDefaultNewKbNodeName();
 
   // Verify results
   ASSERT_EQ(expect_pattern, actual_pattern);
-}
-
-TEST_F(SimpleKbNodeAdderModelTest,
-       should_setFilterPattern_set_to_provider) { // NOLINT
-  // Setup fixture
-  auto filter_pattern = xtestutils::genRandomString();
-
-  // Expectations
-  EXPECT_CALL(kbnode_provider, setFilterPattern(filter_pattern));
-
-  // Exercise system
-  model->setFilterPattern(filter_pattern);
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,

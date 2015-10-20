@@ -27,13 +27,11 @@ SimpleKbNodeAdderPresenter::~SimpleKbNodeAdderPresenter() = default;
 void SimpleKbNodeAdderPresenter::initialize() {
   view()->setProviderName(U8StringToQString(model()->name()));
 
-  auto default_new_kbnode_name = model()->getFilterPattern();
+  auto default_new_kbnode_name = model()->getDefaultNewKbNodeName();
   model()->setNewKbNodeName(default_new_kbnode_name);
 
   view()->setNewKbNodeName(U8StringToQString(default_new_kbnode_name));
   view()->setNameValidateResult(model()->isNewKbNodeNameValid());
-
-  model()->setFilterPattern("");
 
   kbnode_qmodel_->setTreeItemProvider(model()->getKbNodeProvider());
   view()->setKbNodeTreeQModel(kbnode_qmodel_->qmodel());

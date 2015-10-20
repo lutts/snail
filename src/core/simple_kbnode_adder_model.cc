@@ -26,13 +26,10 @@ ITreeItemProvider* SimpleKbNodeAdderModel::getKbNodeProvider() const {
   return kbnode_provider_;
 }
 
-utils::U8String SimpleKbNodeAdderModel::getFilterPattern() const {
-  return kbnode_provider_->getFilterPattern();
-}
-
-void SimpleKbNodeAdderModel::setFilterPattern(
-    const utils::U8String& filter_pattern) {
-  kbnode_provider_->setFilterPattern(filter_pattern);
+utils::U8String SimpleKbNodeAdderModel::getDefaultNewKbNodeName() const {
+  auto default_name = kbnode_provider_->getFilterPattern();
+  kbnode_provider_->setFilterPattern("");
+  return default_name;
 }
 
 IKbNode* SimpleKbNodeAdderModel::getNewKbNodeParent() const {

@@ -60,7 +60,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
         EXPECT_CALL(*view, setProviderName(provider_name.qstr()));
 
         // use filter pattern as the default new kbnode name
-        R_EXPECT_CALL(*model, getFilterPattern())
+        R_EXPECT_CALL(*model, getDefaultNewKbNodeName())
             .WillOnce(Return(filter_pattern.ustr()));
         R_EXPECT_CALL(*model, setNewKbNodeName(filter_pattern.ustr()));
 
@@ -68,9 +68,6 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
         R_EXPECT_CALL(*model, isNewKbNodeNameValid())
             .WillOnce(Return(init_validate_result));
         R_EXPECT_CALL(*view, setNameValidateResult(init_validate_result));
-
-        // then clear filter pattern (aka. exit filter mode)
-        R_EXPECT_CALL(*model, setFilterPattern(""));
 
         // init qmodel
         R_EXPECT_CALL(*kbnode_qmodel, setTreeItemProvider(&kbnode_provider));

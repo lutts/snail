@@ -25,8 +25,7 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
 
   utils::U8String name() const override;
   ITreeItemProvider* getKbNodeProvider() const override;
-  utils::U8String getFilterPattern() const override;
-  void setFilterPattern(const utils::U8String& filter_pattern) override;
+  utils::U8String getDefaultNewKbNodeName() const override;
   IKbNode* getNewKbNodeParent() const override;
   void setNewKbNodeParent(IKbNode* kbnode) override;
   void setNewKbNodeName(const utils::U8String& name) override;

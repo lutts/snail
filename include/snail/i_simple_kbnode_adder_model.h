@@ -27,8 +27,7 @@ class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
 
   virtual utils::U8String name() const = 0;
   virtual ITreeItemProvider* getKbNodeProvider() const = 0;
-  virtual utils::U8String getFilterPattern() const = 0;
-  virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
+  virtual utils::U8String getDefaultNewKbNodeName() const = 0;
   virtual IKbNode* getNewKbNodeParent() const = 0;
   virtual void setNewKbNodeParent(IKbNode* kbnode) = 0;
   virtual void setNewKbNodeName(const utils::U8String& name) = 0;
