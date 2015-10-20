@@ -12,7 +12,6 @@
 
 #include "src/qtui/core/tree_item_qmodel.h"
 #include "snail/mock_tree_item_provider.h"
-#include "snail/mock_kbnode.h"
 #include "snail/i_tree_item.h"
 
 using namespace snailcore;  // NOLINT
@@ -22,19 +21,19 @@ using namespace snailcore::tests;  // NOLINT
 // -------------------
 // (root)
 //    |---(empty line)   (0, 0)
-//    |---level0 node1   (1, 0)
-//    |   |----level1 node1    (0, 0)
-//    |   |    |---level2 node1      (0, 0)
-//    |   |----level1 node2    (1, 0)
-//    |---level0 node2    (2, 0)
+//    |---level0 item1   (1, 0)
+//    |   |----level1 item1    (0, 0)
+//    |   |    |---level2 item1      (0, 0)
+//    |   |----level1 item2    (1, 0)
+//    |---level0 item2    (2, 0)
 //    |---Add More...     (3, 0)
 //
 // as we use lazy populate for our model impl,
-// w using these test data to test the following 4 dynamic add node cases
-// 1. add to invisible kbnodes
-// 2. add to visible but children not populated node
-// 3. add to visible and chidren is populated node
-// 4. add to root node should add before ADD_MORE_ROW_TEXT row
+// w using these test data to test the following 4 dynamic add item cases
+// 1. add to invisible items
+// 2. add to visible but children not populated item
+// 3. add to visible and chidren is populated item
+// 4. add to root item should add before ADD_MORE_ROW_TEXT row
 
 constexpr static int kEmptySpecialRow = 0;
 constexpr static int kAddMoreSpecialRow = 3;
@@ -68,11 +67,11 @@ class TreeItemTestStub : public ITreeItem {
 class ExpectRowData {
  public:
   utils::U8String text;
-  IKbNode* node_ptr;
-  IKbNode* parent_node_ptr;
+  ITreeItem* item_ptr;
+  ITreeItem* parent_item_ptr;
   bool isSelectable;
 
-  std::vector<ExpectRowData>* subnodes;
+  std::vector<ExpectRowData>* subitems;
 
   bool isSpecialRow() const {
     return (text == CLEAR_ROW_TEXT) ||
@@ -92,127 +91,127 @@ ExpectRowData root_row_data_after_reset;
 void setupExpectRowDatas() {
   level2_row_data = {
     {
-      .text = "Level2 Node1",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level2 Item1",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     }
   };
 
   level1_row_data = {
     {
-      .text = "Level1 Node1",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level1 Item1",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = &level2_row_data,
+      .subitems = &level2_row_data,
     },
     {
-      .text = "Level1 Node2",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level1 Item2",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = false,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     }
   };
 
   level0_row_data = {
     {  // level1
       .text = CLEAR_ROW_TEXT,
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr
+      .subitems = nullptr
     },
     {
-      .text = "Level0 Node1",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level0 Item1",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = false,
-      .subnodes = &level1_row_data,
+      .subitems = &level1_row_data,
     },
     {
-      .text = "Level0 Node2",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level0 Item2",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     },
     {
       .text = ADD_MORE_ROW_TEXT,
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     }
   };
 
   provider_row_data = {
     {
       .text = PROVIDER_NAME,
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = &level0_row_data,
+      .subitems = &level0_row_data,
     }
   };
 
   root_row_data = {
     .text = "root idx",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
+    .item_ptr = nullptr,
+    .parent_item_ptr = nullptr,
     .isSelectable = false,
-    .subnodes = &level0_row_data,
+    .subitems = &level0_row_data,
   };
 
   level0_row_data_after_reset = {
     {  // level1
       .text = CLEAR_ROW_TEXT,
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr
+      .subitems = nullptr
     },
     {
-      .text = "Level0 Node1 After Reset",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level0 Item1 After Reset",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = false,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     },
     {
-      .text = "Level0 Node2 After Reset",
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .text = "Level0 Item2 After Reset",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     },
     {
       .text = ADD_MORE_ROW_TEXT,
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = nullptr,
+      .subitems = nullptr,
     }
   };
 
   provider_row_data_after_reset = {
     {
       .text = PROVIDER_NAME,
-      .node_ptr = nullptr,
-      .parent_node_ptr = nullptr,
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
       .isSelectable = true,
-      .subnodes = &level0_row_data_after_reset,
+      .subitems = &level0_row_data_after_reset,
     }
   };
 
   root_row_data_after_reset = {
     .text = "root idx",
-    .node_ptr = nullptr,
-    .parent_node_ptr = nullptr,
+    .item_ptr = nullptr,
+    .parent_item_ptr = nullptr,
     .isSelectable = false,
-    .subnodes = &level0_row_data_after_reset,
+    .subitems = &level0_row_data_after_reset,
   };
 }
 
@@ -229,22 +228,22 @@ void cleanupExpectRowDatas() {
 
 class TreeItemProviderTestStub : public ITreeItemProvider {
  public:
-  class ChildNodeIteratorTestStub : public IChildItemIterator {
+  class ChildItemIteratorTestStub : public IChildItemIterator {
    public:
-    ChildNodeIteratorTestStub(const TreeItemProviderTestStub& provider,
-                              IKbNode* parent_node)
-        : row_data_(provider.nodeToRowData(parent_node)) {
-      if (row_data_->subnodes) {
-        max_idx_ = row_data_->subnodes->size() - 1;
+    ChildItemIteratorTestStub(const TreeItemProviderTestStub& provider,
+                              ITreeItem* parent_item)
+        : row_data_(provider.itemToRowData(parent_item)) {
+      if (row_data_->subitems) {
+        max_idx_ = row_data_->subitems->size() - 1;
       }
 
-      if ((row_data_->subnodes == &level0_row_data) ||
-          (row_data_->subnodes == &level0_row_data_after_reset)) {
+      if ((row_data_->subitems == &level0_row_data) ||
+          (row_data_->subitems == &level0_row_data_after_reset)) {
         cur_idx_ = 1;  // skip empty row
         --max_idx_;     // skip add more row
       }
     }
-    virtual ~ChildNodeIteratorTestStub() = default;
+    virtual ~ChildItemIteratorTestStub() = default;
 
     bool hasNext() const override {
       if (cur_idx_ > max_idx_)
@@ -253,18 +252,18 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
       return true;
     }
 
-    IKbNode* next() override {
+    ITreeItem* next() override {
       if (!hasNext())
-        throw std::logic_error("no next kbnode");
+        throw std::logic_error("no next item");
 
-      auto kbnode = (*row_data_->subnodes)[cur_idx_].node_ptr;
+      auto item = (*row_data_->subitems)[cur_idx_].item_ptr;
       ++cur_idx_;
 
-      return kbnode;
+      return item;
     }
 
    private:
-    SNAIL_DISABLE_COPY(ChildNodeIteratorTestStub);
+    SNAIL_DISABLE_COPY(ChildItemIteratorTestStub);
 
     ExpectRowData* row_data_;
     mutable int cur_idx_ { 0 };
@@ -280,19 +279,18 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
 
   std::unique_ptr<IChildItemIterator>
   childItems(ITreeItem* parent_item) const override {
-    auto parent_node = static_cast<IKbNode*>(parent_item);  // TODO(lutts): remove this
-    return utils::make_unique<ChildNodeIteratorTestStub>(*this, parent_node);
+    return utils::make_unique<ChildItemIteratorTestStub>(*this, parent_item);
   }
 
-  void setKbNodeOwnerRow(IKbNode* node,
+  void setItemOwnerRow(ITreeItem* item,
                          std::vector<ExpectRowData>* row_data_vec) {
-    node_to_row_data_vec_[node] = row_data_vec;
+    item_to_row_data_vec_[item] = row_data_vec;
   }
 
   void fillRowData(ExpectRowData* root_rdata) {
-    kbnodes_.clear();
-    node_to_row_data_vec_.clear();
-    fillNodePtrInRowData(root_rdata->subnodes);
+    items_.clear();
+    item_to_row_data_vec_.clear();
+    fillItemPtrInRowData(root_rdata->subitems);
     root_rdata_ = root_rdata;
   }
 
@@ -303,60 +301,57 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
   SNAIL_MOCK_SLOT(FinishFilter);
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
-  MOCK_METHOD1(incRef, void(IKbNode* kbnode));
+  MOCK_METHOD1(incRef, void(ITreeItem* item));
 
-  MOCK_CONST_METHOD0(getRootItem, IKbNode*());
+  MOCK_CONST_METHOD0(getRootItem, ITreeItem*());
 
   MOCK_METHOD1(findItemByName,
-               std::vector<IKbNode*>(const utils::U8String& name));
+               std::vector<ITreeItem*>(const utils::U8String& name));
 
  private:
   SNAIL_DISABLE_COPY(TreeItemProviderTestStub);
 
-  void fillNodePtrInRowData(std::vector<ExpectRowData>* row_datas,
-                            IKbNode* parent_node = nullptr) {
+  void fillItemPtrInRowData(std::vector<ExpectRowData>* row_datas,
+                            ITreeItem* parent_item = nullptr) {
     for (auto & row_data : *row_datas) {
       if (row_data.isSpecialRow())
         continue;
 
-      MockKbNode* kbnode = nullptr;
+      TreeItemTestStub* item = nullptr;
       if (row_data.text != PROVIDER_NAME) {
-        auto kbnode_up = utils::make_unique<MockKbNode>();
-        kbnode = kbnode_up.get();
-        kbnodes_.push_back(std::move(kbnode_up));
+        auto item_up =
+            utils::make_unique<TreeItemTestStub>(
+                row_data.text, !row_data.isSelectable);
+        item = item_up.get();
+        items_.push_back(std::move(item_up));
 
-        EXPECT_CALL(*kbnode, name())
-            .WillRepeatedly(Return(row_data.text));
-        EXPECT_CALL(*kbnode, isCategory())
-            .WillRepeatedly(Return(!row_data.isSelectable));
+        row_data.item_ptr = item;
+        item_to_row_data_vec_[item] = row_datas;
 
-        row_data.node_ptr = kbnode;
-        node_to_row_data_vec_[kbnode] = row_datas;
-
-        row_data.parent_node_ptr = parent_node;
+        row_data.parent_item_ptr = parent_item;
       }
 
-      if (row_data.subnodes)
-        fillNodePtrInRowData(row_data.subnodes, kbnode);
+      if (row_data.subitems)
+        fillItemPtrInRowData(row_data.subitems, item);
     }
   }
 
-  ExpectRowData* nodeToRowData(IKbNode* node) const {
-    if (!node) {
-      if ((*root_rdata_->subnodes)[0].text == PROVIDER_NAME)
-        return &(*root_rdata_->subnodes)[0];
+  ExpectRowData* itemToRowData(ITreeItem* item) const {
+    if (!item) {
+      if ((*root_rdata_->subitems)[0].text == PROVIDER_NAME)
+        return &(*root_rdata_->subitems)[0];
       else
         return root_rdata_;
     }
 
     try {
-      auto row_data_vec = node_to_row_data_vec_.at(node);
+      auto row_data_vec = item_to_row_data_vec_.at(item);
       for (auto & row_data : *row_data_vec) {
-        if (row_data.node_ptr == node)
+        if (row_data.item_ptr == item)
           return &row_data;
       }
     } catch (...) {
-      std::cout << "node: " << node->name()
+      std::cout << "item: " << item->name()
                 << " row data not found" << std::endl;
       /* re */ throw;
     }
@@ -364,8 +359,8 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
     return nullptr;
   }
 
-  std::vector<std::unique_ptr<MockKbNode>> kbnodes_;
-  std::map<IKbNode*, std::vector<ExpectRowData>*> node_to_row_data_vec_;
+  std::vector<std::unique_ptr<ITreeItem>> items_;
+  std::map<ITreeItem*, std::vector<ExpectRowData>*> item_to_row_data_vec_;
   ExpectRowData* root_rdata_ { nullptr };
 };
 
@@ -380,21 +375,21 @@ class TreeItemQModelTestBase : public ::testing::Test {
     qmodel = createQModel();
 
     setupExpectRowDatas();
-    kbnode_provider.fillRowData(&root_row_data);
+    item_provider.fillRowData(&root_row_data);
 
-    qmodel->setTreeItemProvider(&kbnode_provider);
+    qmodel->setTreeItemProvider(&item_provider);
   }
 
   void TearDown() override {
     cleanupExpectRowDatas();
   }
 
-  virtual std::unique_ptr<TreeItemQModel<IKbNode>> createQModel() {
-    return utils::make_unique<TreeItemQModel<IKbNode>>();
+  virtual std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() {
+    return utils::make_unique<TreeItemQModel<ITreeItem>>();
   }
 
   bool shouldRowVisible(const ExpectRowData& row_data);
-  int expectNodeCount(const ExpectRowData& row_data);
+  int expectItemCount(const ExpectRowData& row_data);
 
   void checkRowData(const ExpectRowData& root_rdata = root_row_data);
   void checkRowData(const std::vector<ExpectRowData>& row_data,
@@ -408,17 +403,17 @@ class TreeItemQModelTestBase : public ::testing::Test {
   virtual int adjustLevel(int level) { return level; }
   void expandToLevel(int level);
   void expandToLevel(int level, const QModelIndex& parent_index);
-  void addKbNodeUnderLevel1Node1(IKbNode** parent_kbnode_ret = nullptr);
-  void test_add_kbnode_to_not_visible_parent_kbnode();
-  void test_add_kbnode_to_visible_but_children_not_populated_kbnode();
-  void test_add_kbnode_to_children_populated_parent_kbnode();
+  void addItemUnderLevel1Item1(ITreeItem** parent_item_ret = nullptr);
+  void test_add_item_to_not_visible_parent_item();
+  void test_add_item_to_visible_but_children_not_populated_item();
+  void test_add_item_to_children_populated_parent_item();
 
-  void addKbNodeUnderRootNode();
-  void test_add_kbnode_to_unexpanded_root_node();
-  void test_add_kbnode_to_expanded_root_node();
+  void addItemUnderRootItem();
+  void test_add_item_to_unexpanded_root_item();
+  void test_add_item_to_expanded_root_item();
 
   // region: objects test subject depends on
-  TreeItemProviderTestStub kbnode_provider;
+  TreeItemProviderTestStub item_provider;
   QModelIndexGenerator index_generator;
 
   bool always_selectable { false };
@@ -427,7 +422,7 @@ class TreeItemQModelTestBase : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<TreeItemQModel<IKbNode>> qmodel;
+  std::unique_ptr<TreeItemQModel<ITreeItem>> qmodel;
   // endregion
 
   // region: object depends on test subject
@@ -447,12 +442,12 @@ bool TreeItemQModelTestBase::shouldRowVisible(const ExpectRowData& row_data) {
   }
 }
 
-int TreeItemQModelTestBase::expectNodeCount(const ExpectRowData& row_data) {
-  if (row_data.subnodes == nullptr)
+int TreeItemQModelTestBase::expectItemCount(const ExpectRowData& row_data) {
+  if (row_data.subitems == nullptr)
     return 0;
 
   int count = 0;
-  for (auto & sub_rdata : *row_data.subnodes) {
+  for (auto & sub_rdata : *row_data.subitems) {
     if (shouldRowVisible(sub_rdata)) {
       ++count;
     }
@@ -462,13 +457,13 @@ int TreeItemQModelTestBase::expectNodeCount(const ExpectRowData& row_data) {
 }
 
 void TreeItemQModelTestBase::checkRowData(const ExpectRowData& root_rdata) {
-  ASSERT_EQ(expectNodeCount(root_rdata), qmodel->qmodel()->rowCount(QModelIndex()));
+  ASSERT_EQ(expectItemCount(root_rdata), qmodel->qmodel()->rowCount(QModelIndex()));
   ASSERT_EQ(1, qmodel->qmodel()->columnCount(QModelIndex()));
   QModelIndex expect_parent_idx;
   ASSERT_EQ(expect_parent_idx, qmodel->qmodel()->parent(QModelIndex()));
 
   // check sub items
-  checkRowData(*root_rdata.subnodes, QModelIndex());
+  checkRowData(*root_rdata.subitems, QModelIndex());
 }
 
 void TreeItemQModelTestBase::checkRowData(
@@ -486,8 +481,8 @@ void TreeItemQModelTestBase::checkRowData(
     checkIndexData(index, rdata);
     ++row;
 
-    if (rdata.subnodes) {
-      checkRowData(*rdata.subnodes, index);
+    if (rdata.subitems) {
+      checkRowData(*rdata.subitems, index);
     }
   }
 }
@@ -520,7 +515,7 @@ void TreeItemQModelTestBase::checkIndexData(
       << " (text: " << expect_data.text << ")";
 
   int actual_row_count = qmodel->qmodel()->rowCount(index);
-  int expect_row_count = expectNodeCount(expect_data);
+  int expect_row_count = expectItemCount(expect_data);
   ASSERT_EQ(expect_row_count, actual_row_count)
       << "index: " << index << " row count not match"
       << " (text: " << expect_data.text << ")";
@@ -530,15 +525,15 @@ void TreeItemQModelTestBase::checkIndexData(
       << "index: " << index << " col count not match"
       << " (text: " << expect_data.text << ")";
 
-  auto actual_kbnode = qmodel->indexToItem(index);
-  ASSERT_EQ(expect_data.node_ptr, actual_kbnode)
-      << "index: " << index << " kbnode ptr not match"
+  auto actual_item = qmodel->indexToItem(index);
+  ASSERT_EQ(expect_data.item_ptr, actual_item)
+      << "index: " << index << " item ptr not match"
       << " (text: " << expect_data.text << ")";
 
-  if (expect_data.node_ptr) {
-    QModelIndex kbnode_to_index = qmodel->itemToIndex(expect_data.node_ptr);
-    ASSERT_EQ(index, kbnode_to_index)
-        << "index: " << index << " kbnode index not match"
+  if (expect_data.item_ptr) {
+    QModelIndex item_to_index = qmodel->itemToIndex(expect_data.item_ptr);
+    ASSERT_EQ(index, item_to_index)
+        << "index: " << index << " item index not match"
         << " (text: " << expect_data.text << ")";
   }
 
@@ -559,7 +554,7 @@ void TreeItemQModelTestBase::checkIndexData(
 
   QModelIndex parent = qmodel->qmodel()->parent(index);
   auto actual_parent_ptr = qmodel->indexToItem(parent);
-  ASSERT_EQ(expect_data.parent_node_ptr, actual_parent_ptr)
+  ASSERT_EQ(expect_data.parent_item_ptr, actual_parent_ptr)
       << "index: " << index << " parent not match"
       << " (text: " << expect_data.text << ")";
 }
@@ -589,7 +584,7 @@ void TreeItemQModelTestBase::should_endResetQModel_emit_modelReset() {
   // Verify results
   ASSERT_EQ(1, sigspy.count());
 
-  kbnode_provider.fillRowData(&root_row_data_after_reset);
+  item_provider.fillRowData(&root_row_data_after_reset);
   CUSTOM_ASSERT(checkRowData(root_row_data_after_reset));
 }
 
@@ -612,34 +607,29 @@ void TreeItemQModelTestBase::expandToLevel(
   }
 }
 
-void TreeItemQModelTestBase::addKbNodeUnderLevel1Node1(IKbNode** parent_kbnode_ret) { // NOLINT
-  auto new_kbnode_name = xtestutils::genRandomString();
-  MockKbNode new_kbnode;
+void TreeItemQModelTestBase::addItemUnderLevel1Item1(ITreeItem** parent_item_ret) { // NOLINT
+  auto new_item_name = xtestutils::genRandomString();
+  TreeItemTestStub new_item { new_item_name, false };
 
-  EXPECT_CALL(new_kbnode, name())
-      .WillRepeatedly(Return(new_kbnode_name));
-  EXPECT_CALL(new_kbnode, isCategory())
-      .WillRepeatedly(Return(false));
-
-  // add under "Level1 Node1" @ index 0
-  ASSERT_EQ(&level2_row_data, level1_row_data[0].subnodes);
-  IKbNode* parent_kbnode = level1_row_data[0].node_ptr;
-  if (parent_kbnode_ret)
-    *parent_kbnode_ret = parent_kbnode;
+  // add under "Level1 Item1" @ index 0
+  ASSERT_EQ(&level2_row_data, level1_row_data[0].subitems);
+  ITreeItem* parent_item = level1_row_data[0].item_ptr;
+  if (parent_item_ret)
+    *parent_item_ret = parent_item;
 
   ExpectRowData new_row_data = {
-    .text = new_kbnode_name,
-    .node_ptr = &new_kbnode,
-    .parent_node_ptr = parent_kbnode,
+    .text = new_item_name,
+    .item_ptr = &new_item,
+    .parent_item_ptr = parent_item,
     .isSelectable = true,
-    .subnodes = nullptr,
+    .subitems = nullptr,
   };
 
   level2_row_data.push_back(new_row_data);
-  kbnode_provider.setKbNodeOwnerRow(&new_kbnode, &level2_row_data);
+  item_provider.setItemOwnerRow(&new_item, &level2_row_data);
 
   // Exercise system
-  qmodel->itemAdded(&new_kbnode, parent_kbnode);
+  qmodel->itemAdded(&new_item, parent_item);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData());
@@ -648,8 +638,8 @@ void TreeItemQModelTestBase::addKbNodeUnderLevel1Node1(IKbNode** parent_kbnode_r
   level2_row_data.pop_back();
 }
 
-void TreeItemQModelTestBase::test_add_kbnode_to_not_visible_parent_kbnode() {
-  // NOTE: initally all kbnodes are not pupulated
+void TreeItemQModelTestBase::test_add_item_to_not_visible_parent_item() {
+  // NOTE: initally all items are not pupulated
 
   QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
                                  SIGNAL(rowsAboutToBeInserted(
@@ -658,22 +648,22 @@ void TreeItemQModelTestBase::test_add_kbnode_to_not_visible_parent_kbnode() {
                                SIGNAL(rowsInserted(
                                    const QModelIndex&, int, int)));
 
-  CUSTOM_ASSERT(addKbNodeUnderLevel1Node1());
+  CUSTOM_ASSERT(addItemUnderLevel1Item1());
 
   // should not insert rows because parent is not populated yet
   ASSERT_EQ(0, begin_insert_sigspy.count());
   ASSERT_EQ(0, end_insert_sigspy.count());
 }
 
-void TreeItemQModelTestBase::test_add_kbnode_to_visible_but_children_not_populated_kbnode() { // NOLINT
-  // ensure "Level1 Node1" is visible, but children not populated
+void TreeItemQModelTestBase::test_add_item_to_visible_but_children_not_populated_item() { // NOLINT
+  // ensure "Level1 Item1" is visible, but children not populated
   expandToLevel(1);
 
-  // the result is same as not visible kbnodes
-  CUSTOM_ASSERT(test_add_kbnode_to_not_visible_parent_kbnode());
+  // the result is same as not visible items
+  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
-void TreeItemQModelTestBase::test_add_kbnode_to_children_populated_parent_kbnode() { // NOLINT
+void TreeItemQModelTestBase::test_add_item_to_children_populated_parent_item() { // NOLINT
   expandToLevel(2);
 
   QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
@@ -684,14 +674,14 @@ void TreeItemQModelTestBase::test_add_kbnode_to_children_populated_parent_kbnode
                                    const QModelIndex&, int, int)));
 
   // Exercise system
-  IKbNode* parent_kbnode;
-  CUSTOM_ASSERT(addKbNodeUnderLevel1Node1(&parent_kbnode));
+  ITreeItem* parent_item;
+  CUSTOM_ASSERT(addItemUnderLevel1Item1(&parent_item));
 
   // Verify result
   // new row is inserted at pos 1
   QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
   auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
-  ASSERT_EQ(parent_kbnode, qmodel->indexToItem(parent_idx));
+  ASSERT_EQ(parent_item, qmodel->indexToItem(parent_idx));
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
@@ -699,41 +689,36 @@ void TreeItemQModelTestBase::test_add_kbnode_to_children_populated_parent_kbnode
   ASSERT_EQ(1, insert_row_last);
 }
 
-void TreeItemQModelTestBase::addKbNodeUnderRootNode() {
-  auto new_kbnode_name = xtestutils::genRandomString();
-  MockKbNode new_kbnode;
-
-  EXPECT_CALL(new_kbnode, name())
-      .WillRepeatedly(Return(new_kbnode_name));
-  EXPECT_CALL(new_kbnode, isCategory())
-      .WillRepeatedly(Return(false));
+void TreeItemQModelTestBase::addItemUnderRootItem() {
+  auto new_item_name = xtestutils::genRandomString();
+  TreeItemTestStub new_item { new_item_name, false };
 
   ExpectRowData new_row_data = {
-    .text = new_kbnode_name,
-    .node_ptr = &new_kbnode,
-    .parent_node_ptr = nullptr,
+    .text = new_item_name,
+    .item_ptr = &new_item,
+    .parent_item_ptr = nullptr,
     .isSelectable = true,
-    .subnodes = nullptr,
+    .subitems = nullptr,
   };
 
   auto insert_pos = level0_row_data.end();
   --insert_pos;  // before add more row
 
   level0_row_data.insert(insert_pos, new_row_data);
-  kbnode_provider.setKbNodeOwnerRow(&new_kbnode, &level0_row_data);
+  item_provider.setItemOwnerRow(&new_item, &level0_row_data);
 
   // Exercise system
-  qmodel->itemAdded(&new_kbnode, nullptr);
+  qmodel->itemAdded(&new_item, nullptr);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData());
 
   // Teardown fixture
-  auto new_kbnode_ptr = &new_kbnode;
+  auto new_item_ptr = &new_item;
   auto iter = std::find_if(level0_row_data.begin(),
                            level0_row_data.end(),
-                           [new_kbnode_ptr](const ExpectRowData& item) {
-                             if (item.node_ptr == new_kbnode_ptr)
+                           [new_item_ptr](const ExpectRowData& item) {
+                             if (item.item_ptr == new_item_ptr)
                                return true;
 
                              return false;
@@ -743,7 +728,7 @@ void TreeItemQModelTestBase::addKbNodeUnderRootNode() {
   }
 }
 
-void TreeItemQModelTestBase::test_add_kbnode_to_unexpanded_root_node() {
+void TreeItemQModelTestBase::test_add_item_to_unexpanded_root_item() {
   QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
                                  SIGNAL(rowsAboutToBeInserted(
                                      const QModelIndex&, int, int)));
@@ -752,7 +737,7 @@ void TreeItemQModelTestBase::test_add_kbnode_to_unexpanded_root_node() {
                                    const QModelIndex&, int, int)));
 
   // Exercise system
-  CUSTOM_ASSERT(addKbNodeUnderRootNode());
+  CUSTOM_ASSERT(addItemUnderRootItem());
 
   // Verify result
   // should not insert rows
@@ -760,7 +745,7 @@ void TreeItemQModelTestBase::test_add_kbnode_to_unexpanded_root_node() {
   ASSERT_EQ(0, end_insert_sigspy.count());
 }
 
-void TreeItemQModelTestBase::test_add_kbnode_to_expanded_root_node() {
+void TreeItemQModelTestBase::test_add_item_to_expanded_root_item() {
   expandToLevel(0);
 
   int expect_insert_row = 0;
@@ -780,7 +765,7 @@ void TreeItemQModelTestBase::test_add_kbnode_to_expanded_root_node() {
                                    const QModelIndex&, int, int)));
 
   // Exercise system
-  CUSTOM_ASSERT(addKbNodeUnderRootNode());
+  CUSTOM_ASSERT(addItemUnderRootItem());
 
   // Verify result
   ASSERT_EQ(1, begin_insert_sigspy.count());
@@ -812,37 +797,37 @@ TEST_F(TreeItemQModelTestBase,
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_kbnode_to_not_visible_parent_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_not_visible_parent_kbnode());
+       test_add_item_to_not_visible_parent_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_kbnode_to_visible_but_children_not_populated_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_visible_but_children_not_populated_kbnode());
+       test_add_item_to_visible_but_children_not_populated_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_kbnode_to_children_populated_parent_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_children_populated_parent_kbnode());
+       test_add_item_to_children_populated_parent_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_kbnode_to_unexpanded_root_node) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_unexpanded_root_node());
+       test_add_item_to_unexpanded_root_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_kbnode_to_expanded_root_node) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_expanded_root_node());
+       test_add_item_to_expanded_root_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       should_null_kbnode_to_index_got_invalid_root_idx) { // NOLINT
-  QModelIndex kbnode_to_index = qmodel->itemToIndex(nullptr);
+       should_null_item_to_index_got_invalid_root_idx) { // NOLINT
+  QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
-  ASSERT_EQ(expect_index, kbnode_to_index)
-      << "null node_ptr should got root invalid index in completion mode";
+  ASSERT_EQ(expect_index, item_to_index)
+      << "null item_ptr should got root invalid index in completion mode";
 }
 
 class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
@@ -854,8 +839,8 @@ class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
     show_add_more_row = true;
   }
 
-  std::unique_ptr<TreeItemQModel<IKbNode>> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithClearAndAddMoreRow<IKbNode>>();
+  std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
+    return utils::make_unique<TreeItemQModelWithClearAndAddMoreRow<ITreeItem>>();
   }
 };
 
@@ -875,40 +860,40 @@ TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_kbnode_to_not_visible_parent_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_not_visible_parent_kbnode());
+       test_add_item_to_not_visible_parent_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_kbnode_to_visible_but_children_not_populated_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_visible_but_children_not_populated_kbnode());
+       test_add_item_to_visible_but_children_not_populated_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_kbnode_to_children_populated_parent_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_children_populated_parent_kbnode());
+       test_add_item_to_children_populated_parent_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_kbnode_to_unexpanded_root_node) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_unexpanded_root_node());
+       test_add_item_to_unexpanded_root_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_kbnode_to_expanded_root_node) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_expanded_root_node());
+       test_add_item_to_expanded_root_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_null_kbnode_to_index_got_invalid_root_idx) { // NOLINT
-  QModelIndex kbnode_to_index = qmodel->itemToIndex(nullptr);
+       should_null_item_to_index_got_invalid_root_idx) { // NOLINT
+  QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
-  ASSERT_EQ(expect_index, kbnode_to_index)
-      << "null node_ptr should got root invalid index in completion mode";
+  ASSERT_EQ(expect_index, item_to_index)
+      << "null item_ptr should got root invalid index in completion mode";
 }
 
-class TreeItemQModelWithProviderNodeTest : public TreeItemQModelTestBase {
+class TreeItemQModelWithProviderItemTest : public TreeItemQModelTestBase {
  protected:
   void SetUp() override {
     TreeItemQModelTestBase::SetUp();
@@ -918,21 +903,21 @@ class TreeItemQModelWithProviderNodeTest : public TreeItemQModelTestBase {
     show_clear_row = false;
     show_add_more_row = false;
 
-    root_row_data.subnodes = &provider_row_data;
-    root_row_data_after_reset.subnodes = &provider_row_data_after_reset;
+    root_row_data.subitems = &provider_row_data;
+    root_row_data_after_reset.subitems = &provider_row_data_after_reset;
 
-    ASSERT_EQ(&level0_row_data, provider_row_data[0].subnodes);
+    ASSERT_EQ(&level0_row_data, provider_row_data[0].subitems);
   }
 
   void TearDown() override {
-    root_row_data.subnodes = &level0_row_data;
-    root_row_data_after_reset.subnodes = &level0_row_data_after_reset;
+    root_row_data.subitems = &level0_row_data;
+    root_row_data_after_reset.subitems = &level0_row_data_after_reset;
 
     TreeItemQModelTestBase::TearDown();
   }
 
-  std::unique_ptr<TreeItemQModel<IKbNode>> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithProviderNode<IKbNode>>();
+  std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
+    return utils::make_unique<TreeItemQModelWithProviderNode<ITreeItem>>();
   }
 
   int adjustLevel(int level) override {
@@ -940,53 +925,53 @@ class TreeItemQModelWithProviderNodeTest : public TreeItemQModelTestBase {
   }
 };
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       should_display_the_provider_name_as_a_visible_root_node) { // NOLINT
+TEST_F(TreeItemQModelWithProviderItemTest,
+       should_display_the_provider_name_as_a_visible_root_item) { // NOLINT
   CUSTOM_ASSERT(checkRowData());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
+TEST_F(TreeItemQModelWithProviderItemTest,
        should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
   CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
+TEST_F(TreeItemQModelWithProviderItemTest,
        should_endResetQModel_emit_modelReset) { // NOLINT
   CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       test_add_kbnode_to_not_visible_parent_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_not_visible_parent_kbnode());
+TEST_F(TreeItemQModelWithProviderItemTest,
+       test_add_item_to_not_visible_parent_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       test_add_kbnode_to_visible_but_children_not_populated_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_visible_but_children_not_populated_kbnode());
+TEST_F(TreeItemQModelWithProviderItemTest,
+       test_add_item_to_visible_but_children_not_populated_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       test_add_kbnode_to_children_populated_parent_kbnode) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_children_populated_parent_kbnode());
+TEST_F(TreeItemQModelWithProviderItemTest,
+       test_add_item_to_children_populated_parent_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       test_add_kbnode_to_unexpanded_root_node) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_unexpanded_root_node());
+TEST_F(TreeItemQModelWithProviderItemTest,
+       test_add_item_to_unexpanded_root_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       test_add_kbnode_to_expanded_root_node) { // NOLINT
-  CUSTOM_ASSERT(test_add_kbnode_to_expanded_root_node());
+TEST_F(TreeItemQModelWithProviderItemTest,
+       test_add_item_to_expanded_root_item) { // NOLINT
+  CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
 }
 
-TEST_F(TreeItemQModelWithProviderNodeTest,
-       should_null_kbnode_to_index_got_provider_node) { // NOLINT
+TEST_F(TreeItemQModelWithProviderItemTest,
+       should_null_item_to_index_got_provider_item) { // NOLINT
   // Setup fixture
   auto expect_index = qmodel->qmodel()->index(0, 0, QModelIndex());
 
   // Verify results
-  QModelIndex kbnode_to_index = qmodel->itemToIndex(nullptr);
-  ASSERT_EQ(expect_index, kbnode_to_index)
-      << "null node_ptr should got provider node index in add kbnode mode";
+  QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
+  ASSERT_EQ(expect_index, item_to_index)
+      << "null item_ptr should got provider row index in add item mode";
 }
