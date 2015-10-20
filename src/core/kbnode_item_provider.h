@@ -31,7 +31,7 @@ class KbNodeItemProvider : public ITreeItemProvider {
   utils::U8String getFilterPattern() const override;
   bool isFilterMode() const override;
 
-  ITreeItem* getRootItem() const { return nullptr; }  // TODO(lutts): impl this
+  ITreeItem* getRootItem() const;
 
   std::unique_ptr<IChildItemIterator>
   childItems(ITreeItem* parent_item) const override;

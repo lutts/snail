@@ -59,6 +59,15 @@ class KbNodeItemProviderTestBase : public TestBase {
 class KbNodeItemProviderTest : public KbNodeItemProviderTestBase<::testing::Test> { };
 
 TEST_F(KbNodeItemProviderTest,
+       should_be_able_to_get_back_the_root_kbnode) { // NOLINT
+  // Exercise system
+  auto actual_root_kbnode = static_cast<IKbNode*>(kbnode_provider_->getRootItem());
+
+  // Verify results
+  ASSERT_EQ(&root_kbnode_, actual_root_kbnode);
+}
+
+TEST_F(KbNodeItemProviderTest,
        should_provider_name_be_root_kbnode_name) { // NOLINT
   ASSERT_EQ(root_kbnode_name_, kbnode_provider_->name());
 }

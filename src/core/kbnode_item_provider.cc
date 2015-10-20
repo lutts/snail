@@ -52,6 +52,10 @@ utils::U8String KbNodeItemProvider::name() const {
     return "";
 }
 
+ITreeItem* KbNodeItemProvider::getRootItem() const {
+  return root_kbnode_;
+}
+
 void KbNodeItemProvider::setFilterPattern(const utils::U8String& filter_pattern) {
   if (root_kbnode_ == nullptr)
     return;
