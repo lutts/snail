@@ -10,11 +10,14 @@
 #include <QModelIndex>
 
 #include "qtui/i_tree_item_qmodel.h"
+#include "snail/i_kbnode.h"
+
+using snailcore::IKbNode;
 
 SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<ITreeItemQModel> kbnode_qmodel)
+    std::unique_ptr<ITreeItemQModel<IKbNode>> kbnode_qmodel)
     : SimpleKbNodeAdderPresenterBase(model, view)
     , kbnode_qmodel_(std::move(kbnode_qmodel)) {
 }
@@ -33,15 +36,15 @@ void SimpleKbNodeAdderPresenter::initialize() {
   model()->setFilterPattern("");
 
   kbnode_qmodel_->setTreeItemProvider(model()->getKbNodeProvider());
-  view()->setKbNodeTreeQModel(kbnode_qmodel_.get());
+  view()->setKbNodeTreeQModel(kbnode_qmodel_->qmodel());
 
   auto new_kbnode_parent = model()->getNewKbNodeParent();
-  auto index = kbnode_qmodel_->kbNodeToIndex(new_kbnode_parent);
+  auto index = kbnode_qmodel_->itemToIndex(new_kbnode_parent);
   view()->selectIndex(index);
 
   view()->whenUserSelectIndex(
       [this](const QModelIndex& index) {
-        auto kbnode = kbnode_qmodel_->indexToKbNode(index);
+        auto kbnode = kbnode_qmodel_->indexToItem(index);
         model()->setNewKbNodeParent(kbnode);
       },
       shared_from_this());

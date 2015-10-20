@@ -13,6 +13,10 @@
 #include "pfmvp/pf_view_factory_manager.h"
 #include "src/qtui/core/tree_item_qmodel.h"
 
+namespace snailcore {
+class IKbNode;
+}  // namespace snailcore
+
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
 
@@ -29,7 +33,7 @@ class SimpleKbNodeAdderViewFactory : public PfViewFactoryT<ISimpleKbNodeAdderMod
     (void)args;
     auto view = std::make_shared<SimpleKbNodeAdderView>();
     return std::make_shared<SimpleKbNodeAdderPresenter>(
-        model, view, utils::make_unique<TreeItemQModelWithProviderNode>());
+        model, view, utils::make_unique<TreeItemQModelWithProviderNode<IKbNode>>());
   }
 
  private:

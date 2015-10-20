@@ -106,8 +106,7 @@ void SimpleKbNodeAdderView::setNewKbNodeName(const QString& name) {
   impl->kbnode_name_editor_->setText(name);
 }
 
-void SimpleKbNodeAdderView::setKbNodeTreeQModel(ITreeItemQModel* tree_model) {
-  auto model = dynamic_cast<QAbstractItemModel*>(tree_model);
+void SimpleKbNodeAdderView::setKbNodeTreeQModel(QAbstractItemModel* model) {
   if (!model)
     return;
 

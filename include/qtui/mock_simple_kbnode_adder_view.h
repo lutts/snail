@@ -21,7 +21,7 @@ class MockSimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
 
   MOCK_METHOD1(setProviderName, void(const QString& provider_name));
   MOCK_METHOD1(setNewKbNodeName, void(const QString& name));
-  MOCK_METHOD1(setKbNodeTreeQModel, void(ITreeItemQModel* tree_model));
+  MOCK_METHOD1(setKbNodeTreeQModel, void(QAbstractItemModel* tree_model));
   MOCK_METHOD1(selectIndex, void(const QModelIndex& index));
   MOCK_METHOD1(setNameValidateResult, void(bool result));
 };

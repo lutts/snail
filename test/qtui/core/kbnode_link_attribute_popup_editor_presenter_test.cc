@@ -144,7 +144,7 @@ void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
   auto index = index_generator.index();
   R_EXPECT_CALL(*model, getCurrentLinkType())
       .WillOnce(Return(current_link_type));
-  R_EXPECT_CALL(*link_type_qmodel, kbNodeToIndex(current_link_type))
+  R_EXPECT_CALL(*link_type_qmodel, itemToIndex(current_link_type))
       .WillOnce(Return(index));
   R_EXPECT_CALL(*view, setCurrentLinkType(index));
 }
@@ -175,7 +175,7 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
   auto index = index_generator.index();
 
   // Expectations
-  EXPECT_CALL(*link_type_qmodel, indexToKbNode(index))
+  EXPECT_CALL(*link_type_qmodel, indexToItem(index))
       .WillOnce(Return(link_type));
   EXPECT_CALL(*model, setLinkType(link_type));
 

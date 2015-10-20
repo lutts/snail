@@ -10,15 +10,18 @@
 
 #include "qtui/i_tree_item_qmodel.h"
 
-class MockTreeItemQModel : public ITreeItemQModel {
+template <typename RealItemType>
+class MockTreeItemQModel : public ITreeItemQModel<RealItemType> {
  public:
-  MOCK_METHOD1(setTreeItemProvider, void(ITreeItemProvider* kbnode_provider));
-  MOCK_CONST_METHOD1(indexToKbNode, IKbNode*(const QModelIndex& index));
-  MOCK_CONST_METHOD1(kbNodeToIndex, QModelIndex(IKbNode* kbnode));
+  MOCK_CONST_METHOD0(qmodel, QAbstractItemModel*());
+
+  MOCK_METHOD1(setTreeItemProvider, void(ITreeItemProvider* item_provider));
+  MOCK_CONST_METHOD1_T(indexToItem, RealItemType*(const QModelIndex& index));
+  MOCK_CONST_METHOD1(itemToIndex, QModelIndex(ITreeItem* item));
   MOCK_CONST_METHOD1(isAddMore, bool(const QModelIndex& index));
   MOCK_METHOD0(beginResetQModel, void());
   MOCK_METHOD0(endResetQModel, void());
-  MOCK_METHOD2(kbNodeAdded, void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
+  MOCK_METHOD2(itemAdded, void(ITreeItem* new_item, ITreeItem* parent_item));
 };
 
 #endif  // INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_

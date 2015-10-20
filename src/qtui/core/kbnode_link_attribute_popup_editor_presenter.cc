@@ -18,7 +18,7 @@ KbNodeLinkAttributePopupEditorPresenter::
 KbNodeLinkAttributePopupEditorPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<ITreeItemQModel> link_type_qmodel)
+    std::unique_ptr<ITreeItemQModel<IKbNode>> link_type_qmodel)
     : KbNodeLinkAttributePopupEditorPresenterBase(model, view)
     , link_type_qmodel_(std::move(link_type_qmodel)) { }
 
@@ -32,7 +32,7 @@ void KbNodeLinkAttributePopupEditorPresenter::initialize() {
 
   view()->whenUserSelectLinkType(
       [this](const QModelIndex& index) {
-        auto link_type = link_type_qmodel_->indexToKbNode(index);
+        auto link_type = link_type_qmodel_->indexToItem(index);
         model()->setLinkType(link_type);
       },
       shared_from_this());
@@ -70,7 +70,7 @@ void KbNodeLinkAttributePopupEditorPresenter::initLinkTypeDropDownList() {
 
   // select the current link type
   auto current_link_type = model()->getCurrentLinkType();
-  auto current_index = link_type_qmodel_->kbNodeToIndex(current_link_type);
+  auto current_index = link_type_qmodel_->itemToIndex(current_link_type);
   view()->setCurrentLinkType(current_index);
 }
 

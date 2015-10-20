@@ -39,7 +39,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockKbNodeAttributeModel>();
     view = std::make_shared<MockKbNodeAttributeEditView>();
-    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel>();
+    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel<IKbNode>>();
     kbnode_qmodel = kbnode_qmodel_up.get();
 
     // Expectations
@@ -57,7 +57,10 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
       InSequence seq;
 
       R_EXPECT_CALL(*kbnode_qmodel, setTreeItemProvider(&kbnode_provider));
-      R_EXPECT_CALL(*view, setKbNodeTreeQModel(kbnode_qmodel));
+
+      auto qmodel = xtestutils::genDummyPointer<QAbstractItemModel>();
+      R_EXPECT_CALL(*kbnode_qmodel, qmodel()).WillOnce(Return(qmodel));
+      R_EXPECT_CALL(*view, setKbNodeTreeQModel(qmodel));
     }
 
     R_EXPECT_CALL(*view, whenUserClickedIndex(_, _))
@@ -103,7 +106,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
   xtestutils::RandomString provider_name;
   MockTreeItemProvider kbnode_provider;
-  MockTreeItemQModel* kbnode_qmodel;
+  MockTreeItemQModel<IKbNode>* kbnode_qmodel;
 
   MockPfTriadManager triad_manager;
   QModelIndexGenerator index_generator;
@@ -177,7 +180,7 @@ void KbNodeAttributeEditPresenterTest::shouldNotifyTreeItemQModelWhenKbNodeAdded
   auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
 
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, kbNodeAdded(new_kbnode, parent_kbnode));
+  EXPECT_CALL(*kbnode_qmodel, itemAdded(new_kbnode, parent_kbnode));
 
   // Excercise system
   kbNodeAdded(new_kbnode, parent_kbnode);
@@ -212,7 +215,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   // Expectations
   EXPECT_CALL(*kbnode_qmodel, isAddMore(index))
       .WillOnce(Return(false));
-  EXPECT_CALL(*kbnode_qmodel, indexToKbNode(index))
+  EXPECT_CALL(*kbnode_qmodel, indexToItem(index))
       .WillOnce(Return(kbnode));
   EXPECT_CALL(*model, getKbNodeName())
       .WillOnce(Return(kbnode_name.ustr()));

@@ -8,78 +8,77 @@
 #ifndef SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_
 #define SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_
 
-#include <QAbstractItemModel>
-
-#include "qtui/i_tree_item_qmodel.h"
+#include "src/qtui/core/tree_item_qmodel_impl.h"
 #include "utils/basic_utils.h"
+#include "qtui/i_tree_item_qmodel.h"
+#include "snail/i_kbnode.h"
 
-class KbNodeItem;
-
-class TreeItemQModel : public QAbstractItemModel
-                       , public ITreeItemQModel {
+template <typename RealItemType>
+class TreeItemQModel : public ITreeItemQModel<RealItemType> {
  public:
-  TreeItemQModel();
-  virtual ~TreeItemQModel();
+  TreeItemQModel()
+      : TreeItemQModel(utils::make_unique<TreeItemQModelImpl>()) { }
+
+  explicit TreeItemQModel(std::unique_ptr<TreeItemQModelImpl>&& qmodel)
+      : qmodel_(std::move(qmodel)) { }
+  virtual ~TreeItemQModel() = default;
+
+  QAbstractItemModel* qmodel() const override {
+    return qmodel_.get();
+  }
 
   // ITreeItemQModel
-  void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
-  IKbNode* indexToKbNode(const QModelIndex& index) const override;
-  QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
-  bool isAddMore(const QModelIndex& index) const override;
-  void beginResetQModel() override;
-  void endResetQModel() override;
-  void kbNodeAdded(IKbNode* new_kbnode, IKbNode* parent_kbnode) override;
+  void setTreeItemProvider(ITreeItemProvider* item_provider) override {
+    qmodel_->setTreeItemProvider(item_provider);
+  }
 
-  // QAbstractItemModel
-  QVariant data(const QModelIndex &index, int role) const override;
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
-  QModelIndex index(int row, int column,
-                    const QModelIndex &parent) const override;
-  QModelIndex parent(const QModelIndex &index) const override;
-  int rowCount(const QModelIndex &parent) const override;
-  int columnCount(const QModelIndex &parent) const override;
+  RealItemType* indexToItem(const QModelIndex& index) const override {
+    return static_cast<RealItemType*>(qmodel_->indexToItem(index));
+  }
 
- protected:
-  KbNodeItem* rootItem() const;
-  QModelIndex itemToIndex(KbNodeItem* item) const;
-  KbNodeItem* indexToItem(const QModelIndex& index) const;
+  QModelIndex itemToIndex(ITreeItem* item) const override {
+    return qmodel_->itemToIndex(item);
+  }
 
-  virtual QVariant itemData(KbNodeItem* item, int role) const;
+  bool isAddMore(const QModelIndex& index) const {
+    return qmodel_->isAddMore(index);
+  }
 
-  virtual void clear();
-  virtual std::unique_ptr<KbNodeItem> createRootItem() const;
+  void beginResetQModel() override {
+    return qmodel_->beginResetQModel();
+  }
+
+  void endResetQModel() override {
+    return qmodel_->endResetQModel();
+  }
+
+  void itemAdded(ITreeItem* new_item, ITreeItem* parent_item) override {
+    qmodel_->itemAdded(new_item, parent_item);
+  }
 
  private:
   SNAIL_DISABLE_COPY(TreeItemQModel);
 
-  mutable std::unique_ptr<KbNodeItem> root_item_;
+  std::unique_ptr<TreeItemQModelImpl> qmodel_;
 };
 
-class TreeItemQModelWithClearAndAddMoreRow : public TreeItemQModel {
+template <typename RealItemType>
+class TreeItemQModelWithClearAndAddMoreRow
+    : public TreeItemQModel<RealItemType> {
  public:
-  TreeItemQModelWithClearAndAddMoreRow();
-  ~TreeItemQModelWithClearAndAddMoreRow();
-
-  QVariant itemData(KbNodeItem* item, int role) const override;
-
- private:
-  bool isAddMore(const QModelIndex& index) const override;
-  std::unique_ptr<KbNodeItem> createRootItem() const override;
+  TreeItemQModelWithClearAndAddMoreRow()
+      : TreeItemQModel<RealItemType>(
+            utils::make_unique<TreeItemQModelImplWithClearAndAddMoreRow>()) { }
+  ~TreeItemQModelWithClearAndAddMoreRow() = default;
 };
 
-class TreeItemQModelWithProviderNode : public TreeItemQModel {
+template <typename RealItemType>
+class TreeItemQModelWithProviderNode : public TreeItemQModel<RealItemType> {
  public:
-  TreeItemQModelWithProviderNode();
-  ~TreeItemQModelWithProviderNode();
-  void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
-
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
-
- private:
-  void clear() override;
-  QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
-
-  KbNodeItem* provider_item_ { nullptr };
+  TreeItemQModelWithProviderNode()
+      : TreeItemQModel<RealItemType>(
+            utils::make_unique<TreeItemQModelImplWithProviderNode>()) { }
+  ~TreeItemQModelWithProviderNode() = default;
 };
 
 

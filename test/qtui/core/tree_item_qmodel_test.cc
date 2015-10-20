@@ -13,6 +13,7 @@
 #include "src/qtui/core/tree_item_qmodel.h"
 #include "snail/mock_tree_item_provider.h"
 #include "snail/mock_kbnode.h"
+#include "snail/i_tree_item.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -40,6 +41,29 @@ constexpr static int kAddMoreSpecialRow = 3;
 #define PROVIDER_NAME "Provider Name"
 #define CLEAR_ROW_TEXT "(clear)"
 #define ADD_MORE_ROW_TEXT "Add More..."
+
+class TreeItemTestStub : public ITreeItem {
+ public:
+  TreeItemTestStub(const utils::U8String& name,
+                   bool is_category)
+      : name_(name)
+      , is_category_(is_category) { }
+  virtual ~TreeItemTestStub() = default;
+
+  utils::U8String name() const override {
+    return name_;
+  }
+
+  bool isCategory() const override {
+    return is_category_;
+  }
+
+ private:
+  SNAIL_DISABLE_COPY(TreeItemTestStub);
+
+  utils::U8String name_;
+  bool is_category_;
+};
 
 class ExpectRowData {
  public:
@@ -364,8 +388,8 @@ class TreeItemQModelTestBase : public ::testing::Test {
     cleanupExpectRowDatas();
   }
 
-  virtual std::unique_ptr<TreeItemQModel> createQModel() {
-    return utils::make_unique<TreeItemQModel>();
+  virtual std::unique_ptr<TreeItemQModel<IKbNode>> createQModel() {
+    return utils::make_unique<TreeItemQModel<IKbNode>>();
   }
 
   bool shouldRowVisible(const ExpectRowData& row_data);
@@ -402,7 +426,7 @@ class TreeItemQModelTestBase : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<TreeItemQModel> qmodel;
+  std::unique_ptr<TreeItemQModel<IKbNode>> qmodel;
   // endregion
 
   // region: object depends on test subject
@@ -437,10 +461,10 @@ int TreeItemQModelTestBase::expectNodeCount(const ExpectRowData& row_data) {
 }
 
 void TreeItemQModelTestBase::checkRowData(const ExpectRowData& root_rdata) {
-  ASSERT_EQ(expectNodeCount(root_rdata), qmodel->rowCount(QModelIndex()));
-  ASSERT_EQ(1, qmodel->columnCount(QModelIndex()));
+  ASSERT_EQ(expectNodeCount(root_rdata), qmodel->qmodel()->rowCount(QModelIndex()));
+  ASSERT_EQ(1, qmodel->qmodel()->columnCount(QModelIndex()));
   QModelIndex expect_parent_idx;
-  ASSERT_EQ(expect_parent_idx, qmodel->parent(QModelIndex()));
+  ASSERT_EQ(expect_parent_idx, qmodel->qmodel()->parent(QModelIndex()));
 
   // check sub items
   checkRowData(*root_rdata.subnodes, QModelIndex());
@@ -456,7 +480,7 @@ void TreeItemQModelTestBase::checkRowData(
     if (!shouldRowVisible(rdata))
       continue;
 
-    QModelIndex index = qmodel->index(row, 0, parent_index);
+    QModelIndex index = qmodel->qmodel()->index(row, 0, parent_index);
     ASSERT_EQ(row, index.row());
     checkIndexData(index, rdata);
     ++row;
@@ -494,24 +518,24 @@ void TreeItemQModelTestBase::checkIndexData(
       << "index: " << index << " text not match"
       << " (text: " << expect_data.text << ")";
 
-  int actual_row_count = qmodel->rowCount(index);
+  int actual_row_count = qmodel->qmodel()->rowCount(index);
   int expect_row_count = expectNodeCount(expect_data);
   ASSERT_EQ(expect_row_count, actual_row_count)
       << "index: " << index << " row count not match"
       << " (text: " << expect_data.text << ")";
 
-  int actual_col_count = qmodel->columnCount(index);
+  int actual_col_count = qmodel->qmodel()->columnCount(index);
   ASSERT_EQ(1, actual_col_count)
       << "index: " << index << " col count not match"
       << " (text: " << expect_data.text << ")";
 
-  auto actual_kbnode = qmodel->indexToKbNode(index);
+  auto actual_kbnode = qmodel->indexToItem(index);
   ASSERT_EQ(expect_data.node_ptr, actual_kbnode)
       << "index: " << index << " kbnode ptr not match"
       << " (text: " << expect_data.text << ")";
 
   if (expect_data.node_ptr) {
-    QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(expect_data.node_ptr);
+    QModelIndex kbnode_to_index = qmodel->itemToIndex(expect_data.node_ptr);
     ASSERT_EQ(index, kbnode_to_index)
         << "index: " << index << " kbnode index not match"
         << " (text: " << expect_data.text << ")";
@@ -527,20 +551,20 @@ void TreeItemQModelTestBase::checkIndexData(
   if (always_selectable)
     expect_selectable = true;
 
-  auto actual_selectable = qmodel->flags(index) & Qt::ItemIsSelectable;
+  auto actual_selectable = qmodel->qmodel()->flags(index) & Qt::ItemIsSelectable;
   ASSERT_EQ(expect_selectable, actual_selectable)
       << "index: " << index << " isSelectable not match"
       << " (text: " << expect_data.text << ")";
 
-  QModelIndex parent = qmodel->parent(index);
-  auto actual_parent_ptr = qmodel->indexToKbNode(parent);
+  QModelIndex parent = qmodel->qmodel()->parent(index);
+  auto actual_parent_ptr = qmodel->indexToItem(parent);
   ASSERT_EQ(expect_data.parent_node_ptr, actual_parent_ptr)
       << "index: " << index << " parent not match"
       << " (text: " << expect_data.text << ")";
 }
 
 void TreeItemQModelTestBase::should_beginResetQModel_emit_modelAboutToReset() { // NOLINT
-  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelAboutToBeReset()));
+  QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelAboutToBeReset()));
 
   // Exercise system
   qmodel->beginResetQModel();
@@ -556,7 +580,7 @@ void TreeItemQModelTestBase::should_endResetQModel_emit_modelReset() {
 
   qmodel->beginResetQModel();
 
-  QSignalSpy sigspy(qmodel.get(), SIGNAL(modelReset()));
+  QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelReset()));
 
   // Exercise system
   qmodel->endResetQModel();
@@ -575,14 +599,14 @@ void TreeItemQModelTestBase::expandToLevel(int level) {
 
 void TreeItemQModelTestBase::expandToLevel(
     int level, const QModelIndex& parent_index) {
-  int row_count = qmodel->rowCount(parent_index);
+  int row_count = qmodel->qmodel()->rowCount(parent_index);
 
   if (level ==  0)
     return;
 
   // expand children
   for (int row = 0; row < row_count; ++row) {
-    auto index = qmodel->index(row, 0, parent_index);
+    auto index = qmodel->qmodel()->index(row, 0, parent_index);
     expandToLevel(level - 1, index);
   }
 }
@@ -614,7 +638,7 @@ void TreeItemQModelTestBase::addKbNodeUnderLevel1Node1(IKbNode** parent_kbnode_r
   kbnode_provider.setKbNodeOwnerRow(&new_kbnode, &level2_row_data);
 
   // Exercise system
-  qmodel->kbNodeAdded(&new_kbnode, parent_kbnode);
+  qmodel->itemAdded(&new_kbnode, parent_kbnode);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData());
@@ -626,10 +650,10 @@ void TreeItemQModelTestBase::addKbNodeUnderLevel1Node1(IKbNode** parent_kbnode_r
 void TreeItemQModelTestBase::test_add_kbnode_to_not_visible_parent_kbnode() {
   // NOTE: initally all kbnodes are not pupulated
 
-  QSignalSpy begin_insert_sigspy(qmodel.get(),
+  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
                                  SIGNAL(rowsAboutToBeInserted(
                                      const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel.get(),
+  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
                                SIGNAL(rowsInserted(
                                    const QModelIndex&, int, int)));
 
@@ -651,10 +675,10 @@ void TreeItemQModelTestBase::test_add_kbnode_to_visible_but_children_not_populat
 void TreeItemQModelTestBase::test_add_kbnode_to_children_populated_parent_kbnode() { // NOLINT
   expandToLevel(2);
 
-  QSignalSpy begin_insert_sigspy(qmodel.get(),
+  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
                                  SIGNAL(rowsAboutToBeInserted(
                                      const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel.get(),
+  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
                                SIGNAL(rowsInserted(
                                    const QModelIndex&, int, int)));
 
@@ -666,7 +690,7 @@ void TreeItemQModelTestBase::test_add_kbnode_to_children_populated_parent_kbnode
   // new row is inserted at pos 1
   QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
   auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
-  ASSERT_EQ(parent_kbnode, qmodel->indexToKbNode(parent_idx));
+  ASSERT_EQ(parent_kbnode, qmodel->indexToItem(parent_idx));
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
@@ -698,7 +722,7 @@ void TreeItemQModelTestBase::addKbNodeUnderRootNode() {
   kbnode_provider.setKbNodeOwnerRow(&new_kbnode, &level0_row_data);
 
   // Exercise system
-  qmodel->kbNodeAdded(&new_kbnode, nullptr);
+  qmodel->itemAdded(&new_kbnode, nullptr);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData());
@@ -719,10 +743,10 @@ void TreeItemQModelTestBase::addKbNodeUnderRootNode() {
 }
 
 void TreeItemQModelTestBase::test_add_kbnode_to_unexpanded_root_node() {
-  QSignalSpy begin_insert_sigspy(qmodel.get(),
+  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
                                  SIGNAL(rowsAboutToBeInserted(
                                      const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel.get(),
+  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
                                SIGNAL(rowsInserted(
                                    const QModelIndex&, int, int)));
 
@@ -747,10 +771,10 @@ void TreeItemQModelTestBase::test_add_kbnode_to_expanded_root_node() {
       ++expect_insert_row;
   }
 
-  QSignalSpy begin_insert_sigspy(qmodel.get(),
+  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
                                  SIGNAL(rowsAboutToBeInserted(
                                      const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel.get(),
+  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
                                SIGNAL(rowsInserted(
                                    const QModelIndex&, int, int)));
 
@@ -763,7 +787,7 @@ void TreeItemQModelTestBase::test_add_kbnode_to_expanded_root_node() {
 
   QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
   auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
-  ASSERT_EQ(nullptr, qmodel->indexToKbNode(parent_idx));
+  ASSERT_EQ(nullptr, qmodel->indexToItem(parent_idx));
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
@@ -813,7 +837,7 @@ TEST_F(TreeItemQModelTestBase,
 
 TEST_F(TreeItemQModelTestBase,
        should_null_kbnode_to_index_got_invalid_root_idx) { // NOLINT
-  QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
+  QModelIndex kbnode_to_index = qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
   ASSERT_EQ(expect_index, kbnode_to_index)
@@ -829,8 +853,8 @@ class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
     show_add_more_row = true;
   }
 
-  std::unique_ptr<TreeItemQModel> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithClearAndAddMoreRow>();
+  std::unique_ptr<TreeItemQModel<IKbNode>> createQModel() override {
+    return utils::make_unique<TreeItemQModelWithClearAndAddMoreRow<IKbNode>>();
   }
 };
 
@@ -876,7 +900,7 @@ TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
        should_null_kbnode_to_index_got_invalid_root_idx) { // NOLINT
-  QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
+  QModelIndex kbnode_to_index = qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
   ASSERT_EQ(expect_index, kbnode_to_index)
@@ -906,8 +930,8 @@ class TreeItemQModelWithProviderNodeTest : public TreeItemQModelTestBase {
     TreeItemQModelTestBase::TearDown();
   }
 
-  std::unique_ptr<TreeItemQModel> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithProviderNode>();
+  std::unique_ptr<TreeItemQModel<IKbNode>> createQModel() override {
+    return utils::make_unique<TreeItemQModelWithProviderNode<IKbNode>>();
   }
 
   int adjustLevel(int level) override {
@@ -958,10 +982,10 @@ TEST_F(TreeItemQModelWithProviderNodeTest,
 TEST_F(TreeItemQModelWithProviderNodeTest,
        should_null_kbnode_to_index_got_provider_node) { // NOLINT
   // Setup fixture
-  auto expect_index = qmodel->index(0, 0, QModelIndex());
+  auto expect_index = qmodel->qmodel()->index(0, 0, QModelIndex());
 
   // Verify results
-  QModelIndex kbnode_to_index = qmodel->kbNodeToIndex(nullptr);
+  QModelIndex kbnode_to_index = qmodel->itemToIndex(nullptr);
   ASSERT_EQ(expect_index, kbnode_to_index)
       << "null node_ptr should got provider node index in add kbnode mode";
 }

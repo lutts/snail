@@ -17,6 +17,7 @@
 
 #include "snail/mock_tree_item_provider.h"
 #include "qtui/mock_tree_item_qmodel.h"
+#include "snail/mock_kbnode.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -35,7 +36,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
     // Setup fixture
     model = std::make_shared<MockSimpleKbNodeAdderModel>();
     view = std::make_shared<MockSimpleKbNodeAdderView>();
-    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel>();
+    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel<IKbNode>>();
     kbnode_qmodel = kbnode_qmodel_up.get();
 
     // Expectations
@@ -73,15 +74,18 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
 
         // init qmodel
         R_EXPECT_CALL(*kbnode_qmodel, setTreeItemProvider(&kbnode_provider));
-        R_EXPECT_CALL(*view, setKbNodeTreeQModel(kbnode_qmodel));
+
+        auto qmodel = xtestutils::genDummyPointer<QAbstractItemModel>();
+        R_EXPECT_CALL(*kbnode_qmodel, qmodel()).WillOnce(Return(qmodel));
+        R_EXPECT_CALL(*view, setKbNodeTreeQModel(qmodel));
       }
 
       // highlight the current parent node
       auto index = index_generator.index();
-      auto kbnode = xtestutils::genDummyPointer<IKbNode>();
+      MockKbNode kbnode;
       R_EXPECT_CALL(*model, getNewKbNodeParent())
-          .WillOnce(Return(kbnode));
-      R_EXPECT_CALL(*kbnode_qmodel, kbNodeToIndex(kbnode))
+          .WillOnce(Return(&kbnode));
+      R_EXPECT_CALL(*kbnode_qmodel, itemToIndex(&kbnode))
           .WillOnce(Return(index));
       R_EXPECT_CALL(*view, selectIndex(index));
     }
@@ -113,7 +117,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
   std::shared_ptr<MockSimpleKbNodeAdderView> view;
 
   MockTreeItemProvider kbnode_provider;
-  MockTreeItemQModel* kbnode_qmodel;
+  MockTreeItemQModel<IKbNode>* kbnode_qmodel;
   QModelIndexGenerator index_generator;
 
   MockPfTriadManager triad_manager;
@@ -148,7 +152,7 @@ TEST_F(SimpleKbNodeAdderPresenterTest,
   auto index = index_generator.index();
   auto kbnode = xtestutils::genDummyPointer<IKbNode>();
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, indexToKbNode(index))
+  EXPECT_CALL(*kbnode_qmodel, indexToItem(index))
       .WillOnce(Return(kbnode));
 
   EXPECT_CALL(*model, setNewKbNodeParent(kbnode));

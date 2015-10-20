@@ -15,6 +15,10 @@
 #include "qtui/i_kbnode_attribute_edit_view.h"
 #include "qtui/i_tree_item_qmodel.h"
 
+namespace snailcore {
+class IKbNode;
+}  // namespace snailcore
+
 using KbNodeAttributeEditPresenterBase =
     pfmvp::PfPresenterT<snailcore::IKbNodeAttributeModel,
                         IKbNodeAttributeEditView>;
@@ -24,7 +28,7 @@ class KbNodeAttributeEditPresenter : public KbNodeAttributeEditPresenterBase {
   KbNodeAttributeEditPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
-      std::unique_ptr<ITreeItemQModel> kbnode_qmodel)
+      std::unique_ptr<ITreeItemQModel<snailcore::IKbNode>> kbnode_qmodel)
       : KbNodeAttributeEditPresenterBase(model, view)
       , kbnode_qmodel_(std::move(kbnode_qmodel)) {
   }
@@ -36,7 +40,7 @@ class KbNodeAttributeEditPresenter : public KbNodeAttributeEditPresenterBase {
   void on_editingFinished(const QString& text);
   void addKbNode();
 
-  std::unique_ptr<ITreeItemQModel> kbnode_qmodel_;
+  std::unique_ptr<ITreeItemQModel<snailcore::IKbNode>> kbnode_qmodel_;
 
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeEditPresenter);

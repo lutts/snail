@@ -28,7 +28,7 @@ class KbNodeLinkAttributePopupEditorPresenter
   KbNodeLinkAttributePopupEditorPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
-      std::unique_ptr<ITreeItemQModel> link_type_qmodel);
+      std::unique_ptr<ITreeItemQModel<IKbNode>> link_type_qmodel);
   virtual ~KbNodeLinkAttributePopupEditorPresenter();
 
   void initialize() override;
@@ -41,7 +41,7 @@ class KbNodeLinkAttributePopupEditorPresenter
   void createLinkAttributesView(
       std::shared_ptr<snailcore::IAttributeSetModel> attr_set_model);
 
-  std::unique_ptr<ITreeItemQModel> link_type_qmodel_;
+  std::unique_ptr<ITreeItemQModel<IKbNode>> link_type_qmodel_;
 };
 
 #endif  // KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_

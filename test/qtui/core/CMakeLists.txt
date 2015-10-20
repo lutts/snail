@@ -44,6 +44,7 @@ add_gmock_unit_test(kbnode_attribute_edit_presenter
   LIBS Qt5::Core testutils)
 
 add_gmock_unit_test(tree_item_qmodel
+  ${UNDER_TEST_SOURCE_DIR}/tree_item_qmodel_impl.cc
   LIBS Qt5::Core testutils qttestutils)
 
 add_gmock_unit_test(simple_kbnode_adder_presenter

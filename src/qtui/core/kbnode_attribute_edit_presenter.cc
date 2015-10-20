@@ -19,7 +19,7 @@ void KbNodeAttributeEditPresenter::initialize() {
   view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
 
   kbnode_qmodel_->setTreeItemProvider(model()->getKbNodeProvider());
-  view()->setKbNodeTreeQModel(kbnode_qmodel_.get());
+  view()->setKbNodeTreeQModel(kbnode_qmodel_->qmodel());
 
   view()->whenUserClickedIndex(
       [this](const QModelIndex& index) {
@@ -66,7 +66,7 @@ void KbNodeAttributeEditPresenter::addKbNode() {
 
   provider_model->whenKbNodeAdded(
       [this](IKbNode* new_kbnode, IKbNode* parent_kbnode) {
-        kbnode_qmodel_->kbNodeAdded(new_kbnode, parent_kbnode);
+        kbnode_qmodel_->itemAdded(new_kbnode, parent_kbnode);
       },
       shared_from_this());
 
@@ -78,7 +78,7 @@ void KbNodeAttributeEditPresenter::on_UserClickedIndex(
   if (kbnode_qmodel_->isAddMore(index)) {
     addKbNode();
   } else {
-    auto kbnode = kbnode_qmodel_->indexToKbNode(index);
+    auto kbnode = kbnode_qmodel_->indexToItem(index);
     model()->setKbNode(kbnode);
     view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
     view()->clearWarningMessages();

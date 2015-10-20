@@ -65,10 +65,9 @@ void KbNodeAttributeEditView::setKbNodeName(const QString& kbnode_name) {
 }
 
 void KbNodeAttributeEditView::setKbNodeTreeQModel(
-    ITreeItemQModel* kbnode_tree_qmodel) {
-  auto model = dynamic_cast<QAbstractItemModel*>(kbnode_tree_qmodel);
+    QAbstractItemModel* kbnode_tree_qmodel) {
   auto completer = filter_widget_->qtcompleter();
-  completer->setModel(model);
+  completer->setModel(kbnode_tree_qmodel);
 }
 
 void KbNodeAttributeEditView::warnMultipleMatch(const QString& provider_name) {

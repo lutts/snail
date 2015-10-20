@@ -13,6 +13,10 @@
 #include "src/qtui/core/tree_item_qmodel.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
+namespace snailcore {
+class IKbNode;
+}  // namespace snailcore
+
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
 
@@ -30,7 +34,7 @@ class KbNodeAttributeEditViewFactory
     (void)args;
     auto view = std::make_shared<KbNodeAttributeEditView>();
     auto kbnode_tree_model =
-        utils::make_unique<TreeItemQModelWithClearAndAddMoreRow>();
+        utils::make_unique<TreeItemQModelWithClearAndAddMoreRow<IKbNode>>();
     return std::make_shared<KbNodeAttributeEditPresenter>(
         model, view, std::move(kbnode_tree_model));
   }
