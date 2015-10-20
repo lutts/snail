@@ -233,7 +233,7 @@ void KbNodeTreeQModelBasic::setTreeItemProvider(ITreeItemProvider* kbnode_provid
   return rootItem()->setTreeItemProvider(kbnode_provider);
 }
 
-bool KbNodeTreeQModelBasic::isAddKbNode(const QModelIndex& index) const {
+bool KbNodeTreeQModelBasic::isAddMore(const QModelIndex& index) const {
   (void)index;
   return false;
 }
@@ -439,7 +439,7 @@ KbNodeTreeQModelWithClearAndAddMoreRow::createRootItem() const {
   return utils::make_unique<KbNodeItemWithEmptyAddMore>();
 }
 
-bool KbNodeTreeQModelWithClearAndAddMoreRow::isAddKbNode(
+bool KbNodeTreeQModelWithClearAndAddMoreRow::isAddMore(
     const QModelIndex& index) const {
   auto item = static_cast<KbNodeItemWithEmptyAddMore*>(indexToItem(index));
   return item->isAddMore();

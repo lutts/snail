@@ -25,7 +25,7 @@ class KbNodeTreeQModelBasic : public QAbstractItemModel
   void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
   IKbNode* indexToKbNode(const QModelIndex& index) const override;
   QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
-  bool isAddKbNode(const QModelIndex& index) const override;
+  bool isAddMore(const QModelIndex& index) const override;
   void beginResetQModel() override;
   void endResetQModel() override;
   void kbNodeAdded(IKbNode* new_kbnode, IKbNode* parent_kbnode) override;
@@ -63,7 +63,7 @@ class KbNodeTreeQModelWithClearAndAddMoreRow : public KbNodeTreeQModelBasic {
   QVariant itemData(KbNodeItem* item, int role) const override;
 
  private:
-  bool isAddKbNode(const QModelIndex& index) const override;
+  bool isAddMore(const QModelIndex& index) const override;
   std::unique_ptr<KbNodeItem> createRootItem() const override;
 };
 

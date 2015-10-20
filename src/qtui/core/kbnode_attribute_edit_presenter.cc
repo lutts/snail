@@ -75,7 +75,7 @@ void KbNodeAttributeEditPresenter::addKbNode() {
 
 void KbNodeAttributeEditPresenter::on_UserClickedIndex(
     const QModelIndex& index) {
-  if (kbnode_qmodel_->isAddKbNode(index)) {
+  if (kbnode_qmodel_->isAddMore(index)) {
     addKbNode();
   } else {
     auto kbnode = kbnode_qmodel_->indexToKbNode(index);

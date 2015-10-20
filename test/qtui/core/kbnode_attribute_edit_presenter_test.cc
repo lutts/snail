@@ -188,7 +188,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   auto index = index_generator.index();
 
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, isAddKbNode(index))
+  EXPECT_CALL(*kbnode_qmodel, isAddMore(index))
       .WillOnce(Return(true));
 
   auto verifier = expectationOnAddKbNode();
@@ -210,7 +210,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   xtestutils::RandomString kbnode_name;
 
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, isAddKbNode(index))
+  EXPECT_CALL(*kbnode_qmodel, isAddMore(index))
       .WillOnce(Return(false));
   EXPECT_CALL(*kbnode_qmodel, indexToKbNode(index))
       .WillOnce(Return(kbnode));

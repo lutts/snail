@@ -15,7 +15,7 @@ class MockKbNodeTreeQModel : public IKbNodeTreeQModel {
   MOCK_METHOD1(setTreeItemProvider, void(ITreeItemProvider* kbnode_provider));
   MOCK_CONST_METHOD1(indexToKbNode, IKbNode*(const QModelIndex& index));
   MOCK_CONST_METHOD1(kbNodeToIndex, QModelIndex(IKbNode* kbnode));
-  MOCK_CONST_METHOD1(isAddKbNode, bool(const QModelIndex& index));
+  MOCK_CONST_METHOD1(isAddMore, bool(const QModelIndex& index));
   MOCK_METHOD0(beginResetQModel, void());
   MOCK_METHOD0(endResetQModel, void());
   MOCK_METHOD2(kbNodeAdded, void(IKbNode* new_kbnode, IKbNode* parent_kbnode));

@@ -517,7 +517,7 @@ void KbNodeTreeQModelTestBase::checkIndexData(
         << " (text: " << expect_data.text << ")";
   }
 
-  bool actual_isAddMore = qmodel->isAddKbNode(index);
+  bool actual_isAddMore = qmodel->isAddMore(index);
   bool expect_isAddMore = (expect_data.text == ADD_MORE_ROW_TEXT);
   ASSERT_EQ(expect_isAddMore, actual_isAddMore)
       << "index: " << index << " isAddMore not match"
