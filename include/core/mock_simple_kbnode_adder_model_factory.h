@@ -17,7 +17,7 @@ class MockSimpleKbNodeAdderModelFactory : public ISimpleKbNodeAdderModelFactory 
  public:
   MOCK_CONST_METHOD1(
       createSimpleKbNodeAdderModel,
-      std::shared_ptr<ISimpleKbNodeAdderModel>(IKbNodeProvider* provider));
+      std::shared_ptr<ISimpleKbNodeAdderModel>(ITreeItemProvider* provider));
 };
 
 }  // namespace tests

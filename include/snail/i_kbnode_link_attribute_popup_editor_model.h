@@ -16,7 +16,7 @@
 namespace snailcore {
 
 class IKbNode;
-class IKbNodeProvider;
+class ITreeItemProvider;
 class IAttributeModel;
 class IAttributeSetModel;
 
@@ -31,7 +31,7 @@ class IKbNodeLinkAttributePopupEditorModel : public pfmvp::IPfModel {
   SNAIL_SIGSLOT2(ValidateComplete, void(bool result));
 
   virtual std::shared_ptr<IAttributeModel> createValueKbNodeAttrModel() = 0;
-  virtual IKbNodeProvider* getLinkTypeProvider() const = 0;
+  virtual ITreeItemProvider* getLinkTypeProvider() const = 0;
   virtual IKbNode* getCurrentLinkType() const = 0;
   virtual std::shared_ptr<IAttributeSetModel> getCurrentLinkAttrSetModel() = 0;
   virtual void setLinkType(IKbNode* link_type) = 0;

@@ -7,7 +7,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 #include "src/core/simple_kbnode_adder_model.h"
-#include "snail/mock_kbnode_provider.h"
+#include "snail/mock_tree_item_provider.h"
 #include "core/mock_kbnode_manager.h"
 
 namespace snailcore {
@@ -29,7 +29,7 @@ class SimpleKbNodeAdderModelTestBase : public TestBase {
   // virtual void TearDown() { }
 
   // region: objects test subject depends on
-  MockKbNodeProvider kbnode_provider;
+  MockTreeItemProvider kbnode_provider;
   MockKbNodeManager kbnode_manager;
   // endregion
 

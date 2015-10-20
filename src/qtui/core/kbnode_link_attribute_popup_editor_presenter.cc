@@ -65,7 +65,7 @@ void KbNodeLinkAttributePopupEditorPresenter::createValueAttributeView() {
 
 void KbNodeLinkAttributePopupEditorPresenter::initLinkTypeDropDownList() {
   auto link_type_provider = model()->getLinkTypeProvider();
-  link_type_qmodel_->setKbNodeProvider(link_type_provider);
+  link_type_qmodel_->setTreeItemProvider(link_type_provider);
   view()->setLinkTypeQModel(link_type_qmodel_.get());
 
   // select the current link type

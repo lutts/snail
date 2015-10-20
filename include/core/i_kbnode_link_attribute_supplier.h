@@ -12,7 +12,7 @@
 
 namespace snailcore {
 
-class IKbNodeProvider;
+class ITreeItemProvider;
 
 class IKbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -20,7 +20,7 @@ class IKbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~IKbNodeLinkAttributeSupplier() = default;
 
-  virtual IKbNodeProvider* getLinkTypeProvider() const = 0;
+  virtual ITreeItemProvider* getLinkTypeProvider() const = 0;
 };
 
 }  // namespace snailcore

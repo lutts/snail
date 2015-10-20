@@ -133,10 +133,10 @@ void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
     MockObjectRecorder* mock_recorder) {
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
-  auto link_type_provider = xtestutils::genDummyPointer<IKbNodeProvider>();
+  auto link_type_provider = xtestutils::genDummyPointer<ITreeItemProvider>();
   R_EXPECT_CALL(*model, getLinkTypeProvider())
       .WillOnce(Return(link_type_provider));
-  R_EXPECT_CALL(*link_type_qmodel, setKbNodeProvider(link_type_provider));
+  R_EXPECT_CALL(*link_type_qmodel, setTreeItemProvider(link_type_provider));
   R_EXPECT_CALL(*view, setLinkTypeQModel(link_type_qmodel));
 
   // select the current link_type

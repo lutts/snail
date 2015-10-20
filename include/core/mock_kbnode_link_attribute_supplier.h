@@ -23,7 +23,7 @@ class MockKbNodeLinkAttributeSupplier : public IKbNodeLinkAttributeSupplier {
   MOCK_METHOD0(createAttribute, IAttribute*());
 
   // Self
-  MOCK_CONST_METHOD0(getLinkTypeProvider, IKbNodeProvider*());
+  MOCK_CONST_METHOD0(getLinkTypeProvider, ITreeItemProvider*());
 };
 
 }  // namespace tests

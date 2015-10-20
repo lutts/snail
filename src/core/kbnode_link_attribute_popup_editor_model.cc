@@ -26,7 +26,7 @@ KbNodeLinkAttributePopupEditorModel::createValueKbNodeAttrModel() {
   return attr_model_factory_->createAttributeModel(value_attr_copy_);
 }
 
-IKbNodeProvider*
+ITreeItemProvider*
 KbNodeLinkAttributePopupEditorModel::getLinkTypeProvider() const {
   return attr_->supplier()->getLinkTypeProvider();
 }

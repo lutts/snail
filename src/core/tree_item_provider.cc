@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/core/kbnode_provider.h"
+#include "src/core/tree_item_provider.h"
 #include "core/i_kbnode_manager.h"
 #include "snail/i_kbnode.h"
 
@@ -12,7 +12,7 @@ namespace snailcore {
 
 namespace {
 class KbNodeIterator :
-      public IKbNodeProvider::IChildNodeIterator {
+      public ITreeItemProvider::IChildItemIterator {
  public:
   KbNodeIterator() = default;
   explicit KbNodeIterator(const std::vector<IKbNode*>& kbnodes)
@@ -38,21 +38,21 @@ class KbNodeIterator :
 }  // namespace
 
 
-KbNodeProvider::KbNodeProvider(IKbNode* root_kbnode,
+TreeItemProvider::TreeItemProvider(IKbNode* root_kbnode,
                                IKbNodeManager* node_manager)
     : node_manager_(node_manager)
     , root_kbnode_(root_kbnode) { }
 
-KbNodeProvider::~KbNodeProvider() = default;
+TreeItemProvider::~TreeItemProvider() = default;
 
-utils::U8String KbNodeProvider::name() const {
+utils::U8String TreeItemProvider::name() const {
   if (root_kbnode_)
     return root_kbnode_->name();
   else
     return "";
 }
 
-void KbNodeProvider::setFilterPattern(const utils::U8String& filter_pattern) {
+void TreeItemProvider::setFilterPattern(const utils::U8String& filter_pattern) {
   if (root_kbnode_ == nullptr)
     return;
 
@@ -67,16 +67,16 @@ void KbNodeProvider::setFilterPattern(const utils::U8String& filter_pattern) {
   filter_pattern_ = filter_pattern;
 }
 
-utils::U8String KbNodeProvider::getFilterPattern() const {
+utils::U8String TreeItemProvider::getFilterPattern() const {
   return filter_pattern_;
 }
 
-bool KbNodeProvider::isFilterMode() const {
+bool TreeItemProvider::isFilterMode() const {
   return filter_pattern_ != "";
 }
 
-std::unique_ptr<IKbNodeProvider::IChildNodeIterator>
-KbNodeProvider::childNodes(IKbNode* parent_node) const {
+std::unique_ptr<ITreeItemProvider::IChildItemIterator>
+TreeItemProvider::childItems(IKbNode* parent_node) const {
   if (isFilterMode()) {
     if (parent_node == nullptr)
       return utils::make_unique<KbNodeIterator>(matched_kbnodes_);
@@ -86,16 +86,16 @@ KbNodeProvider::childNodes(IKbNode* parent_node) const {
     if (parent_node == nullptr)
       parent_node = root_kbnode_;
     return utils::make_unique<KbNodeIterator>(
-        node_manager_->childNodes(parent_node));
+        node_manager_->childItems(parent_node));
   }
 }
 
-void KbNodeProvider::incRef(IKbNode* kbnode) {
+void TreeItemProvider::incRef(IKbNode* kbnode) {
   node_manager_->incRef(kbnode);
 }
 
 std::vector<IKbNode*>
-KbNodeProvider::findKbNodeByName(const utils::U8String& name) {
+TreeItemProvider::findItemByName(const utils::U8String& name) {
   if (root_kbnode_ == nullptr)
     return std::vector<IKbNode*>();
 

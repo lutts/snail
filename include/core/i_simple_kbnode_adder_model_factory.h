@@ -10,7 +10,7 @@
 
 namespace snailcore {
 
-class IKbNodeProvider;
+class ITreeItemProvider;
 class ISimpleKbNodeAdderModel;
 
 class ISimpleKbNodeAdderModelFactory {
@@ -18,7 +18,7 @@ class ISimpleKbNodeAdderModelFactory {
   virtual ~ISimpleKbNodeAdderModelFactory() = default;
 
   virtual std::shared_ptr<ISimpleKbNodeAdderModel>
-  createSimpleKbNodeAdderModel(IKbNodeProvider* provider) const = 0;
+  createSimpleKbNodeAdderModel(ITreeItemProvider* provider) const = 0;
 };
 
 }  // namespace snailcore

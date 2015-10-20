@@ -1,4 +1,4 @@
-//-*- TestCaseName: KbNodeProviderTest;-*-
+//-*- TestCaseName: TreeItemProviderTest;-*-
 // Copyright (c) 2015
 // All rights reserved.
 //
@@ -11,7 +11,7 @@
 #include "test/testutils/gmock_common.h"
 #include "test/core/kbnode_id_generator.h"
 
-#include "src/core/kbnode_provider.h"
+#include "src/core/tree_item_provider.h"
 #include "core/mock_kbnode_manager.h"
 #include "snail/mock_kbnode.h"
 
@@ -19,19 +19,19 @@ namespace snailcore {
 namespace tests {
 
 template <typename TestBase>
-class KbNodeProviderTestBase : public TestBase {
+class TreeItemProviderTestBase : public TestBase {
  protected:
-  KbNodeProviderTestBase() {
+  TreeItemProviderTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  // ~KbNodeProviderTestBase() { }
+  // ~TreeItemProviderTestBase() { }
   virtual void SetUp() {
     root_kbnode_name_ = xtestutils::genRandomString();
     EXPECT_CALL(root_kbnode_, name())
         .WillRepeatedly(Return(root_kbnode_name_));
 
-    kbnode_provider_ = utils::make_unique<KbNodeProvider>(&root_kbnode_,
+    kbnode_provider_ = utils::make_unique<TreeItemProvider>(&root_kbnode_,
                                                           &node_manager_);
   }
   // virtual void TearDown() { }
@@ -49,26 +49,26 @@ class KbNodeProviderTestBase : public TestBase {
   // endregion
 
   // region: test subject
-  std::unique_ptr<KbNodeProvider> kbnode_provider_;
+  std::unique_ptr<TreeItemProvider> kbnode_provider_;
   // endregion
 
   // region: object depends on test subject
   // endregion
 };
 
-class KbNodeProviderTest : public KbNodeProviderTestBase<::testing::Test> { };
+class TreeItemProviderTest : public TreeItemProviderTestBase<::testing::Test> { };
 
-TEST_F(KbNodeProviderTest,
+TEST_F(TreeItemProviderTest,
        should_provider_name_be_root_kbnode_name) { // NOLINT
   ASSERT_EQ(root_kbnode_name_, kbnode_provider_->name());
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IKbNodeProvider)
+BEGIN_MOCK_LISTENER_DEF(MockListener, ITreeItemProvider)
 
 MOCK_METHOD0(BeginFilter, void());
 MOCK_METHOD0(FinishFilter, void());
 
-BEGIN_BIND_SIGNAL(IKbNodeProvider)
+BEGIN_BIND_SIGNAL(ITreeItemProvider)
 
 BIND_SIGNAL0(BeginFilter, void);
 BIND_SIGNAL0(FinishFilter, void);
@@ -77,7 +77,7 @@ END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
 
-TEST_F(KbNodeProviderTest,
+TEST_F(TreeItemProviderTest,
        test_setFilterPattern_with_non_empty_string) { // NOLINT
   // Setup fixture
   auto filter_pattern = xtestutils::genRandomString();
@@ -115,19 +115,19 @@ TEST_F(KbNodeProviderTest,
 
   // in filter mode, kbnodes should be a flatten list, not a tree
   std::vector<IKbNode*> actual_kbnodes;
-  auto iterator = kbnode_provider_->childNodes(nullptr);
+  auto iterator = kbnode_provider_->childItems(nullptr);
   while (iterator->hasNext()) {
     auto kbnode = iterator->next();
     actual_kbnodes.push_back(kbnode);
 
-    auto sub_iter = kbnode_provider_->childNodes(kbnode);
+    auto sub_iter = kbnode_provider_->childItems(kbnode);
     ASSERT_FALSE(sub_iter->hasNext());
   }
 
   ASSERT_EQ(expect_kbnodes, actual_kbnodes);
 }
 
-TEST_F(KbNodeProviderTest,
+TEST_F(TreeItemProviderTest,
        should_setFilterPattern_to_empty_will_emit_signals_but_not_call_node_manager_findKbNode) { // NOLINT
   // Setup fixture
   kbnode_provider_->setFilterPattern(xtestutils::genRandomString());
@@ -151,11 +151,11 @@ TEST_F(KbNodeProviderTest,
 }
 
 template <typename TestBase>
-void KbNodeProviderTestBase<TestBase>::checkSubNodes(
+void TreeItemProviderTestBase<TestBase>::checkSubNodes(
     IKbNode* parent_node,
     std::map<const IKbNode*, std::vector<IKbNode*> >*  kbnode_to_subnodes) {
   std::vector<IKbNode*> actual_subnodes;
-  auto iter = kbnode_provider_->childNodes(parent_node);
+  auto iter = kbnode_provider_->childItems(parent_node);
   while (iter->hasNext()) {
     auto kbnode = iter->next();
     actual_subnodes.push_back(kbnode);;
@@ -169,7 +169,7 @@ void KbNodeProviderTestBase<TestBase>::checkSubNodes(
 }
 
 template <typename TestBase>
-void KbNodeProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
+void TreeItemProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
   std::vector<IKbNode*> level1_nodes;
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());
@@ -198,7 +198,7 @@ void KbNodeProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
 
   kbnode_to_subnodes[level2_subnodes2[1]] = level3_subnodes1;
 
-  EXPECT_CALL(node_manager_, childNodes(_))
+  EXPECT_CALL(node_manager_, childItems(_))
       .WillRepeatedly(
           Invoke([&kbnode_to_subnodes](const IKbNode* parent_kbnode) {
             return kbnode_to_subnodes[parent_kbnode];
@@ -209,12 +209,12 @@ void KbNodeProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
   checkSubNodes(nullptr, &kbnode_to_subnodes);
 }
 
-TEST_F(KbNodeProviderTest,
+TEST_F(TreeItemProviderTest,
        should_be_able_to_iterator_the_kbnode_hierarchy_when_not_in_filter_mode) { // NOLINT
   CUSTOM_ASSERT(checkNonFilterModelKbNodeHierarchy());
 }
 
-TEST_F(KbNodeProviderTest,
+TEST_F(TreeItemProviderTest,
        should_incRef_call_node_manager_incRef) { // NOLINT
   // Setup fixture
   auto kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -226,8 +226,8 @@ TEST_F(KbNodeProviderTest,
   kbnode_provider_->incRef(kbnode);
 }
 
-TEST_F(KbNodeProviderTest,
-       should_findKbNodeByName_call_node_manager_findKbNode) { // NOLINT
+TEST_F(TreeItemProviderTest,
+       should_findItemByName_call_node_manager_findKbNode) { // NOLINT
   // Setup fixture
   auto name = xtestutils::genRandomString();
   std::vector<IKbNode*> expect_kbnodes;
@@ -240,14 +240,14 @@ TEST_F(KbNodeProviderTest,
       .WillOnce(Return(expect_kbnodes));
 
   // Exercise system
-  auto actual_kbnodes = kbnode_provider_->findKbNodeByName(name);
+  auto actual_kbnodes = kbnode_provider_->findItemByName(name);
 
   // Verify results
   ASSERT_EQ(expect_kbnodes, actual_kbnodes);
 }
 
-TEST_F(KbNodeProviderTest,
-       should_findKbNodeByName_do_not_call_node_manager_findKbNode_when_name_equals_current_filter_pattern) { // NOLINT
+TEST_F(TreeItemProviderTest,
+       should_findItemByName_do_not_call_node_manager_findKbNode_when_name_equals_current_filter_pattern) { // NOLINT
   // Setup fixture
   auto filter_pattern = xtestutils::genRandomString();
   std::vector<IKbNode*> expect_kbnodes;
@@ -265,14 +265,14 @@ TEST_F(KbNodeProviderTest,
   EXPECT_CALL(node_manager_, findKbNode(_, _)).Times(0);
 
   // Exercise system
-  auto actual_kbnodes = kbnode_provider_->findKbNodeByName(filter_pattern);
+  auto actual_kbnodes = kbnode_provider_->findItemByName(filter_pattern);
 
   // Verify results
   ASSERT_EQ(expect_kbnodes, actual_kbnodes);
 }
 
-TEST_F(KbNodeProviderTest,
-       should_findKbNodeByName_with_empty_name_return_empty_results) { // NOLINT
+TEST_F(TreeItemProviderTest,
+       should_findItemByName_with_empty_name_return_empty_results) { // NOLINT
   // Setup fixture
   std::vector<IKbNode*> dummy_kbnodes;
   dummy_kbnodes.push_back(xtestutils::genDummyPointer<IKbNode>());
@@ -285,7 +285,7 @@ TEST_F(KbNodeProviderTest,
   kbnode_provider_->setFilterPattern(xtestutils::genRandomString());
 
   // Exercise system
-  auto actual_kbnodes = kbnode_provider_->findKbNodeByName("");
+  auto actual_kbnodes = kbnode_provider_->findItemByName("");
 
   // Verify results
   std::vector<IKbNode*> expect_empty_kbnodes;

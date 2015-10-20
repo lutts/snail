@@ -14,7 +14,7 @@
 #include "src/core/workspace_model.h"
 
 #include "src/core/kbnode_manager.h"
-#include "src/core/kbnode_provider.h"
+#include "src/core/tree_item_provider.h"
 #include "src/core/simple_kbnode_adder_model.h"
 #include "src/core/attribute_set_model.h"
 #include "src/core/work_model.h"
@@ -29,7 +29,7 @@
 
 namespace snailcore {
 
-class ApplicationFactoryImpl : public IKbNodeProviderFactory
+class ApplicationFactoryImpl : public ITreeItemProviderFactory
                              , public ISimpleKbNodeAdderModelFactory
                              , public IAttributeSetModelFactory
                              , public IWorkModelFactory {
@@ -43,16 +43,16 @@ class ApplicationFactoryImpl : public IKbNodeProviderFactory
   }
   ~ApplicationFactoryImpl() = default;
 
-  // IKbNodeProviderFactory
-  std::shared_ptr<IKbNodeProvider> createKbNodeProvider(
+  // ITreeItemProviderFactory
+  std::shared_ptr<ITreeItemProvider> createTreeItemProvider(
       IKbNode* root_kbnode,
       IKbNodeManager* kbnode_manager) const override {
-    return std::make_shared<KbNodeProvider>(root_kbnode, kbnode_manager);
+    return std::make_shared<TreeItemProvider>(root_kbnode, kbnode_manager);
   }
 
   // ISimpleKbNodeAdderModelFactory
   std::shared_ptr<ISimpleKbNodeAdderModel>
-  createSimpleKbNodeAdderModel(IKbNodeProvider* provider) const override {
+  createSimpleKbNodeAdderModel(ITreeItemProvider* provider) const override {
     return std::make_shared<SimpleKbNodeAdderModel>(provider,
                                                  kbnode_manager_.get());
   }

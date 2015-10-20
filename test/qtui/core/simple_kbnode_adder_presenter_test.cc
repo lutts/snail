@@ -15,7 +15,7 @@
 #include "qtui/mock_simple_kbnode_adder_view.h"
 #include "src/qtui/core/simple_kbnode_adder_presenter.h"
 
-#include "snail/mock_kbnode_provider.h"
+#include "snail/mock_tree_item_provider.h"
 #include "qtui/mock_kbnode_tree_qmodel.h"
 
 using namespace snailcore;  // NOLINT
@@ -72,7 +72,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
         R_EXPECT_CALL(*model, setFilterPattern(""));
 
         // init qmodel
-        R_EXPECT_CALL(*kbnode_qmodel, setKbNodeProvider(&kbnode_provider));
+        R_EXPECT_CALL(*kbnode_qmodel, setTreeItemProvider(&kbnode_provider));
         R_EXPECT_CALL(*view, setKbNodeTreeQModel(kbnode_qmodel));
       }
 
@@ -112,7 +112,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
   std::shared_ptr<MockSimpleKbNodeAdderModel> model;
   std::shared_ptr<MockSimpleKbNodeAdderView> view;
 
-  MockKbNodeProvider kbnode_provider;
+  MockTreeItemProvider kbnode_provider;
   MockKbNodeTreeQModel* kbnode_qmodel;
   QModelIndexGenerator index_generator;
 

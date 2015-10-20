@@ -14,7 +14,7 @@
 
 // triad headers
 #include "snail/mock_kbnode_attribute_model.h"
-#include "snail/mock_kbnode_provider.h"
+#include "snail/mock_tree_item_provider.h"
 #include "qtui/mock_kbnode_attribute_edit_view.h"
 #include "qtui/mock_kbnode_tree_qmodel.h"
 #include "src/qtui/core/kbnode_attribute_edit_presenter.h"
@@ -56,7 +56,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     {
       InSequence seq;
 
-      R_EXPECT_CALL(*kbnode_qmodel, setKbNodeProvider(&kbnode_provider));
+      R_EXPECT_CALL(*kbnode_qmodel, setTreeItemProvider(&kbnode_provider));
       R_EXPECT_CALL(*view, setKbNodeTreeQModel(kbnode_qmodel));
     }
 
@@ -102,7 +102,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   std::shared_ptr<MockKbNodeAttributeEditView> view;
 
   xtestutils::RandomString provider_name;
-  MockKbNodeProvider kbnode_provider;
+  MockTreeItemProvider kbnode_provider;
   MockKbNodeTreeQModel* kbnode_qmodel;
 
   MockPfTriadManager triad_manager;
@@ -131,11 +131,11 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   SlotCatcher<UserClickAddKbNodeSlotType> userClickAddKbNode;
 
   using BeginFilterSlotType =
-      IKbNodeProvider::BeginFilterSlotType;
+      ITreeItemProvider::BeginFilterSlotType;
   SlotCatcher<BeginFilterSlotType> providerBeginFilter;
 
   using FinishFilterSlotType =
-      IKbNodeProvider::FinishFilterSlotType;
+      ITreeItemProvider::FinishFilterSlotType;
   SlotCatcher<FinishFilterSlotType> providerFinishFilter;
 
   using KbNodeAddedSlotType =

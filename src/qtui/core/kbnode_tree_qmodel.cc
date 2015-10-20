@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "utils/basic_utils.h"
-#include "snail/i_kbnode_provider.h"
+#include "snail/i_tree_item_provider.h"
 #include "snail/i_kbnode.h"
 
 class KbNodeItem : QObject {
@@ -20,7 +20,7 @@ class KbNodeItem : QObject {
 
  public:
   KbNodeItem() = default;
-  KbNodeItem(IKbNodeProvider* kbnode_provider,
+  KbNodeItem(ITreeItemProvider* kbnode_provider,
              IKbNode* kbnode, KbNodeItem* parent)
       : kbnode_provider_(kbnode_provider)
       , kbnode_(kbnode), parent_(parent) {
@@ -34,11 +34,11 @@ class KbNodeItem : QObject {
     return utils::make_unique<KbNodeItem>(kbnode_provider_, kbnode, this);
   }
 
-  void setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
+  void setTreeItemProvider(ITreeItemProvider* kbnode_provider) {
     kbnode_provider_ = kbnode_provider;
   }
 
-  IKbNodeProvider* kbNodeProvider() const {
+  ITreeItemProvider* kbNodeProvider() const {
     return kbnode_provider_;
   }
 
@@ -145,7 +145,7 @@ class KbNodeItem : QObject {
   }
 
   virtual void populate_children() {
-    auto child_node_iterator = kbnode_provider_->childNodes(kbnode_);
+    auto child_node_iterator = kbnode_provider_->childItems(kbnode_);
     if (child_node_iterator) {
       while (child_node_iterator->hasNext()) {
         auto kbnode = child_node_iterator->next();
@@ -180,7 +180,7 @@ class KbNodeItem : QObject {
     children_populated_ = true;
   }
 
-  IKbNodeProvider* kbnode_provider_ { nullptr };
+  ITreeItemProvider* kbnode_provider_ { nullptr };
   IKbNode* kbnode_ { nullptr };
   KbNodeItem* parent_ { nullptr };
   QString text_;
@@ -229,8 +229,8 @@ QModelIndex KbNodeTreeQModelBasic::kbNodeToIndex(IKbNode* kbnode) const {
   return itemToIndex(item);
 }
 
-void KbNodeTreeQModelBasic::setKbNodeProvider(IKbNodeProvider* kbnode_provider) {
-  return rootItem()->setKbNodeProvider(kbnode_provider);
+void KbNodeTreeQModelBasic::setTreeItemProvider(ITreeItemProvider* kbnode_provider) {
+  return rootItem()->setTreeItemProvider(kbnode_provider);
 }
 
 bool KbNodeTreeQModelBasic::isAddKbNode(const QModelIndex& index) const {
@@ -351,7 +351,7 @@ void KbNodeTreeQModelBasic::clear() {
 class KbNodeItemWithEmptyAddMore : public KbNodeItem {
  public:
   KbNodeItemWithEmptyAddMore() = default;
-  KbNodeItemWithEmptyAddMore(IKbNodeProvider* kbnode_provider,
+  KbNodeItemWithEmptyAddMore(ITreeItemProvider* kbnode_provider,
                              IKbNode* kbnode, KbNodeItem* parent)
       : KbNodeItem(kbnode_provider, kbnode, parent) { }
 
@@ -463,8 +463,8 @@ void KbNodeTreeQModelWithProviderNode::clear() {
     provider_item_->clear();
 }
 
-void KbNodeTreeQModelWithProviderNode::setKbNodeProvider(
-    IKbNodeProvider* kbnode_provider) {
+void KbNodeTreeQModelWithProviderNode::setTreeItemProvider(
+    ITreeItemProvider* kbnode_provider) {
   if (!provider_item_) {
     provider_item_ = rootItem()->appendKbNode(nullptr);
     rootItem()->markAsPopulated();
@@ -475,9 +475,9 @@ void KbNodeTreeQModelWithProviderNode::setKbNodeProvider(
 
   auto text = U8StringToQString(kbnode_provider->name());
   provider_item_->setText(text);
-  provider_item_->setKbNodeProvider(kbnode_provider);
+  provider_item_->setTreeItemProvider(kbnode_provider);
 
-  KbNodeTreeQModelBasic::setKbNodeProvider(kbnode_provider);
+  KbNodeTreeQModelBasic::setTreeItemProvider(kbnode_provider);
 }
 
 QModelIndex KbNodeTreeQModelWithProviderNode::kbNodeToIndex(

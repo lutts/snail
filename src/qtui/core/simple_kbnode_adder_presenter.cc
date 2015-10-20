@@ -32,7 +32,7 @@ void SimpleKbNodeAdderPresenter::initialize() {
 
   model()->setFilterPattern("");
 
-  kbnode_qmodel_->setKbNodeProvider(model()->getKbNodeProvider());
+  kbnode_qmodel_->setTreeItemProvider(model()->getKbNodeProvider());
   view()->setKbNodeTreeQModel(kbnode_qmodel_.get());
 
   auto new_kbnode_parent = model()->getNewKbNodeParent();

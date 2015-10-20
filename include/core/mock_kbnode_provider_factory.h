@@ -13,11 +13,11 @@
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeProviderFactory : public IKbNodeProviderFactory {
+class MockTreeItemProviderFactory : public ITreeItemProviderFactory {
  public:
   MOCK_CONST_METHOD2(
-      createKbNodeProvider,
-      std::shared_ptr<IKbNodeProvider>(IKbNode* root_kbnode,
+      createTreeItemProvider,
+      std::shared_ptr<ITreeItemProvider>(IKbNode* root_kbnode,
                                        IKbNodeManager* kbnode_manager));
 };
 

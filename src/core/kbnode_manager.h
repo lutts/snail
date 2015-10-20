@@ -16,19 +16,19 @@
 
 namespace snailcore {
 
-class IKbNodeProviderFactory;
+class ITreeItemProviderFactory;
 
 class KbNodeManager : public IKbNodeManager {
  public:
-  explicit KbNodeManager(IKbNodeProviderFactory* kbnode_provider_factory);
+  explicit KbNodeManager(ITreeItemProviderFactory* kbnode_provider_factory);
   virtual ~KbNodeManager();
 
-  std::shared_ptr<IKbNodeProvider>
-  createKbNodeProvider(IKbNode* root_kbnode) override;
+  std::shared_ptr<ITreeItemProvider>
+  createTreeItemProvider(IKbNode* root_kbnode) override;
   IKbNode* idToKbNode(KbNodeIdType kbnode_id) override;
   std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
                                    const IKbNode* parent_kbnode) override;
-  std::vector<IKbNode*> childNodes(const IKbNode* parent_node) override;
+  std::vector<IKbNode*> childItems(const IKbNode* parent_node) override;
   IKbNode* addKbNode(const utils::U8String& name,
                      const IKbNode* parent,
                      bool is_category) override;
@@ -45,7 +45,7 @@ class KbNodeManager : public IKbNodeManager {
 
   KbNodeIdType id { 0 };
 
-  IKbNodeProviderFactory* kbnode_provider_factory_ { nullptr };
+  ITreeItemProviderFactory* kbnode_provider_factory_ { nullptr };
   IKbNode* dummy_root_ { nullptr };
 };
 

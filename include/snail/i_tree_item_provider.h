@@ -18,17 +18,17 @@ namespace snailcore {
 
 class IKbNode;
 
-class IKbNodeProvider {
+class ITreeItemProvider {
  public:
-  class IChildNodeIterator {
+  class IChildItemIterator {
    public:
-    virtual ~IChildNodeIterator() = default;
+    virtual ~IChildItemIterator() = default;
 
     virtual bool hasNext() const = 0;
     virtual IKbNode* next() = 0;
   };
 
-  virtual ~IKbNodeProvider() = default;
+  virtual ~ITreeItemProvider() = default;
 
   SNAIL_SIGSLOT2(BeginFilter, void());
   SNAIL_SIGSLOT2(FinishFilter, void());
@@ -39,14 +39,14 @@ class IKbNodeProvider {
   virtual utils::U8String getFilterPattern() const = 0;
   virtual bool isFilterMode() const = 0;
   virtual IKbNode* getRootItem() const = 0;
-  virtual std::unique_ptr<IChildNodeIterator>
-  childNodes(IKbNode* parent_node) const = 0;
+  virtual std::unique_ptr<IChildItemIterator>
+  childItems(IKbNode* parent_node) const = 0;
 
   // TODO(lutts): do we need to move these internal use API to include/core?
   // internal
   virtual void incRef(IKbNode* kbnode) = 0;
   virtual
-  std::vector<IKbNode*> findKbNodeByName(const utils::U8String& name) = 0;
+  std::vector<IKbNode*> findItemByName(const utils::U8String& name) = 0;
 };
 
 }  // namespace snailcore

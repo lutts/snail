@@ -9,17 +9,16 @@
 #define INCLUDE_SNAIL_I_KBNODE_H_
 
 #include "utils/u8string.h"
+#include "snail/i_tree_item.h"
 #include "snail/kb_global.h"
 
 namespace snailcore {
 
-class IKbNode {
+class IKbNode : public ITreeItem {
  public:
   virtual ~IKbNode() = default;
 
   virtual KbNodeIdType id() const = 0;
-  virtual utils::U8String name() const = 0;
-  virtual bool isCategory() const = 0;
 };
 
 }  // namespace snailcore

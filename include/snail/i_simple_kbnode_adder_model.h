@@ -14,7 +14,7 @@
 namespace snailcore {
 
 class IKbNode;
-class IKbNodeProvider;
+class ITreeItemProvider;
 
 class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
  public:
@@ -26,7 +26,7 @@ class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
                  void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
 
   virtual utils::U8String name() const = 0;
-  virtual IKbNodeProvider* getKbNodeProvider() const = 0;
+  virtual ITreeItemProvider* getKbNodeProvider() const = 0;
   virtual utils::U8String getFilterPattern() const = 0;
   virtual void setFilterPattern(const utils::U8String& filter_pattern) = 0;
   virtual IKbNode* getNewKbNodeParent() const = 0;

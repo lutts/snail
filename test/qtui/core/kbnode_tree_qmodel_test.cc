@@ -11,7 +11,7 @@
 #include "test/testutils/qmodelindex_generator.h"
 
 #include "src/qtui/core/kbnode_tree_qmodel.h"
-#include "snail/mock_kbnode_provider.h"
+#include "snail/mock_tree_item_provider.h"
 #include "snail/mock_kbnode.h"
 
 using namespace snailcore;  // NOLINT
@@ -203,11 +203,11 @@ void cleanupExpectRowDatas() {
   root_row_data_after_reset = ExpectRowData();
 }
 
-class KbNodeProviderTestStub : public IKbNodeProvider {
+class TreeItemProviderTestStub : public ITreeItemProvider {
  public:
-  class ChildNodeIteratorTestStub : public IChildNodeIterator {
+  class ChildNodeIteratorTestStub : public IChildItemIterator {
    public:
-    ChildNodeIteratorTestStub(const KbNodeProviderTestStub& provider,
+    ChildNodeIteratorTestStub(const TreeItemProviderTestStub& provider,
                               IKbNode* parent_node)
         : row_data_(provider.nodeToRowData(parent_node)) {
       if (row_data_->subnodes) {
@@ -247,15 +247,15 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
     int max_idx_ { -1 };
   };
 
-  KbNodeProviderTestStub() { }
-  virtual ~KbNodeProviderTestStub() { }
+  TreeItemProviderTestStub() { }
+  virtual ~TreeItemProviderTestStub() { }
 
   utils::U8String name() const {
     return PROVIDER_NAME;
   }
 
-  std::unique_ptr<IChildNodeIterator>
-  childNodes(IKbNode* parent_node) const override {
+  std::unique_ptr<IChildItemIterator>
+  childItems(IKbNode* parent_node) const override {
     return utils::make_unique<ChildNodeIteratorTestStub>(*this, parent_node);
   }
 
@@ -282,11 +282,11 @@ class KbNodeProviderTestStub : public IKbNodeProvider {
 
   MOCK_CONST_METHOD0(getRootItem, IKbNode*());
 
-  MOCK_METHOD1(findKbNodeByName,
+  MOCK_METHOD1(findItemByName,
                std::vector<IKbNode*>(const utils::U8String& name));
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeProviderTestStub);
+  SNAIL_DISABLE_COPY(TreeItemProviderTestStub);
 
   void fillNodePtrInRowData(std::vector<ExpectRowData>* row_datas,
                             IKbNode* parent_node = nullptr) {
@@ -357,7 +357,7 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
     setupExpectRowDatas();
     kbnode_provider.fillRowData(&root_row_data);
 
-    qmodel->setKbNodeProvider(&kbnode_provider);
+    qmodel->setTreeItemProvider(&kbnode_provider);
   }
 
   void TearDown() override {
@@ -393,7 +393,7 @@ class KbNodeTreeQModelTestBase : public ::testing::Test {
   void test_add_kbnode_to_expanded_root_node();
 
   // region: objects test subject depends on
-  KbNodeProviderTestStub kbnode_provider;
+  TreeItemProviderTestStub kbnode_provider;
   QModelIndexGenerator index_generator;
 
   bool always_selectable { false };

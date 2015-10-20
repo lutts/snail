@@ -17,7 +17,7 @@
 namespace snailcore {
 
 class IKbNode;
-class IKbNodeProvider;
+class ITreeItemProvider;
 
 /** A Node tree is a tree of nodes with name and short descriptions
  *
@@ -26,12 +26,12 @@ class IKbNodeManager {
  public:
   virtual ~IKbNodeManager() = default;
 
-  virtual std::shared_ptr<IKbNodeProvider>
-  createKbNodeProvider(IKbNode* root_kbnode) = 0;
+  virtual std::shared_ptr<ITreeItemProvider>
+  createTreeItemProvider(IKbNode* root_kbnode) = 0;
   virtual IKbNode* idToKbNode(KbNodeIdType kbnode_id) = 0;
   virtual std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
                                            const IKbNode* parent_node) = 0;
-  virtual std::vector<IKbNode*> childNodes(const IKbNode* parent_node) = 0;
+  virtual std::vector<IKbNode*> childItems(const IKbNode* parent_node) = 0;
   virtual IKbNode* addKbNode(const utils::U8String& name,
                              const IKbNode* parent,
                              bool is_category = false) = 0;

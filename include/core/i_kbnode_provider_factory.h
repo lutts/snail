@@ -10,14 +10,14 @@
 
 namespace snailcore {
 
-class IKbNodeProvider;
+class ITreeItemProvider;
 class IKbNodeManager;
 
-class IKbNodeProviderFactory {
+class ITreeItemProviderFactory {
  public:
-  virtual ~IKbNodeProviderFactory() = default;
+  virtual ~ITreeItemProviderFactory() = default;
 
-  virtual std::shared_ptr<IKbNodeProvider> createKbNodeProvider(
+  virtual std::shared_ptr<ITreeItemProvider> createTreeItemProvider(
       IKbNode* root_kbnode,
       IKbNodeManager* kbnode_manager) const = 0;
 };

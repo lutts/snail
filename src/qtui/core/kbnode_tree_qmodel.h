@@ -22,7 +22,7 @@ class KbNodeTreeQModelBasic : public QAbstractItemModel
   virtual ~KbNodeTreeQModelBasic();
 
   // IKbNodeTreeQModel
-  void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
+  void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
   IKbNode* indexToKbNode(const QModelIndex& index) const override;
   QModelIndex kbNodeToIndex(IKbNode* kbnode) const override;
   bool isAddKbNode(const QModelIndex& index) const override;
@@ -71,7 +71,7 @@ class KbNodeTreeQModelWithProviderNode : public KbNodeTreeQModelBasic {
  public:
   KbNodeTreeQModelWithProviderNode();
   ~KbNodeTreeQModelWithProviderNode();
-  void setKbNodeProvider(IKbNodeProvider* kbnode_provider) override;
+  void setTreeItemProvider(ITreeItemProvider* kbnode_provider) override;
 
   Qt::ItemFlags flags(const QModelIndex &index) const override;
 

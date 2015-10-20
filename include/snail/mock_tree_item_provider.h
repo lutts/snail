@@ -10,12 +10,12 @@
 
 #include <vector>
 
-#include "snail/i_kbnode_provider.h"
+#include "snail/i_tree_item_provider.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeProvider : public IKbNodeProvider {
+class MockTreeItemProvider : public ITreeItemProvider {
  public:
   SNAIL_MOCK_SLOT(BeginFilter);
   SNAIL_MOCK_SLOT(FinishFilter);
@@ -25,11 +25,11 @@ class MockKbNodeProvider : public IKbNodeProvider {
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
   MOCK_CONST_METHOD0(isFilterMode, bool());
   MOCK_CONST_METHOD0(getRootItem, IKbNode*());
-  MOCK_CONST_METHOD1(childNodes,
-                     std::unique_ptr<IChildNodeIterator>(IKbNode* parent_node));
+  MOCK_CONST_METHOD1(childItems,
+                     std::unique_ptr<IChildItemIterator>(IKbNode* parent_node));
 
   MOCK_METHOD1(incRef, void(IKbNode* kbnode));
-  MOCK_METHOD1(findKbNodeByName,
+  MOCK_METHOD1(findItemByName,
                std::vector<IKbNode*>(const utils::U8String& name));
 };
 

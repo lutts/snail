@@ -10,7 +10,7 @@
 
 #include "utils/u8string.h"
 #include "snail/i_kbnode.h"
-#include "snail/i_kbnode_provider.h"
+#include "snail/i_tree_item_provider.h"
 #include "snail/i_simple_kbnode_adder_model.h"
 
 using namespace snailcore;  // NOLINT
@@ -18,7 +18,7 @@ using namespace snailcore;  // NOLINT
 void KbNodeAttributeEditPresenter::initialize() {
   view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
 
-  kbnode_qmodel_->setKbNodeProvider(model()->getKbNodeProvider());
+  kbnode_qmodel_->setTreeItemProvider(model()->getKbNodeProvider());
   view()->setKbNodeTreeQModel(kbnode_qmodel_.get());
 
   view()->whenUserClickedIndex(

@@ -13,7 +13,7 @@
 #include "snail/mock_attribute.h"
 #include "snail/mock_attribute_model.h"
 #include "core/mock_attribute_model_factory.h"
-#include "snail/mock_kbnode_provider.h"
+#include "snail/mock_tree_item_provider.h"
 // #include "core/mock_link_type.h"
 
 namespace snailcore {
@@ -41,7 +41,7 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
   MockKbNodeLinkAttributeSupplier link_attr_supplier;
   MockKbNodeLinkAttribute link_attr;
 
-  MockKbNodeProvider link_type_provider;
+  MockTreeItemProvider link_type_provider;
 
   MockAttribute value_attr;
   MockAttribute value_attr_copy;

@@ -5,12 +5,12 @@
 //
 // [Desc]
 #include "src/core/simple_kbnode_adder_model.h"
-#include "snail/i_kbnode_provider.h"
+#include "snail/i_tree_item_provider.h"
 #include "core/i_kbnode_manager.h"
 
 namespace snailcore {
 
-SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(IKbNodeProvider* kbnode_provider,
+SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(ITreeItemProvider* kbnode_provider,
                                          IKbNodeManager* kbnode_manager)
     : kbnode_provider_(kbnode_provider)
     , kbnode_manager_(kbnode_manager) { }
@@ -21,7 +21,7 @@ utils::U8String SimpleKbNodeAdderModel::name() const {
   return kbnode_provider_->name();
 }
 
-IKbNodeProvider* SimpleKbNodeAdderModel::getKbNodeProvider() const {
+ITreeItemProvider* SimpleKbNodeAdderModel::getKbNodeProvider() const {
   return kbnode_provider_;
 }
 

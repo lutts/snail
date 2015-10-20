@@ -7,7 +7,7 @@
 #include "src/core/kbnode_attribute_model.h"
 #include "core/i_kbnode_attribute.h"
 #include "core/i_kbnode_manager.h"
-#include "snail/i_kbnode_provider.h"
+#include "snail/i_tree_item_provider.h"
 #include "core/i_simple_kbnode_adder_model_factory.h"
 
 namespace snailcore {
@@ -32,10 +32,10 @@ void KbNodeAttributeModel::validateComplete(bool result) {
   ValidateComplete();
 }
 
-IKbNodeProvider* KbNodeAttributeModel::getKbNodeProvider() const {
+ITreeItemProvider* KbNodeAttributeModel::getKbNodeProvider() const {
   if (!kbnode_provider_) {
     auto attr_supplier = kbnode_attr_->supplier();
-    kbnode_provider_ = kbnode_manager_->createKbNodeProvider(
+    kbnode_provider_ = kbnode_manager_->createTreeItemProvider(
         attr_supplier->getRootKbNode());
   }
 
@@ -78,7 +78,7 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
     validateComplete(true);
     return kSetKbNodeSuccess;
   } else if (kbnode_provider_) {
-    auto kbnodes = kbnode_provider_->findKbNodeByName(name);
+    auto kbnodes = kbnode_provider_->findItemByName(name);
     if (kbnodes.empty()) {
       validateComplete(false);
       return kSetKbNodeNotFound;

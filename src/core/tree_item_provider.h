@@ -11,7 +11,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "snail/i_kbnode_provider.h"
+#include "snail/i_tree_item_provider.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 
@@ -19,11 +19,11 @@ namespace snailcore {
 
 class IKbNodeManager;
 
-class KbNodeProvider : public IKbNodeProvider {
+class TreeItemProvider : public ITreeItemProvider {
  public:
-  KbNodeProvider(IKbNode* root_kbnode,
+  TreeItemProvider(IKbNode* root_kbnode,
                  IKbNodeManager* node_manager);
-  virtual ~KbNodeProvider();
+  virtual ~TreeItemProvider();
 
   utils::U8String name() const override;
   void setFilterPattern(const utils::U8String& filter_pattern) override;
@@ -32,14 +32,14 @@ class KbNodeProvider : public IKbNodeProvider {
 
   IKbNode* getRootItem() const { return nullptr; }
 
-  std::unique_ptr<IChildNodeIterator>
-  childNodes(IKbNode* parent_node) const override;
+  std::unique_ptr<IChildItemIterator>
+  childItems(IKbNode* parent_node) const override;
 
   void incRef(IKbNode* kbnode) override;
-  std::vector<IKbNode*> findKbNodeByName(const utils::U8String& name) override;
+  std::vector<IKbNode*> findItemByName(const utils::U8String& name) override;
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeProvider);
+  SNAIL_DISABLE_COPY(TreeItemProvider);
 
   SNAIL_SIGSLOT_IMPL(BeginFilter);
   SNAIL_SIGSLOT_IMPL(FinishFilter);

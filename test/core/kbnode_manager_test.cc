@@ -9,7 +9,7 @@
 
 #include "src/core/kbnode_manager.h"
 #include "snail/i_kbnode.h"
-#include "snail/mock_kbnode_provider.h"
+#include "snail/mock_tree_item_provider.h"
 #include "core/mock_kbnode_provider_factory.h"
 
 std::ostream& operator<< (std::ostream& os,
@@ -46,7 +46,7 @@ class KbNodeManagerTest : public ::testing::Test {
   std::map<IKbNode*, std::vector<IKbNode*> > kbnode_to_subnodes;
   std::vector<IKbNode*> expect_search_result;
 
-  MockKbNodeProviderFactory kbnode_provider_factory;
+  MockTreeItemProviderFactory kbnode_provider_factory;
   // endregion
 
   // region: test subject
@@ -61,17 +61,17 @@ TEST_F(KbNodeManagerTest,
        should_create_kbnode_provider_by_factory) { // NOLINT
   // Setup fixture
   auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
-  auto expect_kbnode_provider = std::make_shared<MockKbNodeProvider>();
+  auto expect_kbnode_provider = std::make_shared<MockTreeItemProvider>();
 
   // Expectations
   EXPECT_CALL(kbnode_provider_factory,
-              createKbNodeProvider(root_kbnode,
+              createTreeItemProvider(root_kbnode,
                                    kbnode_manager_.get()))
       .WillOnce(Return(expect_kbnode_provider));
 
   // Exercise system
   auto actual_kbnode_provider =
-      kbnode_manager_->createKbNodeProvider(root_kbnode);
+      kbnode_manager_->createTreeItemProvider(root_kbnode);
 
   // Verify results
   ASSERT_EQ(expect_kbnode_provider, actual_kbnode_provider);
@@ -223,11 +223,11 @@ TEST_F(KbNodeManagerTest,
   std::vector<IKbNode*> expect_top_level_nodes;
   expect_top_level_nodes.push_back(top_level_node_);
 
-  auto actual_top_level_nodes = kbnode_manager_->childNodes(nullptr);
+  auto actual_top_level_nodes = kbnode_manager_->childItems(nullptr);
   ASSERT_EQ(expect_top_level_nodes, actual_top_level_nodes);
 
   for (auto kbnode : all_nodes) {
-    auto actual_subnodes = kbnode_manager_->childNodes(kbnode);
+    auto actual_subnodes = kbnode_manager_->childItems(kbnode);
     auto & expect_subnodes = kbnode_to_subnodes[kbnode];
     ASSERT_EQ(expect_subnodes, actual_subnodes)
         << "expect: {" << expect_subnodes << "}, "

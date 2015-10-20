@@ -20,7 +20,7 @@ class MockKbNodeAttributeModel : public IKbNodeAttributeModel {
   MOCK_CONST_METHOD0(isValid, bool());
 
   // Self
-  MOCK_CONST_METHOD0(getKbNodeProvider, IKbNodeProvider*());
+  MOCK_CONST_METHOD0(getKbNodeProvider, ITreeItemProvider*());
   MOCK_CONST_METHOD0(createSimpleKbNodeAdderModel,
                      std::shared_ptr<ISimpleKbNodeAdderModel>());
 

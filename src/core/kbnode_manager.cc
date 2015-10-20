@@ -12,7 +12,7 @@
 
 namespace snailcore {
 
-KbNodeManager::KbNodeManager(IKbNodeProviderFactory* kbnode_provider_factory)
+KbNodeManager::KbNodeManager(ITreeItemProviderFactory* kbnode_provider_factory)
     : kbnode_provider_factory_(kbnode_provider_factory)
     , dummy_root_(new KbNode(0, "", false)) { }
 
@@ -31,9 +31,9 @@ void KbNodeManager::erase(IKbNode* parent) {
   }
 }
 
-std::shared_ptr<IKbNodeProvider>
-KbNodeManager::createKbNodeProvider(IKbNode* root_kbnode) {
-  return kbnode_provider_factory_->createKbNodeProvider(root_kbnode, this);
+std::shared_ptr<ITreeItemProvider>
+KbNodeManager::createTreeItemProvider(IKbNode* root_kbnode) {
+  return kbnode_provider_factory_->createTreeItemProvider(root_kbnode, this);
 }
 
 IKbNode* KbNodeManager::idToKbNode(KbNodeIdType kbnode_id) {
@@ -71,7 +71,7 @@ KbNodeManager::findKbNode(const utils::U8String& pattern,
   return matched_kbnodes;
 }
 
-std::vector<IKbNode*> KbNodeManager::childNodes(const IKbNode* parent_node) {
+std::vector<IKbNode*> KbNodeManager::childItems(const IKbNode* parent_node) {
   if (!parent_node)
     parent_node = dummy_root_;
 
