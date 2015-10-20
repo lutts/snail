@@ -17,7 +17,7 @@ using snailcore::IKbNode;
 SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<ITreeItemQModel<IKbNode>> kbnode_qmodel)
+    std::shared_ptr<ITreeItemQModel<IKbNode>> kbnode_qmodel)
     : SimpleKbNodeAdderPresenterBase(model, view)
     , kbnode_qmodel_(std::move(kbnode_qmodel)) {
 }

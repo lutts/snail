@@ -36,8 +36,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
     // Setup fixture
     model = std::make_shared<MockSimpleKbNodeAdderModel>();
     view = std::make_shared<MockSimpleKbNodeAdderView>();
-    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel<IKbNode>>();
-    kbnode_qmodel = kbnode_qmodel_up.get();
+    kbnode_qmodel = std::make_shared<MockTreeItemQModel<IKbNode>>();
 
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
@@ -101,7 +100,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
 
     // Excercise system
     presenter = std::make_shared<SimpleKbNodeAdderPresenter>(
-        model, view, std::move(kbnode_qmodel_up));
+        model, view, kbnode_qmodel);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -114,7 +113,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
   std::shared_ptr<MockSimpleKbNodeAdderView> view;
 
   MockTreeItemProvider kbnode_provider;
-  MockTreeItemQModel<IKbNode>* kbnode_qmodel;
+  std::shared_ptr<MockTreeItemQModel<IKbNode> > kbnode_qmodel;
   QModelIndexGenerator index_generator;
 
   MockPfTriadManager triad_manager;

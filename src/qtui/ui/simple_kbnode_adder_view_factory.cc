@@ -30,7 +30,7 @@ class SimpleKbNodeAdderViewFactory : public PfViewFactoryT<ISimpleKbNodeAdderMod
     (void)args;
     auto view = std::make_shared<SimpleKbNodeAdderView>();
     return std::make_shared<SimpleKbNodeAdderPresenter>(
-        model, view, utils::make_unique<TreeItemQModelWithProviderRoot<IKbNode>>());
+        model, view, std::make_shared<TreeItemQModelWithProviderRoot<IKbNode>>());
   }
 
  private:
