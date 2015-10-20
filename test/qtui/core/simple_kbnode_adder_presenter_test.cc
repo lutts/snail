@@ -158,7 +158,7 @@ TEST_F(SimpleKbNodeAdderPresenterTest,
 }
 
 class SimpleKbNodeAdderPresenterTest_BoolParam
-    : public SimpleKbNodeAdderPresenterTestBase<::testing::TestWithParam<bool>> {};
+    : public SimpleKbNodeAdderPresenterTestBase<::testing::TestWithParam<bool>> {}; // NOLINT
 
 INSTANTIATE_TEST_CASE_P(BoolParam,
                         SimpleKbNodeAdderPresenterTest_BoolParam,

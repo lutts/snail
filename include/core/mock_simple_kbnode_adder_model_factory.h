@@ -5,15 +5,16 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_CORE_MOCK_KBNODE_PROVIDER_MODEL_FACTORY_H_
-#define INCLUDE_CORE_MOCK_KBNODE_PROVIDER_MODEL_FACTORY_H_
+#ifndef INCLUDE_CORE_MOCK_SIMPLE_KBNODE_ADDER_MODEL_FACTORY_H_
+#define INCLUDE_CORE_MOCK_SIMPLE_KBNODE_ADDER_MODEL_FACTORY_H_
 
 #include "core/i_simple_kbnode_adder_model_factory.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockSimpleKbNodeAdderModelFactory : public ISimpleKbNodeAdderModelFactory {
+class MockSimpleKbNodeAdderModelFactory
+    : public ISimpleKbNodeAdderModelFactory {
  public:
   MOCK_CONST_METHOD1(
       createSimpleKbNodeAdderModel,
@@ -23,4 +24,4 @@ class MockSimpleKbNodeAdderModelFactory : public ISimpleKbNodeAdderModelFactory 
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // INCLUDE_CORE_MOCK_KBNODE_PROVIDER_MODEL_FACTORY_H_
+#endif  // INCLUDE_CORE_MOCK_SIMPLE_KBNODE_ADDER_MODEL_FACTORY_H_

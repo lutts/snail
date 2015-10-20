@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_I_KBNODE_PROVIDER_VIEW_H_
-#define INCLUDE_QTUI_I_KBNODE_PROVIDER_VIEW_H_
+#ifndef INCLUDE_QTUI_I_SIMPLE_KBNODE_ADDER_VIEW_H_
+#define INCLUDE_QTUI_I_SIMPLE_KBNODE_ADDER_VIEW_H_
 
 #include "qtui/generic_view_base.h"
 #include "utils/signal_slot.h"
@@ -32,4 +32,4 @@ class ISimpleKbNodeAdderView : public GenericViewBase {
 };
 
 
-#endif  // INCLUDE_QTUI_I_KBNODE_PROVIDER_VIEW_H_
+#endif  // INCLUDE_QTUI_I_SIMPLE_KBNODE_ADDER_VIEW_H_

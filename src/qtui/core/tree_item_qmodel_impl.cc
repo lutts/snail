@@ -95,7 +95,7 @@ class QtTreeItem : QObject {
     return children_[index].get();
   }
 
-  // NOTE: null tree_item is NOT handled because there maybe multi null tree_item
+  // NOTE: null item is NOT handled because there maybe multi null tree_item
   //       items, and we do NOT know which to return
   QtTreeItem* findByTreeItem(ITreeItem* tree_item) {
     if (tree_item == nullptr)
@@ -167,7 +167,8 @@ class QtTreeItem : QObject {
       qDebug() << "populate root idx";
     } else {
       if (tree_item_) {
-        qDebug() << "populate tree_item: " << U8StringToQString(tree_item_->name());
+        qDebug() << "populate tree_item: "
+                 << U8StringToQString(tree_item_->name());
       } else {
         qDebug() << "populate tree_item: " << text_;
       }
@@ -409,16 +410,18 @@ class QtTreeItemWithEmptyAddMore : public QtTreeItem {
   }
 
  private:
-  std::unique_ptr<QtTreeItemWithEmptyAddMore> createItem_(ITreeItem* tree_item) {
-    return utils::make_unique<QtTreeItemWithEmptyAddMore>(itemProvider(),
-                                                          tree_item, this);
+  std::unique_ptr<QtTreeItemWithEmptyAddMore>
+  createItem_(ITreeItem* tree_item) {
+    return utils::make_unique<QtTreeItemWithEmptyAddMore>(
+        itemProvider(), tree_item, this);
   }
 
   bool is_add_more_ { false };
   bool is_empty_row_ { false };
 };
 
-TreeItemQModelImplWithClearAndAddMoreRow::TreeItemQModelImplWithClearAndAddMoreRow()
+TreeItemQModelImplWithClearAndAddMoreRow::
+TreeItemQModelImplWithClearAndAddMoreRow()
     : TreeItemQModelImpl() { }
 
 TreeItemQModelImplWithClearAndAddMoreRow::
@@ -450,7 +453,8 @@ bool TreeItemQModelImplWithClearAndAddMoreRow::isAddMore(
 TreeItemQModelImplWithProviderRoot::TreeItemQModelImplWithProviderRoot()
     : TreeItemQModelImpl() { }
 
-TreeItemQModelImplWithProviderRoot::~TreeItemQModelImplWithProviderRoot() = default;
+TreeItemQModelImplWithProviderRoot::
+~TreeItemQModelImplWithProviderRoot() = default;
 
 Qt::ItemFlags TreeItemQModelImplWithProviderRoot::flags(
     const QModelIndex &index) const {

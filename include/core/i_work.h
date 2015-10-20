@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_WORK_H_
-#define INCLUDE_SNAIL_I_WORK_H_
+#ifndef INCLUDE_CORE_I_WORK_H_
+#define INCLUDE_CORE_I_WORK_H_
 
 #include <vector>
 
@@ -31,4 +31,4 @@ class IWork {
 
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_I_WORK_H_
+#endif  // INCLUDE_CORE_I_WORK_H_

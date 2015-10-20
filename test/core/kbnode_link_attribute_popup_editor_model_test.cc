@@ -88,7 +88,6 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 
   // Verify results
   ASSERT_EQ(&link_type_provider, actual_link_provider);
-
 }
 
 #if 0

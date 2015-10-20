@@ -139,7 +139,7 @@ END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
 class SimpleKbNodeAdderModelTest_BoolParam
-    : public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool> > { };
+    : public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool> > { }; // NOLINT
 
 INSTANTIATE_TEST_CASE_P(BoolParam,
                         SimpleKbNodeAdderModelTest_BoolParam,

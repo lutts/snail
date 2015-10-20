@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_KBNODE_PROVIDER_H_
-#define INCLUDE_SNAIL_I_KBNODE_PROVIDER_H_
+#ifndef INCLUDE_SNAIL_I_TREE_ITEM_PROVIDER_H_
+#define INCLUDE_SNAIL_I_TREE_ITEM_PROVIDER_H_
 
 #include <vector>
 #include <iterator>
@@ -45,4 +45,4 @@ class ITreeItemProvider {
 
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_I_KBNODE_PROVIDER_H_
+#endif  // INCLUDE_SNAIL_I_TREE_ITEM_PROVIDER_H_

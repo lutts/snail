@@ -56,12 +56,14 @@ class KbNodeItemProviderTestBase : public TestBase {
   // endregion
 };
 
-class KbNodeItemProviderTest : public KbNodeItemProviderTestBase<::testing::Test> { };
+class KbNodeItemProviderTest
+    : public KbNodeItemProviderTestBase<::testing::Test> { };
 
 TEST_F(KbNodeItemProviderTest,
        should_be_able_to_get_back_the_root_kbnode) { // NOLINT
   // Exercise system
-  auto actual_root_kbnode = static_cast<IKbNode*>(kbnode_provider_->getRootItem());
+  auto actual_root_kbnode
+      = static_cast<IKbNode*>(kbnode_provider_->getRootItem());
 
   // Verify results
   ASSERT_EQ(&root_kbnode_, actual_root_kbnode);
@@ -178,7 +180,8 @@ void KbNodeItemProviderTestBase<TestBase>::checkSubNodes(
 }
 
 template <typename TestBase>
-void KbNodeItemProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
+void
+KbNodeItemProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
   std::vector<IKbNode*> level1_nodes;
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
-#define MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
 
 #include "qtui/i_kbnode_link_attribute_popup_editor_view.h"
 
@@ -27,4 +27,4 @@ class MockKbNodeLinkAttributePopupEditorView
   MOCK_METHOD1(setDoneButtonEnabled, void(bool enabled));
 };
 
-#endif  // MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_

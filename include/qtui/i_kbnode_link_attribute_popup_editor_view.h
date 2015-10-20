@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
-#define I_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_I_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_I_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
 
 #include <QModelIndex>
 
@@ -33,4 +33,4 @@ class IKbNodeLinkAttributePopupEditorView : public GenericViewBase {
   virtual void setDoneButtonEnabled(bool enabled) = 0;
 };
 
-#endif  // I_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_I_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_

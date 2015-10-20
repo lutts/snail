@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_KBNODE_LINK_ATTRIBUTE_MODEL_H_
-#define I_KBNODE_LINK_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
+#define INCLUDE_SNAIL_I_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
 
 #include "pfmvp/i_pf_model.h"
 #include "utils/signal_slot.h"
@@ -30,4 +30,4 @@ class IKbNodeLinkAttributeInlineEditorModel : public pfmvp::IPfModel {
 
 }  // namespace snailcore
 
-#endif  // I_KBNODE_LINK_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_

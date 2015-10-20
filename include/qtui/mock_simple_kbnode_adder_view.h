@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
-#define INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
+#ifndef INCLUDE_QTUI_MOCK_SIMPLE_KBNODE_ADDER_VIEW_H_
+#define INCLUDE_QTUI_MOCK_SIMPLE_KBNODE_ADDER_VIEW_H_
 
 #include "qtui/i_simple_kbnode_adder_view.h"
 
@@ -26,4 +26,4 @@ class MockSimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
   MOCK_METHOD1(setNameValidateResult, void(bool result));
 };
 
-#endif  // INCLUDE_QTUI_MOCK_KBNODE_PROVIDER_VIEW_H_
+#endif  // INCLUDE_QTUI_MOCK_SIMPLE_KBNODE_ADDER_VIEW_H_

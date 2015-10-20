@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_KBNODE_PROVIDER_MODEL_H_
-#define SRC_CORE_KBNODE_PROVIDER_MODEL_H_
+#ifndef SRC_CORE_SIMPLE_KBNODE_ADDER_MODEL_H_
+#define SRC_CORE_SIMPLE_KBNODE_ADDER_MODEL_H_
 
 #include "snail/i_simple_kbnode_adder_model.h"
 #include "utils/basic_utils.h"
@@ -46,4 +46,4 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
 
 }  // namespace snailcore
 
-#endif  // SRC_CORE_KBNODE_PROVIDER_MODEL_H_
+#endif  // SRC_CORE_SIMPLE_KBNODE_ADDER_MODEL_H_

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
-#define MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
+#ifndef INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
+#define INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
 
 #include "core/i_kbnode_link_attribute_popup_editor_model_factory.h"
 
@@ -24,4 +24,4 @@ class MockKbNodeLinkAttributePopupEditorModelFactory
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
+#endif  // INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_

@@ -21,7 +21,8 @@ class IAttribute {
   virtual bool isEmpty() const = 0;
   virtual void clear() = 0;
 
-  virtual IAttribute* clone() { return nullptr; }  // TODO(lutts): impl this method in subclasses
+  // TODO(lutts): impl this method in subclasses
+  virtual IAttribute* clone() { return nullptr; }
 };
 
 }  // namespace snailcore

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_KBNODE_PROVIDER_MODEL_H_
-#define INCLUDE_SNAIL_I_KBNODE_PROVIDER_MODEL_H_
+#ifndef INCLUDE_SNAIL_I_SIMPLE_KBNODE_ADDER_MODEL_H_
+#define INCLUDE_SNAIL_I_SIMPLE_KBNODE_ADDER_MODEL_H_
 
 #include "pfmvp/i_pf_model.h"
 #include "utils/signal_slot.h"
@@ -38,4 +38,4 @@ class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
 
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_I_KBNODE_PROVIDER_MODEL_H_
+#endif  // INCLUDE_SNAIL_I_SIMPLE_KBNODE_ADDER_MODEL_H_

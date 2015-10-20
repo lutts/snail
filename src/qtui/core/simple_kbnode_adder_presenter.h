@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_CORE_KBNODE_PROVIDER_PRESENTER_H_
-#define SRC_QTUI_CORE_KBNODE_PROVIDER_PRESENTER_H_
+#ifndef SRC_QTUI_CORE_SIMPLE_KBNODE_ADDER_PRESENTER_H_
+#define SRC_QTUI_CORE_SIMPLE_KBNODE_ADDER_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -39,4 +39,4 @@ class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
   std::shared_ptr<ITreeItemQModel<snailcore::IKbNode>> kbnode_qmodel_;
 };
 
-#endif  // SRC_QTUI_CORE_KBNODE_PROVIDER_PRESENTER_H_
+#endif  // SRC_QTUI_CORE_SIMPLE_KBNODE_ADDER_PRESENTER_H_

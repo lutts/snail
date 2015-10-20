@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
-#define INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_SIMPLE_KBNODE_ADDER_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_SIMPLE_KBNODE_ADDER_MODEL_H_
 
 #include "snail/i_simple_kbnode_adder_model.h"
 
@@ -31,4 +31,4 @@ class MockSimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_SIMPLE_KBNODE_ADDER_MODEL_H_

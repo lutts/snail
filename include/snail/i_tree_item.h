@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef I_TREE_ITEM_H_
-#define I_TREE_ITEM_H_
+#ifndef INCLUDE_SNAIL_I_TREE_ITEM_H_
+#define INCLUDE_SNAIL_I_TREE_ITEM_H_
 
 #include "utils/u8string.h"
 
@@ -22,4 +22,4 @@ class ITreeItem {
 
 }  // namespace snailcore
 
-#endif  // I_TREE_ITEM_H_
+#endif  // INCLUDE_SNAIL_I_TREE_ITEM_H_

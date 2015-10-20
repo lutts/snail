@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_
-#define KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_
+#ifndef SRC_QTUI_CORE_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_
+#define SRC_QTUI_CORE_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_
 
 #include <memory>  // std::shared_ptr
 
@@ -44,4 +44,4 @@ class KbNodeLinkAttributePopupEditorPresenter
   std::unique_ptr<ITreeItemQModel<IKbNode>> link_type_qmodel_;
 };
 
-#endif  // KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_
+#endif  // SRC_QTUI_CORE_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_

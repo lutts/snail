@@ -17,7 +17,8 @@
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
 
-class SimpleKbNodeAdderViewFactory : public PfViewFactoryT<ISimpleKbNodeAdderModel> {
+class SimpleKbNodeAdderViewFactory
+    : public PfViewFactoryT<ISimpleKbNodeAdderModel> {
  public:
   SimpleKbNodeAdderViewFactory() = default;
   virtual ~SimpleKbNodeAdderViewFactory() = default;
@@ -30,7 +31,8 @@ class SimpleKbNodeAdderViewFactory : public PfViewFactoryT<ISimpleKbNodeAdderMod
     (void)args;
     auto view = std::make_shared<SimpleKbNodeAdderView>();
     return std::make_shared<SimpleKbNodeAdderPresenter>(
-        model, view, std::make_shared<TreeItemQModelWithProviderRoot<IKbNode>>());
+        model, view,
+        std::make_shared<TreeItemQModelWithProviderRoot<IKbNode>>());
   }
 
  private:

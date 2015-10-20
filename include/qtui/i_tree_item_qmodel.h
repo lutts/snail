@@ -25,7 +25,7 @@ class ITreeItemQModel {
   virtual ~ITreeItemQModel() = default;
 
 #if 0
-  static_assert(std::is_base_of<ITreeItem, RealItemType,
+  static_assert(std::is_base_of<ITreeItem, RealItemType>::value,
                 "RealItemType must be derived from ITreeItem");
 #endif
 

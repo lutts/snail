@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TREE_ITEM_QMODEL_IMPL_H_
-#define TREE_ITEM_QMODEL_IMPL_H_
+#ifndef SRC_QTUI_CORE_TREE_ITEM_QMODEL_IMPL_H_
+#define SRC_QTUI_CORE_TREE_ITEM_QMODEL_IMPL_H_
 
 #include <QAbstractItemModel>
 
@@ -88,4 +88,4 @@ class TreeItemQModelImplWithProviderRoot : public TreeItemQModelImpl {
 };
 
 
-#endif  // TREE_ITEM_QMODEL_IMPL_H_
+#endif  // SRC_QTUI_CORE_TREE_ITEM_QMODEL_IMPL_H_

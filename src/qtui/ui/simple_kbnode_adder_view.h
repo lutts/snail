@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_QTUI_UI_KBNODE_PROVIDER_VIEW_H_
-#define SRC_QTUI_UI_KBNODE_PROVIDER_VIEW_H_
+#ifndef SRC_QTUI_UI_SIMPLE_KBNODE_ADDER_VIEW_H_
+#define SRC_QTUI_UI_SIMPLE_KBNODE_ADDER_VIEW_H_
 
 #include "qtui/i_simple_kbnode_adder_view.h"
 #include "utils/basic_utils.h"
@@ -42,4 +42,4 @@ class SimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
 };
 
 
-#endif  // SRC_QTUI_UI_KBNODE_PROVIDER_VIEW_H_
+#endif  // SRC_QTUI_UI_SIMPLE_KBNODE_ADDER_VIEW_H_

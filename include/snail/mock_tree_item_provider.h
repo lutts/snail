@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_H_
-#define INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_H_
+#ifndef INCLUDE_SNAIL_MOCK_TREE_ITEM_PROVIDER_H_
+#define INCLUDE_SNAIL_MOCK_TREE_ITEM_PROVIDER_H_
 
 #include <vector>
 
@@ -25,11 +25,11 @@ class MockTreeItemProvider : public ITreeItemProvider {
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
   MOCK_CONST_METHOD0(isFilterMode, bool());
   MOCK_CONST_METHOD0(getRootItem, ITreeItem*());
-  MOCK_CONST_METHOD1(childItems,
-                     std::unique_ptr<IChildItemIterator>(ITreeItem* parent_item));
+  MOCK_CONST_METHOD1(
+      childItems, std::unique_ptr<IChildItemIterator>(ITreeItem* parent_item));
 };
 
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_MOCK_KBNODE_PROVIDER_H_
+#endif  // INCLUDE_SNAIL_MOCK_TREE_ITEM_PROVIDER_H_

@@ -470,7 +470,8 @@ int TreeItemQModelTestBase::expectItemCount(const ExpectRowData& row_data) {
 }
 
 void TreeItemQModelTestBase::checkRowData(const ExpectRowData& root_rdata) {
-  ASSERT_EQ(expectItemCount(root_rdata), qmodel->qmodel()->rowCount(QModelIndex()));
+  ASSERT_EQ(expectItemCount(root_rdata),
+            qmodel->qmodel()->rowCount(QModelIndex()));
   ASSERT_EQ(1, qmodel->qmodel()->columnCount(QModelIndex()));
   QModelIndex expect_parent_idx;
   ASSERT_EQ(expect_parent_idx, qmodel->qmodel()->parent(QModelIndex()));
@@ -560,7 +561,8 @@ void TreeItemQModelTestBase::checkIndexData(
   if (always_selectable)
     expect_selectable = true;
 
-  auto actual_selectable = qmodel->qmodel()->flags(index) & Qt::ItemIsSelectable;
+  auto actual_selectable =
+      qmodel->qmodel()->flags(index) & Qt::ItemIsSelectable;
   ASSERT_EQ(expect_selectable, actual_selectable)
       << "index: " << index << " isSelectable not match"
       << " (text: " << expect_data.text << ")";

@@ -30,8 +30,9 @@ class IKbNodeAttributeModel : public IAttributeModel {
   DEF_MODEL_ID(KbNodeAttributeModel);
 
   virtual ITreeItemProvider* getKbNodeProvider() const = 0;
-  virtual
-  std::shared_ptr<ISimpleKbNodeAdderModel> createSimpleKbNodeAdderModel() const = 0;
+
+  virtual std::shared_ptr<ISimpleKbNodeAdderModel>
+  createSimpleKbNodeAdderModel() const = 0;
 
   virtual utils::U8String getKbNodeName() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;

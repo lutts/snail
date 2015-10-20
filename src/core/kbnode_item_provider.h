@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_KBNODE_PROVIDER_H_
-#define SRC_CORE_KBNODE_PROVIDER_H_
+#ifndef SRC_CORE_KBNODE_ITEM_PROVIDER_H_
+#define SRC_CORE_KBNODE_ITEM_PROVIDER_H_
 
 #include <vector>
 #include <unordered_map>
@@ -52,4 +52,4 @@ class KbNodeItemProvider : public ITreeItemProvider {
 
 }  // namespace snailcore
 
-#endif  // SRC_CORE_KBNODE_PROVIDER_H_
+#endif  // SRC_CORE_KBNODE_ITEM_PROVIDER_H_

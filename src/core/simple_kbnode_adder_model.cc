@@ -11,8 +11,9 @@
 
 namespace snailcore {
 
-SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(ITreeItemProvider* kbnode_provider,
-                                         IKbNodeManager* kbnode_manager)
+SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(
+    ITreeItemProvider* kbnode_provider,
+    IKbNodeManager* kbnode_manager)
     : kbnode_provider_(kbnode_provider)
     , kbnode_manager_(kbnode_manager) { }
 

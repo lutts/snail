@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
-#define KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
+#ifndef SRC_CORE_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
+#define SRC_CORE_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
 
 #include "snail/i_kbnode_link_attribute_inline_editor_model.h"
 #include "utils/basic_utils.h"
@@ -39,4 +39,4 @@ class KbNodeLinkAttributeInlineEditorModel
 
 }  // namespace snailcore
 
-#endif  // KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
+#endif  // SRC_CORE_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_

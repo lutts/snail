@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_KBNODE_LINK_ATTRIBUTE_MODEL_H_
-#define MOCK_KBNODE_LINK_ATTRIBUTE_MODEL_H_
+#ifndef INCLUDE_SNAIL_MOCK_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
+#define INCLUDE_SNAIL_MOCK_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
 
 #include "snail/i_kbnode_link_attribute_inline_editor_model.h"
 
@@ -25,4 +25,4 @@ class MockKbNodeLinkAttributeInlineEditorModel
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // MOCK_KBNODE_LINK_ATTRIBUTE_MODEL_H_
+#endif  // INCLUDE_SNAIL_MOCK_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
