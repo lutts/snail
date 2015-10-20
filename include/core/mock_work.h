@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "snail/i_work.h"
+#include "core/i_work.h"
 
 namespace snailcore {
 namespace tests {

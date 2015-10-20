@@ -14,7 +14,7 @@
 #include "test/testutils/mock_object_generator.h"
 
 #include "src/core/work_model.h"
-#include "snail/mock_work.h"
+#include "core/mock_work.h"
 
 #include "snail/mock_attribute_set_model.h"
 #include "core/mock_attribute_set_model_factory.h"

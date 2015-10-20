@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/work_model.h"
-#include "snail/i_work.h"
+#include "core/i_work.h"
 #include "core/i_attribute_set_model_factory.h"
 
 namespace snailcore {
