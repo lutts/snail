@@ -35,8 +35,6 @@ class ITreeItemQModel {
   virtual RealItemType* indexToItem(const QModelIndex& index) const = 0;
   virtual QModelIndex itemToIndex(ITreeItem* item) const = 0;
   virtual bool isAddMore(const QModelIndex& index) const = 0;
-  virtual void beginResetQModel() = 0;
-  virtual void endResetQModel() = 0;
   virtual void itemAdded(ITreeItem* new_item, ITreeItem* parent_item) = 0;
 };
 

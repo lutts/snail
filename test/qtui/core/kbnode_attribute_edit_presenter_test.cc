@@ -39,8 +39,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockKbNodeAttributeModel>();
     view = std::make_shared<MockKbNodeAttributeEditView>();
-    auto kbnode_qmodel_up = utils::make_unique<MockTreeItemQModel<IKbNode>>();
-    kbnode_qmodel = kbnode_qmodel_up.get();
+    kbnode_qmodel = std::make_shared<MockTreeItemQModel<IKbNode>>();
 
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
@@ -75,16 +74,10 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*view, whenUserClickAddKbNode(_, _))
         .WillOnce(SaveArg<0>(&userClickAddKbNode));
 
-    R_EXPECT_CALL(kbnode_provider, whenBeginFilter(_, _))
-        .WillOnce(SaveArg<0>(&providerBeginFilter));
-
-    R_EXPECT_CALL(kbnode_provider, whenFinishFilter(_, _))
-        .WillOnce(SaveArg<0>(&providerFinishFilter));
-
     // Excercise system
     presenter =
         std::make_shared<KbNodeAttributeEditPresenter>(
-            model, view, std::move(kbnode_qmodel_up));
+            model, view, kbnode_qmodel);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -106,7 +99,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
   xtestutils::RandomString provider_name;
   MockTreeItemProvider kbnode_provider;
-  MockTreeItemQModel<IKbNode>* kbnode_qmodel;
+  std::shared_ptr<MockTreeItemQModel<IKbNode>> kbnode_qmodel;
 
   MockPfTriadManager triad_manager;
   QModelIndexGenerator index_generator;
@@ -132,14 +125,6 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   using UserClickAddKbNodeSlotType =
       IKbNodeAttributeEditView::UserClickAddKbNodeSlotType;
   SlotCatcher<UserClickAddKbNodeSlotType> userClickAddKbNode;
-
-  using BeginFilterSlotType =
-      ITreeItemProvider::BeginFilterSlotType;
-  SlotCatcher<BeginFilterSlotType> providerBeginFilter;
-
-  using FinishFilterSlotType =
-      ITreeItemProvider::FinishFilterSlotType;
-  SlotCatcher<FinishFilterSlotType> providerFinishFilter;
 
   using KbNodeAddedSlotType =
       ISimpleKbNodeAdderModel::KbNodeAddedSlotType;
@@ -242,24 +227,6 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
   // Exercise system
   filterPatternChanged(pattern.qstr());
-}
-
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_beginResetQModel_when_kbnode_provider_begin_filter) { // NOLINT
-  // Expectations
-  EXPECT_CALL(*kbnode_qmodel, beginResetQModel());
-
-  // Exercise system
-  providerBeginFilter();
-}
-
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_endResetQModel_when_kbnode_provider_finish_filter) { // NOLINT
-  // Expectations
-  EXPECT_CALL(*kbnode_qmodel, endResetQModel());
-
-  // Exercise system
-  providerFinishFilter();
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,

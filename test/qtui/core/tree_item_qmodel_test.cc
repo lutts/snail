@@ -377,6 +377,12 @@ class TreeItemQModelTestBase : public ::testing::Test {
     setupExpectRowDatas();
     item_provider.fillRowData(&root_row_data);
 
+    EXPECT_CALL(item_provider, whenBeginFilter(_, _))
+        .WillOnce(SaveArg<0>(&providerBeginFilter));
+
+    EXPECT_CALL(item_provider, whenFinishFilter(_, _))
+        .WillOnce(SaveArg<0>(&providerFinishFilter));
+
     qmodel->setTreeItemProvider(&item_provider);
   }
 
@@ -384,8 +390,8 @@ class TreeItemQModelTestBase : public ::testing::Test {
     cleanupExpectRowDatas();
   }
 
-  virtual std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() {
-    return utils::make_unique<TreeItemQModel<ITreeItem>>();
+  virtual std::shared_ptr<TreeItemQModel<ITreeItem>> createQModel() {
+    return std::make_shared<TreeItemQModel<ITreeItem>>();
   }
 
   bool shouldRowVisible(const ExpectRowData& row_data);
@@ -397,8 +403,8 @@ class TreeItemQModelTestBase : public ::testing::Test {
   void checkIndexData(const QModelIndex& index,
                       const ExpectRowData& rdata);
 
-  void should_beginResetQModel_emit_modelAboutToReset();
-  void should_endResetQModel_emit_modelReset();
+  void should_provider_BeginFilter_emit_modelAboutToReset();
+  void should_provider_FinishFilter_emit_modelReset();
 
   virtual int adjustLevel(int level) { return level; }
   void expandToLevel(int level);
@@ -422,10 +428,17 @@ class TreeItemQModelTestBase : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<TreeItemQModel<ITreeItem>> qmodel;
+  std::shared_ptr<TreeItemQModel<ITreeItem>> qmodel;
   // endregion
 
   // region: object depends on test subject
+  using BeginFilterSlotType =
+                   ITreeItemProvider::BeginFilterSlotType;
+  SlotCatcher<BeginFilterSlotType> providerBeginFilter;
+
+  using FinishFilterSlotType =
+                   ITreeItemProvider::FinishFilterSlotType;
+  SlotCatcher<FinishFilterSlotType> providerFinishFilter;
   // endregion
 };
 
@@ -559,27 +572,27 @@ void TreeItemQModelTestBase::checkIndexData(
       << " (text: " << expect_data.text << ")";
 }
 
-void TreeItemQModelTestBase::should_beginResetQModel_emit_modelAboutToReset() { // NOLINT
+void TreeItemQModelTestBase::should_provider_BeginFilter_emit_modelAboutToReset() { // NOLINT
   QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelAboutToBeReset()));
 
   // Exercise system
-  qmodel->beginResetQModel();
+  providerBeginFilter();
 
   // Verify results
   ASSERT_EQ(1, sigspy.count());
 }
 
-void TreeItemQModelTestBase::should_endResetQModel_emit_modelReset() {
+void TreeItemQModelTestBase::should_provider_FinishFilter_emit_modelReset() {
   // Setup fixture
   // check before reset
   CUSTOM_ASSERT(checkRowData());
 
-  qmodel->beginResetQModel();
+  providerBeginFilter();
 
   QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelReset()));
 
   // Exercise system
-  qmodel->endResetQModel();
+  providerFinishFilter();
 
   // Verify results
   ASSERT_EQ(1, sigspy.count());
@@ -787,13 +800,13 @@ TEST_F(TreeItemQModelTestBase,
 }
 
 TEST_F(TreeItemQModelTestBase,
-       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
-  CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
+       should_provider_BeginFilter_emit_modelAboutToReset) { // NOLINT
+  CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       should_endResetQModel_emit_modelReset) { // NOLINT
-  CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
+       should_provider_FinishFilter_emit_modelReset) { // NOLINT
+  CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
 }
 
 TEST_F(TreeItemQModelTestBase,
@@ -839,8 +852,8 @@ class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
     show_add_more_row = true;
   }
 
-  std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithClearAndAddMoreRow<ITreeItem>>();
+  std::shared_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
+    return std::make_shared<TreeItemQModelWithClearAndAddMoreRow<ITreeItem>>();
   }
 };
 
@@ -850,13 +863,13 @@ TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
-  CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
+       should_provider_BeginFilter_emit_modelAboutToReset) { // NOLINT
+  CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_endResetQModel_emit_modelReset) { // NOLINT
-  CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
+       should_provider_FinishFilter_emit_modelReset) { // NOLINT
+  CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
@@ -916,8 +929,8 @@ class TreeItemQModelWithProviderItemTest : public TreeItemQModelTestBase {
     TreeItemQModelTestBase::TearDown();
   }
 
-  std::unique_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
-    return utils::make_unique<TreeItemQModelWithProviderRoot<ITreeItem>>();
+  std::shared_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
+    return std::make_shared<TreeItemQModelWithProviderRoot<ITreeItem>>();
   }
 
   int adjustLevel(int level) override {
@@ -931,13 +944,13 @@ TEST_F(TreeItemQModelWithProviderItemTest,
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       should_beginResetQModel_emit_modelAboutToReset) { // NOLINT
-  CUSTOM_ASSERT(should_beginResetQModel_emit_modelAboutToReset());
+       should_provider_BeginFilter_emit_modelAboutToReset) { // NOLINT
+  CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       should_endResetQModel_emit_modelReset) { // NOLINT
-  CUSTOM_ASSERT(should_endResetQModel_emit_modelReset());
+       should_provider_FinishFilter_emit_modelReset) { // NOLINT
+  CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,

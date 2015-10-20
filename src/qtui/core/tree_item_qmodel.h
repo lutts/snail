@@ -8,12 +8,19 @@
 #ifndef SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_
 #define SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_
 
+#include <memory>
+
 #include "src/qtui/core/tree_item_qmodel_impl.h"
 #include "utils/basic_utils.h"
+#include "utils/i_trackable.h"
+#include "snail/i_tree_item_provider.h"
 #include "qtui/i_tree_item_qmodel.h"
 
 template <typename RealItemType>
-class TreeItemQModel : public ITreeItemQModel<RealItemType> {
+class TreeItemQModel
+    : public ITreeItemQModel<RealItemType>
+    , public utils::ITrackable
+    , public std::enable_shared_from_this<TreeItemQModel<RealItemType> > {
  public:
   TreeItemQModel()
       : TreeItemQModel(utils::make_unique<TreeItemQModelImpl>()) { }
@@ -29,6 +36,18 @@ class TreeItemQModel : public ITreeItemQModel<RealItemType> {
   // ITreeItemQModel
   void setTreeItemProvider(ITreeItemProvider* item_provider) override {
     qmodel_->setTreeItemProvider(item_provider);
+
+    item_provider->whenBeginFilter(
+        [this]() {
+          qmodel_->beginResetQModel();
+        },
+        this->shared_from_this());
+
+    item_provider->whenFinishFilter(
+        [this]() {
+          qmodel_->endResetQModel();
+        },
+        this->shared_from_this());
   }
 
   RealItemType* indexToItem(const QModelIndex& index) const override {
@@ -41,14 +60,6 @@ class TreeItemQModel : public ITreeItemQModel<RealItemType> {
 
   bool isAddMore(const QModelIndex& index) const {
     return qmodel_->isAddMore(index);
-  }
-
-  void beginResetQModel() override {
-    return qmodel_->beginResetQModel();
-  }
-
-  void endResetQModel() override {
-    return qmodel_->endResetQModel();
   }
 
   void itemAdded(ITreeItem* new_item, ITreeItem* parent_item) override {

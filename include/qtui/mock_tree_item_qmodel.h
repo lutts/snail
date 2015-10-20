@@ -19,8 +19,6 @@ class MockTreeItemQModel : public ITreeItemQModel<RealItemType> {
   MOCK_CONST_METHOD1_T(indexToItem, RealItemType*(const QModelIndex& index));
   MOCK_CONST_METHOD1(itemToIndex, QModelIndex(ITreeItem* item));
   MOCK_CONST_METHOD1(isAddMore, bool(const QModelIndex& index));
-  MOCK_METHOD0(beginResetQModel, void());
-  MOCK_METHOD0(endResetQModel, void());
   MOCK_METHOD2(itemAdded, void(ITreeItem* new_item, ITreeItem* parent_item));
 };
 

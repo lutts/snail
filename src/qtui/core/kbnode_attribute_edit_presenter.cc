@@ -46,19 +46,6 @@ void KbNodeAttributeEditPresenter::initialize() {
         addKbNode();
       },
       shared_from_this());
-
-  auto kbnode_provider = model()->getKbNodeProvider();
-  kbnode_provider->whenBeginFilter(
-      [this]() {
-        kbnode_qmodel_->beginResetQModel();
-      },
-      shared_from_this());
-
-  kbnode_provider->whenFinishFilter(
-      [this]() {
-        kbnode_qmodel_->endResetQModel();
-      },
-      shared_from_this());
 }
 
 void KbNodeAttributeEditPresenter::addKbNode() {
