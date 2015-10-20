@@ -44,7 +44,7 @@ class KbNodeAttributeModelTest : public ::testing::Test {
         .WillRepeatedly(Return(&root_kbnode));
 
     model = utils::make_unique<KbNodeAttributeModel>(
-        &kbnode_attr, &kbnode_manager, &kbnode_provider_model_factory);
+        &kbnode_attr, &kbnode_manager, &simple_kbnode_adder_model_factory);
   }
   // virtual void TearDown() { }
 
@@ -56,7 +56,7 @@ class KbNodeAttributeModelTest : public ::testing::Test {
 
   MockKbNode root_kbnode;
   std::shared_ptr<MockTreeItemProvider> kbnode_provider;
-  MockSimpleKbNodeAdderModelFactory kbnode_provider_model_factory;
+  MockSimpleKbNodeAdderModelFactory simple_kbnode_adder_model_factory;
   // endregion
 
   // region: test subject
@@ -245,7 +245,7 @@ TEST_F(KbNodeAttributeModelTest,
   auto expect_provider_model = std::make_shared<MockSimpleKbNodeAdderModel>();
 
   // Expectations
-  EXPECT_CALL(kbnode_provider_model_factory,
+  EXPECT_CALL(simple_kbnode_adder_model_factory,
               createSimpleKbNodeAdderModel(kbnode_provider.get()))
       .WillOnce(Return(expect_provider_model));
 

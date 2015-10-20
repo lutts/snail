@@ -53,7 +53,7 @@ class TreeItemTestStub : public ITreeItem {
     return name_;
   }
 
-  bool isCategory() const override {
+  bool isGroupOnly() const override {
     return is_category_;
   }
 

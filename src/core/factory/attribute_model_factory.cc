@@ -21,7 +21,7 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
   void visit(IKbNodeAttribute* attr) override {
     attr_model_.reset(
         new KbNodeAttributeModel(attr, factory_.kbnode_manager_,
-                                 factory_.kbnode_provider_model_factory_));
+                                 factory_.simple_kbnode_adder_model_factory_));
   }
 
  private:

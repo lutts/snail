@@ -56,7 +56,7 @@ KbNodeManager::findKbNode(const utils::U8String& pattern,
   if (iter != kbnode_to_subnodes_.end()) {
     auto & subnodes = kbnode_to_subnodes_[parent_kbnode];
     for (auto kbnode : subnodes) {
-      if (!kbnode->isCategory() &&
+      if (!kbnode->isGroupOnly() &&
           kbnode->name().find(pattern) != utils::U8String::npos) {
         matched_kbnodes.push_back(kbnode);
       }

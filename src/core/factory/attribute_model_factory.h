@@ -22,9 +22,9 @@ class AttributeModelFactory : public IAttributeModelFactory {
 
   AttributeModelFactory(
       IKbNodeManager* kbnode_manager,
-      ISimpleKbNodeAdderModelFactory* kbnode_provider_model_factory)
+      ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
       : kbnode_manager_{kbnode_manager}
-      , kbnode_provider_model_factory_{kbnode_provider_model_factory} { }
+      , simple_kbnode_adder_model_factory_{simple_kbnode_adder_model_factory} { }
   virtual ~AttributeModelFactory() = default;
 
   std::shared_ptr<IAttributeModel>
@@ -34,7 +34,7 @@ class AttributeModelFactory : public IAttributeModelFactory {
   SNAIL_DISABLE_COPY(AttributeModelFactory);
 
   IKbNodeManager* kbnode_manager_ { nullptr };
-  ISimpleKbNodeAdderModelFactory* kbnode_provider_model_factory_ { nullptr };
+  ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_ { nullptr };
 };
 
 

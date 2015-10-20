@@ -186,7 +186,7 @@ TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
 }
 
 TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
-       should_set_isCategory_status_to_model_when_user_toggle_category_checkbox) { // NOLINT
+       should_set_isGroupOnly_status_to_model_when_user_toggle_category_checkbox) { // NOLINT
   bool checked = GetParam();
   // Expectations
   EXPECT_CALL(*model, setIsCategory(checked));

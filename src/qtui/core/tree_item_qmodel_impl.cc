@@ -291,7 +291,7 @@ Qt::ItemFlags TreeItemQModelImpl::flags(const QModelIndex &index) const {
   auto flags = QAbstractItemModel::flags(index);
 
   auto tree_item = indexToItem(index);
-  if (tree_item && tree_item->isCategory()) {
+  if (tree_item && tree_item->isGroupOnly()) {
     flags &= ~Qt::ItemIsSelectable;
   }
 

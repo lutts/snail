@@ -23,7 +23,7 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
   KbNodeAttributeModel(
       IKbNodeAttribute* kbnode_attr,
       IKbNodeManager* kbnode_manager,
-      ISimpleKbNodeAdderModelFactory* kbnode_provider_model_factory);
+      ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory);
   virtual ~KbNodeAttributeModel();
 
   bool isValid() const override;
@@ -44,7 +44,7 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
   IKbNodeAttribute* kbnode_attr_;
   IKbNodeManager* kbnode_manager_;
-  ISimpleKbNodeAdderModelFactory* kbnode_provider_model_factory_;
+  ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_;
 
   mutable std::shared_ptr<ITreeItemProvider> kbnode_provider_;
 

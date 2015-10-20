@@ -16,10 +16,10 @@ namespace snailcore {
 KbNodeAttributeModel::KbNodeAttributeModel(
     IKbNodeAttribute* kbnode_attr,
     IKbNodeManager* kbnode_manager,
-    ISimpleKbNodeAdderModelFactory* kbnode_provider_model_factory)
+    ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
     : kbnode_attr_(kbnode_attr)
     , kbnode_manager_(kbnode_manager)
-    , kbnode_provider_model_factory_(kbnode_provider_model_factory) { }
+    , simple_kbnode_adder_model_factory_(simple_kbnode_adder_model_factory) { }
 
 KbNodeAttributeModel::~KbNodeAttributeModel() { }
 
@@ -45,7 +45,7 @@ ITreeItemProvider* KbNodeAttributeModel::getKbNodeProvider() const {
 
 std::shared_ptr<ISimpleKbNodeAdderModel>
 KbNodeAttributeModel::createSimpleKbNodeAdderModel() const {
-  return kbnode_provider_model_factory_->
+  return simple_kbnode_adder_model_factory_->
       createSimpleKbNodeAdderModel(getKbNodeProvider());
 }
 

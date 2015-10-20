@@ -21,7 +21,7 @@ class KbNode : public IKbNode {
 
   KbNodeIdType id() const override { return id_; }
   utils::U8String name() const override { return name_; }
-  bool isCategory() const override { return is_category_; }
+  bool isGroupOnly() const override { return is_category_; }
 
  private:
   SNAIL_DISABLE_COPY(KbNode);
