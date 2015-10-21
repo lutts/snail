@@ -14,7 +14,7 @@
 
 namespace snailcore {
 
-std::vector<IKbNode*> addTestKbNodes(IKbNodeManager* kbnode_manager) {
+std::vector<IKbNode*> addTestKbNodes(KbNodeManager* kbnode_manager) {
   static bool added = false;
   static std::vector<IKbNode*> test_root_kbnodes;
 

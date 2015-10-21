@@ -7,7 +7,12 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
+#define MOCKPREFIX
+#define MOCKPOSTFIX
 #include "src/core/kbnode_manager.h"
+#undef MOCKPREFIX
+#undef MOCKPOSTFIX
+
 #include "snail/i_kbnode.h"
 #include "snail/mock_tree_item_provider.h"
 
@@ -47,7 +52,7 @@ class KbNodeManagerTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<IKbNodeManager> kbnode_manager_;
+  std::unique_ptr<KbNodeManager> kbnode_manager_;
   // endregion
 
   // region: object depends on test subject

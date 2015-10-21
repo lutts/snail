@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/kbnode_item_provider.h"
-#include "core/i_kbnode_manager.h"
+#include "src/core/kbnode_manager.h"
 #include "snail/i_kbnode.h"
 
 namespace snailcore {
@@ -39,7 +39,7 @@ class KbNodeIterator :
 
 
 KbNodeItemProvider::KbNodeItemProvider(IKbNode* root_kbnode,
-                               IKbNodeManager* node_manager)
+                               KbNodeManager* node_manager)
     : node_manager_(node_manager)
     , root_kbnode_(root_kbnode) { }
 

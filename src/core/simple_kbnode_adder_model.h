@@ -15,12 +15,12 @@
 namespace snailcore {
 
 class ITreeItemProvider;
-class IKbNodeManager;
+class KbNodeManager;
 
 class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  public:
   explicit SimpleKbNodeAdderModel(ITreeItemProvider* kbnode_provider,
-                               IKbNodeManager* kbnode_manager);
+                               KbNodeManager* kbnode_manager);
   virtual ~SimpleKbNodeAdderModel();
 
   utils::U8String name() const override;
@@ -38,7 +38,7 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
   SNAIL_SIGSLOT_IMPL(KbNodeAdded);
 
   ITreeItemProvider* kbnode_provider_ { nullptr };
-  IKbNodeManager* kbnode_manager_ { nullptr };
+  KbNodeManager* kbnode_manager_ { nullptr };
   IKbNode* new_kbnode_parent_ { nullptr };
   utils::U8String new_name_ { "" };
   bool is_category_ { false };

@@ -10,12 +10,18 @@
 
 #include <vector>
 
-#include "core/i_kbnode_manager.h"
+#include "src/core/kbnode_manager.h"
 
 namespace snailcore {
+
+class KbNodeManagerImpl { };
+
+KbNodeManager::KbNodeManager() = default;
+KbNodeManager::~KbNodeManager() = default;
+
 namespace tests {
 
-class MockKbNodeManager : public IKbNodeManager {
+class MockKbNodeManager : public KbNodeManager {
  public:
   MOCK_METHOD1(createTreeItemProvider,
                std::shared_ptr<ITreeItemProvider>(IKbNode* root_kbnode));
