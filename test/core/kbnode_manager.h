@@ -19,12 +19,9 @@ namespace snailcore {
 class IKbNode;
 class ITreeItemProvider;
 
-/** A Node tree is a tree of nodes with name and short descriptions
- *
- */
-class IKbNodeManager {
+class KbNodeManager {
  public:
-  virtual ~IKbNodeManager() = default;
+  virtual ~KbNodeManager() = default;
 
   virtual std::shared_ptr<ITreeItemProvider>
   createTreeItemProvider(IKbNode* root_kbnode) = 0;

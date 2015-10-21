@@ -13,7 +13,7 @@
 
 namespace snailcore {
 
-class IKbNodeManager;
+class KbNodeManager;
 class ISimpleKbNodeAdderModelFactory;
 
 class AttributeModelFactory : public IAttributeModelFactory {
@@ -21,7 +21,7 @@ class AttributeModelFactory : public IAttributeModelFactory {
   class AttributeVisitor;
 
   AttributeModelFactory(
-      IKbNodeManager* kbnode_manager,
+      KbNodeManager* kbnode_manager,
       ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
       : kbnode_manager_{kbnode_manager}
       , simple_kbnode_adder_model_factory_{simple_kbnode_adder_model_factory} {}
@@ -33,7 +33,7 @@ class AttributeModelFactory : public IAttributeModelFactory {
  private:
   SNAIL_DISABLE_COPY(AttributeModelFactory);
 
-  IKbNodeManager* kbnode_manager_ { nullptr };
+  KbNodeManager* kbnode_manager_ { nullptr };
   ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_ { nullptr};
 };
 
