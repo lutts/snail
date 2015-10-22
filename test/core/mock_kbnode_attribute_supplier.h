@@ -8,15 +8,15 @@
 #ifndef INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
 #define INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_SUPPLIER_H_
 
-#include "core/i_kbnode_attribute_supplier.h"
+#include "core/kbnode_attribute_supplier.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
+class MockKbNodeAttributeSupplier : public KbNodeAttributeSupplier {
  public:
   MockKbNodeAttributeSupplier()
-      : IKbNodeAttributeSupplier("", 0) { }
+      : KbNodeAttributeSupplier("", 0) { }
   // IAttributeSupplier mocks
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
 

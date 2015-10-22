@@ -14,14 +14,14 @@
 
 namespace snailcore {
 
-class IKbNodeAttribute;
+class KbNodeAttribute;
 class KbNodeManager;
 class ISimpleKbNodeAdderModelFactory;
 
 class KbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
   KbNodeAttributeModel(
-      IKbNodeAttribute* kbnode_attr,
+      KbNodeAttribute* kbnode_attr,
       KbNodeManager* kbnode_manager,
       ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory);
   virtual ~KbNodeAttributeModel();
@@ -42,7 +42,7 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
   void validateComplete(bool result);
 
-  IKbNodeAttribute* kbnode_attr_;
+  KbNodeAttribute* kbnode_attr_;
   KbNodeManager* kbnode_manager_;
   ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_;
 

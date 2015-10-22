@@ -14,11 +14,11 @@ namespace snailcore {
 
 class IKbNode;
 
-class IKbNodeAttributeSupplier : public GenericAttributeSupplier {
+class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
-  IKbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
+  KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
       : GenericAttributeSupplier(name, max_attrs) { }
-  virtual ~IKbNodeAttributeSupplier() = default;
+  virtual ~KbNodeAttributeSupplier() = default;
 
   virtual IKbNode* getRootKbNode() const = 0;
 };

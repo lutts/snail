@@ -10,7 +10,7 @@
 
 #include "src/core/work.h"
 #include "src/core/kbnode_manager.h"
-#include "src/core/attribute.h"
+#include "src/core/kbnode_attribute_supplier.h"
 
 namespace snailcore {
 
@@ -69,7 +69,7 @@ createAttrSuppliers(KbNodeManager* kbnode_manager) {
 WorkFactory::WorkFactory(KbNodeManager* kbnode_manager)
     : kbnode_manager_{kbnode_manager} { }
 
-IWork* WorkFactory::createWork(const utils::U8String& work_name) {
+Work* WorkFactory::createWork(const utils::U8String& work_name) {
   auto work = new Work;
   work->set_name(work_name);
 

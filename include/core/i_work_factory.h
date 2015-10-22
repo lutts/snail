@@ -12,13 +12,13 @@
 
 namespace snailcore {
 
-class IWork;
+class Work;
 
 class IWorkFactory {
  public:
   virtual ~IWorkFactory() = default;
 
-  virtual IWork* createWork(const utils::U8String& work_name) = 0;
+  virtual Work* createWork(const utils::U8String& work_name) = 0;
 };
 
 }  // namespace snailcore

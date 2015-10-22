@@ -8,15 +8,28 @@
 
 #include <vector>
 
+#include "utils/basic_utils.h"
+#include "utils/signal_slot_impl.h"
+
 namespace snailcore {
 
-Work::Work() = default;
+class WorkSignalProxy {
+ public:
+  SNAIL_SIGSLOT_PROXY(NameChanged, Work);
+
+  friend class Work;
+};
+
+SNAIL_SIGSLOT_DELEGATE(NameChanged, Work);
+
+Work::Work()
+    : signal_proxy_(utils::make_unique<WorkSignalProxy>()) { }
 Work::~Work() = default;
 
 bool Work::set_name(const utils::U8String& new_name) {
   if (this->name_ != new_name) {
     name_ = new_name;
-    NameChanged(name_);
+    signal_proxy_->NameChanged(name_);
     return true;
   }
 

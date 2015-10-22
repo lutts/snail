@@ -49,7 +49,7 @@ class WorkModelTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IWork::NameChangedSlotType> workNameChanged;
+  SlotCatcher<Work::NameChangedSlotType> workNameChanged;
   // endregion
 };
 

@@ -17,9 +17,9 @@ namespace snailcore {
 
 class IAttributeSupplier;
 
-class IWork {
+class Work {
  public:
-  virtual ~IWork() = default;
+  virtual ~Work() = default;
 
   SNAIL_SIGSLOT2(NameChanged, void(const utils::U8String& new_name));
 

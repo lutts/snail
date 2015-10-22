@@ -12,7 +12,7 @@
 
 namespace snailcore {
 
-class IWork;
+class Work;
 
 class IWorkModelFactory {
  public:

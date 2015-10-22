@@ -20,7 +20,7 @@ class WorkFactory : public IWorkFactory {
   explicit WorkFactory(KbNodeManager* kbnode_manager);
   virtual ~WorkFactory() = default;
 
-  IWork* createWork(const utils::U8String& work_name) override;
+  Work* createWork(const utils::U8String& work_name) override;
 
  private:
   SNAIL_DISABLE_COPY(WorkFactory);

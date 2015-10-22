@@ -14,7 +14,7 @@
 
 namespace snailcore {
 
-class IWork;
+class Work;
 class IAttributeSetModel;
 
 class IWorkModel : public pfmvp::IPfModel {
@@ -25,7 +25,7 @@ class IWorkModel : public pfmvp::IPfModel {
 
   SNAIL_SIGSLOT2(NameChanged, void(const utils::U8String& new_name));
 
-  virtual void set_work(IWork* work) = 0;
+  virtual void set_work(Work* work) = 0;
 
   virtual utils::U8String name() const = 0;
   virtual bool set_name(const utils::U8String& new_name) = 0;

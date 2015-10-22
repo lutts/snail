@@ -41,7 +41,9 @@ add_gmock_unit_test(kbnode_manager
   LIBS testutils)
 
 add_gmock_unit_test(kbnode_attribute
-  ${UNDER_TEST_SOURCE_DIR}/attribute.cc
+  LIBS testutils)
+
+add_gmock_unit_test(kbnode_attribute_supplier
   LIBS testutils)
 
 add_gmock_unit_test(kbnode_link_attribute_inline_editor_model

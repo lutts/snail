@@ -10,13 +10,13 @@
 
 namespace snailcore {
 
-class IKbNodeAttribute;
+class KbNodeAttribute;
 
 class IAttributeVisitor {
  public:
   virtual ~IAttributeVisitor() = default;
 
-  virtual void visit(IKbNodeAttribute* attr) = 0;
+  virtual void visit(KbNodeAttribute* attr) = 0;
 };
 
 }  // namespace snailcore

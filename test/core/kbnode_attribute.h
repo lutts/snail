@@ -9,24 +9,24 @@
 #define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
 
 #include "core/generic_attribute.h"
-#include "core/i_kbnode_attribute_supplier.h"
+#include "core/kbnode_attribute_supplier.h"
 #include "core/i_attribute_visitor.h"
 
 namespace snailcore {
 
 class IKbNode;
 
-class IKbNodeAttribute : public GenericAttribute {
+class KbNodeAttribute : public GenericAttribute {
  public:
-  explicit IKbNodeAttribute(IKbNodeAttributeSupplier* supplier)
+  explicit KbNodeAttribute(KbNodeAttributeSupplier* supplier)
       : GenericAttribute(supplier) { }
-  virtual ~IKbNodeAttribute() = default;
+  virtual ~KbNodeAttribute() = default;
 
   void accept(IAttributeVisitor* visitor) override {
     visitor->visit(this);
   }
 
-  virtual IKbNodeAttributeSupplier* supplier() const = 0;
+  virtual KbNodeAttributeSupplier* supplier() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;
 };
 

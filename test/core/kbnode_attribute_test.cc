@@ -7,7 +7,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "src/core/attribute.h"
+#include "src/core/kbnode_attribute.h"
 #include "core/mock_kbnode_attribute_supplier.h"
 #include "snail/mock_kbnode.h"
 
@@ -35,7 +35,7 @@ class KbNodeAttributeTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<IKbNodeAttribute> attr;
+  std::unique_ptr<KbNodeAttribute> attr;
   MockKbNodeAttributeSupplier attr_supplier;
 
   MockKbNode kbnode;
@@ -111,7 +111,7 @@ TEST_F(KbNodeAttributeTest,
 }
 
 TEST_F(KbNodeAttributeTest,
-       should_attribute_visitor_visit_IKbNodeAttribute) { // NOLINT
+       should_attribute_visitor_visit_KbNodeAttribute) { // NOLINT
   // Setup fixture
   MockAttributeVisitor visitor;
 
@@ -124,51 +124,6 @@ TEST_F(KbNodeAttributeTest,
 }
 
 ////////////////////////////////////////////////
-
-class KbNodeAttributeSupplierTest : public ::testing::Test {
- protected:
-  KbNodeAttributeSupplierTest() {
-    // const string saved_flag = GMOCK_FLAG(verbose);
-    GMOCK_FLAG(verbose) = kErrorVerbosity;
-  }
-  // ~KbNodeAttributeSupplierTest() { }
-  virtual void SetUp() {
-    expect_max_attrs = std::rand();
-
-    EXPECT_CALL(root_kbnode, name())
-        .WillRepeatedly(Return(root_kbnode_name));
-
-    attr_supplier = utils::make_unique<KbNodeAttributeSupplier>(
-        &root_kbnode, expect_max_attrs);
-
-    ASSERT_EQ(root_kbnode_name, attr_supplier->name());
-    ASSERT_EQ(expect_max_attrs, attr_supplier->max_attrs());
-    ASSERT_EQ(&root_kbnode, attr_supplier->getRootKbNode());
-  }
-  // virtual void TearDown() { }
-
-  // region: objects test subject depends on
-  MockKbNode root_kbnode;
-  utils::U8String root_kbnode_name;
-  int expect_max_attrs;
-  // endregion
-
-  // region: test subject
-  std::unique_ptr<IKbNodeAttributeSupplier> attr_supplier;
-  // endregion
-};
-
-TEST_F(KbNodeAttributeSupplierTest,
-       should_createAttribute_create_KbNodeAttribute_instance_with_this_as_the_supplier) { // NOLINT
-  // Exercise system
-  auto new_attr = attr_supplier->addAttribute();
-
-  // Verify results
-  auto actual_attr = dynamic_cast<IKbNodeAttribute*>(new_attr);
-  ASSERT_NE(nullptr, actual_attr);
-
-  ASSERT_EQ(attr_supplier.get(), actual_attr->supplier());
-}
 
 }  // namespace tests
 }  // namespace snailcore
