@@ -14,7 +14,8 @@
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeLinkAttributeSupplier : public fto::KbNodeLinkAttributeSupplier {
+class MockKbNodeLinkAttributeSupplier
+    : public fto::KbNodeLinkAttributeSupplier {
  public:
   MockKbNodeLinkAttributeSupplier()
       : fto::KbNodeLinkAttributeSupplier("", 0) { }

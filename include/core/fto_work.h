@@ -5,12 +5,12 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_CORE_I_WORK_H_
-#define INCLUDE_CORE_I_WORK_H_
-
-#ifndef DISABLE_TEST_CODE
+#ifndef INCLUDE_CORE_FTO_WORK_H_
+#define INCLUDE_CORE_FTO_WORK_H_
 
 #include <vector>
+
+#ifndef DISABLE_TEST_CODE
 
 #include "utils/u8string.h"
 #include "utils/signal_slot.h"
@@ -48,5 +48,5 @@ class Work { };
 FTO_END_NAMESPACE
 }  // namespace snailcore
 
-#endif // DISABLE_TEST_CODE
-#endif  // INCLUDE_CORE_I_WORK_H_
+#endif  // DISABLE_TEST_CODE
+#endif  // INCLUDE_CORE_FTO_WORK_H_

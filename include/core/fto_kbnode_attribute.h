@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
-#define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
+#ifndef INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
+#define INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
 
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"
@@ -58,7 +58,7 @@ class KbNodeAttribute : public IAttribute { };
 FTO_END_NAMESPACE
 }  // namespace snailcore
 
-#endif // DISABLE_TEST_CODE
+#endif  // DISABLE_TEST_CODE
 
 
-#endif  // INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
+#endif  // INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_

@@ -5,13 +5,13 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_CORE_I_KBNODE_MANAGER_H_
-#define INCLUDE_CORE_I_KBNODE_MANAGER_H_
-
-#ifndef DISABLE_TEST_CODE
+#ifndef INCLUDE_CORE_FTO_KBNODE_MANAGER_H_
+#define INCLUDE_CORE_FTO_KBNODE_MANAGER_H_
 
 #include <memory>
 #include <vector>
+
+#ifndef DISABLE_TEST_CODE
 
 #include "utils/u8string.h"
 #include "snail/kb_global.h"
@@ -56,4 +56,4 @@ FTO_END_NAMESPACE
 
 
 #endif  // DISABLE_TEST_CODE
-#endif  // INCLUDE_CORE_I_KBNODE_MANAGER_H_
+#endif  // INCLUDE_CORE_FTO_KBNODE_MANAGER_H_

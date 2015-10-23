@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef SRC_CORE_ATTRIBUTE_H_
-#define SRC_CORE_ATTRIBUTE_H_
+#ifndef SRC_CORE_KBNODE_ATTRIBUTE_H_
+#define SRC_CORE_KBNODE_ATTRIBUTE_H_
 
 #include "include/config.h"
 #include "utils/basic_utils.h"
@@ -58,4 +58,4 @@ class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
 
 }  // namespace snailcore
 
-#endif  // SRC_CORE_ATTRIBUTE_H_
+#endif  // SRC_CORE_KBNODE_ATTRIBUTE_H_

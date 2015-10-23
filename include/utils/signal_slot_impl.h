@@ -136,7 +136,8 @@
 
 // proxy-delegate macros
 #define SNAIL_SIGSLOT_PROXY(sigName, OwnerClass)                        \
-  using sigName##SignalType = boost::signals2::signal<OwnerClass::sigName##Signature>; \
+  using sigName##SignalType =                                           \
+      boost::signals2::signal<OwnerClass::sigName##Signature>;          \
   sigName##SignalType sigName;                                          \
                                                                         \
   void when##sigName(                                                   \

@@ -59,5 +59,5 @@ class KbNodeLinkAttribute : public IAttribute { };
 FTO_END_NAMESPACE
 }  // namespace snailcore
 
-#endif // DISABLE_TEST_CODE
+#endif  // DISABLE_TEST_CODE
 #endif  // INCLUDE_CORE_I_KBNODE_LINK_ATTRIBUTE_H_

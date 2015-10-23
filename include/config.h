@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef INCLUDE_CONFIG_H_
+#define INCLUDE_CONFIG_H_
 
 #define FTO_HEADER(path, name) <path/fto_##name.h>
 #define FTO_INTERFACE(c) fto::c
@@ -27,4 +27,4 @@
 #endif
 
 
-#endif  // CONFIG_H_
+#endif  // INCLUDE_CONFIG_H_
