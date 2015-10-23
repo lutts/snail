@@ -23,7 +23,7 @@
         else                                                            \
           sigName.connect(subscriber);                                  \
   }                                                                     \
-  void cleanup##sigName##Slots() {                                      \
+  void cleanup##sigName##Slots() override {                             \
     sigName.num_slots();                                                \
   }
 
@@ -49,7 +49,7 @@
         else                                                            \
           sigName.connect(subscriber);                                  \
   }                                                                     \
-  void cleanup##sigName##Slots() {                                      \
+  void cleanup##sigName##Slots() override {                             \
     sigName.num_slots();                                                \
   }
 
@@ -132,6 +132,34 @@
   }                                                                     \
   void PrimaryType::cleanup##sigName##Slots() {                         \
     pimpl->cleanup##sigName##Slots();                                   \
+  }
+
+// proxy-delegate macros
+#define SNAIL_SIGSLOT_PROXY(sigName, OwnerClass)                        \
+  using sigName##SignalType = boost::signals2::signal<OwnerClass::sigName##Signature>; \
+  sigName##SignalType sigName;                                          \
+                                                                        \
+  void when##sigName(                                                   \
+      OwnerClass::sigName##SlotType handler,                            \
+      std::shared_ptr<utils::ITrackable> trackObject) {                 \
+    sigName##SignalType::slot_type subscriber(handler);                 \
+        if (trackObject)                                                \
+          sigName.connect(subscriber.track_foreign(trackObject));       \
+        else                                                            \
+          sigName.connect(subscriber);                                  \
+  }                                                                     \
+  void cleanup##sigName##Slots() {                                      \
+    sigName.num_slots();                                                \
+  }
+
+#define SNAIL_SIGSLOT_DELEGATE(sigName, OwnerClass)     \
+  void OwnerClass::when##sigName(                       \
+      sigName##SlotType handler,                        \
+      std::shared_ptr<utils::ITrackable> trackObject) { \
+    signal_proxy_->when##sigName(handler, trackObject); \
+  }                                                     \
+  void OwnerClass::cleanup##sigName##Slots() {          \
+    signal_proxy_->cleanup##sigName##Slots();           \
   }
 
 #endif  // INCLUDE_UTILS_SIGNAL_SLOT_IMPL_H_

@@ -23,7 +23,15 @@
   virtual void when##sigName(                                           \
       sigName##SlotType handler,                                        \
       std::shared_ptr<utils::ITrackable> trackObject = nullptr) = 0;    \
-  virtual void cleanup##sigName##Slots() = 0
+  virtual void cleanup##sigName##Slots() = 0;
+
+#define SNAIL_SIGSLOT_NONVIRTUAL(sigName, ...)                          \
+  using sigName##Signature = __VA_ARGS__;                               \
+  using sigName##SlotType = std::function<sigName##Signature>;          \
+  void when##sigName(                                                   \
+      sigName##SlotType handler,                                        \
+      std::shared_ptr<utils::ITrackable> trackObject = nullptr);        \
+  void cleanup##sigName##Slots();                                       \
 
 #define SNAIL_MOCK_SLOT(sigName)                                        \
   MOCK_METHOD2(when##sigName,                                           \

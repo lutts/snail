@@ -12,11 +12,13 @@
 
 #include "core/i_work.h"
 #include "utils/u8string.h"
-#include "utils/signal_slot_impl.h"
+#include "utils/signal_slot.h"
 
 #include "snail/i_attribute_supplier.h"
 
 namespace snailcore {
+
+class WorkSignalProxy;
 
 class Work : public IWork {
  public:
@@ -31,15 +33,19 @@ class Work : public IWork {
   void setAttributeSuppliers(
       std::vector<std::unique_ptr<IAttributeSupplier> >&& attr_suppliers);
 
+ public:
+  SNAIL_SIGSLOT_NONVIRTUAL(NameChanged,
+                           void(const utils::U8String& new_name));
+
+ private:
+  std::unique_ptr<WorkSignalProxy> signal_proxy_;
+
  private:
   Work(const Work& other) = delete;
   Work& operator=(const Work& other) = delete;
 
   utils::U8String name_;
   std::vector<std::unique_ptr<IAttributeSupplier> > attr_suppliers_;
-
- private:
-  SNAIL_SIGSLOT_IMPL(NameChanged);
 };
 
 
