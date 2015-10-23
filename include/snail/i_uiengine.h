@@ -19,7 +19,7 @@ class IUiEngine {
   virtual int run() = 0;
   virtual void quit() = 0;
 
-  SNAIL_SIGSLOT2(AboutToQuit, void());
+  SNAIL_SIGSLOT(AboutToQuit, void());
 };
 
 }  // namespace snailcore

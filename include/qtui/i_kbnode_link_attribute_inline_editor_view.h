@@ -17,7 +17,7 @@ class IKbNodeLinkAttributeInlineEditorView : public GenericViewBase {
  public:
   virtual ~IKbNodeLinkAttributeInlineEditorView() = default;
 
-  SNAIL_SIGSLOT2(UserClickShowPopupEditor, void());
+  SNAIL_SIGSLOT(UserClickShowPopupEditor, void());
 
   virtual void setValueText(const QString& value_text) = 0;
 };

@@ -23,8 +23,8 @@ class IMainWindowModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(MainWindowModel);
 
-  SNAIL_SIGSLOT2(WindowTitleChanged, void(const utils::U8String&));
-  SNAIL_SIGSLOT2(RequestClose, bool());
+  SNAIL_SIGSLOT(WindowTitleChanged, void(const utils::U8String&));
+  SNAIL_SIGSLOT(RequestClose, bool());
 
   virtual const utils::U8String& windowTitle() const = 0;
   virtual void setWindowTitle(const utils::U8String& newTitle) = 0;

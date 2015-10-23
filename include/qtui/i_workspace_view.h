@@ -18,8 +18,8 @@ class IWorkSpaceView : public GenericViewBase {
  public:
   virtual ~IWorkSpaceView() = default;
 
-  SNAIL_SIGSLOT2(UserClickAddWork, void(const utils::U8String& work_name));
-  SNAIL_SIGSLOT2(UserCloseWork, void(IWorkView* work_view));
+  SNAIL_SIGSLOT(UserClickAddWork, void(const utils::U8String& work_name));
+  SNAIL_SIGSLOT(UserCloseWork, void(IWorkView* work_view));
 
   virtual void addWorkView(IWorkView* work_view,
                            const utils::U8String& work_name) = 0;

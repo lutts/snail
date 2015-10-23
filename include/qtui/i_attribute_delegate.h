@@ -22,9 +22,9 @@ class IAttributeDelegate {
  public:
   virtual ~IAttributeDelegate() = default;
 
-  SNAIL_SIGSLOT2(CreateEditorFor,
+  SNAIL_SIGSLOT(CreateEditorFor,
                  IAttributeEditorView*(int row));
-  SNAIL_SIGSLOT2(CloseEditor,
+  SNAIL_SIGSLOT(CloseEditor,
                  void(IAttributeEditorView*));
 };
 

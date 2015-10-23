@@ -26,9 +26,9 @@ class IKbNodeLinkAttributePopupEditorModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(KbNodeLinkAttributePopupEditorModel);
 
-  SNAIL_SIGSLOT2(LinkTypeChanged,
+  SNAIL_SIGSLOT(LinkTypeChanged,
                  void(std::shared_ptr<IAttributeSetModel> attr_set_model));
-  SNAIL_SIGSLOT2(ValidateComplete, void(bool result));
+  SNAIL_SIGSLOT(ValidateComplete, void(bool result));
 
   virtual std::shared_ptr<IAttributeModel> createValueKbNodeAttrModel() = 0;
   virtual ITreeItemProvider* getLinkTypeProvider() const = 0;

@@ -18,8 +18,8 @@ class ICommandProcessor {
  public:
   virtual ~ICommandProcessor() { }
 
-  SNAIL_SIGSLOT2(CanUndoChanged, void(bool canUndo));
-  SNAIL_SIGSLOT2(CanRedoChanged, void(bool canRedo));
+  SNAIL_SIGSLOT(CanUndoChanged, void(bool canUndo));
+  SNAIL_SIGSLOT(CanRedoChanged, void(bool canRedo));
 
   virtual bool canUndo() const = 0;
   virtual bool canRedo() const = 0;

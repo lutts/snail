@@ -17,7 +17,7 @@
 // NOTE: should ignore trackObject param only when you can ensure the subscriber
 // has a longer lifetime than the subject.
 
-#define SNAIL_SIGSLOT2(sigName, ...)                                    \
+#define SNAIL_SIGSLOT(sigName, ...)                                    \
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   virtual void when##sigName(                                           \

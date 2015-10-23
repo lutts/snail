@@ -22,7 +22,7 @@ class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(SimpleKbNodeAdderModel);
 
-  SNAIL_SIGSLOT2(KbNodeAdded,
+  SNAIL_SIGSLOT(KbNodeAdded,
                  void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
 
   virtual utils::U8String name() const = 0;

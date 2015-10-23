@@ -21,8 +21,8 @@ class IKbNodeLinkAttributePopupEditorView : public GenericViewBase {
  public:
   virtual ~IKbNodeLinkAttributePopupEditorView() = default;
 
-  SNAIL_SIGSLOT2(UserSelectLinkType, void(const QModelIndex& index));
-  SNAIL_SIGSLOT2(UserClickDone, void());
+  SNAIL_SIGSLOT(UserSelectLinkType, void(const QModelIndex& index));
+  SNAIL_SIGSLOT(UserClickDone, void());
 
   virtual void setValueAttrEditor(IAttributeEditorView* value_attr_view) = 0;
   virtual void setLinkTypeQModel(QAbstractItemModel* link_type_qmodel) = 0;

@@ -23,9 +23,9 @@ class IAttributeSetLayout {
  public:
   virtual ~IAttributeSetLayout() = default;
 
-  SNAIL_SIGSLOT2(CreateAttrEditor,
+  SNAIL_SIGSLOT(CreateAttrEditor,
                  IAttributeEditorView*(snailcore::IAttribute* attr));
-  SNAIL_SIGSLOT2(CloseAttributeEditors, void());
+  SNAIL_SIGSLOT(CloseAttributeEditors, void());
 
   virtual void setAttributeSuppliers(
       const std::vector<snailcore::IAttributeSupplier*>& attr_suppliers,

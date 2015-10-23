@@ -19,10 +19,10 @@ class ISimpleKbNodeAdderView : public GenericViewBase {
  public:
   virtual ~ISimpleKbNodeAdderView() = default;
 
-  SNAIL_SIGSLOT2(UserSelectIndex, void(const QModelIndex& index));
-  SNAIL_SIGSLOT2(NewKbNodeNameChanged, void(const QString& name));
-  SNAIL_SIGSLOT2(UserToggleCategoryCheckbox, void(bool checked));
-  SNAIL_SIGSLOT2(UserClickAddButton, void());
+  SNAIL_SIGSLOT(UserSelectIndex, void(const QModelIndex& index));
+  SNAIL_SIGSLOT(NewKbNodeNameChanged, void(const QString& name));
+  SNAIL_SIGSLOT(UserToggleCategoryCheckbox, void(bool checked));
+  SNAIL_SIGSLOT(UserClickAddButton, void());
 
   virtual void setProviderName(const QString& provider_name) = 0;
   virtual void setNewKbNodeName(const QString& name) = 0;
