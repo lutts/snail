@@ -9,11 +9,12 @@
 #define INCLUDE_CORE_I_KBNODE_ATTRIBUTE_H_
 
 #include "snail/i_attribute.h"
-#include "core/i_kbnode_attribute_supplier.h"
+#include "core/generic_attribute_supplier.h"
 
 namespace snailcore {
 
 class IKbNode;
+class IKbNodeAttributeSupplier;
 
 class IKbNodeAttribute : public IAttribute {
  public:
@@ -21,6 +22,15 @@ class IKbNodeAttribute : public IAttribute {
 
   virtual IKbNodeAttributeSupplier* supplier() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;
+};
+
+class IKbNodeAttributeSupplier : public GenericAttributeSupplier {
+ public:
+  IKbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
+      : GenericAttributeSupplier(name, max_attrs) { }
+  virtual ~IKbNodeAttributeSupplier() = default;
+
+  virtual IKbNode* getRootKbNode() const = 0;
 };
 
 }  // namespace snailcore

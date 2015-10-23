@@ -8,7 +8,7 @@ set(core_SRCS ${core_SRCS}
   simple_kbnode_adder_model.cc
   kbnode_item_provider.cc
   kbnode_manager.cc
-  attribute.cc
+  kbnode_attribute.cc
   kbnode_link_attribute_inline_editor_model.cc
   kbnode_link_attribute_popup_editor_model.cc
   )

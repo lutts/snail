@@ -10,7 +10,7 @@
 
 #include "src/core/work.h"
 #include "src/core/kbnode_manager.h"
-#include "src/core/attribute.h"
+#include "src/core/kbnode_attribute.h"
 
 namespace snailcore {
 

@@ -22,6 +22,21 @@ class MockKbNodeAttribute : public IKbNodeAttribute {
   MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));
 };
 
+class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
+ public:
+  MockKbNodeAttributeSupplier()
+      : IKbNodeAttributeSupplier("", 0) { }
+  // IAttributeSupplier mocks
+  MOCK_CONST_METHOD0(name, utils::U8String());
+  MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
+
+  // GenericAttributeSupplier mocks
+  MOCK_METHOD0(createAttribute, IAttribute*());
+
+  // Self
+  MOCK_CONST_METHOD0(getRootKbNode, IKbNode*());
+};
+
 }  // namespace tests
 }  // namespace snailcore
 

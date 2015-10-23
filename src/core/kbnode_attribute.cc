@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/core/attribute.h"
+#include "src/core/kbnode_attribute.h"
 #include "snail/i_kbnode.h"
 #include "core/i_attribute_visitor.h"
 

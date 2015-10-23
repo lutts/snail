@@ -10,7 +10,6 @@
 
 #include "src/core/kbnode_attribute_model.h"
 #include "core/mock_kbnode_attribute.h"
-#include "core/mock_kbnode_attribute_supplier.h"
 #include "core/mock_kbnode_manager.h"
 #include "snail/mock_tree_item_provider.h"
 #include "snail/mock_simple_kbnode_adder_model.h"

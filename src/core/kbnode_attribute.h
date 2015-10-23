@@ -23,12 +23,10 @@ class KbNodeAttribute : public IKbNodeAttribute {
   utils::U8String valueText() const override;
   bool isEmpty() const override;
   void clear() override;
-
   void accept(IAttributeVisitor* visitor) override;
 
-  // IKbNodeAttribute
-  IKbNodeAttributeSupplier* supplier() const override;
-  void setKbNode(IKbNode* kbnode) override;
+  IKbNodeAttributeSupplier* supplier() const;
+  void setKbNode(IKbNode* kbnode);
 
  private:
   SNAIL_DISABLE_COPY(KbNodeAttribute);
@@ -45,8 +43,7 @@ class KbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
   // GenericAttributeSupplier impls
   IAttribute* createAttribute() override;
 
-  // IKbNodeAttributeSupplier impls
-  IKbNode* getRootKbNode() const override;
+  IKbNode* getRootKbNode() const;
 
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeSupplier);
