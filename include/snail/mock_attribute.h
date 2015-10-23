@@ -10,6 +10,14 @@
 
 #include "snail/i_attribute.h"
 
+#define COMMON_ATTRIBUTE_MOCKS                                  \
+  MOCK_CONST_METHOD0(displayName, utils::U8String());           \
+  MOCK_CONST_METHOD0(valueText, utils::U8String());             \
+  MOCK_CONST_METHOD0(isEmpty, bool());                          \
+  MOCK_METHOD0(clear, void());                                  \
+  MOCK_METHOD1(accept, void(IAttributeVisitor* visitor));       \
+  MOCK_METHOD0(clone, IAttribute*());                           \
+
 namespace snailcore {
 namespace tests {
 
@@ -17,12 +25,7 @@ class MockAttribute : public IAttribute {
  public:
   ~MockAttribute() { destroy(); }
 
-  MOCK_CONST_METHOD0(displayName, utils::U8String());
-  MOCK_CONST_METHOD0(valueText, utils::U8String());
-  MOCK_CONST_METHOD0(isEmpty, bool());
-  MOCK_METHOD0(clear, void());
-
-  MOCK_METHOD0(clone, IAttribute*());
+  COMMON_ATTRIBUTE_MOCKS
 
   MOCK_METHOD0(destroy, void());
 };
@@ -41,7 +44,9 @@ class NullAttribute : public IAttribute {
     return true;
   }
 
-  void clear() { }
+  void clear() override { }
+
+  void accept(IAttributeVisitor* visitor) override { (void)visitor; }
 };
 
 }  // namespace tests

@@ -18,6 +18,7 @@ class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
   MockKbNodeAttributeSupplier()
       : IKbNodeAttributeSupplier("", 0) { }
   // IAttributeSupplier mocks
+  MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
 
   // GenericAttributeSupplier mocks

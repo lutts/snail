@@ -61,6 +61,21 @@ TEST_F(KbNodeAttributeTest,
   ASSERT_EQ(&attr_supplier, attr->supplier());
 }
 
+TEST_F(KbNodeAttributeTest,
+       should_attribute_display_name_be_supplier_name) { // NOLINT
+  // Setup fixture
+  auto expect_name = xtestutils::genRandomString();
+
+  // Expectations
+  EXPECT_CALL(attr_supplier, name()).WillOnce(Return(expect_name));
+
+  // Exercise system
+  auto actual_name = attr->displayName();
+
+  // Verify results
+  ASSERT_EQ(expect_name, actual_name);
+}
+
 void KbNodeAttributeTest::setupNonEmptyState() {
   kbnode_name = xtestutils::genRandomString();
   EXPECT_CALL(kbnode, name()).WillRepeatedly(Return(kbnode_name));
@@ -119,8 +134,7 @@ TEST_F(KbNodeAttributeTest,
   EXPECT_CALL(visitor, visit(attr.get()));
 
   // Exercise system
-  GenericAttribute* base_attr = dynamic_cast<GenericAttribute*>(attr.get());
-  base_attr->accept(&visitor);
+  attr->accept(&visitor);
 }
 
 ////////////////////////////////////////////////

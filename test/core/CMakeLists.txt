@@ -24,9 +24,6 @@ add_gmock_unit_test(attribute_set_model
 add_gmock_unit_test(generic_attribute_supplier
   LIBS testutils)
 
-add_gmock_unit_test(generic_attribute
-  LIBS testutils)
-
 add_gmock_unit_test(kbnode_attribute_model
   LIBS testutils)
 

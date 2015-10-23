@@ -55,6 +55,8 @@ class AttributeTestStub :public IAttribute {
  private:
   SNAIL_DISABLE_COPY(AttributeTestStub);
 
+  MOCK_METHOD1(accept, void(IAttributeVisitor* visitor));
+
   utils::U8String name_;
   utils::U8String value_;
   IAttributeSupplier* supplier_;

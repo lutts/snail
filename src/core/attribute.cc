@@ -6,15 +6,19 @@
 // [Desc]
 #include "src/core/attribute.h"
 #include "snail/i_kbnode.h"
+#include "core/i_attribute_visitor.h"
 
 namespace snailcore {
 
 KbNodeAttribute::KbNodeAttribute(IKbNodeAttributeSupplier* attr_supplier)
-    : IKbNodeAttribute(attr_supplier)
-    , attr_supplier_(attr_supplier) { }
+    : attr_supplier_(attr_supplier) { }
 KbNodeAttribute::~KbNodeAttribute() = default;
 
 // IAttribute
+utils::U8String KbNodeAttribute::displayName() const {
+  return attr_supplier_->name();
+}
+
 utils::U8String KbNodeAttribute::valueText() const {
   if (isEmpty())
     return "";
@@ -30,6 +34,10 @@ void KbNodeAttribute::clear() {
   setKbNode(nullptr);
 }
 
+void KbNodeAttribute::accept(IAttributeVisitor* visitor) {
+  visitor->visit(this);
+}
+
 
 // IKbNodeAttribute
 IKbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
@@ -38,7 +46,7 @@ IKbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
 
 void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
   kbnode_ = kbnode;
-  dataChanged();
+  attr_supplier_->attributeChanged(this);
 }
 
 //////////////// KbNodeAttributeSupplier ////////////////

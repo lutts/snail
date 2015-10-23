@@ -19,9 +19,12 @@ class KbNodeAttribute : public IKbNodeAttribute {
   virtual ~KbNodeAttribute();
 
   // IAttribute
+  utils::U8String displayName() const override;
   utils::U8String valueText() const override;
   bool isEmpty() const override;
   void clear() override;
+
+  void accept(IAttributeVisitor* visitor) override;
 
   // IKbNodeAttribute
   IKbNodeAttributeSupplier* supplier() const override;

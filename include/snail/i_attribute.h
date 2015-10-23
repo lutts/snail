@@ -12,6 +12,8 @@
 
 namespace snailcore {
 
+class IAttributeVisitor;
+
 class IAttribute {
  public:
   virtual ~IAttribute() = default;
@@ -20,6 +22,9 @@ class IAttribute {
   virtual utils::U8String valueText() const = 0;
   virtual bool isEmpty() const = 0;
   virtual void clear() = 0;
+
+  // for create attribute models
+  virtual void accept(IAttributeVisitor* visitor) = 0;
 
   // TODO(lutts): impl this method in subclasses
   virtual IAttribute* clone() { return nullptr; }

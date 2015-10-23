@@ -7,7 +7,7 @@
 #include "src/core/factory/attribute_model_factory.h"
 
 #include "core/i_attribute_visitor.h"
-#include "core/generic_attribute.h"
+#include "snail/i_attribute.h"
 #include "src/core/kbnode_attribute_model.h"
 
 namespace snailcore {
@@ -36,9 +36,7 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
 std::shared_ptr<IAttributeModel>
 AttributeModelFactory::createAttributeModel(IAttribute* attr) const {
   AttributeVisitor visitor{*this};
-
-  GenericAttribute* base_attr = static_cast<GenericAttribute*>(attr);
-  base_attr->accept(&visitor);
+  attr->accept(&visitor);
   return visitor.attr_model_;
 }
 
