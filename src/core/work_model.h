@@ -26,7 +26,7 @@ class WorkModel : public IWorkModel
       IAttributeSetModelFactory* attr_set_model_factory);
   virtual ~WorkModel();
 
-  void set_work(IWork* work) override;
+  void set_work(fto::Work* work) override;
 
   utils::U8String name() const override;
   bool set_name(const utils::U8String& new_name) override;
@@ -38,7 +38,7 @@ class WorkModel : public IWorkModel
   WorkModel(const WorkModel& other) = delete;
   WorkModel& operator=(const WorkModel& other) = delete;
 
-  IWork* work_ { nullptr };
+  fto::Work* work_ { nullptr };
   IAttributeSetModelFactory* attr_set_model_factory_;
 
  private:

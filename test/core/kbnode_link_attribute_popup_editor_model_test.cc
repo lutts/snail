@@ -9,7 +9,6 @@
 
 #include "src/core/kbnode_link_attribute_popup_editor_model.h"
 #include "core/mock_kbnode_link_attribute.h"
-#include "core/mock_kbnode_link_attribute_supplier.h"
 #include "snail/mock_attribute.h"
 #include "snail/mock_attribute_model.h"
 #include "core/mock_attribute_model_factory.h"

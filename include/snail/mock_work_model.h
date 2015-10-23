@@ -17,7 +17,7 @@ class MockWorkModel : public IWorkModel {
  public:
   SNAIL_MOCK_SLOT(NameChanged);
 
-  MOCK_METHOD1(set_work, void(IWork* work));
+  MOCK_METHOD1(set_work, void(fto::Work* work));
 
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(set_name, bool(const utils::U8String& new_name));

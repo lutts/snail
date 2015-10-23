@@ -8,15 +8,19 @@
 #ifndef INCLUDE_CORE_I_ATTRIBUTE_VISITOR_H_
 #define INCLUDE_CORE_I_ATTRIBUTE_VISITOR_H_
 
+#include "include/config.h"
+
 namespace snailcore {
 
-class IKbNodeAttribute;
+OPT_FTO_BEGIN_NAMESPACE
+class KbNodeAttribute;
+OPT_FTO_END_NAMESPACE
 
 class IAttributeVisitor {
  public:
   virtual ~IAttributeVisitor() = default;
 
-  virtual void visit(IKbNodeAttribute* attr) = 0;
+  virtual void visit(fto::KbNodeAttribute* attr) = 0;
 };
 
 }  // namespace snailcore

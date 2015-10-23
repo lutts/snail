@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/work_model.h"
-#include "core/i_work.h"
+#include "core/fto_work.h"
 #include "core/i_attribute_set_model_factory.h"
 
 namespace snailcore {
@@ -20,7 +20,7 @@ WorkModel::~WorkModel() {
   // delete work_;
 }
 
-void WorkModel::set_work(IWork* work) {
+void WorkModel::set_work(fto::Work* work) {
   work_ = work;
 
   work_->whenNameChanged(

@@ -78,7 +78,7 @@ class MockListener : public GenericMockListener<MockListener,
 
 TEST_F(WorkSpaceModelTest, should_be_able_to_create_work) { // NOLINT
   // Setup fixture
-  auto work = xtestutils::genDummyPointer<IWork>();
+  auto work = xtestutils::genDummyPointer<fto::Work>();
   auto work_model = std::make_shared<MockWorkModel>();
   auto work_name = xtestutils::genRandomString();
 

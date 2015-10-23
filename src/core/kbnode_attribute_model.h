@@ -8,21 +8,25 @@
 #ifndef SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_
 #define SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_
 
+#include "include/config.h"
 #include "utils/basic_utils.h"
 #include "snail/i_kbnode_attribute_model.h"
 #include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
-class IKbNodeAttribute;
-class IKbNodeManager;
+OPT_FTO_BEGIN_NAMESPACE
+class KbNodeManager;
+class KbNodeAttribute;
+OPT_FTO_END_NAMESPACE
+
 class ISimpleKbNodeAdderModelFactory;
 
 class KbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
   KbNodeAttributeModel(
-      IKbNodeAttribute* kbnode_attr,
-      IKbNodeManager* kbnode_manager,
+      fto::KbNodeAttribute* kbnode_attr,
+      fto::KbNodeManager* kbnode_manager,
       ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory);
   virtual ~KbNodeAttributeModel();
 
@@ -42,8 +46,8 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
   void validateComplete(bool result);
 
-  IKbNodeAttribute* kbnode_attr_;
-  IKbNodeManager* kbnode_manager_;
+  fto::KbNodeAttribute* kbnode_attr_;
+  fto::KbNodeManager* kbnode_manager_;
   ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_;
 
   mutable std::shared_ptr<ITreeItemProvider> kbnode_provider_;

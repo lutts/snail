@@ -8,34 +8,17 @@
 #ifndef SRC_CORE_ATTRIBUTE_H_
 #define SRC_CORE_ATTRIBUTE_H_
 
+#include "include/config.h"
 #include "utils/basic_utils.h"
-#include "core/i_kbnode_attribute.h"
+#include "core/generic_attribute_supplier.h"
+
+#include FTO_HEADER(core, kbnode_attribute)
 
 namespace snailcore {
 
-class KbNodeAttribute : public IKbNodeAttribute {
- public:
-  explicit KbNodeAttribute(IKbNodeAttributeSupplier* attr_supplier);
-  virtual ~KbNodeAttribute();
+class IKbNode;
 
-  // IAttribute
-  utils::U8String displayName() const override;
-  utils::U8String valueText() const override;
-  bool isEmpty() const override;
-  void clear() override;
-  void accept(IAttributeVisitor* visitor) override;
-
-  IKbNodeAttributeSupplier* supplier() const;
-  void setKbNode(IKbNode* kbnode);
-
- private:
-  SNAIL_DISABLE_COPY(KbNodeAttribute);
-
-  IKbNodeAttributeSupplier* attr_supplier_;
-  IKbNode* kbnode_ { nullptr };
-};
-
-class KbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
+class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
  public:
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   virtual ~KbNodeAttributeSupplier();
@@ -51,7 +34,27 @@ class KbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
   IKbNode* root_kbnode_ { nullptr };
 };
 
+class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
+ public:
+  explicit KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier);
+  virtual ~KbNodeAttribute();
 
+  // IAttribute
+  utils::U8String displayName() const override;
+  utils::U8String valueText() const override;
+  bool isEmpty() const override;
+  void clear() override;
+  void accept(IAttributeVisitor* visitor) override;
+
+  fto::KbNodeAttributeSupplier* supplier() const;
+  void setKbNode(IKbNode* kbnode);
+
+ private:
+  SNAIL_DISABLE_COPY(KbNodeAttribute);
+
+  fto::KbNodeAttributeSupplier* attr_supplier_;
+  IKbNode* kbnode_ { nullptr };
+};
 
 }  // namespace snailcore
 

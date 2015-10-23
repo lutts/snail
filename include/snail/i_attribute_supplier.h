@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "utils/signal_slot.h"
+#include "utils/u8string.h"
 
 namespace snailcore {
 

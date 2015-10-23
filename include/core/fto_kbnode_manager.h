@@ -8,6 +8,8 @@
 #ifndef INCLUDE_CORE_I_KBNODE_MANAGER_H_
 #define INCLUDE_CORE_I_KBNODE_MANAGER_H_
 
+#ifndef DISABLE_TEST_CODE
+
 #include <memory>
 #include <vector>
 
@@ -19,12 +21,11 @@ namespace snailcore {
 class IKbNode;
 class ITreeItemProvider;
 
-/** A Node tree is a tree of nodes with name and short descriptions
- *
- */
-class IKbNodeManager {
+namespace fto {
+
+class KbNodeManager {
  public:
-  virtual ~IKbNodeManager() = default;
+  virtual ~KbNodeManager() = default;
 
   virtual std::shared_ptr<ITreeItemProvider>
   createTreeItemProvider(IKbNode* root_kbnode) = 0;
@@ -38,6 +39,21 @@ class IKbNodeManager {
   virtual void incRef(IKbNode* kbnode) = 0;
 };
 
+}  // namespace fto
 }  // namespace snailcore
 
+#else  // DISABLE_TEST_CODE
+
+#include "include/config.h"
+
+namespace snailcore {
+FTO_BEGIN_NAMESPACE
+
+class KbNodeManager { };
+
+FTO_END_NAMESPACE
+}  // namespace snailcore
+
+
+#endif  // DISABLE_TEST_CODE
 #endif  // INCLUDE_CORE_I_KBNODE_MANAGER_H_

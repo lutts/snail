@@ -11,7 +11,7 @@
 namespace snailcore {
 
 KbNodeLinkAttributeInlineEditorModel::KbNodeLinkAttributeInlineEditorModel(
-    IKbNodeLinkAttribute* attr,
+    fto::KbNodeLinkAttribute* attr,
     IKbNodeLinkAttributePopupEditorModelFactory* popup_editor_factory)
     : attr_(attr)
     , popup_editor_factory_(popup_editor_factory) { }

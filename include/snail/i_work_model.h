@@ -8,13 +8,16 @@
 #ifndef INCLUDE_SNAIL_I_WORK_MODEL_H_
 #define INCLUDE_SNAIL_I_WORK_MODEL_H_
 
+#include "include/config.h"
 #include "pfmvp/i_pf_model.h"
 #include "utils/signal_slot.h"
 #include "utils/u8string.h"
 
 namespace snailcore {
 
-class IWork;
+OPT_FTO_BEGIN_NAMESPACE
+class Work;
+OPT_FTO_END_NAMESPACE
 class IAttributeSetModel;
 
 class IWorkModel : public pfmvp::IPfModel {
@@ -25,7 +28,7 @@ class IWorkModel : public pfmvp::IPfModel {
 
   SNAIL_SIGSLOT(NameChanged, void(const utils::U8String& new_name));
 
-  virtual void set_work(IWork* work) = 0;
+  virtual void set_work(fto::Work* work) = 0;
 
   virtual utils::U8String name() const = 0;
   virtual bool set_name(const utils::U8String& new_name) = 0;

@@ -6,13 +6,12 @@
 // [Desc]
 #include "src/core/kbnode_link_attribute_popup_editor_model.h"
 #include "core/i_kbnode_link_attribute.h"
-#include "core/i_kbnode_link_attribute_supplier.h"
 #include "core/i_attribute_model_factory.h"
 
 namespace snailcore {
 
 KbNodeLinkAttributePopupEditorModel::KbNodeLinkAttributePopupEditorModel(
-    IKbNodeLinkAttribute* attr,
+    fto::KbNodeLinkAttribute* attr,
     IAttributeModelFactory* attr_model_factory)
     : attr_(attr)
     , attr_model_factory_(attr_model_factory) { }

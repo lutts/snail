@@ -10,9 +10,13 @@
 
 #include <memory>
 
+#include "include/config.h"
+
 namespace snailcore {
 
-class IWork;
+OPT_FTO_BEGIN_NAMESPACE
+class Work;
+OPT_FTO_END_NAMESPACE
 
 class IWorkModelFactory {
  public:

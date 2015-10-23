@@ -47,7 +47,7 @@ class KbNodeManagerTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<IKbNodeManager> kbnode_manager_;
+  std::unique_ptr<fto::KbNodeManager> kbnode_manager_;
   // endregion
 
   // region: object depends on test subject

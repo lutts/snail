@@ -8,12 +8,16 @@
 #ifndef SRC_CORE_FACTORY_ATTRIBUTE_MODEL_FACTORY_H_
 #define SRC_CORE_FACTORY_ATTRIBUTE_MODEL_FACTORY_H_
 
+#include "include/config.h"
 #include "utils/basic_utils.h"
 #include "core/i_attribute_model_factory.h"
 
 namespace snailcore {
 
-class IKbNodeManager;
+OPT_FTO_BEGIN_NAMESPACE
+class KbNodeManager;
+OPT_FTO_END_NAMESPACE
+
 class ISimpleKbNodeAdderModelFactory;
 
 class AttributeModelFactory : public IAttributeModelFactory {
@@ -21,7 +25,7 @@ class AttributeModelFactory : public IAttributeModelFactory {
   class AttributeVisitor;
 
   AttributeModelFactory(
-      IKbNodeManager* kbnode_manager,
+      fto::KbNodeManager* kbnode_manager,
       ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
       : kbnode_manager_{kbnode_manager}
       , simple_kbnode_adder_model_factory_{simple_kbnode_adder_model_factory} {}
@@ -33,7 +37,7 @@ class AttributeModelFactory : public IAttributeModelFactory {
  private:
   SNAIL_DISABLE_COPY(AttributeModelFactory);
 
-  IKbNodeManager* kbnode_manager_ { nullptr };
+  fto::KbNodeManager* kbnode_manager_ { nullptr };
   ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_ { nullptr};
 };
 

@@ -8,17 +8,20 @@
 #ifndef INCLUDE_CORE_I_WORK_FACTORY_H_
 #define INCLUDE_CORE_I_WORK_FACTORY_H_
 
+#include "include/config.h"
 #include "utils/u8string.h"
 
 namespace snailcore {
 
-class IWork;
+OPT_FTO_BEGIN_NAMESPACE
+class Work;
+OPT_FTO_END_NAMESPACE
 
 class IWorkFactory {
  public:
   virtual ~IWorkFactory() = default;
 
-  virtual IWork* createWork(const utils::U8String& work_name) = 0;
+  virtual fto::Work* createWork(const utils::U8String& work_name) = 0;
 };
 
 }  // namespace snailcore

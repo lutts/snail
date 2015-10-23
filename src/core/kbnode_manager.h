@@ -8,29 +8,40 @@
 #ifndef SRC_CORE_KBNODE_MANAGER_H_
 #define SRC_CORE_KBNODE_MANAGER_H_
 
+#include <memory>
 #include <vector>
 #include <unordered_map>
 
-#include "core/i_kbnode_manager.h"
+#include "include/config.h"
 #include "utils/basic_utils.h"
+#include "utils/u8string.h"
+#include "snail/kb_global.h"
+
+#include FTO_HEADER(core, kbnode_manager)
 
 namespace snailcore {
 
-class KbNodeManager : public IKbNodeManager {
+class IKbNode;
+class ITreeItemProvider;
+
+/** A Node tree is a tree of nodes with name and short descriptions
+ *
+ */
+class KbNodeManager : public FTO_INTERFACE(KbNodeManager) {
  public:
   KbNodeManager();
   virtual ~KbNodeManager();
 
   std::shared_ptr<ITreeItemProvider>
-  createTreeItemProvider(IKbNode* root_kbnode) override;
-  IKbNode* idToKbNode(KbNodeIdType kbnode_id) override;
+  createTreeItemProvider(IKbNode* root_kbnode);
+  IKbNode* idToKbNode(KbNodeIdType kbnode_id);
   std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
-                                   const IKbNode* parent_kbnode) override;
-  std::vector<IKbNode*> childItems(const IKbNode* parent_node) override;
+                                   const IKbNode* parent_kbnode);
+  std::vector<IKbNode*> childItems(const IKbNode* parent_node);
   IKbNode* addKbNode(const utils::U8String& name,
                      const IKbNode* parent,
-                     bool is_category) override;
-  void incRef(IKbNode* kbnode) override;
+                     bool is_category = false);
+  void incRef(IKbNode* kbnode);
 
  private:
   SNAIL_DISABLE_COPY(KbNodeManager);

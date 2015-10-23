@@ -8,24 +8,24 @@
 #ifndef INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_H_
 #define INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_H_
 
-#include "core/i_kbnode_attribute.h"
+#include "core/fto_kbnode_attribute.h"
 #include "snail/mock_attribute.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeAttribute : public IKbNodeAttribute {
+class MockKbNodeAttribute : public fto::KbNodeAttribute {
  public:
   COMMON_ATTRIBUTE_MOCKS
 
-  MOCK_CONST_METHOD0(supplier, IKbNodeAttributeSupplier*());
+  MOCK_CONST_METHOD0(supplier, fto::KbNodeAttributeSupplier*());
   MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));
 };
 
-class MockKbNodeAttributeSupplier : public IKbNodeAttributeSupplier {
+class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
  public:
   MockKbNodeAttributeSupplier()
-      : IKbNodeAttributeSupplier("", 0) { }
+      : fto::KbNodeAttributeSupplier("", 0) { }
   // IAttributeSupplier mocks
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));

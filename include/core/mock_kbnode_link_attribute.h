@@ -14,11 +14,26 @@
 namespace snailcore {
 namespace tests {
 
-class MockKbNodeLinkAttribute : public IKbNodeLinkAttribute {
+class MockKbNodeLinkAttributeSupplier : public fto::KbNodeLinkAttributeSupplier {
+ public:
+  MockKbNodeLinkAttributeSupplier()
+      : fto::KbNodeLinkAttributeSupplier("", 0) { }
+
+  // IAttributeSupplier mocks
+  MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
+
+  // GenericAttributeSupplier mocks
+  MOCK_METHOD0(createAttribute, IAttribute*());
+
+  // Self
+  MOCK_CONST_METHOD0(getLinkTypeProvider, ITreeItemProvider*());
+};
+
+class MockKbNodeLinkAttribute : public fto::KbNodeLinkAttribute {
  public:
   COMMON_ATTRIBUTE_MOCKS
 
-  MOCK_CONST_METHOD0(supplier, IKbNodeLinkAttributeSupplier*());
+  MOCK_CONST_METHOD0(supplier, fto::KbNodeLinkAttributeSupplier*());
   MOCK_METHOD0(valueAttr, IAttribute*());
 };
 

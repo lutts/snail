@@ -8,19 +8,23 @@
 #ifndef SRC_CORE_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
 #define SRC_CORE_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_MODEL_H_
 
+#include "include/config.h"
 #include "snail/i_kbnode_link_attribute_inline_editor_model.h"
 #include "utils/basic_utils.h"
 
 namespace snailcore {
 
-class IKbNodeLinkAttribute;
+OPT_FTO_BEGIN_NAMESPACE
+class KbNodeLinkAttribute;
+OPT_FTO_END_NAMESPACE
+
 class IKbNodeLinkAttributePopupEditorModelFactory;
 
 class KbNodeLinkAttributeInlineEditorModel
     : public IKbNodeLinkAttributeInlineEditorModel {
  public:
   KbNodeLinkAttributeInlineEditorModel(
-      IKbNodeLinkAttribute* attr,
+      fto::KbNodeLinkAttribute* attr,
       IKbNodeLinkAttributePopupEditorModelFactory* popup_editor_factory);
   virtual ~KbNodeLinkAttributeInlineEditorModel();
 
@@ -32,7 +36,7 @@ class KbNodeLinkAttributeInlineEditorModel
  private:
   SNAIL_DISABLE_COPY(KbNodeLinkAttributeInlineEditorModel);
 
-  IKbNodeLinkAttribute* attr_;
+  fto::KbNodeLinkAttribute* attr_;
   IKbNodeLinkAttributePopupEditorModelFactory* popup_editor_factory_;
 };
 

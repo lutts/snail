@@ -8,6 +8,8 @@
 #ifndef INCLUDE_CORE_I_WORK_H_
 #define INCLUDE_CORE_I_WORK_H_
 
+#ifndef DISABLE_TEST_CODE
+
 #include <vector>
 
 #include "utils/u8string.h"
@@ -17,9 +19,11 @@ namespace snailcore {
 
 class IAttributeSupplier;
 
-class IWork {
+namespace fto {
+
+class Work {
  public:
-  virtual ~IWork() = default;
+  virtual ~Work() = default;
 
   SNAIL_SIGSLOT(NameChanged, void(const utils::U8String& new_name));
 
@@ -29,6 +33,20 @@ class IWork {
   virtual std::vector<IAttributeSupplier*> attributeSuppliers() const = 0;
 };
 
+}  // namespace fto
 }  // namespace snailcore
 
+#else  // DISABLE_TEST_CODE
+
+#include "include/config.h"
+
+namespace snailcore {
+FTO_BEGIN_NAMESPACE
+
+class Work { };
+
+FTO_END_NAMESPACE
+}  // namespace snailcore
+
+#endif // DISABLE_TEST_CODE
 #endif  // INCLUDE_CORE_I_WORK_H_

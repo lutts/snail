@@ -19,7 +19,7 @@ class IKbNodeLinkAttributePopupEditorModelFactory {
   virtual ~IKbNodeLinkAttributePopupEditorModelFactory() = default;
 
   virtual std::shared_ptr<IKbNodeLinkAttributePopupEditorModel>
-  createPopupEditorModel(IKbNodeLinkAttribute* attr) = 0;
+  createPopupEditorModel(fto::KbNodeLinkAttribute* attr) = 0;
 };
 
 }  // namespace snailcore

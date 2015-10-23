@@ -14,7 +14,7 @@
 
 namespace snailcore {
 
-std::vector<IKbNode*> addTestKbNodes(IKbNodeManager* kbnode_manager) {
+std::vector<IKbNode*> addTestKbNodes(fto::KbNodeManager* kbnode_manager) {
   static bool added = false;
   static std::vector<IKbNode*> test_root_kbnodes;
 
@@ -69,7 +69,7 @@ createAttrSuppliers(KbNodeManager* kbnode_manager) {
 WorkFactory::WorkFactory(KbNodeManager* kbnode_manager)
     : kbnode_manager_{kbnode_manager} { }
 
-IWork* WorkFactory::createWork(const utils::U8String& work_name) {
+fto::Work* WorkFactory::createWork(const utils::U8String& work_name) {
   auto work = new Work;
   work->set_name(work_name);
 

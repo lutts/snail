@@ -8,6 +8,7 @@
 #ifndef SRC_CORE_SIMPLE_KBNODE_ADDER_MODEL_H_
 #define SRC_CORE_SIMPLE_KBNODE_ADDER_MODEL_H_
 
+#include "include/config.h"
 #include "snail/i_simple_kbnode_adder_model.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
@@ -15,12 +16,15 @@
 namespace snailcore {
 
 class ITreeItemProvider;
-class IKbNodeManager;
+
+OPT_FTO_BEGIN_NAMESPACE
+class KbNodeManager;
+OPT_FTO_END_NAMESPACE
 
 class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  public:
   explicit SimpleKbNodeAdderModel(ITreeItemProvider* kbnode_provider,
-                               IKbNodeManager* kbnode_manager);
+                               fto::KbNodeManager* kbnode_manager);
   virtual ~SimpleKbNodeAdderModel();
 
   utils::U8String name() const override;
@@ -38,7 +42,7 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
   SNAIL_SIGSLOT_IMPL(KbNodeAdded);
 
   ITreeItemProvider* kbnode_provider_ { nullptr };
-  IKbNodeManager* kbnode_manager_ { nullptr };
+  fto::KbNodeManager* kbnode_manager_ { nullptr };
   IKbNode* new_kbnode_parent_ { nullptr };
   utils::U8String new_name_ { "" };
   bool is_category_ { false };

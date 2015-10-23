@@ -15,7 +15,7 @@ namespace tests {
 
 class MockWorkFactory : public IWorkFactory {
  public:
-  MOCK_METHOD1(createWork, IWork*(const utils::U8String& work_name));
+  MOCK_METHOD1(createWork, fto::Work*(const utils::U8String& work_name));
 };
 
 }  // namespace tests

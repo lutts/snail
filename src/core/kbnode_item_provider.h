@@ -11,6 +11,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include "include/config.h"
 #include "snail/i_tree_item_provider.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
@@ -18,12 +19,15 @@
 namespace snailcore {
 
 class IKbNode;
-class IKbNodeManager;
+
+OPT_FTO_BEGIN_NAMESPACE
+class KbNodeManager;
+OPT_FTO_END_NAMESPACE
 
 class KbNodeItemProvider : public ITreeItemProvider {
  public:
   KbNodeItemProvider(IKbNode* root_kbnode,
-                 IKbNodeManager* node_manager);
+                 fto::KbNodeManager* node_manager);
   virtual ~KbNodeItemProvider();
 
   utils::U8String name() const override;
@@ -42,7 +46,7 @@ class KbNodeItemProvider : public ITreeItemProvider {
   SNAIL_SIGSLOT_IMPL(BeginFilter);
   SNAIL_SIGSLOT_IMPL(FinishFilter);
 
-  IKbNodeManager* node_manager_;
+  fto::KbNodeManager* node_manager_;
   IKbNode* root_kbnode_ { nullptr };
 
   utils::U8String filter_pattern_;

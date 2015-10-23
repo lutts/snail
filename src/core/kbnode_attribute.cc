@@ -10,7 +10,7 @@
 
 namespace snailcore {
 
-KbNodeAttribute::KbNodeAttribute(IKbNodeAttributeSupplier* attr_supplier)
+KbNodeAttribute::KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier)
     : attr_supplier_(attr_supplier) { }
 KbNodeAttribute::~KbNodeAttribute() = default;
 
@@ -40,7 +40,7 @@ void KbNodeAttribute::accept(IAttributeVisitor* visitor) {
 
 
 // IKbNodeAttribute
-IKbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
+fto::KbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
   return attr_supplier_;
 }
 
@@ -53,7 +53,7 @@ void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
 
 KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
                                                  int max_attrs)
-    : IKbNodeAttributeSupplier(root_kbnode->name(), max_attrs)
+    : FTO_INTERFACE(KbNodeAttributeSupplier)(root_kbnode->name(), max_attrs)
     , root_kbnode_(root_kbnode) { }
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;

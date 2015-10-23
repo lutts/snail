@@ -10,12 +10,12 @@
 
 #include <vector>
 
-#include "core/i_work.h"
+#include "core/fto_work.h"
 
 namespace snailcore {
 namespace tests {
 
-class MockWork : public IWork {
+class MockWork : public fto::Work {
  public:
   SNAIL_MOCK_SLOT(NameChanged);
 

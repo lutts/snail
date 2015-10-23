@@ -18,7 +18,7 @@ class MockKbNodeLinkAttributePopupEditorModelFactory
  public:
   MOCK_METHOD1(createPopupEditorModel,
                std::shared_ptr<IKbNodeLinkAttributePopupEditorModel>(
-                   IKbNodeLinkAttribute* attr));
+                   fto::KbNodeLinkAttribute* attr));
 };
 
 }  // namespace tests

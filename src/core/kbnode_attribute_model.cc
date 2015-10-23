@@ -5,8 +5,8 @@
 //
 // [Desc]
 #include "src/core/kbnode_attribute_model.h"
-#include "core/i_kbnode_attribute.h"
-#include "core/i_kbnode_manager.h"
+#include "core/fto_kbnode_attribute.h"
+#include "core/fto_kbnode_manager.h"
 #include "snail/i_tree_item_provider.h"
 #include "core/i_simple_kbnode_adder_model_factory.h"
 #include "snail/i_kbnode.h"
@@ -14,8 +14,8 @@
 namespace snailcore {
 
 KbNodeAttributeModel::KbNodeAttributeModel(
-    IKbNodeAttribute* kbnode_attr,
-    IKbNodeManager* kbnode_manager,
+    fto::KbNodeAttribute* kbnode_attr,
+    fto::KbNodeManager* kbnode_manager,
     ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
     : kbnode_attr_(kbnode_attr)
     , kbnode_manager_(kbnode_manager)

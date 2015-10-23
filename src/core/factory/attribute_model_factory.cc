@@ -18,7 +18,7 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
       : factory_(factory) { }
   virtual ~AttributeVisitor() = default;
 
-  void visit(IKbNodeAttribute* attr) override {
+  void visit(fto::KbNodeAttribute* attr) override {
     attr_model_.reset(
         new KbNodeAttributeModel(attr, factory_.kbnode_manager_,
                                  factory_.simple_kbnode_adder_model_factory_));

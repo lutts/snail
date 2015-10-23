@@ -45,12 +45,12 @@ class WorkTest : public ::testing::Test {
 };
 
 class MockListener : public GenericMockListener<MockListener,
-                                                IWork> {
+                                                fto::Work> {
  public:
   MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
 
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           IWork* work) {
+                           fto::Work* work) {
     work->whenNameChanged(
         [this](const utils::U8String& new_name) {
           NameChanged(new_name);

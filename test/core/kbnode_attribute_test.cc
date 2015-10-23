@@ -35,7 +35,7 @@ class KbNodeAttributeTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<IKbNodeAttribute> attr;
+  std::unique_ptr<fto::KbNodeAttribute> attr;
   MockKbNodeAttributeSupplier attr_supplier;
 
   MockKbNode kbnode;
@@ -168,7 +168,7 @@ class KbNodeAttributeSupplierTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<IKbNodeAttributeSupplier> attr_supplier;
+  std::unique_ptr<fto::KbNodeAttributeSupplier> attr_supplier;
   // endregion
 };
 
@@ -178,7 +178,7 @@ TEST_F(KbNodeAttributeSupplierTest,
   auto new_attr = attr_supplier->addAttribute();
 
   // Verify results
-  auto actual_attr = dynamic_cast<IKbNodeAttribute*>(new_attr);
+  auto actual_attr = dynamic_cast<fto::KbNodeAttribute*>(new_attr);
   ASSERT_NE(nullptr, actual_attr);
 
   ASSERT_EQ(attr_supplier.get(), actual_attr->supplier());

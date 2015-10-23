@@ -6,14 +6,14 @@
 // [Desc]
 #include "src/core/simple_kbnode_adder_model.h"
 #include "snail/i_tree_item_provider.h"
-#include "core/i_kbnode_manager.h"
+#include "core/fto_kbnode_manager.h"
 #include "snail/i_kbnode.h"
 
 namespace snailcore {
 
 SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(
     ITreeItemProvider* kbnode_provider,
-    IKbNodeManager* kbnode_manager)
+    fto::KbNodeManager* kbnode_manager)
     : kbnode_provider_(kbnode_provider)
     , kbnode_manager_(kbnode_manager) { }
 
