@@ -12,9 +12,9 @@
 
 namespace snailcore {
 
-OPT_FTO_BEGIN_NAMESPACE
+FTO_BEGIN_NAMESPACE
 class KbNodeAttribute;
-OPT_FTO_END_NAMESPACE
+FTO_END_NAMESPACE
 
 class IAttributeVisitor {
  public:

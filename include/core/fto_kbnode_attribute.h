@@ -44,7 +44,7 @@ class KbNodeAttribute : public IAttribute {
 #include "include/config.h"
 
 namespace snailcore {
-FTO_BEGIN_NAMESPACE
+namespace fto {
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -55,10 +55,8 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
 
 class KbNodeAttribute : public IAttribute { };
 
-FTO_END_NAMESPACE
+}  // namespace fto
 }  // namespace snailcore
 
 #endif  // DISABLE_TEST_CODE
-
-
 #endif  // INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_

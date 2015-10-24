@@ -45,7 +45,7 @@ class KbNodeLinkAttribute : public IAttribute {
 #include "include/config.h"
 
 namespace snailcore {
-FTO_BEGIN_NAMESPACE
+namespace fto {
 
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -56,7 +56,7 @@ class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
 
 class KbNodeLinkAttribute : public IAttribute { };
 
-FTO_END_NAMESPACE
+}  // namespace fto
 }  // namespace snailcore
 
 #endif  // DISABLE_TEST_CODE

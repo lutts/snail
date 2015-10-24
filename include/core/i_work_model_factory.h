@@ -14,9 +14,9 @@
 
 namespace snailcore {
 
-OPT_FTO_BEGIN_NAMESPACE
+FTO_BEGIN_NAMESPACE
 class Work;
-OPT_FTO_END_NAMESPACE
+FTO_END_NAMESPACE
 
 class IWorkModelFactory {
  public:

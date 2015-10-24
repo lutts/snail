@@ -47,11 +47,11 @@ class KbNodeManager {
 #include "include/config.h"
 
 namespace snailcore {
-FTO_BEGIN_NAMESPACE
+namespace fto {
 
 class KbNodeManager { };
 
-FTO_END_NAMESPACE
+}  // namespace fto
 }  // namespace snailcore
 
 

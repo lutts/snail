@@ -20,9 +20,9 @@ namespace snailcore {
 
 class IKbNode;
 
-OPT_FTO_BEGIN_NAMESPACE
+FTO_BEGIN_NAMESPACE
 class KbNodeManager;
-OPT_FTO_END_NAMESPACE
+FTO_END_NAMESPACE
 
 class KbNodeItemProvider : public ITreeItemProvider {
  public:
