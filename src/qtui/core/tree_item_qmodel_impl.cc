@@ -198,7 +198,7 @@ TreeItemQModelImpl::TreeItemQModelImpl() { }
 
 TreeItemQModelImpl::~TreeItemQModelImpl() = default;
 
-//////////////// ITreeItemQModelImpl ////////////////
+//////////////// fto::TreeItemQModelImpl ////////////////
 
 QtTreeItem* TreeItemQModelImpl::indexToQtItem(const QModelIndex& index) const {
   if (!index.isValid())

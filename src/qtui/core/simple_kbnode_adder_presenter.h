@@ -13,7 +13,7 @@
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_simple_kbnode_adder_model.h"
 #include "qtui/ui/i_simple_kbnode_adder_view.h"
-#include "qtui/core/i_tree_item_qmodel.h"
+#include "qtui/core/fto_tree_item_qmodel.h"
 
 namespace snailcore {
 class IKbNode;
@@ -28,7 +28,7 @@ class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
   SimpleKbNodeAdderPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
-      std::shared_ptr<ITreeItemQModel<snailcore::IKbNode>> kbnode_qmodel);
+      std::shared_ptr<fto::TreeItemQModel<snailcore::IKbNode>> kbnode_qmodel);
   ~SimpleKbNodeAdderPresenter();
 
   void initialize() override;
@@ -36,7 +36,7 @@ class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
  private:
   SNAIL_DISABLE_COPY(SimpleKbNodeAdderPresenter);
 
-  std::shared_ptr<ITreeItemQModel<snailcore::IKbNode>> kbnode_qmodel_;
+  std::shared_ptr<fto::TreeItemQModel<snailcore::IKbNode>> kbnode_qmodel_;
 };
 
 #endif  // SRC_QTUI_CORE_SIMPLE_KBNODE_ADDER_PRESENTER_H_

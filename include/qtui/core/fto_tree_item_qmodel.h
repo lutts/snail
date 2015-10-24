@@ -19,10 +19,14 @@ using snailcore::ITreeItemProvider;
 class QModelIndex;
 class QAbstractItemModel;
 
+namespace fto {
+
+#ifndef DISABLE_TEST_CODE
+
 template <typename RealItemType>
-class ITreeItemQModel {
+class TreeItemQModel {
  public:
-  virtual ~ITreeItemQModel() = default;
+  virtual ~TreeItemQModel() = default;
 
 #if 0
   static_assert(std::is_base_of<ITreeItem, RealItemType>::value,
@@ -37,5 +41,14 @@ class ITreeItemQModel {
   virtual bool isAddMore(const QModelIndex& index) const = 0;
   virtual void itemAdded(ITreeItem* new_item, ITreeItem* parent_item) = 0;
 };
+
+#else  // DISABLE_TEST_CODE
+
+template <typename RealItemType>
+class TreeItemQModel { };
+
+#endif  // DISABLE_TEST_CODE
+
+}  // namespace fto
 
 #endif  // INCLUDE_QTUI_I_TREE_ITEM_QMODEL_H_

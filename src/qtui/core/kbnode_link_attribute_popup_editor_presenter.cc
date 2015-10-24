@@ -18,7 +18,7 @@ KbNodeLinkAttributePopupEditorPresenter::
 KbNodeLinkAttributePopupEditorPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<ITreeItemQModel<IKbNode>> link_type_qmodel)
+    std::unique_ptr<fto::TreeItemQModel<IKbNode>> link_type_qmodel)
     : KbNodeLinkAttributePopupEditorPresenterBase(model, view)
     , link_type_qmodel_(std::move(link_type_qmodel)) { }
 

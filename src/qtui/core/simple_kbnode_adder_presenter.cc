@@ -9,7 +9,7 @@
 #include <QString>
 #include <QModelIndex>
 
-#include "qtui/core/i_tree_item_qmodel.h"
+#include "qtui/core/fto_tree_item_qmodel.h"
 #include "snail/i_kbnode.h"
 
 using snailcore::IKbNode;
@@ -17,7 +17,7 @@ using snailcore::IKbNode;
 SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::shared_ptr<ITreeItemQModel<IKbNode>> kbnode_qmodel)
+    std::shared_ptr<fto::TreeItemQModel<IKbNode>> kbnode_qmodel)
     : SimpleKbNodeAdderPresenterBase(model, view)
     , kbnode_qmodel_(std::move(kbnode_qmodel)) {
 }

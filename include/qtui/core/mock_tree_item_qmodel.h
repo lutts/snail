@@ -8,10 +8,10 @@
 #ifndef INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
 #define INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
 
-#include "qtui/core/i_tree_item_qmodel.h"
+#include "qtui/core/fto_tree_item_qmodel.h"
 
 template <typename RealItemType>
-class MockTreeItemQModel : public ITreeItemQModel<RealItemType> {
+class MockTreeItemQModel : public fto::TreeItemQModel<RealItemType> {
  public:
   MOCK_CONST_METHOD0(qmodel, QAbstractItemModel*());
 
