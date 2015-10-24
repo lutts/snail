@@ -10,9 +10,9 @@
 
 #include <vector>
 
-#include "qtui/i_attribute_set_layout.h"
+#include "qtui/fto_attribute_set_layout.h"
 
-class MockAttributeSetLayout : public IAttributeSetLayout {
+class MockAttributeSetLayout : public fto::AttributeSetLayout {
  public:
   SNAIL_MOCK_SLOT(CreateAttrEditor);
   SNAIL_MOCK_SLOT(CloseAttributeEditors);

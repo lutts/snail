@@ -489,13 +489,13 @@ void AttributeSetLayoutTest::switchToDisplayMode() {
   CUSTOM_ASSERT(checkLayoutData(expect_on_display_mode, false));
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IAttributeSetLayout)
+BEGIN_MOCK_LISTENER_DEF(MockListener, fto::AttributeSetLayout)
 
 MOCK_METHOD1(CreateAttrEditor,
              IAttributeEditorView*(snailcore::IAttribute* attr));
 MOCK_METHOD0(CloseAttributeEditors, void());
 
-BEGIN_BIND_SIGNAL(IAttributeSetLayout)
+BEGIN_BIND_SIGNAL(fto::AttributeSetLayout)
 
 BIND_SIGNAL1(CreateAttrEditor,
              IAttributeEditorView*, snailcore::IAttribute*, attr);

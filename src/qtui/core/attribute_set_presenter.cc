@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/qtui/core/attribute_set_presenter.h"
-#include "qtui/i_attribute_set_layout.h"
+#include "qtui/fto_attribute_set_layout.h"
 #include "snail/i_attribute_model.h"
 #include "qtui/i_attribute_editor_view.h"
 
@@ -15,7 +15,7 @@ using snailcore::IAttributeSupplier;
 AttributeSetPresenter::AttributeSetPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::shared_ptr<IAttributeSetLayout> attr_set_layout)
+    std::shared_ptr<fto::AttributeSetLayout> attr_set_layout)
     : AttributeSetPresenterBase(model, view)
     , attr_set_layout_(std::move(attr_set_layout)) {
 }

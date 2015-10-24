@@ -5,11 +5,12 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_I_ATTRIBUTE_SET_LAYOUT_H_
-#define INCLUDE_QTUI_I_ATTRIBUTE_SET_LAYOUT_H_
+#ifndef INCLUDE_QTUI_FTO_ATTRIBUTE_SET_LAYOUT_H_
+#define INCLUDE_QTUI_FTO_ATTRIBUTE_SET_LAYOUT_H_
 
 #include <vector>
 
+#include "include/config.h"
 #include "utils/signal_slot.h"
 
 namespace snailcore {
@@ -19,9 +20,13 @@ class IAttributeSupplier;
 
 class IAttributeEditorView;
 
-class IAttributeSetLayout {
+namespace fto {
+
+#ifndef DISABLE_TEST_CODE
+
+class AttributeSetLayout {
  public:
-  virtual ~IAttributeSetLayout() = default;
+  virtual ~AttributeSetLayout() = default;
 
   SNAIL_SIGSLOT(CreateAttrEditor,
                  IAttributeEditorView*(snailcore::IAttribute* attr));
@@ -32,4 +37,13 @@ class IAttributeSetLayout {
       bool edit_mode) = 0;
 };
 
-#endif  // INCLUDE_QTUI_I_ATTRIBUTE_SET_LAYOUT_H_
+#else  // DISABLE_TEST_CODE
+
+class AttributeSetLayout { };
+
+#endif  // DISABLE_TEST_CODE
+
+}  // namespace fto
+
+
+#endif  // INCLUDE_QTUI_FTO_ATTRIBUTE_SET_LAYOUT_H_

@@ -106,11 +106,11 @@ class AttributeSetPresenterTest : public ::testing::Test {
   SlotCatcher<UserSwitchModeSlotType> userSwitchMode;
 
   using CreateAttrEditorSlotType =
-      IAttributeSetLayout::CreateAttrEditorSlotType;
+      fto::AttributeSetLayout::CreateAttrEditorSlotType;
   SlotCatcher<CreateAttrEditorSlotType> createAttrEditor;
 
   using CloseAttributeEditorsSlotType =
-      IAttributeSetLayout::CloseAttributeEditorsSlotType;
+      fto::AttributeSetLayout::CloseAttributeEditorsSlotType;
   SlotCatcher<CloseAttributeEditorsSlotType> closeAttributeEditors;
 
   using SwitchToEditModeSlotType =
