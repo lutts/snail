@@ -20,7 +20,7 @@
 #include "qsint/include/QSint"
 #include "snail/i_attribute_supplier.h"
 #include "snail/i_attribute.h"
-#include "qtui/i_attribute_editor_view.h"
+#include "qtui/ui/i_attribute_editor_view.h"
 
 using snailcore::IAttribute;
 using snailcore::IAttributeSupplier;

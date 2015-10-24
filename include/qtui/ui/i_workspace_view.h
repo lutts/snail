@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_I_WORKSPACE_VIEW_H_
 #define INCLUDE_QTUI_I_WORKSPACE_VIEW_H_
 
-#include "qtui/generic_view_base.h"
+#include "qtui/ui/generic_view_base.h"
 #include "utils/signal_slot.h"
 #include "utils/u8string.h"
 

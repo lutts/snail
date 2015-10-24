@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_MOCK_WORK_VIEW_H_
 #define INCLUDE_QTUI_MOCK_WORK_VIEW_H_
 
-#include "qtui/i_work_view.h"
+#include "qtui/ui/i_work_view.h"
 
 class MockWorkView : public IWorkView {
  public:

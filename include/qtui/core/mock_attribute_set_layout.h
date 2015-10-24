@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "qtui/fto_attribute_set_layout.h"
+#include "qtui/core/fto_attribute_set_layout.h"
 
 class MockAttributeSetLayout : public fto::AttributeSetLayout {
  public:

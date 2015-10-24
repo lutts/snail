@@ -10,7 +10,7 @@
 
 #include <QWidget>
 
-#include "qtui/i_kbnode_attribute_edit_view.h"
+#include "qtui/ui/i_kbnode_attribute_edit_view.h"
 
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"

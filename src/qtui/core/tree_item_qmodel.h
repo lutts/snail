@@ -14,7 +14,7 @@
 #include "utils/basic_utils.h"
 #include "utils/i_trackable.h"
 #include "snail/i_tree_item_provider.h"
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/core/i_tree_item_qmodel.h"
 
 template <typename RealItemType>
 class TreeItemQModel

@@ -16,7 +16,7 @@
 #include <QPushButton>
 
 #include "utils/basic_utils.h"
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/core/i_tree_item_qmodel.h"
 
 class SimpleKbNodeAdderViewImpl : public QDialog {
   Q_OBJECT

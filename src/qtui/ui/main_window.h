@@ -12,8 +12,7 @@
 
 #include <memory>  // shared_ptr
 
-#include "qtui/i_main_window_view.h"
-// #include "qtui/i_undo_redo_view.h"
+#include "qtui/ui/i_main_window_view.h"
 #include "utils/signal_slot_impl.h"
 #include "utils/and_slot_bool_result_combiner.h"
 

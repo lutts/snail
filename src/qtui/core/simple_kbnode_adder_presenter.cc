@@ -9,7 +9,7 @@
 #include <QString>
 #include <QModelIndex>
 
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/core/i_tree_item_qmodel.h"
 #include "snail/i_kbnode.h"
 
 using snailcore::IKbNode;

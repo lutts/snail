@@ -15,7 +15,7 @@
 
 #include "src/qtui/core/attribute_set_layout.h"
 #include "test/core/attribute_test_stub.h"
-#include "qtui/mock_attribute_editor_view.h"
+#include "qtui/ui/mock_attribute_editor_view.h"
 
 #include "qsint/include/QSint"
 

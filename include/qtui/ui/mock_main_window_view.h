@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_MOCK_MAIN_WINDOW_VIEW_H_
 #define INCLUDE_QTUI_MOCK_MAIN_WINDOW_VIEW_H_
 
-#include "qtui/i_main_window_view.h"
+#include "qtui/ui/i_main_window_view.h"
 
 class MockMainWindowView : public IMainWindowView {
  public:

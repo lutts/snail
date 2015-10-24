@@ -14,11 +14,11 @@
 #include "pfmvp/mock_pf_triad_manager.h"
 
 #include "snail/mock_main_window_model.h"
-#include "qtui/mock_main_window_view.h"
+#include "qtui/ui/mock_main_window_view.h"
 #include "src/qtui/core/main_window_presenter.h"
 
 #include "snail/mock_workspace_model.h"
-#include "qtui/mock_workspace_view.h"
+#include "qtui/ui/mock_workspace_view.h"
 
 using utils::U8String;
 using namespace snailcore;  // NOLINT

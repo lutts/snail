@@ -12,8 +12,8 @@
 
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_kbnode_attribute_model.h"
-#include "qtui/i_kbnode_attribute_edit_view.h"
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/ui/i_kbnode_attribute_edit_view.h"
+#include "qtui/core/i_tree_item_qmodel.h"
 
 namespace snailcore {
 class IKbNode;

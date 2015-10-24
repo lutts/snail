@@ -13,7 +13,7 @@
 #include "include/config.h"
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_attribute_set_model.h"
-#include "qtui/i_attribute_set_view.h"
+#include "qtui/ui/i_attribute_set_view.h"
 
 using AttributeSetPresenterBase =
     pfmvp::PfPresenterT<snailcore::IAttributeSetModel,

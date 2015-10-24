@@ -10,7 +10,7 @@
 
 #include <QWidget>
 
-#include "qtui/i_work_view.h"
+#include "qtui/ui/i_work_view.h"
 #include "utils/signal_slot_impl.h"
 
 namespace QSint {

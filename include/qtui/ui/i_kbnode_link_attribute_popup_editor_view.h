@@ -10,7 +10,7 @@
 
 #include <QModelIndex>
 
-#include "qtui/generic_view_base.h"
+#include "qtui/ui/generic_view_base.h"
 #include "utils/signal_slot.h"
 
 class IAttributeEditorView;

@@ -12,10 +12,10 @@
 
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_main_window_model.h"
-#include "qtui/i_main_window_view.h"
+#include "qtui/ui/i_main_window_view.h"
 
 #include "snail/i_workspace_model.h"
-#include "qtui/i_workspace_view.h"
+#include "qtui/ui/i_workspace_view.h"
 
 using MainWindowPresenterBase =
     pfmvp::PfPresenterT<snailcore::IMainWindowModel,

@@ -5,9 +5,9 @@
 //
 // [Desc]
 #include "src/qtui/core/attribute_set_presenter.h"
-#include "qtui/fto_attribute_set_layout.h"
+#include "qtui/core/fto_attribute_set_layout.h"
 #include "snail/i_attribute_model.h"
-#include "qtui/i_attribute_editor_view.h"
+#include "qtui/ui/i_attribute_editor_view.h"
 
 using snailcore::IAttribute;
 using snailcore::IAttributeSupplier;

@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "include/config.h"
-#include FTO_HEADER(qtui, attribute_set_layout)
+#include FTO_HEADER(qtui/core, attribute_set_layout)
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
 #include "utils/signal_slot_impl.h"

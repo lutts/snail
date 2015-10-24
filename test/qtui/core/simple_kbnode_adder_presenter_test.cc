@@ -12,11 +12,11 @@
 
 // triad headers
 #include "snail/mock_simple_kbnode_adder_model.h"
-#include "qtui/mock_simple_kbnode_adder_view.h"
+#include "qtui/ui/mock_simple_kbnode_adder_view.h"
 #include "src/qtui/core/simple_kbnode_adder_presenter.h"
 
 #include "snail/mock_tree_item_provider.h"
-#include "qtui/mock_tree_item_qmodel.h"
+#include "qtui/core/mock_tree_item_qmodel.h"
 #include "snail/mock_kbnode.h"
 
 using namespace snailcore;  // NOLINT

@@ -8,7 +8,7 @@
 #ifndef SRC_QTUI_UI_SIMPLE_KBNODE_ADDER_VIEW_H_
 #define SRC_QTUI_UI_SIMPLE_KBNODE_ADDER_VIEW_H_
 
-#include "qtui/i_simple_kbnode_adder_view.h"
+#include "qtui/ui/i_simple_kbnode_adder_view.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 

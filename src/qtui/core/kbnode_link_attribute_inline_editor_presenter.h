@@ -12,7 +12,7 @@
 
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_kbnode_link_attribute_inline_editor_model.h"
-#include "qtui/i_kbnode_link_attribute_inline_editor_view.h"
+#include "qtui/ui/i_kbnode_link_attribute_inline_editor_view.h"
 
 using KbNodeLinkAttributeInlineEditorPresenterBase =
     pfmvp::PfPresenterT<snailcore::IKbNodeLinkAttributeInlineEditorModel,

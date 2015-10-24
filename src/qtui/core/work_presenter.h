@@ -12,7 +12,7 @@
 
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_work_model.h"
-#include "qtui/i_work_view.h"
+#include "qtui/ui/i_work_view.h"
 
 using WorkPresenterBase =
     pfmvp::PfPresenterT<snailcore::IWorkModel,

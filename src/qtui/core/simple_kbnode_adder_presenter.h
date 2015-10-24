@@ -12,8 +12,8 @@
 
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_simple_kbnode_adder_model.h"
-#include "qtui/i_simple_kbnode_adder_view.h"
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/ui/i_simple_kbnode_adder_view.h"
+#include "qtui/core/i_tree_item_qmodel.h"
 
 namespace snailcore {
 class IKbNode;

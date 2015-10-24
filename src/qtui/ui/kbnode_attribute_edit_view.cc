@@ -13,7 +13,7 @@
 
 #include "src/qtui/ui/widgets/filterwidget.h"
 #include "src/qtui/ui/widgets/qtcompleter.h"
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/core/i_tree_item_qmodel.h"
 
 KbNodeAttributeEditView::KbNodeAttributeEditView() {
   QVBoxLayout* vbox_layout = new QVBoxLayout();

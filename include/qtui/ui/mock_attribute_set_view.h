@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_VIEW_H_
 #define INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_VIEW_H_
 
-#include "qtui/i_attribute_set_view.h"
+#include "qtui/ui/i_attribute_set_view.h"
 
 class MockAttributeSetView : public IAttributeSetView {
  public:

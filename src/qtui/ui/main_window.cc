@@ -12,7 +12,7 @@
 #include <QPushButton>
 #include <QDebug>
 
-#include "qtui/i_workspace_view.h"
+#include "qtui/ui/i_workspace_view.h"
 #include "src/qtui/ui/work_name_input_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent)

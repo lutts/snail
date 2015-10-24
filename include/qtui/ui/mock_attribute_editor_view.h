@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_EDITOR_VIEW_H_
 #define INCLUDE_QTUI_MOCK_ATTRIBUTE_EDITOR_VIEW_H_
 
-#include "qtui/i_attribute_editor_view.h"
+#include "qtui/ui/i_attribute_editor_view.h"
 
 class MockAttributeEditorView : public IAttributeEditorView {
  public:

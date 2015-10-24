@@ -9,7 +9,7 @@
 #include "src/qtui/core/work_presenter.h"
 #include "pfmvp/i_pf_create_view_args.h"
 #include "snail/i_attribute_set_model.h"
-#include "qtui/i_attribute_set_view.h"
+#include "qtui/ui/i_attribute_set_view.h"
 
 void WorkPresenter::initialize() {
   auto work_name = U8StringToQString(model()->name());

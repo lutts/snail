@@ -10,8 +10,8 @@
 
 #include <QTabWidget>
 
-#include "qtui/i_workspace_view.h"
-#include "qtui/i_work_view.h"
+#include "qtui/ui/i_workspace_view.h"
+#include "qtui/ui/i_work_view.h"
 #include "utils/signal_slot_impl.h"
 
 class WorkSpaceView : public QTabWidget, public IWorkSpaceView {

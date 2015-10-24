@@ -15,13 +15,13 @@
 // triad headers
 #include "snail/mock_kbnode_attribute_model.h"
 #include "snail/mock_tree_item_provider.h"
-#include "qtui/mock_kbnode_attribute_edit_view.h"
-#include "qtui/mock_tree_item_qmodel.h"
+#include "qtui/ui/mock_kbnode_attribute_edit_view.h"
+#include "qtui/core/mock_tree_item_qmodel.h"
 #include "src/qtui/core/kbnode_attribute_edit_presenter.h"
 #include "snail/mock_kbnode.h"
 
 #include "snail/mock_simple_kbnode_adder_model.h"
-#include "qtui/mock_simple_kbnode_adder_view.h"
+#include "qtui/ui/mock_simple_kbnode_adder_view.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT

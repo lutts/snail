@@ -8,7 +8,7 @@
 #ifndef INCLUDE_QTUI_MOCK_SIMPLE_KBNODE_ADDER_VIEW_H_
 #define INCLUDE_QTUI_MOCK_SIMPLE_KBNODE_ADDER_VIEW_H_
 
-#include "qtui/i_simple_kbnode_adder_view.h"
+#include "qtui/ui/i_simple_kbnode_adder_view.h"
 
 class MockSimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
  public:

@@ -14,7 +14,7 @@
 #include "src/pfmvp/pf_triad_manager.h"
 #include "pfmvp/pf_view_factory_manager.h"
 #include "src/core/main_window_model.h"
-#include "qtui/i_main_window_view.h"
+#include "qtui/ui/i_main_window_view.h"
 #include "utils/i_trackable.h"
 
 #if 0

@@ -10,7 +10,7 @@
 
 #include <QObject>
 
-#include "qtui/i_attribute_set_view.h"
+#include "qtui/ui/i_attribute_set_view.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 

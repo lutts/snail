@@ -11,12 +11,12 @@
 
 // triad headers
 #include "snail/mock_kbnode_link_attribute_inline_editor_model.h"
-#include "qtui/mock_kbnode_link_attribute_inline_editor_view.h"
+#include "qtui/ui/mock_kbnode_link_attribute_inline_editor_view.h"
 #include "src/qtui/core/kbnode_link_attribute_inline_editor_presenter.h"
 
 // triad headers
 #include "snail/mock_kbnode_link_attribute_popup_editor_model.h"
-#include "qtui/mock_kbnode_link_attribute_popup_editor_view.h"
+#include "qtui/ui/mock_kbnode_link_attribute_popup_editor_view.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
