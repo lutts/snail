@@ -19,6 +19,7 @@ include(CommonUtils)
 
 # activate C++ 11
 add_definitions(-std=c++11 -g)
+# add_definitions(-DDISABLE_TEST_CODE)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
