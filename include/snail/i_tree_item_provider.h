@@ -30,8 +30,8 @@ class ITreeItemProvider {
 
   virtual ~ITreeItemProvider() = default;
 
-  SNAIL_SIGSLOT(BeginFilter, void());
-  SNAIL_SIGSLOT(FinishFilter, void());
+  SNAIL_SIGSLOT_PURE_VIRTUAL(BeginFilter, void());
+  SNAIL_SIGSLOT_PURE_VIRTUAL(FinishFilter, void());
 
   // external
   virtual utils::U8String name() const = 0;

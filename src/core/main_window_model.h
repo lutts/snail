@@ -40,8 +40,8 @@ class MainWindowModel : public IMainWindowModel {
   std::shared_ptr<IWorkSpaceModel> workspace_model_;
 
  private:
-  SNAIL_SIGSLOT_IMPL(WindowTitleChanged)
-  SNAIL_SIGSLOT_COMBINER_IMPL(RequestClose, and_slot_bool_result_combiner)
+  SNAIL_SIGSLOT_OVERRIDE(WindowTitleChanged)
+  SNAIL_SIGSLOT_COMBINER_OVERRIDE(RequestClose, and_slot_bool_result_combiner)
 };
 
 }  // namespace snailcore

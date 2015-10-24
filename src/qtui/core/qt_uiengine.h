@@ -36,7 +36,7 @@ class QtUiEngine : public QObject, public snailcore::IUiEngine {
   std::unique_ptr<QApplication> qtApplication;
 
  private:
-  SNAIL_SIGSLOT_IMPL(AboutToQuit)
+  SNAIL_SIGSLOT_OVERRIDE(AboutToQuit)
 };
 
 #endif  // SRC_QTUI_CORE_QT_UIENGINE_H_

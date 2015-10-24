@@ -15,7 +15,7 @@ class IAttributeSetView : public GenericViewBase {
  public:
   virtual ~IAttributeSetView() = default;
 
-  SNAIL_SIGSLOT(UserSwitchMode, void());
+  SNAIL_SIGSLOT_PURE_VIRTUAL(UserSwitchMode, void());
 
   virtual void setSwitchModelButtonEnabled(bool enabled) = 0;
   virtual void switchToEditMode() = 0;

@@ -39,7 +39,8 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
 
  private:
   SNAIL_DISABLE_COPY(SimpleKbNodeAdderModel);
-  SNAIL_SIGSLOT_IMPL(KbNodeAdded);
+
+  SNAIL_SIGSLOT_OVERRIDE(KbNodeAdded);
 
   ITreeItemProvider* kbnode_provider_ { nullptr };
   fto::KbNodeManager* kbnode_manager_ { nullptr };

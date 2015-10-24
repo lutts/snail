@@ -55,7 +55,7 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
   bool last_validate_result_ { true };
 
  private:
-  SNAIL_SIGSLOT_IMPL(ValidateComplete);
+  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 };
 
 

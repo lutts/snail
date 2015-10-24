@@ -38,8 +38,8 @@ class WorkSpaceView : public QTabWidget, public IWorkSpaceView {
   IWorkView* widgetToWorkView(QWidget* widget) const;
 
  private:
-  SNAIL_SIGSLOT_IMPL(UserClickAddWork)
-  SNAIL_SIGSLOT_IMPL(UserCloseWork)
+  SNAIL_SIGSLOT_OVERRIDE(UserClickAddWork)
+  SNAIL_SIGSLOT_OVERRIDE(UserCloseWork)
 };
 
 #endif  // SRC_QTUI_UI_WORKSPACE_VIEW_H_

@@ -40,8 +40,8 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   void createToolbars();
 
  private:
-  SNAIL_SIGSLOT_IMPL(UserClickAddWork)
-  SNAIL_SIGSLOT_COMBINER_IMPL(RequestClose, and_slot_bool_result_combiner)
+  SNAIL_SIGSLOT_OVERRIDE(UserClickAddWork)
+  SNAIL_SIGSLOT_COMBINER_OVERRIDE(RequestClose, and_slot_bool_result_combiner)
 };
 
 #endif  // SRC_QTUI_UI_MAIN_WINDOW_H_

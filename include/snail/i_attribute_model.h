@@ -19,7 +19,7 @@ class IAttributeModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(AttributeModel);
 
-  SNAIL_SIGSLOT(ValidateComplete, void());
+  SNAIL_SIGSLOT_PURE_VIRTUAL(ValidateComplete, void());
 
   virtual bool isValid() const = 0;
 };

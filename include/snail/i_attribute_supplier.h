@@ -21,7 +21,7 @@ class IAttributeSupplier {
  public:
   virtual ~IAttributeSupplier() = default;
 
-  SNAIL_SIGSLOT(AttributeChanged, void(IAttribute* attr));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(AttributeChanged, void(IAttribute* attr));
 
   virtual utils::U8String name() const = 0;
   virtual int attr_count() const = 0;

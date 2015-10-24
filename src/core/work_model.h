@@ -42,7 +42,7 @@ class WorkModel : public IWorkModel
   IAttributeSetModelFactory* attr_set_model_factory_;
 
  private:
-  SNAIL_SIGSLOT_IMPL(NameChanged);
+  SNAIL_SIGSLOT_OVERRIDE(NameChanged);
 };
 
 }  // namespace snailcore

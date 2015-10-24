@@ -17,7 +17,7 @@
 // NOTE: should ignore trackObject param only when you can ensure the subscriber
 // has a longer lifetime than the subject.
 
-#define SNAIL_SIGSLOT(sigName, ...)                                    \
+#define SNAIL_SIGSLOT_PURE_VIRTUAL(sigName, ...)                        \
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   virtual void when##sigName(                                           \
@@ -25,18 +25,18 @@
       std::shared_ptr<utils::ITrackable> trackObject = nullptr) = 0;    \
   virtual void cleanup##sigName##Slots() = 0;
 
+#define SNAIL_MOCK_SLOT(sigName)                                        \
+  MOCK_METHOD2(when##sigName,                                           \
+               void(sigName##SlotType, std::shared_ptr<utils::ITrackable>)); \
+  MOCK_METHOD0(cleanup##sigName##Slots, void());
+
 #define SNAIL_SIGSLOT_NONVIRTUAL(sigName, ...)                          \
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   void when##sigName(                                                   \
       sigName##SlotType handler,                                        \
       std::shared_ptr<utils::ITrackable> trackObject = nullptr);        \
-  void cleanup##sigName##Slots();                                       \
-
-#define SNAIL_MOCK_SLOT(sigName)                                        \
-  MOCK_METHOD2(when##sigName,                                           \
-               void(sigName##SlotType, std::shared_ptr<utils::ITrackable>)); \
-  MOCK_METHOD0(cleanup##sigName##Slots, void());
+  void cleanup##sigName##Slots();
 
 #define SNAIL_OVERRIDE_SLOT(sigName)                                  \
   void when##sigName(                                                 \

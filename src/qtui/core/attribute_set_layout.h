@@ -21,28 +21,6 @@ class QTimer;
 
 class AttributeSetLayoutImpl;
 
-#define SNAIL_SIGSLOT2_IMPL_(sigName)                                   \
-  sigName##SignalType sigName;                                          \
-                                                                        \
-  void when##sigName(                                                   \
-      sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) {                 \
-    sigName##SignalType::slot_type subscriber(handler);                 \
-        if (trackObject)                                                \
-          sigName.connect(subscriber.track_foreign(trackObject));       \
-        else                                                            \
-          sigName.connect(subscriber);                                  \
-  }                                                                     \
-  void cleanup##sigName##Slots() {                                      \
-    sigName.num_slots();                                                \
-  }
-
-#define SNAIL_SIGSLOT2_IMPL(sigName, ...)                               \
-  using sigName##Signature = __VA_ARGS__;                               \
-  using sigName##SlotType = std::function<sigName##Signature>;          \
-  using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \
-  SNAIL_SIGSLOT2_IMPL_(sigName)                                          \
-
 class AttributeSetLayout
     : public FTO_INTERFACE(AttributeSetLayout)
     , public utils::ITrackable
@@ -63,9 +41,9 @@ class AttributeSetLayout
   QGridLayout* layout() const;
 
  public:
-  SNAIL_SIGSLOT2_IMPL(CreateAttrEditor,
+  SNAIL_SIGSLOT_IMPL(CreateAttrEditor,
                       IAttributeEditorView*(snailcore::IAttribute* attr));
-  SNAIL_SIGSLOT2_IMPL(CloseAttributeEditors, void());
+  SNAIL_SIGSLOT_IMPL(CloseAttributeEditors, void());
 
  private:
   SNAIL_DISABLE_COPY(AttributeSetLayout);

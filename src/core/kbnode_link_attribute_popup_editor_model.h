@@ -40,8 +40,8 @@ class KbNodeLinkAttributePopupEditorModel
  private:
   SNAIL_DISABLE_COPY(KbNodeLinkAttributePopupEditorModel);
 
-  SNAIL_SIGSLOT_IMPL(LinkTypeChanged);
-  SNAIL_SIGSLOT_IMPL(ValidateComplete);
+  SNAIL_SIGSLOT_OVERRIDE(LinkTypeChanged);
+  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 
   fto::KbNodeLinkAttribute* attr_;
   IAttribute* value_attr_copy_;

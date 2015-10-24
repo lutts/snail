@@ -36,9 +36,9 @@ class AttributeSetModel : public IAttributeSetModel {
  private:
   SNAIL_DISABLE_COPY(AttributeSetModel);
 
-  SNAIL_SIGSLOT_IMPL(SwitchToEditMode);
-  SNAIL_SIGSLOT_IMPL(SwitchToDisplayMode);
-  SNAIL_SIGSLOT_IMPL(ValidateComplete);
+  SNAIL_SIGSLOT_OVERRIDE(SwitchToEditMode);
+  SNAIL_SIGSLOT_OVERRIDE(SwitchToDisplayMode);
+  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 
   void switchToEditMode();
   void switchToDisplayMode();

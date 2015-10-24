@@ -124,7 +124,7 @@ class AttrSupplierTestStub : public IAttributeSupplier {
   virtual ComplexReturnValue attributeRemoved(IAttribute* attr) = 0;
 
  private:
-  SNAIL_SIGSLOT_IMPL(AttributeChanged);
+  SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
 
  private:
   SNAIL_DISABLE_COPY(AttrSupplierTestStub);

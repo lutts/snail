@@ -15,12 +15,12 @@ namespace snailcore {
 
 class WorkSignalProxy {
  public:
-  SNAIL_SIGSLOT_PROXY(NameChanged, Work);
+  SNAIL_SIGSLOT_PIMPL(Work, NameChanged);
 
   friend class Work;
 };
 
-SNAIL_SIGSLOT_DELEGATE(NameChanged, Work);
+SNAIL_SIGSLOT_DELEGATE(Work, NameChanged, signal_proxy_);
 
 Work::Work()
     : signal_proxy_(utils::make_unique<WorkSignalProxy>()) { }

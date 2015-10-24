@@ -43,8 +43,8 @@ class KbNodeItemProvider : public ITreeItemProvider {
  private:
   SNAIL_DISABLE_COPY(KbNodeItemProvider);
 
-  SNAIL_SIGSLOT_IMPL(BeginFilter);
-  SNAIL_SIGSLOT_IMPL(FinishFilter);
+  SNAIL_SIGSLOT_OVERRIDE(BeginFilter);
+  SNAIL_SIGSLOT_OVERRIDE(FinishFilter);
 
   fto::KbNodeManager* node_manager_;
   IKbNode* root_kbnode_ { nullptr };

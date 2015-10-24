@@ -35,10 +35,10 @@ class KbNodeAttributeEditView : public IKbNodeAttributeEditView
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeEditView);
 
-  SNAIL_SIGSLOT_IMPL(UserClickedIndex);
-  SNAIL_SIGSLOT_IMPL(FilterPatternChanged);
-  SNAIL_SIGSLOT_IMPL(EditingFinished);
-  SNAIL_SIGSLOT_IMPL(UserClickAddKbNode);
+  SNAIL_SIGSLOT_OVERRIDE(UserClickedIndex);
+  SNAIL_SIGSLOT_OVERRIDE(FilterPatternChanged);
+  SNAIL_SIGSLOT_OVERRIDE(EditingFinished);
+  SNAIL_SIGSLOT_OVERRIDE(UserClickAddKbNode);
 
   FilterWidget* filter_widget_;
   QLabel* err_msg_label_;

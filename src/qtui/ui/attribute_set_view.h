@@ -39,7 +39,7 @@ class AttributeSetViewForWorkView : public IAttributeSetView
  private:
   SNAIL_DISABLE_COPY(AttributeSetViewForWorkView);
 
-  SNAIL_SIGSLOT_IMPL(UserSwitchMode);
+  SNAIL_SIGSLOT_OVERRIDE(UserSwitchMode);
 };
 
 

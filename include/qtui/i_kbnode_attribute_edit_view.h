@@ -18,10 +18,10 @@ class IKbNodeAttributeEditView : public IAttributeEditorView {
  public:
   virtual ~IKbNodeAttributeEditView() = default;
 
-  SNAIL_SIGSLOT(UserClickedIndex, void(const QModelIndex& index));
-  SNAIL_SIGSLOT(FilterPatternChanged, void(const QString& search_str));
-  SNAIL_SIGSLOT(EditingFinished, void(const QString& text));
-  SNAIL_SIGSLOT(UserClickAddKbNode, void());
+  SNAIL_SIGSLOT_PURE_VIRTUAL(UserClickedIndex, void(const QModelIndex& index));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(FilterPatternChanged, void(const QString& search_str));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(EditingFinished, void(const QString& text));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(UserClickAddKbNode, void());
 
   virtual void setKbNodeName(const QString& kbnode_name) = 0;
   virtual void setKbNodeTreeQModel(QAbstractItemModel* kbnode_tree_qmodel) = 0;

@@ -18,7 +18,7 @@ class IWorkView : public GenericViewBase {
  public:
   virtual ~IWorkView() = default;
 
-  SNAIL_SIGSLOT(UserSetWorkName, void(const QString& new_name));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(UserSetWorkName, void(const QString& new_name));
 
   virtual void setWorkName(const QString& work_name) = 0;
 

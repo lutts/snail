@@ -36,9 +36,9 @@ class WorkSpaceModel : public IWorkSpaceModel {
   IWorkFactory* work_factory_;
 
  private:
-  SNAIL_SIGSLOT_IMPL(WorkModelAdded)
-  SNAIL_SIGSLOT_IMPL(ActiveWorkModelChanged)
-  SNAIL_SIGSLOT_IMPL(WorkModelActivelyRemoved)
+  SNAIL_SIGSLOT_OVERRIDE(WorkModelAdded)
+  SNAIL_SIGSLOT_OVERRIDE(ActiveWorkModelChanged)
+  SNAIL_SIGSLOT_OVERRIDE(WorkModelActivelyRemoved)
 };
 
 }  // namespace snailcore

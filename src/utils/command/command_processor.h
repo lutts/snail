@@ -76,8 +76,8 @@ class CommandProcessor : public ICommandProcessor {
   int undo_limit_ { UNDO_UNLIMITED };
 
  private:
-  SNAIL_SIGSLOT_IMPL(CanUndoChanged)
-  SNAIL_SIGSLOT_IMPL(CanRedoChanged)
+  SNAIL_SIGSLOT_OVERRIDE(CanUndoChanged)
+  SNAIL_SIGSLOT_OVERRIDE(CanRedoChanged)
 };
 
 }  // namespace utils
