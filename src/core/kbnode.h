@@ -8,7 +8,7 @@
 #ifndef SRC_CORE_KBNODE_H_
 #define SRC_CORE_KBNODE_H_
 
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 #include "utils/basic_utils.h"
 
 namespace snailcore {

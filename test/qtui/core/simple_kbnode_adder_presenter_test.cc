@@ -17,7 +17,6 @@
 
 #include "snail/mock_tree_item_provider.h"
 #include "qtui/core/mock_tree_item_qmodel.h"
-#include "snail/mock_kbnode.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -36,7 +35,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
     // Setup fixture
     model = std::make_shared<MockSimpleKbNodeAdderModel>();
     view = std::make_shared<MockSimpleKbNodeAdderView>();
-    kbnode_qmodel = std::make_shared<MockTreeItemQModel<IKbNode>>();
+    kbnode_qmodel = std::make_shared<MockTreeItemQModel>();
 
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
@@ -78,10 +77,10 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
 
       // highlight the current parent node
       auto index = index_generator.index();
-      MockKbNode kbnode;
+      auto kbnode = xtestutils::genDummyPointer<ITreeItem>();
       R_EXPECT_CALL(*model, getNewKbNodeParent())
-          .WillOnce(Return(&kbnode));
-      R_EXPECT_CALL(*kbnode_qmodel, itemToIndex(&kbnode))
+          .WillOnce(Return(kbnode));
+      R_EXPECT_CALL(*kbnode_qmodel, itemToIndex(kbnode))
           .WillOnce(Return(index));
       R_EXPECT_CALL(*view, selectIndex(index));
     }
@@ -113,7 +112,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
   std::shared_ptr<MockSimpleKbNodeAdderView> view;
 
   MockTreeItemProvider kbnode_provider;
-  std::shared_ptr<MockTreeItemQModel<IKbNode> > kbnode_qmodel;
+  std::shared_ptr<MockTreeItemQModel> kbnode_qmodel;
   QModelIndexGenerator index_generator;
 
   MockPfTriadManager triad_manager;
@@ -146,7 +145,7 @@ class SimpleKbNodeAdderPresenterTest
 TEST_F(SimpleKbNodeAdderPresenterTest,
        should_set_current_select_kbnode_as_new_kbnode_parent) { // NOLINT
   auto index = index_generator.index();
-  auto kbnode = xtestutils::genDummyPointer<IKbNode>();
+  auto kbnode = xtestutils::genDummyPointer<ITreeItem>();
   // Expectations
   EXPECT_CALL(*kbnode_qmodel, indexToItem(index))
       .WillOnce(Return(kbnode));

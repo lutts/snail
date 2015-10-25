@@ -38,7 +38,7 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
   createSimpleKbNodeAdderModel() const override;
 
   utils::U8String getKbNodeName() const override;
-  void setKbNode(IKbNode* kbnode) override;
+  void setKbNode(ITreeItem* item) override;
   int setKbNodeByName(const utils::U8String& name) override;
 
  private:

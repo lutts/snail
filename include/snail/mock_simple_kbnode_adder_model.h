@@ -18,8 +18,8 @@ class MockSimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_CONST_METHOD0(getKbNodeProvider, ITreeItemProvider*());
   MOCK_CONST_METHOD0(getDefaultNewKbNodeName, utils::U8String());
-  MOCK_CONST_METHOD0(getNewKbNodeParent, IKbNode*());
-  MOCK_METHOD1(setNewKbNodeParent, void(IKbNode* kbnode));
+  MOCK_CONST_METHOD0(getNewKbNodeParent, ITreeItem*());
+  MOCK_METHOD1(setNewKbNodeParent, void(ITreeItem* kbnode));
   MOCK_METHOD1(setNewKbNodeName, void(const utils::U8String& name));
   MOCK_CONST_METHOD0(isNewKbNodeNameValid, bool());
   MOCK_METHOD1(setIsCategory, void(bool category));

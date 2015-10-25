@@ -17,11 +17,10 @@
 #include "snail/i_tree_item_provider.h"
 #include FTO_HEADER(qtui/core, tree_item_qmodel)
 
-template <typename RealItemType>
 class TreeItemQModel
-    : public FTO_INTERFACE(TreeItemQModel)<RealItemType>
+    : public FTO_INTERFACE(TreeItemQModel)
     , public utils::ITrackable
-    , public std::enable_shared_from_this<TreeItemQModel<RealItemType> > {
+    , public std::enable_shared_from_this<TreeItemQModel> {
  public:
   TreeItemQModel()
       : TreeItemQModel(utils::make_unique<TreeItemQModelImpl>()) { }
@@ -57,8 +56,8 @@ class TreeItemQModel
         this->shared_from_this());
   }
 
-  RealItemType* indexToItem(const QModelIndex& index) const {
-    return static_cast<RealItemType*>(qmodel_->indexToItem(index));
+  ITreeItem* indexToItem(const QModelIndex& index) const {
+    return qmodel_->indexToItem(index);
   }
 
   QModelIndex itemToIndex(const ITreeItem* item) const {
@@ -79,21 +78,19 @@ class TreeItemQModel
   std::unique_ptr<TreeItemQModelImpl> qmodel_;
 };
 
-template <typename RealItemType>
 class TreeItemQModelWithClearAndAddMoreRow
-    : public TreeItemQModel<RealItemType> {
+    : public TreeItemQModel {
  public:
   TreeItemQModelWithClearAndAddMoreRow()
-      : TreeItemQModel<RealItemType>(
+      : TreeItemQModel(
             utils::make_unique<TreeItemQModelImplWithClearAndAddMoreRow>()) { }
   ~TreeItemQModelWithClearAndAddMoreRow() = default;
 };
 
-template <typename RealItemType>
-class TreeItemQModelWithProviderRoot : public TreeItemQModel<RealItemType> {
+class TreeItemQModelWithProviderRoot : public TreeItemQModel {
  public:
   TreeItemQModelWithProviderRoot()
-      : TreeItemQModel<RealItemType>(
+      : TreeItemQModel(
             utils::make_unique<TreeItemQModelImplWithProviderRoot>()) { }
   ~TreeItemQModelWithProviderRoot() = default;
 };

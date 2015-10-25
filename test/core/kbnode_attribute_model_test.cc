@@ -14,7 +14,7 @@
 #include "snail/mock_tree_item_provider.h"
 #include "snail/mock_simple_kbnode_adder_model.h"
 #include "core/mock_simple_kbnode_adder_model_factory.h"
-#include "snail/mock_kbnode.h"
+#include "core/mock_kbnode.h"
 
 namespace snailcore {
 namespace tests {

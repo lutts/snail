@@ -9,7 +9,7 @@
 #include "src/core/simple_kbnode_adder_model.h"
 #include "snail/mock_tree_item_provider.h"
 #include "core/mock_kbnode_manager.h"
-#include "snail/mock_kbnode.h"
+#include "core/mock_kbnode.h"
 
 namespace snailcore {
 namespace tests {

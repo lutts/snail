@@ -12,7 +12,6 @@
 #include "src/qtui/ui/kbnode_attribute_edit_view.h"
 #include "src/qtui/core/tree_item_qmodel.h"
 #include "pfmvp/pf_view_factory_manager.h"
-#include "snail/i_kbnode.h"
 
 using namespace pfmvp;  // NOLINT
 using namespace snailcore;  // NOLINT
@@ -31,7 +30,7 @@ class KbNodeAttributeEditViewFactory
     (void)args;
     auto view = std::make_shared<KbNodeAttributeEditView>();
     auto kbnode_tree_model =
-        std::make_shared<TreeItemQModelWithClearAndAddMoreRow<IKbNode>>();
+        std::make_shared<TreeItemQModelWithClearAndAddMoreRow>();
     return std::make_shared<KbNodeAttributeEditPresenter>(
         model, view, std::move(kbnode_tree_model));
   }

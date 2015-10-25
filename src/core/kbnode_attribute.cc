@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/kbnode_attribute.h"
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 #include "core/i_attribute_visitor.h"
 
 namespace snailcore {

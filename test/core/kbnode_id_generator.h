@@ -10,7 +10,7 @@
 
 #include <cstdlib>
 
-#include "snail/kb_global.h"
+#include "core/kb_global.h"
 
 namespace snailcore {
 namespace tests {

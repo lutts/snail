@@ -8,7 +8,7 @@
 #include "test/testutils/gmock_common.h"
 
 #include "src/core/kbnode_manager.h"
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 #include "snail/mock_tree_item_provider.h"
 
 std::ostream& operator<< (std::ostream& os,

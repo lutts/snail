@@ -9,7 +9,7 @@
 
 #include "src/core/kbnode_attribute.h"
 #include "core/mock_kbnode_attribute.h"
-#include "snail/mock_kbnode.h"
+#include "core/mock_kbnode.h"
 
 #include "core/mock_attribute_visitor.h"
 

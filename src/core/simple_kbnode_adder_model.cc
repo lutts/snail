@@ -7,7 +7,7 @@
 #include "src/core/simple_kbnode_adder_model.h"
 #include "snail/i_tree_item_provider.h"
 #include "core/fto_kbnode_manager.h"
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 
 namespace snailcore {
 
@@ -33,12 +33,12 @@ utils::U8String SimpleKbNodeAdderModel::getDefaultNewKbNodeName() const {
   return default_name;
 }
 
-IKbNode* SimpleKbNodeAdderModel::getNewKbNodeParent() const {
+ITreeItem* SimpleKbNodeAdderModel::getNewKbNodeParent() const {
   return new_kbnode_parent_;
 }
 
-void SimpleKbNodeAdderModel::setNewKbNodeParent(IKbNode* kbnode) {
-  new_kbnode_parent_ = kbnode;
+void SimpleKbNodeAdderModel::setNewKbNodeParent(ITreeItem* kbnode) {
+  new_kbnode_parent_ = static_cast<IKbNode*>(kbnode);
 }
 
 void SimpleKbNodeAdderModel::setNewKbNodeName(const utils::U8String& name) {

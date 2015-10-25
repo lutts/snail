@@ -6,7 +6,7 @@
 // [Desc]
 #include "src/core/kbnode_item_provider.h"
 #include "core/fto_kbnode_manager.h"
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 
 namespace snailcore {
 

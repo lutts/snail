@@ -12,7 +12,7 @@
 
 namespace snailcore {
 
-class IKbNode;
+class ITreeItem;
 class ITreeItemProvider;
 
 class ISimpleKbNodeAdderModel;
@@ -35,7 +35,7 @@ class IKbNodeAttributeModel : public IAttributeModel {
   createSimpleKbNodeAdderModel() const = 0;
 
   virtual utils::U8String getKbNodeName() const = 0;
-  virtual void setKbNode(IKbNode* kbnode) = 0;
+  virtual void setKbNode(ITreeItem* item) = 0;
   virtual int setKbNodeByName(const utils::U8String& name) = 0;
 };
 

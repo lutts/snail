@@ -18,7 +18,7 @@
 #include "qtui/ui/mock_kbnode_attribute_edit_view.h"
 #include "qtui/core/mock_tree_item_qmodel.h"
 #include "src/qtui/core/kbnode_attribute_edit_presenter.h"
-#include "snail/mock_kbnode.h"
+#include "core/mock_kbnode.h"
 
 #include "snail/mock_simple_kbnode_adder_model.h"
 #include "qtui/ui/mock_simple_kbnode_adder_view.h"
@@ -39,7 +39,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockKbNodeAttributeModel>();
     view = std::make_shared<MockKbNodeAttributeEditView>();
-    kbnode_qmodel = std::make_shared<MockTreeItemQModel<IKbNode>>();
+    kbnode_qmodel = std::make_shared<MockTreeItemQModel>();
 
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
@@ -98,7 +98,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
   xtestutils::RandomString provider_name;
   MockTreeItemProvider kbnode_provider;
-  std::shared_ptr<MockTreeItemQModel<IKbNode>> kbnode_qmodel;
+  std::shared_ptr<MockTreeItemQModel> kbnode_qmodel;
 
   MockPfTriadManager triad_manager;
   QModelIndexGenerator index_generator;

@@ -25,7 +25,7 @@ class MockKbNodeAttributeModel : public IKbNodeAttributeModel {
                      std::shared_ptr<ISimpleKbNodeAdderModel>());
 
   MOCK_CONST_METHOD0(getKbNodeName, utils::U8String());
-  MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));
+  MOCK_METHOD1(setKbNode, void(ITreeItem* kbnode));
   MOCK_METHOD1(setKbNodeByName, int(const utils::U8String& name));
 };
 

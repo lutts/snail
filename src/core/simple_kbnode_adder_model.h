@@ -15,6 +15,7 @@
 
 namespace snailcore {
 
+class IKbNode;
 class ITreeItemProvider;
 
 FTO_BEGIN_NAMESPACE
@@ -30,8 +31,8 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
   utils::U8String name() const override;
   ITreeItemProvider* getKbNodeProvider() const override;
   utils::U8String getDefaultNewKbNodeName() const override;
-  IKbNode* getNewKbNodeParent() const override;
-  void setNewKbNodeParent(IKbNode* kbnode) override;
+  ITreeItem* getNewKbNodeParent() const override;
+  void setNewKbNodeParent(ITreeItem* kbnode) override;
   void setNewKbNodeName(const utils::U8String& name) override;
   bool isNewKbNodeNameValid() const override;
   void setIsCategory(bool category) override;

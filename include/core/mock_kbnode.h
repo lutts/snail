@@ -8,7 +8,7 @@
 #ifndef INCLUDE_SNAIL_MOCK_KBNODE_H_
 #define INCLUDE_SNAIL_MOCK_KBNODE_H_
 
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 
 namespace snailcore {
 namespace tests {

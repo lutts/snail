@@ -9,7 +9,7 @@
 #include <QString>
 
 #include "utils/u8string.h"
-#include "snail/i_kbnode.h"
+#include "core/i_kbnode.h"
 #include "snail/i_tree_item_provider.h"
 #include "snail/i_simple_kbnode_adder_model.h"
 
@@ -58,8 +58,8 @@ void KbNodeAttributeEditPresenter::on_UserClickedIndex(
   if (kbnode_qmodel_->isAddMore(index)) {
     addKbNode();
   } else {
-    auto kbnode = kbnode_qmodel_->indexToItem(index);
-    model()->setKbNode(kbnode);
+    auto kbnode_item = kbnode_qmodel_->indexToItem(index);
+    model()->setKbNode(kbnode_item);
     view()->setKbNodeName(U8StringToQString(model()->getKbNodeName()));
     view()->clearWarningMessages();
   }

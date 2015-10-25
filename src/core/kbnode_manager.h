@@ -15,8 +15,8 @@
 #include "include/config.h"
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
-#include "snail/kb_global.h"
 #include "utils/signal_slot_impl.h"
+#include "core/kb_global.h"
 
 #include FTO_HEADER(core, kbnode_manager)
 

@@ -10,13 +10,12 @@
 
 #include "qtui/core/fto_tree_item_qmodel.h"
 
-template <typename RealItemType>
-class MockTreeItemQModel : public fto::TreeItemQModel<RealItemType> {
+class MockTreeItemQModel : public fto::TreeItemQModel {
  public:
   MOCK_CONST_METHOD0(qmodel, QAbstractItemModel*());
 
   MOCK_METHOD1(setTreeItemProvider, void(ITreeItemProvider* item_provider));
-  MOCK_CONST_METHOD1_T(indexToItem, RealItemType*(const QModelIndex& index));
+  MOCK_CONST_METHOD1_T(indexToItem, ITreeItem*(const QModelIndex& index));
   MOCK_CONST_METHOD1(itemToIndex, QModelIndex(const ITreeItem* item));
   MOCK_CONST_METHOD1(isAddMore, bool(const QModelIndex& index));
   MOCK_METHOD2(itemAdded, void(const ITreeItem* new_item,

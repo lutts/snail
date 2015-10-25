@@ -13,7 +13,7 @@
 
 namespace snailcore {
 
-class IKbNode;
+class ITreeItem;
 class ITreeItemProvider;
 
 class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
@@ -25,8 +25,8 @@ class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
   virtual utils::U8String name() const = 0;
   virtual ITreeItemProvider* getKbNodeProvider() const = 0;
   virtual utils::U8String getDefaultNewKbNodeName() const = 0;
-  virtual IKbNode* getNewKbNodeParent() const = 0;
-  virtual void setNewKbNodeParent(IKbNode* kbnode) = 0;
+  virtual ITreeItem* getNewKbNodeParent() const = 0;
+  virtual void setNewKbNodeParent(ITreeItem* kbnode) = 0;
   virtual void setNewKbNodeName(const utils::U8String& name) = 0;
   virtual bool isNewKbNodeNameValid() const = 0;
   virtual void setIsCategory(bool category) = 0;

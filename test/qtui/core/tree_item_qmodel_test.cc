@@ -395,8 +395,8 @@ class TreeItemQModelTestBase : public ::testing::Test {
     cleanupExpectRowDatas();
   }
 
-  virtual std::shared_ptr<TreeItemQModel<ITreeItem>> createQModel() {
-    return std::make_shared<TreeItemQModel<ITreeItem>>();
+  virtual std::shared_ptr<TreeItemQModel> createQModel() {
+    return std::make_shared<TreeItemQModel>();
   }
 
   bool shouldRowVisible(const ExpectRowData& row_data);
@@ -433,7 +433,7 @@ class TreeItemQModelTestBase : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::shared_ptr<TreeItemQModel<ITreeItem>> qmodel;
+  std::shared_ptr<TreeItemQModel> qmodel;
   // endregion
 
   // region: object depends on test subject
@@ -863,8 +863,8 @@ class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
     show_add_more_row = true;
   }
 
-  std::shared_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
-    return std::make_shared<TreeItemQModelWithClearAndAddMoreRow<ITreeItem>>();
+  std::shared_ptr<TreeItemQModel> createQModel() override {
+    return std::make_shared<TreeItemQModelWithClearAndAddMoreRow>();
   }
 };
 
@@ -940,8 +940,8 @@ class TreeItemQModelWithProviderItemTest : public TreeItemQModelTestBase {
     TreeItemQModelTestBase::TearDown();
   }
 
-  std::shared_ptr<TreeItemQModel<ITreeItem>> createQModel() override {
-    return std::make_shared<TreeItemQModelWithProviderRoot<ITreeItem>>();
+  std::shared_ptr<TreeItemQModel> createQModel() override {
+    return std::make_shared<TreeItemQModelWithProviderRoot>();
   }
 
   int adjustLevel(int level) override {

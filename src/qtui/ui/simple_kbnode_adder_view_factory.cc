@@ -11,7 +11,6 @@
 #include "src/qtui/core/simple_kbnode_adder_presenter.h"
 #include "src/qtui/ui/simple_kbnode_adder_view.h"
 #include "pfmvp/pf_view_factory_manager.h"
-#include "snail/i_kbnode.h"
 #include "src/qtui/core/tree_item_qmodel.h"
 
 using namespace pfmvp;  // NOLINT
@@ -32,7 +31,7 @@ class SimpleKbNodeAdderViewFactory
     auto view = std::make_shared<SimpleKbNodeAdderView>();
     return std::make_shared<SimpleKbNodeAdderPresenter>(
         model, view,
-        std::make_shared<TreeItemQModelWithProviderRoot<IKbNode>>());
+        std::make_shared<TreeItemQModelWithProviderRoot>());
   }
 
  private:
