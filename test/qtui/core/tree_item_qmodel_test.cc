@@ -299,6 +299,8 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
   // unintrested method, using mocks
   SNAIL_MOCK_SLOT(BeginFilter);
   SNAIL_MOCK_SLOT(FinishFilter);
+  SNAIL_MOCK_SLOT(ItemAdded);
+
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
   MOCK_METHOD1(incRef, void(ITreeItem* item));
@@ -383,6 +385,9 @@ class TreeItemQModelTestBase : public ::testing::Test {
     EXPECT_CALL(item_provider, whenFinishFilter(_, _))
         .WillOnce(SaveArg<0>(&providerFinishFilter));
 
+    EXPECT_CALL(item_provider, whenItemAdded(_, _))
+        .WillOnce(SaveArg<0>(&itemAdded));
+
     qmodel->setTreeItemProvider(&item_provider);
   }
 
@@ -439,6 +444,10 @@ class TreeItemQModelTestBase : public ::testing::Test {
   using FinishFilterSlotType =
                    ITreeItemProvider::FinishFilterSlotType;
   SlotCatcher<FinishFilterSlotType> providerFinishFilter;
+
+  using ItemAddedSlotType =
+                   ITreeItemProvider::ItemAddedSlotType;
+  SlotCatcher<ItemAddedSlotType> itemAdded;
   // endregion
 };
 
@@ -644,7 +653,7 @@ void TreeItemQModelTestBase::addItemUnderLevel1Item1(ITreeItem** parent_item_ret
   item_provider.setItemOwnerRow(&new_item, &level2_row_data);
 
   // Exercise system
-  qmodel->itemAdded(&new_item, parent_item);
+  itemAdded(&new_item, parent_item);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData());
@@ -723,7 +732,7 @@ void TreeItemQModelTestBase::addItemUnderRootItem() {
   item_provider.setItemOwnerRow(&new_item, &level0_row_data);
 
   // Exercise system
-  qmodel->itemAdded(&new_item, nullptr);
+  itemAdded(&new_item, nullptr);
 
   // Verify results
   CUSTOM_ASSERT(checkRowData());

@@ -96,4 +96,13 @@ KbNodeItemProvider::childItems(ITreeItem* parent_item) const {
   }
 }
 
+void KbNodeItemProvider::itemAdded(const ITreeItem* new_item,
+                                   const ITreeItem* new_item_parent) {
+  auto effect_item_parent = new_item_parent;
+  if (new_item_parent == root_kbnode_)
+    effect_item_parent = nullptr;
+
+  ItemAdded(new_item, effect_item_parent);
+}
+
 }  // namespace snailcore

@@ -33,7 +33,16 @@ void KbNodeManager::erase(IKbNode* parent) {
 
 std::shared_ptr<ITreeItemProvider>
 KbNodeManager::createTreeItemProvider(IKbNode* root_kbnode) {
-  return std::make_shared<KbNodeItemProvider>(root_kbnode, this);
+  auto item_provider = std::make_shared<KbNodeItemProvider>(root_kbnode, this);
+  auto raw_item_provider = item_provider.get();
+  whenKbNodeAdded(
+      [raw_item_provider](const IKbNode* new_kbnode,
+                          const IKbNode* parent_kbnode) {
+        raw_item_provider->itemAdded(new_kbnode, parent_kbnode);
+      },
+      item_provider);
+
+  return item_provider;
 }
 
 IKbNode* KbNodeManager::idToKbNode(KbNodeIdType kbnode_id) {
@@ -88,8 +97,11 @@ IKbNode* KbNodeManager::addKbNode(
     parent = dummy_root_;
 
   auto kbnode = new KbNode(nextId(), name, is_category);
-  id_to_kbnode_[kbnode->id()] = kbnode;
-  kbnode_to_subnodes_[parent].push_back(kbnode);
+  if (kbnode) {
+    id_to_kbnode_[kbnode->id()] = kbnode;
+    kbnode_to_subnodes_[parent].push_back(kbnode);
+    KbNodeAdded(kbnode, parent);
+  }
 
   return kbnode;
 }

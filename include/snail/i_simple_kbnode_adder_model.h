@@ -22,9 +22,6 @@ class ISimpleKbNodeAdderModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(SimpleKbNodeAdderModel);
 
-  SNAIL_SIGSLOT_PURE_VIRTUAL(KbNodeAdded,
-                 void(IKbNode* new_kbnode, IKbNode* parent_kbnode));
-
   virtual utils::U8String name() const = 0;
   virtual ITreeItemProvider* getKbNodeProvider() const = 0;
   virtual utils::U8String getDefaultNewKbNodeName() const = 0;

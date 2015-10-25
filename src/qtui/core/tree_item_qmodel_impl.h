@@ -29,11 +29,11 @@ class TreeItemQModelImpl : public QAbstractItemModel {
 
   virtual void setTreeItemProvider(ITreeItemProvider* item_provider);
   ITreeItem* indexToItem(const QModelIndex& index) const;
-  virtual QModelIndex itemToIndex(ITreeItem* item) const;
+  virtual QModelIndex itemToIndex(const ITreeItem* item) const;
   virtual bool isAddMore(const QModelIndex& index) const;
   void beginResetQModel();
   void endResetQModel();
-  void itemAdded(ITreeItem* new_item, ITreeItem* parent_item);
+  void itemAdded(const ITreeItem* new_item, const ITreeItem* parent_item);
 
   // QAbstractItemModel
   QVariant data(const QModelIndex &index, int role) const override;
@@ -82,7 +82,7 @@ class TreeItemQModelImplWithProviderRoot : public TreeItemQModelImpl {
 
  private:
   void clear() override;
-  QModelIndex itemToIndex(ITreeItem* item) const override;
+  QModelIndex itemToIndex(const ITreeItem* item) const override;
 
   QtTreeItem* provider_item_ { nullptr };
 };

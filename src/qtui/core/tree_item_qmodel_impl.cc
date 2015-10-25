@@ -97,7 +97,7 @@ class QtTreeItem : QObject {
 
   // NOTE: null item is NOT handled because there maybe multi null tree_item
   //       items, and we do NOT know which to return
-  QtTreeItem* findByTreeItem(ITreeItem* tree_item) {
+  QtTreeItem* findByTreeItem(const ITreeItem* tree_item) {
     if (tree_item == nullptr)
       return nullptr;
 
@@ -219,7 +219,7 @@ ITreeItem* TreeItemQModelImpl::indexToItem(const QModelIndex& index) const {
   return item->tree_item();
 }
 
-QModelIndex TreeItemQModelImpl::itemToIndex(ITreeItem* tree_item) const {
+QModelIndex TreeItemQModelImpl::itemToIndex(const ITreeItem* tree_item) const {
   QtTreeItem* item = nullptr;
 
   if (tree_item == nullptr)
@@ -249,7 +249,7 @@ void TreeItemQModelImpl::endResetQModel() {
 }
 
 void TreeItemQModelImpl::itemAdded(
-    ITreeItem* new_tree_item, ITreeItem* parent_tree_item) {
+    const ITreeItem* new_tree_item, const ITreeItem* parent_tree_item) {
   auto parent_item = indexToQtItem(itemToIndex(parent_tree_item));
   if (!parent_item)
     return;
@@ -262,7 +262,7 @@ void TreeItemQModelImpl::itemAdded(
 
   int row = parent_item->next_append_pos();
   beginInsertRows(qtItemToIndex(parent_item), row, row);
-  parent_item->appendTreeItem(new_tree_item);
+  parent_item->appendTreeItem(const_cast<ITreeItem*>(new_tree_item));
   endInsertRows();
 }
 
@@ -485,7 +485,7 @@ void TreeItemQModelImplWithProviderRoot::setTreeItemProvider(
 }
 
 QModelIndex TreeItemQModelImplWithProviderRoot::itemToIndex(
-    ITreeItem* tree_item) const {
+    const ITreeItem* tree_item) const {
   if (tree_item == nullptr) {
     return qtItemToIndex(provider_item_);
   }

@@ -50,13 +50,6 @@ void KbNodeAttributeEditPresenter::initialize() {
 
 void KbNodeAttributeEditPresenter::addKbNode() {
   auto provider_model = model()->createSimpleKbNodeAdderModel();
-
-  provider_model->whenKbNodeAdded(
-      [this](IKbNode* new_kbnode, IKbNode* parent_kbnode) {
-        kbnode_qmodel_->itemAdded(new_kbnode, parent_kbnode);
-      },
-      shared_from_this());
-
   showDialog(provider_model);
 }
 

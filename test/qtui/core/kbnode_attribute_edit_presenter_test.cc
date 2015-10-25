@@ -91,7 +91,6 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   // virtual void TearDown() { }
 
   std::function<void()> expectationOnAddKbNode();
-  void shouldNotifyTreeItemQModelWhenKbNodeAdded();
 
   // region: objects test subject depends on
   std::shared_ptr<MockKbNodeAttributeModel> model;
@@ -125,10 +124,6 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   using UserClickAddKbNodeSlotType =
       IKbNodeAttributeEditView::UserClickAddKbNodeSlotType;
   SlotCatcher<UserClickAddKbNodeSlotType> userClickAddKbNode;
-
-  using KbNodeAddedSlotType =
-      ISimpleKbNodeAdderModel::KbNodeAddedSlotType;
-  SlotCatcher<KbNodeAddedSlotType> kbNodeAdded;
   // endregion
 };
 
@@ -142,8 +137,6 @@ KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
 
     EXPECT_CALL(*model, createSimpleKbNodeAdderModel())
         .WillOnce(Return(kbnode_provider_model));
-    EXPECT_CALL(*kbnode_provider_model, whenKbNodeAdded(_, _))
-        .WillOnce(SaveArg<0>(&kbNodeAdded));
 
     // the following three are showDialog expectations
     triad_manager.expectationsOnShowModalDialog<MockSimpleKbNodeAdderView>(
@@ -157,18 +150,6 @@ KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
     Mock::VerifyAndClearExpectations(raw_kbnode_provider_model);
     Mock::VerifyAndClearExpectations(raw_add_kbnode_dialog_view);
   };
-}
-
-void KbNodeAttributeEditPresenterTest::shouldNotifyTreeItemQModelWhenKbNodeAdded() { // NOLINT
-  // Setup fixture
-  auto parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
-  auto new_kbnode = xtestutils::genDummyPointer<IKbNode>();
-
-  // Expectations
-  EXPECT_CALL(*kbnode_qmodel, itemAdded(new_kbnode, parent_kbnode));
-
-  // Excercise system
-  kbNodeAdded(new_kbnode, parent_kbnode);
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,
@@ -186,7 +167,6 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
   // Verify result
   verifier();
-  shouldNotifyTreeItemQModelWhenKbNodeAdded();
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,
@@ -283,5 +263,4 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 
   // Verify result
   verifier();
-  shouldNotifyTreeItemQModelWhenKbNodeAdded();
 }

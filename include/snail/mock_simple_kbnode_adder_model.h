@@ -15,8 +15,6 @@ namespace tests {
 
 class MockSimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  public:
-  SNAIL_MOCK_SLOT(KbNodeAdded);
-
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_CONST_METHOD0(getKbNodeProvider, ITreeItemProvider*());
   MOCK_CONST_METHOD0(getDefaultNewKbNodeName, utils::U8String());

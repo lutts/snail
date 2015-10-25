@@ -212,5 +212,41 @@ TEST_F(KbNodeManagerTest,
   }
 }
 
+TEST_F(KbNodeManagerTest,
+       should_notify_item_provider_after_add_kbnode) { // NOLINT
+  // Setup fixture
+  auto item_provider = kbnode_manager_->createTreeItemProvider(top_level_node_);
+
+  const ITreeItem* new_item1 = nullptr;
+  const ITreeItem* new_item1_parent = nullptr;
+
+  const ITreeItem* new_item2 = nullptr;
+  const ITreeItem* new_item2_parent = nullptr;
+
+  // Expectations
+  auto item_provider_listener =
+      TreeItemProviderListener::attachTo(item_provider.get());
+  EXPECT_CALL(*item_provider_listener, ItemAdded(_, _))
+      .WillOnce(DoAll(SaveArg<0>(&new_item1), SaveArg<1>(&new_item1_parent)))
+      .WillOnce(DoAll(SaveArg<0>(&new_item2), SaveArg<1>(&new_item2_parent)));
+
+  // Exercise system
+  IKbNode* expect_new_item1 =
+      kbnode_manager_->addKbNode(xtestutils::genRandomString(),
+                                 top_level_node_, false);
+  ITreeItem* expect_new_item1_parent = nullptr;
+
+  IKbNode* expect_new_item2 =
+      kbnode_manager_->addKbNode(xtestutils::genRandomString(),
+                                 expect_new_item1, false);
+  ITreeItem* expect_new_item2_parent = expect_new_item1;
+
+  // Verify results
+  ASSERT_EQ(expect_new_item1, new_item1);
+  ASSERT_EQ(expect_new_item1_parent, new_item1_parent);
+  ASSERT_EQ(expect_new_item2, new_item2);
+  ASSERT_EQ(expect_new_item2_parent, new_item2_parent);
+}
+
 }  // namespace tests
 }  // namespace snailcore

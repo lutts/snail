@@ -49,13 +49,19 @@ class TreeItemQModel
           qmodel_->endResetQModel();
         },
         this->shared_from_this());
+
+    item_provider->whenItemAdded(
+        [this](const ITreeItem* new_item, const ITreeItem* parent_item) {
+          qmodel_->itemAdded(new_item, parent_item);
+        },
+        this->shared_from_this());
   }
 
   RealItemType* indexToItem(const QModelIndex& index) const {
     return static_cast<RealItemType*>(qmodel_->indexToItem(index));
   }
 
-  QModelIndex itemToIndex(ITreeItem* item) const {
+  QModelIndex itemToIndex(const ITreeItem* item) const {
     return qmodel_->itemToIndex(item);
   }
 
@@ -63,7 +69,7 @@ class TreeItemQModel
     return qmodel_->isAddMore(index);
   }
 
-  void itemAdded(ITreeItem* new_item, ITreeItem* parent_item) {
+  void itemAdded(const ITreeItem* new_item, const ITreeItem* parent_item) {
     qmodel_->itemAdded(new_item, parent_item);
   }
 

@@ -16,6 +16,7 @@
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
 #include "snail/kb_global.h"
+#include "utils/signal_slot_impl.h"
 
 #include FTO_HEADER(core, kbnode_manager)
 
@@ -45,6 +46,9 @@ class KbNodeManager : public FTO_INTERFACE(KbNodeManager) {
 
  private:
   SNAIL_DISABLE_COPY(KbNodeManager);
+
+  SNAIL_SIGSLOT_IMPL(KbNodeAdded, void(const IKbNode* new_kbnode,
+                                       const IKbNode* parent_kbnode));
 
   KbNodeIdType nextId();
   void erase(IKbNode* parent);
