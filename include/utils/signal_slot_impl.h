@@ -10,10 +10,7 @@
 
 #include <boost/signals2.hpp>
 
-#include <functional>  // std::function
-#include <memory>      // std::shared_ptr
-
-#include "utils/i_trackable.h"
+#include "utils/signal_slot.h"
 
 #define SNAIL_SIGSLOT_IMPL_(sigName, ovrd)                              \
   sigName##SignalType sigName;                                          \

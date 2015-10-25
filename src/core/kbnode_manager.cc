@@ -33,7 +33,8 @@ void KbNodeManager::erase(IKbNode* parent) {
 
 std::shared_ptr<ITreeItemProvider>
 KbNodeManager::createTreeItemProvider(IKbNode* root_kbnode) {
-  auto item_provider = std::make_shared<KbNodeItemProvider>(root_kbnode, this);
+  auto item_provider =
+      utils::make_trackable<KbNodeItemProvider>(root_kbnode, this);
   auto raw_item_provider = item_provider.get();
   whenKbNodeAdded(
       [raw_item_provider](const IKbNode* new_kbnode,
