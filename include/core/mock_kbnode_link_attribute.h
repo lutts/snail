@@ -8,7 +8,7 @@
 #ifndef INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_H_
 #define INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_H_
 
-#include "core/i_kbnode_link_attribute.h"
+#include "core/fto_kbnode_link_attribute.h"
 #include "snail/mock_attribute.h"
 
 namespace snailcore {
@@ -27,7 +27,7 @@ class MockKbNodeLinkAttributeSupplier
   MOCK_METHOD0(createAttribute, IAttribute*());
 
   // Self
-  MOCK_CONST_METHOD0(getLinkTypeProvider, ITreeItemProvider*());
+  MOCK_CONST_METHOD0(getLinkTypeItemProvider, ITreeItemProvider*());
 };
 
 class MockKbNodeLinkAttribute : public fto::KbNodeLinkAttribute {

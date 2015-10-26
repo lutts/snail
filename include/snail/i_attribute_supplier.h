@@ -32,6 +32,9 @@ class IAttributeSupplier {
   virtual void removeAttribute(IAttribute* attr) = 0;
 
   virtual void attributeChanged(IAttribute* attr) = 0;
+
+ protected:
+  IAttributeSupplier& operator=(const IAttributeSupplier& rhs);
 };
 
 }  // namespace snailcore

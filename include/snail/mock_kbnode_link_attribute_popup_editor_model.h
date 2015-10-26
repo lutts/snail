@@ -19,12 +19,12 @@ class MockKbNodeLinkAttributePopupEditorModel
   SNAIL_MOCK_SLOT(LinkTypeChanged);
   SNAIL_MOCK_SLOT(ValidateComplete);
 
-  MOCK_METHOD0(createValueKbNodeAttrModel, std::shared_ptr<IAttributeModel>());
-  MOCK_CONST_METHOD0(getLinkTypeProvider, ITreeItemProvider*());
-  MOCK_CONST_METHOD0(getCurrentLinkType, IKbNode*());
+  MOCK_METHOD0(createValueAttrModel, std::shared_ptr<IAttributeModel>());
+  MOCK_CONST_METHOD0(getLinkTypeItemProvider, ITreeItemProvider*());
+  MOCK_CONST_METHOD0(getCurrentLinkType, ITreeItem*());
   MOCK_METHOD0(getCurrentLinkAttrSetModel,
                std::shared_ptr<IAttributeSetModel>());
-  MOCK_METHOD1(setLinkType, void(IKbNode* link_type));
+  MOCK_METHOD1(setLinkType, void(ITreeItem* link_type_item));
   MOCK_METHOD0(editFinished, void());
 };
 

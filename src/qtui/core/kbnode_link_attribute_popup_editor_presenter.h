@@ -12,7 +12,8 @@
 
 #include "pfmvp/pf_presenter.h"
 #include "snail/i_kbnode_link_attribute_popup_editor_model.h"
-#include "qtui/i_kbnode_link_attribute_popup_editor_view.h"
+#include "qtui/ui/i_kbnode_link_attribute_popup_editor_view.h"
+#include "qtui/core/fto_tree_item_qmodel.h"
 
 namespace snailcore {
 class IAttributeSetModel;
@@ -28,7 +29,7 @@ class KbNodeLinkAttributePopupEditorPresenter
   KbNodeLinkAttributePopupEditorPresenter(
       std::shared_ptr<model_type> model,
       std::shared_ptr<view_type> view,
-      std::unique_ptr<fto::TreeItemQModel<IKbNode>> link_type_qmodel);
+      std::shared_ptr<fto::TreeItemQModel> link_type_qmodel);
   virtual ~KbNodeLinkAttributePopupEditorPresenter();
 
   void initialize() override;
@@ -41,7 +42,7 @@ class KbNodeLinkAttributePopupEditorPresenter
   void createLinkAttributesView(
       std::shared_ptr<snailcore::IAttributeSetModel> attr_set_model);
 
-  std::unique_ptr<fto::TreeItemQModel<IKbNode>> link_type_qmodel_;
+  std::shared_ptr<fto::TreeItemQModel> link_type_qmodel_;
 };
 
 #endif  // SRC_QTUI_CORE_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_PRESENTER_H_

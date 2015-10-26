@@ -31,7 +31,7 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
 
     EXPECT_CALL(link_attr, supplier())
         .WillRepeatedly(Return(&link_attr_supplier));
-    EXPECT_CALL(link_attr_supplier, getLinkTypeProvider())
+    EXPECT_CALL(link_attr_supplier, getLinkTypeItemProvider())
         .WillRepeatedly(Return(&link_type_provider));
   }
   // void TearDown() override { }
@@ -74,7 +74,7 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
       .WillOnce(Return(expect_value_model));
 
   // Exercise system
-  auto actual_value_model = model->createValueKbNodeAttrModel();
+  auto actual_value_model = model->createValueAttrModel();
 
   // Verify results
   ASSERT_EQ(expect_value_model, actual_value_model);
@@ -83,7 +83,7 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
        should_be_able_to_return_the_link_provider) { // NOLINT
   // Exercise system
-  auto actual_link_provider = model->getLinkTypeProvider();
+  auto actual_link_provider = model->getLinkTypeItemProvider();
 
   // Verify results
   ASSERT_EQ(&link_type_provider, actual_link_provider);

@@ -7,10 +7,9 @@
 #include "src/qtui/core/kbnode_link_attribute_popup_editor_presenter.h"
 #include "pfmvp/i_pf_create_view_args.h"
 #include "snail/i_attribute_model.h"
-#include "qtui/i_attribute_editor_view.h"
-#include "qtui/i_tree_item_qmodel.h"
+#include "qtui/ui/i_attribute_editor_view.h"
 #include "snail/i_attribute_set_model.h"
-#include "qtui/i_attribute_set_view.h"
+#include "qtui/ui/i_attribute_set_view.h"
 
 using snailcore::IAttributeSetModel;
 
@@ -18,9 +17,9 @@ KbNodeLinkAttributePopupEditorPresenter::
 KbNodeLinkAttributePopupEditorPresenter(
     std::shared_ptr<model_type> model,
     std::shared_ptr<view_type> view,
-    std::unique_ptr<fto::TreeItemQModel<IKbNode>> link_type_qmodel)
+    std::shared_ptr<fto::TreeItemQModel> link_type_qmodel)
     : KbNodeLinkAttributePopupEditorPresenterBase(model, view)
-    , link_type_qmodel_(std::move(link_type_qmodel)) { }
+    , link_type_qmodel_(link_type_qmodel) { }
 
 KbNodeLinkAttributePopupEditorPresenter::
 ~KbNodeLinkAttributePopupEditorPresenter() = default;
@@ -38,8 +37,10 @@ void KbNodeLinkAttributePopupEditorPresenter::initialize() {
       shared_from_this());
 
   model()->whenLinkTypeChanged(
-      [this](std::shared_ptr<IAttributeSetModel> attr_set_model) {
-        createLinkAttributesView(attr_set_model);
+      [this](std::shared_ptr<IAttributeSetModel> new_attr_set_model,
+             IAttributeSetModel* old_attr_set_model) {
+        removeTriadBy(old_attr_set_model);
+        createLinkAttributesView(new_attr_set_model);
       },
       shared_from_this());
 
@@ -57,16 +58,16 @@ void KbNodeLinkAttributePopupEditorPresenter::initialize() {
 }
 
 void KbNodeLinkAttributePopupEditorPresenter::createValueAttributeView() {
-  auto value_attr_model = model()->createValueKbNodeAttrModel();
+  auto value_attr_model = model()->createValueAttrModel();
   auto value_attr_editor =
       createRawViewFor<IAttributeEditorView>(value_attr_model);
   view()->setValueAttrEditor(value_attr_editor);
 }
 
 void KbNodeLinkAttributePopupEditorPresenter::initLinkTypeDropDownList() {
-  auto link_type_provider = model()->getLinkTypeProvider();
+  auto link_type_provider = model()->getLinkTypeItemProvider();
   link_type_qmodel_->setTreeItemProvider(link_type_provider);
-  view()->setLinkTypeQModel(link_type_qmodel_.get());
+  view()->setLinkTypeQModel(link_type_qmodel_->qmodel());
 
   // select the current link type
   auto current_link_type = model()->getCurrentLinkType();

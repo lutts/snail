@@ -30,11 +30,11 @@ class KbNodeLinkAttributePopupEditorModel
       IAttributeModelFactory* attr_model_factory);
   virtual ~KbNodeLinkAttributePopupEditorModel();
 
-  std::shared_ptr<IAttributeModel> createValueKbNodeAttrModel() override;
-  ITreeItemProvider* getLinkTypeProvider() const override;
-  IKbNode* getCurrentLinkType() const override;
+  std::shared_ptr<IAttributeModel> createValueAttrModel() override;
+  ITreeItemProvider* getLinkTypeItemProvider() const override;
+  ITreeItem* getCurrentLinkType() const override;
   std::shared_ptr<IAttributeSetModel> getCurrentLinkAttrSetModel() override;
-  void setLinkType(IKbNode* link_type) override;
+  void setLinkType(ITreeItem* link_type_item) override;
   void editFinished() override;
 
  private:

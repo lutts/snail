@@ -28,6 +28,9 @@ class IAttribute {
 
   // TODO(lutts): impl this method in subclasses
   virtual IAttribute* clone() { return nullptr; }
+
+ protected:
+  IAttribute& operator=(const IAttribute& rhs);
 };
 
 }  // namespace snailcore

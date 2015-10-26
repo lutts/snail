@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/kbnode_link_attribute_inline_editor_model.h"
-#include "core/i_kbnode_link_attribute.h"
+#include "core/fto_kbnode_link_attribute.h"
 #include "core/i_kbnode_link_attribute_popup_editor_model_factory.h"
 
 namespace snailcore {

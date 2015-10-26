@@ -5,7 +5,7 @@
 //
 // [Desc]
 #include "src/core/kbnode_link_attribute_popup_editor_model.h"
-#include "core/i_kbnode_link_attribute.h"
+#include "core/fto_kbnode_link_attribute.h"
 #include "core/i_attribute_model_factory.h"
 
 namespace snailcore {
@@ -20,17 +20,17 @@ KbNodeLinkAttributePopupEditorModel::
 ~KbNodeLinkAttributePopupEditorModel() = default;
 
 std::shared_ptr<IAttributeModel>
-KbNodeLinkAttributePopupEditorModel::createValueKbNodeAttrModel() {
+KbNodeLinkAttributePopupEditorModel::createValueAttrModel() {
   value_attr_copy_ = attr_->valueAttr()->clone();
   return attr_model_factory_->createAttributeModel(value_attr_copy_);
 }
 
 ITreeItemProvider*
-KbNodeLinkAttributePopupEditorModel::getLinkTypeProvider() const {
-  return attr_->supplier()->getLinkTypeProvider();
+KbNodeLinkAttributePopupEditorModel::getLinkTypeItemProvider() const {
+  return attr_->supplier()->getLinkTypeItemProvider();
 }
 
-IKbNode* KbNodeLinkAttributePopupEditorModel::getCurrentLinkType() const {
+ITreeItem* KbNodeLinkAttributePopupEditorModel::getCurrentLinkType() const {
   return nullptr;
 }
 
@@ -39,8 +39,9 @@ KbNodeLinkAttributePopupEditorModel::getCurrentLinkAttrSetModel() {
   return nullptr;
 }
 
-void KbNodeLinkAttributePopupEditorModel::setLinkType(IKbNode* link_type) {
-  (void)link_type;
+void KbNodeLinkAttributePopupEditorModel::setLinkType(
+    ITreeItem* link_type_item) {
+  (void)link_type_item;
 }
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {

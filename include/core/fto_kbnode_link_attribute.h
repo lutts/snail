@@ -26,7 +26,7 @@ class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~KbNodeLinkAttributeSupplier() = default;
 
-  virtual ITreeItemProvider* getLinkTypeProvider() const = 0;
+  virtual ITreeItemProvider* getLinkTypeItemProvider() const = 0;
 };
 
 class KbNodeLinkAttribute : public IAttribute {

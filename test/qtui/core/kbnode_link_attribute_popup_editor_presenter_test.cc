@@ -11,14 +11,14 @@
 
 // triad headers
 #include "snail/mock_kbnode_link_attribute_popup_editor_model.h"
-#include "qtui/mock_kbnode_link_attribute_popup_editor_view.h"
+#include "qtui/ui/mock_kbnode_link_attribute_popup_editor_view.h"
 #include "src/qtui/core/kbnode_link_attribute_popup_editor_presenter.h"
 
-#include "qtui/mock_tree_item_qmodel.h"
+#include "qtui/core/mock_tree_item_qmodel.h"
 #include "snail/mock_attribute_model.h"
-#include "qtui/mock_attribute_editor_view.h"
+#include "qtui/ui/mock_attribute_editor_view.h"
 #include "snail/mock_attribute_set_model.h"
-#include "qtui/mock_attribute_set_view.h"
+#include "qtui/ui/mock_attribute_set_view.h"
 
 using namespace snailcore;  // NOLINT
 using namespace snailcore::tests;  // NOLINT
@@ -36,8 +36,7 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
     // Setup fixture
     model = std::make_shared<MockKbNodeLinkAttributePopupEditorModel>();
     view = std::make_shared<MockKbNodeLinkAttributePopupEditorView>();
-    auto link_type_qmodel_up = utils::make_unique<MockTreeItemQModel>();
-    link_type_qmodel = link_type_qmodel_up.get();
+    link_type_qmodel = std::make_shared<MockTreeItemQModel>();
 
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
@@ -60,7 +59,7 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
 
     // Excercise system
     presenter = std::make_shared<KbNodeLinkAttributePopupEditorPresenter>(
-        model, view, std::move(link_type_qmodel_up));
+        model, view, link_type_qmodel);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -82,7 +81,7 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
 
   PfCreateViewArgs create_attr_set_view_args;
 
-  MockTreeItemQModel* link_type_qmodel;
+  std::shared_ptr<MockTreeItemQModel> link_type_qmodel;
   QModelIndexGenerator index_generator;
   // endregion
 
@@ -122,7 +121,7 @@ void KbNodeLinkAttributePopupEditorPresenterTest::createValueAttributeView(
   std::shared_ptr<IPfModel> value_attr_pfmodel = value_attr_model;
   auto value_attr_view = std::make_shared<MockAttributeEditorView>();
 
-  R_EXPECT_CALL(*model, createValueKbNodeAttrModel())
+  R_EXPECT_CALL(*model, createValueAttrModel())
       .WillOnce(Return(value_attr_model));
   R_EXPECT_CALL(triad_manager, createViewFor(value_attr_pfmodel, _, _, _))
       .WillOnce(Return(value_attr_view));
@@ -134,13 +133,16 @@ void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
   auto link_type_provider = xtestutils::genDummyPointer<ITreeItemProvider>();
-  R_EXPECT_CALL(*model, getLinkTypeProvider())
+  R_EXPECT_CALL(*model, getLinkTypeItemProvider())
       .WillOnce(Return(link_type_provider));
   R_EXPECT_CALL(*link_type_qmodel, setTreeItemProvider(link_type_provider));
-  R_EXPECT_CALL(*view, setLinkTypeQModel(link_type_qmodel));
+
+  auto qmodel = xtestutils::genDummyPointer<QAbstractItemModel>();
+  R_EXPECT_CALL(*link_type_qmodel, qmodel()).WillOnce(Return(qmodel));
+  R_EXPECT_CALL(*view, setLinkTypeQModel(qmodel));
 
   // select the current link_type
-  auto current_link_type = xtestutils::genDummyPointer<IKbNode>();
+  auto current_link_type = xtestutils::genDummyPointer<ITreeItem>();
   auto index = index_generator.index();
   R_EXPECT_CALL(*model, getCurrentLinkType())
       .WillOnce(Return(current_link_type));
@@ -171,7 +173,7 @@ void KbNodeLinkAttributePopupEditorPresenterTest::createLinkAttributesView(
 TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
        should_be_able_to_set_user_select_link_type_to_model) { // NOLINT
   // Setup fixture
-  auto link_type = xtestutils::genDummyPointer<IKbNode>();
+  auto link_type = xtestutils::genDummyPointer<ITreeItem>();
   auto index = index_generator.index();
 
   // Expectations
@@ -186,19 +188,23 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
 TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
        should_re_create_link_attr_set_view_when_link_type_changed) { // NOLINT
   // Setup fixture
-  auto attr_set_model = std::make_shared<MockAttributeSetModel>();
-  std::shared_ptr<IPfModel> attr_set_pfmodel = attr_set_model;
-  auto attr_set_view = std::make_shared<MockAttributeSetView>();
+  auto new_attr_set_model = std::make_shared<MockAttributeSetModel>();
+  std::shared_ptr<IPfModel> new_attr_set_pfmodel = new_attr_set_model;
+  auto new_attr_set_view = std::make_shared<MockAttributeSetView>();
+
+  auto old_attr_set_model = xtestutils::genDummyPointer<IAttributeSetModel>();
 
   // Expectations
-  EXPECT_CALL(triad_manager, createViewFor(attr_set_pfmodel, _, _, _))
+  EXPECT_CALL(triad_manager, removeTriadBy(old_attr_set_model));
+
+  EXPECT_CALL(triad_manager, createViewFor(new_attr_set_pfmodel, _, _, _))
       .WillOnce(DoAll(
           SaveArgPointee<kCreateViewArgsIdx>(&create_attr_set_view_args),
-          Return(attr_set_view)));
-  EXPECT_CALL(*view, setLinkAttributeSetView(attr_set_view.get()));
+          Return(new_attr_set_view)));
+  EXPECT_CALL(*view, setLinkAttributeSetView(new_attr_set_view.get()));
 
   // Exercise system
-  linkTypeChanged(attr_set_model);
+  linkTypeChanged(new_attr_set_model, old_attr_set_model);
 
   // Verify result
   checkCreateAttrSetViewArgs();
