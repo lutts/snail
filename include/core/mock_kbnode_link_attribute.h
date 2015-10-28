@@ -22,6 +22,7 @@ class MockKbNodeLinkAttributeSupplier
 
   // IAttributeSupplier mocks
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
+  MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 
   // GenericAttributeSupplier mocks
   MOCK_METHOD0(createAttribute, IAttribute*());
@@ -35,7 +36,8 @@ class MockKbNodeLinkAttribute : public fto::KbNodeLinkAttribute {
   COMMON_ATTRIBUTE_MOCKS
 
   MOCK_CONST_METHOD0(supplier, fto::KbNodeLinkAttributeSupplier*());
-  MOCK_METHOD0(valueAttr, IAttribute*());
+  MOCK_METHOD0(valueAttr, snailcore::KbNodeAttribute*());
+  MOCK_METHOD0(linkType, snailcore::LinkType*());
 };
 
 }  // namespace tests

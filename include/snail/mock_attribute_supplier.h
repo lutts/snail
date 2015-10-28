@@ -28,6 +28,8 @@ class MockAttributeSupplier : public IAttributeSupplier {
   MOCK_METHOD1(removeAttribute, void(IAttribute* attr));
 
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
+
+  MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 };
 
 }  // namespace tests

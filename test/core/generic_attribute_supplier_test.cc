@@ -19,6 +19,7 @@ class MockGenericAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
 
   MOCK_METHOD0(createAttribute, IAttribute*());
+  MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 };
 
 class GenericAttributeSupplierTest : public ::testing::Test {

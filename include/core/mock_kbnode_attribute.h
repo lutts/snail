@@ -29,6 +29,7 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
   // IAttributeSupplier mocks
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
+  MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 
   // GenericAttributeSupplier mocks
   MOCK_METHOD0(createAttribute, IAttribute*());

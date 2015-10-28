@@ -51,5 +51,12 @@ T* genDifferentDummyPointer(T* ref_ptr) {
 
 }  // namespace xtestutils
 
+template <typename T>
+void assertObjectCopyEq(const T& a, const T& b) {
+  ASSERT_NE(&a, &b)
+      << "address should not be equal";
+  ASSERT_EQ(a, b)
+      << "content should be equal";
+}
 
 #endif  // TEST_TESTUTILS_UTILS_H_

@@ -23,6 +23,9 @@ class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   virtual ~KbNodeAttributeSupplier();
 
+  // IAttributeSupplier impls
+  IAttributeSupplier* clone() const override { return nullptr; }  // TODO(lutts): impl this
+
   // GenericAttributeSupplier impls
   IAttribute* createAttribute() override;
 
@@ -36,6 +39,7 @@ class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
 
 class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
  public:
+  KbNodeAttribute() = default;
   explicit KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier);
   virtual ~KbNodeAttribute();
 
@@ -49,10 +53,15 @@ class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
   fto::KbNodeAttributeSupplier* supplier() const;
   void setKbNode(IKbNode* kbnode);
 
- private:
-  SNAIL_DISABLE_COPY(KbNodeAttribute);
+  KbNodeAttribute& operator=(const KbNodeAttribute& rhs) {
+    attr_supplier_ = rhs.attr_supplier_;
+    kbnode_ = rhs.kbnode_;
 
-  fto::KbNodeAttributeSupplier* attr_supplier_;
+    return *this;
+  }
+
+ private:
+  fto::KbNodeAttributeSupplier* attr_supplier_ { nullptr };
   IKbNode* kbnode_ { nullptr };
 };
 

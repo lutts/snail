@@ -16,6 +16,8 @@ KbNodeAttribute::~KbNodeAttribute() = default;
 
 // IAttribute
 utils::U8String KbNodeAttribute::displayName() const {
+  if (!attr_supplier_)
+    return "";
   return attr_supplier_->name();
 }
 
@@ -46,7 +48,8 @@ fto::KbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
 
 void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
   kbnode_ = kbnode;
-  attr_supplier_->attributeChanged(this);
+  if (attr_supplier_)
+    attr_supplier_->attributeChanged(this);
 }
 
 //////////////// KbNodeAttributeSupplier ////////////////

@@ -144,6 +144,8 @@ class MockAttrSupplierTestStub : public AttrSupplierTestStub {
   MOCK_METHOD1(addAttributeCalled, ComplexReturnValue(IAttribute* new_attr));
   MOCK_METHOD1(attributeRemoved, ComplexReturnValue(IAttribute* attr));
 
+  MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
+
   static std::vector<std::unique_ptr<MockAttrSupplierTestStub>>
   createAttributeSuppliers();
 

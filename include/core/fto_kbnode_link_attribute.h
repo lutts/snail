@@ -17,6 +17,8 @@
 namespace snailcore {
 
 class ITreeItemProvider;
+class KbNodeAttribute;
+class LinkType;
 
 namespace fto {
 
@@ -34,7 +36,8 @@ class KbNodeLinkAttribute : public IAttribute {
   virtual ~KbNodeLinkAttribute() = default;
 
   virtual KbNodeLinkAttributeSupplier* supplier() const = 0;
-  virtual IAttribute* valueAttr() = 0;
+  virtual snailcore::KbNodeAttribute* valueAttr() = 0;
+  virtual snailcore::LinkType* linkType() = 0;
 };
 
 }  // namespace fto

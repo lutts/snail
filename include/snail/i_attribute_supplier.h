@@ -33,6 +33,8 @@ class IAttributeSupplier {
 
   virtual void attributeChanged(IAttribute* attr) = 0;
 
+  virtual IAttributeSupplier* clone() const = 0;
+
  protected:
   IAttributeSupplier& operator=(const IAttributeSupplier& rhs);
 };
