@@ -61,12 +61,15 @@ class MockObjectRecorder {
     mock_objs.push_back(mock_obj);
   }
 
-  void verify() {
+  bool verify() {
+    bool result = true;
     for (auto mock_obj : mock_objs) {
-      Mock::VerifyAndClear(mock_obj);
+      result &= Mock::VerifyAndClear(mock_obj);
     }
 
     clear();
+
+    return result;
   }
 
   void clear() {
@@ -115,5 +118,47 @@ class MockObjectRecorder {
 #define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_END   do { } while (0)
 
 #endif  // OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
+
+/**
+ * TestFixture is a small closure to setup environment for a test task.
+ *
+ * When to Use TestFixture?
+ *   if you find yourself copy the same sequence of code from once test to
+ * another, you have two choice:
+ *   1. extract the sequence of code to SetUp, or if inappropriate
+ *   2. extract the sequence of code to TestFixture
+ */
+class TestFixture {
+ public:
+  explicit TestFixture(const utils::U8String& name)
+      : name_(name) { }
+
+  virtual ~TestFixture() {
+    verify();
+  }
+
+  virtual void setup() { }
+
+  void verify() {
+    if (!mock_obj_recorder.verify()) {
+      std::cerr << name_ << ": fixture verify failed." << std::endl;
+    }
+  }
+
+ protected:
+  utils::U8String name_;
+  MockObjectRecorder mock_obj_recorder;
+
+ private:
+  SNAIL_DISABLE_COPY(TestFixture);
+};
+
+#define LINE_NUMBER_STR_(x) #x
+#define LINE_NUMBER_STR(x) LINE_NUMBER_STR_(x)
+#define FIXTURE_LOCATION __FILE__ ":" LINE_NUMBER_STR(__LINE__)
+
+#define FixtureHelper(FixtureType, var)         \
+  FixtureType var { FIXTURE_LOCATION, this };   \
+  var.setup();
 
 #endif  // TEST_TESTUTILS_GMOCK_COMMON_H_
