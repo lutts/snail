@@ -16,10 +16,16 @@
 #define FTO_BEGIN_NAMESPACE namespace fto {
 #define FTO_END_NAMESPACE }
 
+#define TEST_PROXY(RealClass) fto::RealClass##TestProxy
+#define UNFOLD_TEST_PROXY(proxy) *proxy
+
 #else  // DISABLE_TEST_CODE
 
 #define FTO_BEGIN_NAMESPACE
 #define FTO_END_NAMESPACE
+
+#define TEST_PROXY(RealClass) RealClass
+#define UNFOLD_TEST_PROXY(proxy) proxy
 
 #endif
 
