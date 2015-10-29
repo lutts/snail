@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
-#define INCLUDE_QTUI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#ifndef INCLUDE_QTUI_UI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#define INCLUDE_QTUI_UI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
 
 #include "qtui/ui/i_attribute_editor_view.h"
 
@@ -19,7 +19,8 @@ class IKbNodeAttributeEditView : public IAttributeEditorView {
   virtual ~IKbNodeAttributeEditView() = default;
 
   SNAIL_SIGSLOT_PURE_VIRTUAL(UserClickedIndex, void(const QModelIndex& index));
-  SNAIL_SIGSLOT_PURE_VIRTUAL(FilterPatternChanged, void(const QString& search_str));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(FilterPatternChanged,
+                             void(const QString& search_str));
   SNAIL_SIGSLOT_PURE_VIRTUAL(EditingFinished, void(const QString& text));
   SNAIL_SIGSLOT_PURE_VIRTUAL(UserClickAddKbNode, void());
 
@@ -31,4 +32,4 @@ class IKbNodeAttributeEditView : public IAttributeEditorView {
 };
 
 
-#endif  // INCLUDE_QTUI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#endif  // INCLUDE_QTUI_UI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_

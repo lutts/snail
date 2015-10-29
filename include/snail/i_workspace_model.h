@@ -23,9 +23,12 @@ class IWorkSpaceModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(WorkSpaceModel);
 
-  SNAIL_SIGSLOT_PURE_VIRTUAL(WorkModelAdded, void(std::shared_ptr<IWorkModel> work_model));
-  SNAIL_SIGSLOT_PURE_VIRTUAL(ActiveWorkModelChanged, void(IWorkModel* work_model));
-  SNAIL_SIGSLOT_PURE_VIRTUAL(WorkModelActivelyRemoved, void(IWorkModel* work_model));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(WorkModelAdded,
+                             void(std::shared_ptr<IWorkModel> work_model));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(ActiveWorkModelChanged,
+                             void(IWorkModel* work_model));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(WorkModelActivelyRemoved,
+                             void(IWorkModel* work_model));
 
   virtual void createWork(const utils::U8String& work_name) = 0;
   virtual void removeWorkModel(IWorkModel* model) = 0;

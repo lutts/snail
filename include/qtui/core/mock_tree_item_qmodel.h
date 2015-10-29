@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
-#define INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
+#ifndef INCLUDE_QTUI_CORE_MOCK_TREE_ITEM_QMODEL_H_
+#define INCLUDE_QTUI_CORE_MOCK_TREE_ITEM_QMODEL_H_
 
 #include "qtui/core/fto_tree_item_qmodel.h"
 
@@ -22,4 +22,4 @@ class MockTreeItemQModel : public fto::TreeItemQModel {
                                const ITreeItem* parent_item));
 };
 
-#endif  // INCLUDE_QTUI_MOCK_TREE_ITEM_QMODEL_H_
+#endif  // INCLUDE_QTUI_CORE_MOCK_TREE_ITEM_QMODEL_H_

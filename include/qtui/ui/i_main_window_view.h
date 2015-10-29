@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_I_MAIN_WINDOW_VIEW_H_
-#define INCLUDE_QTUI_I_MAIN_WINDOW_VIEW_H_
+#ifndef INCLUDE_QTUI_UI_I_MAIN_WINDOW_VIEW_H_
+#define INCLUDE_QTUI_UI_I_MAIN_WINDOW_VIEW_H_
 
 #include "qtui/ui/generic_view_base.h"
 #include "utils/signal_slot.h"
@@ -18,7 +18,8 @@ class IMainWindowView : public GenericViewBase {
  public:
   virtual ~IMainWindowView() = default;
 
-  SNAIL_SIGSLOT_PURE_VIRTUAL(UserClickAddWork, void(const utils::U8String& work_name));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(UserClickAddWork,
+                             void(const utils::U8String& work_name));
   SNAIL_SIGSLOT_PURE_VIRTUAL(RequestClose, bool());
 
   virtual void setWindowTitle2(const utils::U8String& title) = 0;
@@ -27,4 +28,4 @@ class IMainWindowView : public GenericViewBase {
   virtual void setWorkSpaceView(IWorkSpaceView* workspace_view) = 0;
 };
 
-#endif  // INCLUDE_QTUI_I_MAIN_WINDOW_VIEW_H_
+#endif  // INCLUDE_QTUI_UI_I_MAIN_WINDOW_VIEW_H_

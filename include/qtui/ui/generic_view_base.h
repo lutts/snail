@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_GENERIC_VIEW_BASE_H_
-#define INCLUDE_QTUI_GENERIC_VIEW_BASE_H_
+#ifndef INCLUDE_QTUI_UI_GENERIC_VIEW_BASE_H_
+#define INCLUDE_QTUI_UI_GENERIC_VIEW_BASE_H_
 
 #include "pfmvp/i_pf_view.h"
 
@@ -19,4 +19,4 @@ class GenericViewBase : public pfmvp::IPfView {
   virtual QWidget* getWidget() { return nullptr; }
 };
 
-#endif  // INCLUDE_QTUI_GENERIC_VIEW_BASE_H_
+#endif  // INCLUDE_QTUI_UI_GENERIC_VIEW_BASE_H_

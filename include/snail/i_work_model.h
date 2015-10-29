@@ -26,7 +26,8 @@ class IWorkModel : public pfmvp::IPfModel {
 
   DEF_MODEL_ID(WorkModel);
 
-  SNAIL_SIGSLOT_PURE_VIRTUAL(NameChanged, void(const utils::U8String& new_name));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(NameChanged,
+                             void(const utils::U8String& new_name));
 
   virtual void set_work(fto::Work* work) = 0;
 

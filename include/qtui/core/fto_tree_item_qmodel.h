@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_I_TREE_ITEM_QMODEL_H_
-#define INCLUDE_QTUI_I_TREE_ITEM_QMODEL_H_
+#ifndef INCLUDE_QTUI_CORE_FTO_TREE_ITEM_QMODEL_H_
+#define INCLUDE_QTUI_CORE_FTO_TREE_ITEM_QMODEL_H_
 
 namespace snailcore {
 class ITreeItem;
@@ -45,4 +45,4 @@ class TreeItemQModel { };
 
 }  // namespace fto
 
-#endif  // INCLUDE_QTUI_I_TREE_ITEM_QMODEL_H_
+#endif  // INCLUDE_QTUI_CORE_FTO_TREE_ITEM_QMODEL_H_

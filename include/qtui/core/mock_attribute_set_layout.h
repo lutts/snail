@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_LAYOUT_H_
-#define INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_LAYOUT_H_
+#ifndef INCLUDE_QTUI_CORE_MOCK_ATTRIBUTE_SET_LAYOUT_H_
+#define INCLUDE_QTUI_CORE_MOCK_ATTRIBUTE_SET_LAYOUT_H_
 
 #include <vector>
 
@@ -23,4 +23,4 @@ class MockAttributeSetLayout : public fto::AttributeSetLayout {
            bool edit_mode));
 };
 
-#endif  // INCLUDE_QTUI_MOCK_ATTRIBUTE_SET_LAYOUT_H_
+#endif  // INCLUDE_QTUI_CORE_MOCK_ATTRIBUTE_SET_LAYOUT_H_

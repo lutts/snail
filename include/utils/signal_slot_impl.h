@@ -50,7 +50,7 @@
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \
-  SNAIL_SIGSLOT_IMPL_(sigName, )                                        \
+  SNAIL_SIGSLOT_IMPL_(sigName, )
 
 #define SNAIL_SIGSLOT_COMBINER_IMPL(sigName, CombinerType, ...)         \
   using sigName##Signature = __VA_ARGS__;                               \
@@ -63,14 +63,14 @@
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \
-  SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn_num, )                 \
+  SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn_num, )
 
 #define SNAIL_SIGSLOT_COMBINER_MAX_CONN_IMPL(sigName, CombinerT, maxconn, ...) \
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature, \
                                                       CombinerT>;       \
-  SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, maxconn, )                      \
+  SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, maxconn, )
 
 // override impls
 #define SNAIL_SIGSLOT_OVERRIDE(sigName)                                 \
@@ -96,7 +96,7 @@
   using sigName##Signature = PrimaryType::sigName##Signature;           \
   using sigName##SlotType = PrimaryType::sigName##SlotType;             \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \
-  SNAIL_SIGSLOT_IMPL_(sigName, )                                        \
+  SNAIL_SIGSLOT_IMPL_(sigName, )
 
 #define SNAIL_SIGSLOT_COMBINER_PIMPL(PrimaryType, sigName, CombinerType) \
   using sigName##Signature = PrimaryType::sigName##Signature;           \
@@ -109,7 +109,7 @@
   using sigName##Signature = PrimaryType::sigName##Signature;           \
   using sigName##SlotType = PrimaryType::sigName##SlotType;             \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \
-  SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn, )                     \
+  SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn, )
 
 #define SNAIL_SIGSLOT_COMBINER_MAX_CONN_PIMPL(PrimaryType, sigName,     \
                                               CombinerType, max_conn)   \

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_MAIN_WINDOW_VIEW_H_
-#define INCLUDE_QTUI_MOCK_MAIN_WINDOW_VIEW_H_
+#ifndef INCLUDE_QTUI_UI_MOCK_MAIN_WINDOW_VIEW_H_
+#define INCLUDE_QTUI_UI_MOCK_MAIN_WINDOW_VIEW_H_
 
 #include "qtui/ui/i_main_window_view.h"
 
@@ -23,4 +23,4 @@ class MockMainWindowView : public IMainWindowView {
 };
 
 
-#endif  // INCLUDE_QTUI_MOCK_MAIN_WINDOW_VIEW_H_
+#endif  // INCLUDE_QTUI_UI_MOCK_MAIN_WINDOW_VIEW_H_

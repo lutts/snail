@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_I_ATTRIBUTE_SET_VIEW_H_
-#define INCLUDE_QTUI_I_ATTRIBUTE_SET_VIEW_H_
+#ifndef INCLUDE_QTUI_UI_I_ATTRIBUTE_SET_VIEW_H_
+#define INCLUDE_QTUI_UI_I_ATTRIBUTE_SET_VIEW_H_
 
 #include "qtui/ui/generic_view_base.h"
 #include "utils/signal_slot.h"
@@ -23,4 +23,4 @@ class IAttributeSetView : public GenericViewBase {
 };
 
 
-#endif  // INCLUDE_QTUI_I_ATTRIBUTE_SET_VIEW_H_
+#endif  // INCLUDE_QTUI_UI_I_ATTRIBUTE_SET_VIEW_H_

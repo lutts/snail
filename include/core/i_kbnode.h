@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_SNAIL_I_KBNODE_H_
-#define INCLUDE_SNAIL_I_KBNODE_H_
+#ifndef INCLUDE_CORE_I_KBNODE_H_
+#define INCLUDE_CORE_I_KBNODE_H_
 
 #include "utils/u8string.h"
 #include "snail/i_tree_item.h"
@@ -23,4 +23,4 @@ class IKbNode : public ITreeItem {
 
 }  // namespace snailcore
 
-#endif  // INCLUDE_SNAIL_I_KBNODE_H_
+#endif  // INCLUDE_CORE_I_KBNODE_H_

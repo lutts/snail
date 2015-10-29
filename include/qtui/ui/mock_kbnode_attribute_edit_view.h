@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
-#define INCLUDE_QTUI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#ifndef INCLUDE_QTUI_UI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#define INCLUDE_QTUI_UI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
 
 #include "qtui/ui/i_kbnode_attribute_edit_view.h"
 
@@ -25,4 +25,4 @@ class MockKbNodeAttributeEditView : public IKbNodeAttributeEditView {
   MOCK_METHOD0(clearWarningMessages, void());
 };
 
-#endif  // INCLUDE_QTUI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_
+#endif  // INCLUDE_QTUI_UI_MOCK_KBNODE_ATTRIBUTE_EDIT_VIEW_H_

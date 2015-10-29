@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_FTO_ATTRIBUTE_SET_LAYOUT_H_
-#define INCLUDE_QTUI_FTO_ATTRIBUTE_SET_LAYOUT_H_
+#ifndef INCLUDE_QTUI_CORE_FTO_ATTRIBUTE_SET_LAYOUT_H_
+#define INCLUDE_QTUI_CORE_FTO_ATTRIBUTE_SET_LAYOUT_H_
 
 #include <vector>
 
@@ -46,4 +46,4 @@ class AttributeSetLayout { };
 }  // namespace fto
 
 
-#endif  // INCLUDE_QTUI_FTO_ATTRIBUTE_SET_LAYOUT_H_
+#endif  // INCLUDE_QTUI_CORE_FTO_ATTRIBUTE_SET_LAYOUT_H_
