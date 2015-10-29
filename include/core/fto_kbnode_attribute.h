@@ -10,6 +10,7 @@
 
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"
+#include "test/test_proxy.h"
 
 #ifndef DISABLE_TEST_CODE
 
@@ -34,6 +35,41 @@ class KbNodeAttribute : public IAttribute {
 
   virtual KbNodeAttributeSupplier* supplier() const = 0;
   virtual void setKbNode(IKbNode* kbnode) = 0;
+
+  KbNodeAttribute* clone() const override = 0;
+};
+
+class KbNodeAttributeTestProxy : public KbNodeAttribute {
+  TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(KbNodeAttribute);
+
+ public:
+  utils::U8String displayName() const override {
+    return real_obj_->displayName();
+  }
+
+  utils::U8String valueText() const override {
+    return real_obj_->valueText();
+  }
+
+  bool isEmpty() const override {
+    return real_obj_->isEmpty();
+  }
+
+  void clear() override {
+    real_obj_->clear();
+  }
+
+  void accept(IAttributeVisitor* visitor) override {
+    real_obj_->accept(visitor);
+  }
+
+  KbNodeAttributeSupplier* supplier() const override {
+    return real_obj_->supplier();
+  }
+
+  void setKbNode(IKbNode* kbnode) override {
+    real_obj_->setKbNode(kbnode);
+  }
 };
 
 }  // namespace fto

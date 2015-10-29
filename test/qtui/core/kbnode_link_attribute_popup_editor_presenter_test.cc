@@ -7,6 +7,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 #include "pfmvp/mock_pf_triad_manager.h"
+#include "test/testutils/random_string.h"
 #include "test/testutils/qmodelindex_generator.h"
 
 // triad headers
@@ -117,6 +118,11 @@ void KbNodeLinkAttributePopupEditorPresenterTest::createValueAttributeView(
     MockObjectRecorder* mock_recorder) {
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
+  xtestutils::RandomString value_attr_name;
+  R_EXPECT_CALL(*model, valueAttrName())
+      .WillOnce(Return(value_attr_name.ustr()));
+  R_EXPECT_CALL(*view, setValueAttrName(value_attr_name.qstr()));
+
   auto value_attr_model = std::make_shared<MockAttributeModel>();
   std::shared_ptr<IPfModel> value_attr_pfmodel = value_attr_model;
   auto value_attr_view = std::make_shared<MockAttributeEditorView>();
@@ -144,7 +150,7 @@ void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
   // select the current link_type
   auto current_link_type = xtestutils::genDummyPointer<ITreeItem>();
   auto index = index_generator.index();
-  R_EXPECT_CALL(*model, getCurrentLinkType())
+  R_EXPECT_CALL(*model, getCurrentProtoLinkType())
       .WillOnce(Return(current_link_type));
   R_EXPECT_CALL(*link_type_qmodel, itemToIndex(current_link_type))
       .WillOnce(Return(index));
@@ -179,7 +185,7 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
   // Expectations
   EXPECT_CALL(*link_type_qmodel, indexToItem(index))
       .WillOnce(Return(link_type));
-  EXPECT_CALL(*model, setLinkType(link_type));
+  EXPECT_CALL(*model, setProtoLinkType(link_type));
 
   // Exercise system
   userSelectLinkType(index);

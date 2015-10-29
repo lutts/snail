@@ -12,6 +12,7 @@
 
 #include "pfmvp/i_pf_model.h"
 #include "utils/signal_slot.h"
+#include "utils/u8string.h"
 
 namespace snailcore {
 
@@ -32,11 +33,12 @@ class IKbNodeLinkAttributePopupEditorModel : public pfmvp::IPfModel {
            IAttributeSetModel* old_attr_set_model));
   SNAIL_SIGSLOT_PURE_VIRTUAL(ValidateComplete, void(bool result));
 
+  virtual utils::U8String valueAttrName() const = 0;
   virtual std::shared_ptr<IAttributeModel> createValueAttrModel() = 0;
   virtual ITreeItemProvider* getLinkTypeItemProvider() const = 0;
-  virtual ITreeItem* getCurrentLinkType() const = 0;
+  virtual const ITreeItem* getCurrentProtoLinkType() const = 0;
   virtual std::shared_ptr<IAttributeSetModel> getCurrentLinkAttrSetModel() = 0;
-  virtual void setLinkType(ITreeItem* link_type_item) = 0;
+  virtual void setProtoLinkType(ITreeItem* link_type_item) = 0;
   virtual void editFinished() = 0;
 };
 

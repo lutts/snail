@@ -18,6 +18,8 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
  public:
   COMMON_ATTRIBUTE_MOCKS
 
+  MOCK_CONST_METHOD0(clone, fto::KbNodeAttribute*());
+
   MOCK_CONST_METHOD0(supplier, fto::KbNodeAttributeSupplier*());
   MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));
 };

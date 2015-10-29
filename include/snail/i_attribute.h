@@ -27,7 +27,7 @@ class IAttribute {
   virtual void accept(IAttributeVisitor* visitor) = 0;
 
   // TODO(lutts): impl this method in subclasses
-  virtual IAttribute* clone() { return nullptr; }
+  virtual IAttribute* clone() const { return nullptr; }
 
  protected:
   IAttribute& operator=(const IAttribute& rhs);

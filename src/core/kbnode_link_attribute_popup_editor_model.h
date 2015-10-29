@@ -12,29 +12,34 @@
 #include "snail/i_kbnode_link_attribute_popup_editor_model.h"
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
+#include "core/fto_kbnode_attribute.h"
+#include "core/fto_link_type.h"
 
 namespace snailcore {
 
 FTO_BEGIN_NAMESPACE
 class KbNodeLinkAttribute;
+class LinkType;
 FTO_END_NAMESPACE
 
-class IAttribute;
 class IAttributeModelFactory;
+class IAttributeSetModelFactory;
 
 class KbNodeLinkAttributePopupEditorModel
     : public IKbNodeLinkAttributePopupEditorModel {
  public:
   KbNodeLinkAttributePopupEditorModel(
       fto::KbNodeLinkAttribute* attr,
-      IAttributeModelFactory* attr_model_factory);
+      IAttributeModelFactory* attr_model_factory,
+      IAttributeSetModelFactory* attr_set_model_factory);
   virtual ~KbNodeLinkAttributePopupEditorModel();
 
+  utils::U8String valueAttrName() const override;
   std::shared_ptr<IAttributeModel> createValueAttrModel() override;
   ITreeItemProvider* getLinkTypeItemProvider() const override;
-  ITreeItem* getCurrentLinkType() const override;
+  const ITreeItem* getCurrentProtoLinkType() const override;
   std::shared_ptr<IAttributeSetModel> getCurrentLinkAttrSetModel() override;
-  void setLinkType(ITreeItem* link_type_item) override;
+  void setProtoLinkType(ITreeItem* proto_link_type_item) override;
   void editFinished() override;
 
  private:
@@ -43,9 +48,19 @@ class KbNodeLinkAttributePopupEditorModel
   SNAIL_SIGSLOT_OVERRIDE(LinkTypeChanged);
   SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 
+  void validateComplete();
+
   fto::KbNodeLinkAttribute* attr_;
-  IAttribute* value_attr_copy_;
+  TEST_PROXY(KbNodeAttribute) value_attr_copy_;
+  mutable const fto::LinkType* proto_link_type_ { nullptr };
+  TEST_PROXY(LinkType) link_type_copy_;
+
   IAttributeModelFactory* attr_model_factory_;
+  IAttributeSetModelFactory* attr_set_model_factory_;
+
+  IAttributeSetModel* curr_attr_set_model_;
+  bool attr_model_valid_ { true };
+  bool attr_set_model_valid_ { true };
 };
 
 

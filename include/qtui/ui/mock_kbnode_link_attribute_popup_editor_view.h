@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_QTUI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
-#define INCLUDE_QTUI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#ifndef INCLUDE_QTUI_UI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#define INCLUDE_QTUI_UI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
 
 #include "qtui/ui/i_kbnode_link_attribute_popup_editor_view.h"
 
@@ -18,6 +18,7 @@ class MockKbNodeLinkAttributePopupEditorView
   SNAIL_MOCK_SLOT(UserSelectLinkType);
   SNAIL_MOCK_SLOT(UserClickDone);
 
+  MOCK_METHOD1(setValueAttrName, void(const QString& value_attr_name));
   MOCK_METHOD1(setValueAttrEditor, void(IAttributeEditorView* value_attr_view));
   MOCK_METHOD1(setLinkTypeQModel, void(QAbstractItemModel* link_type_qmodel));
   MOCK_METHOD1(setCurrentLinkType,
@@ -27,4 +28,4 @@ class MockKbNodeLinkAttributePopupEditorView
   MOCK_METHOD1(setDoneButtonEnabled, void(bool enabled));
 };
 
-#endif  // INCLUDE_QTUI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_
+#endif  // INCLUDE_QTUI_UI_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_VIEW_H_

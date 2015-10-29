@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INCLUDE_CORE_I_KBNODE_LINK_ATTRIBUTE_H_
-#define INCLUDE_CORE_I_KBNODE_LINK_ATTRIBUTE_H_
+#ifndef INCLUDE_CORE_FTO_KBNODE_LINK_ATTRIBUTE_H_
+#define INCLUDE_CORE_FTO_KBNODE_LINK_ATTRIBUTE_H_
 
 
 #include "snail/i_attribute.h"
@@ -20,6 +20,9 @@ class ITreeItemProvider;
 
 namespace fto {
 
+class KbNodeAttribute;
+class LinkType;
+
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
   KbNodeLinkAttributeSupplier(const utils::U8String& name, int max_attrs)
@@ -27,6 +30,7 @@ class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
   virtual ~KbNodeLinkAttributeSupplier() = default;
 
   virtual ITreeItemProvider* getLinkTypeItemProvider() const = 0;
+  virtual const LinkType* getDefaultProtoLinkType() const = 0;
 };
 
 class KbNodeLinkAttribute : public IAttribute {
@@ -34,7 +38,12 @@ class KbNodeLinkAttribute : public IAttribute {
   virtual ~KbNodeLinkAttribute() = default;
 
   virtual KbNodeLinkAttributeSupplier* supplier() const = 0;
-  virtual IAttribute* valueAttr() = 0;
+  virtual KbNodeAttribute* valueAttr() = 0;
+  virtual void setValueAttr(const KbNodeAttribute& value_attr) = 0;
+  virtual const LinkType* protoLinkType() const = 0;
+  virtual void setProtoLinkType(const LinkType* proto_link_type) = 0;
+  virtual LinkType* linkType() = 0;
+  virtual void setLinkType(const LinkType& link_type) = 0;
 };
 
 }  // namespace fto
@@ -60,4 +69,4 @@ class KbNodeLinkAttribute : public IAttribute { };
 }  // namespace snailcore
 
 #endif  // DISABLE_TEST_CODE
-#endif  // INCLUDE_CORE_I_KBNODE_LINK_ATTRIBUTE_H_
+#endif  // INCLUDE_CORE_FTO_KBNODE_LINK_ATTRIBUTE_H_

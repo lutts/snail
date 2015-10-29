@@ -32,7 +32,7 @@ void KbNodeLinkAttributePopupEditorPresenter::initialize() {
   view()->whenUserSelectLinkType(
       [this](const QModelIndex& index) {
         auto link_type = link_type_qmodel_->indexToItem(index);
-        model()->setLinkType(link_type);
+        model()->setProtoLinkType(link_type);
       },
       shared_from_this());
 
@@ -58,6 +58,8 @@ void KbNodeLinkAttributePopupEditorPresenter::initialize() {
 }
 
 void KbNodeLinkAttributePopupEditorPresenter::createValueAttributeView() {
+  view()->setValueAttrName(U8StringToQString(model()->valueAttrName()));
+
   auto value_attr_model = model()->createValueAttrModel();
   auto value_attr_editor =
       createRawViewFor<IAttributeEditorView>(value_attr_model);
@@ -70,7 +72,7 @@ void KbNodeLinkAttributePopupEditorPresenter::initLinkTypeDropDownList() {
   view()->setLinkTypeQModel(link_type_qmodel_->qmodel());
 
   // select the current link type
-  auto current_link_type = model()->getCurrentLinkType();
+  auto current_link_type = model()->getCurrentProtoLinkType();
   auto current_index = link_type_qmodel_->itemToIndex(current_link_type);
   view()->setCurrentLinkType(current_index);
 }

@@ -46,6 +46,9 @@ class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
   void clear() override;
   void accept(IAttributeVisitor* visitor) override;
 
+  // TODO(lutts): impl this method
+  fto::KbNodeAttribute* clone() const override { return nullptr; }
+
   fto::KbNodeAttributeSupplier* supplier() const;
   void setKbNode(IKbNode* kbnode);
 
