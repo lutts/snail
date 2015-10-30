@@ -30,7 +30,7 @@ class KbNodeAttributeEditViewFactory
     (void)args;
     auto view = std::make_shared<KbNodeAttributeEditView>();
     auto kbnode_tree_model =
-        std::make_shared<TreeItemQModelWithClearAndAddMoreRow>();
+        utils::make_trackable<TreeItemQModelWithClearAndAddMoreRow>();
     return std::make_shared<KbNodeAttributeEditPresenter>(
         model, view, std::move(kbnode_tree_model));
   }

@@ -31,7 +31,7 @@ class SimpleKbNodeAdderViewFactory
     auto view = std::make_shared<SimpleKbNodeAdderView>();
     return std::make_shared<SimpleKbNodeAdderPresenter>(
         model, view,
-        std::make_shared<TreeItemQModelWithProviderRoot>());
+        utils::make_trackable<TreeItemQModelWithProviderRoot>());
   }
 
  private:

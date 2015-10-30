@@ -38,6 +38,9 @@ class TreeItemQModel
   void setTreeItemProvider(ITreeItemProvider* item_provider) {
     qmodel_->setTreeItemProvider(item_provider);
 
+    if (!this->shared_from_this())
+      ALOGW << "TreeItemQModel should be allocated with make_trackable";
+
     item_provider->whenBeginFilter(
         [this]() {
           qmodel_->beginResetQModel();
