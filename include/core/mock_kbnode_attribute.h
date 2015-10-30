@@ -11,6 +11,9 @@
 #include "core/fto_kbnode_attribute.h"
 #include "snail/mock_attribute.h"
 
+#define INTERFACE_MOCK_PHASE
+#include "test/interface.h"
+
 namespace snailcore {
 namespace tests {
 
@@ -18,10 +21,8 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
  public:
   COMMON_ATTRIBUTE_MOCKS
 
-  MOCK_CONST_METHOD0(clone, fto::KbNodeAttribute*());
-
-  MOCK_CONST_METHOD0(supplier, fto::KbNodeAttributeSupplier*());
-  MOCK_METHOD1(setKbNode, void(IKbNode* kbnode));
+  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeAttribute*());
+  KbNodeAttribute_METHODS
 };
 
 class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
@@ -41,5 +42,7 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
 
 }  // namespace tests
 }  // namespace snailcore
+
+#undef INTERFACE_MOCK_PHASE
 
 #endif  // INCLUDE_CORE_MOCK_KBNODE_ATTRIBUTE_H_

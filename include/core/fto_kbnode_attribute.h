@@ -8,17 +8,21 @@
 #ifndef INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
 #define INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
 
+#include "include/config.h"
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"
 #include "test/test_proxy.h"
-
-#ifndef DISABLE_TEST_CODE
 
 namespace snailcore {
 
 class IKbNode;
 
 namespace fto {
+
+#ifndef DISABLE_TEST_CODE
+
+#define INTERFACE_DEFINITION_PHASE
+#include "test/interface.h"
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -29,18 +33,25 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
   virtual IKbNode* getRootKbNode() const = 0;
 };
 
+#define KbNodeAttribute_METHODS                                         \
+  SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeAttributeSupplier*());    \
+  SNAIL_INTERFACE1(setKbNode, void(IKbNode* kbnode));
+
 class KbNodeAttribute : public IAttribute {
  public:
   virtual ~KbNodeAttribute() = default;
 
-  virtual KbNodeAttributeSupplier* supplier() const = 0;
-  virtual void setKbNode(IKbNode* kbnode) = 0;
-
-  KbNodeAttribute* clone() const override = 0;
+  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeAttribute*());
+  KbNodeAttribute_METHODS
 };
 
+#undef INTERFACE_DEFINITION_PHASE
+
+#define INTERFACE_TEST_PROXY_PHASE
+#include "test/interface.h"
+
 class KbNodeAttributeTestProxy : public KbNodeAttribute {
-  TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(KbNodeAttribute);
+  TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttribute);
 
  public:
   utils::U8String displayName() const override {
@@ -63,24 +74,12 @@ class KbNodeAttributeTestProxy : public KbNodeAttribute {
     real_obj_->accept(visitor);
   }
 
-  KbNodeAttributeSupplier* supplier() const override {
-    return real_obj_->supplier();
-  }
-
-  void setKbNode(IKbNode* kbnode) override {
-    real_obj_->setKbNode(kbnode);
-  }
+  KbNodeAttribute_METHODS
 };
 
-}  // namespace fto
-}  // namespace snailcore
+#define INTERFACE_TEST_PROXY_PHASE
 
 #else  // DISABLE_TEST_CODE
-
-#include "include/config.h"
-
-namespace snailcore {
-namespace fto {
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -91,8 +90,9 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
 
 class KbNodeAttribute : public IAttribute { };
 
+#endif  // DISABLE_TEST_CODE
+
 }  // namespace fto
 }  // namespace snailcore
 
-#endif  // DISABLE_TEST_CODE
 #endif  // INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
