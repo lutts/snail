@@ -16,7 +16,7 @@ SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
     std::shared_ptr<view_type> view,
     std::shared_ptr<fto::TreeItemQModel> kbnode_qmodel)
     : SimpleKbNodeAdderPresenterBase(model, view)
-    , kbnode_qmodel_(std::move(kbnode_qmodel)) {
+    , kbnode_qmodel_(kbnode_qmodel) {
 }
 
 SimpleKbNodeAdderPresenter::~SimpleKbNodeAdderPresenter() = default;
