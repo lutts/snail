@@ -21,6 +21,10 @@ namespace tests {
 
 class MockPfTriadManager : public IPfTriadManager {
  public:
+  enum {
+    kCreateViewArgsIdx = 3,
+  };
+
   SNAIL_PFTRIAD_MOCK_SLOT(RequestRemoveModel, IPfModel);
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyModel, IPfModel);
   SNAIL_PFTRIAD_MOCK_SLOT(AboutToDestroyView, IPfView);
@@ -59,8 +63,6 @@ class MockPfTriadManager : public IPfTriadManager {
     EXPECT_CALL(*this, removeTriadBy(pfmodel.get()));
   }
 };
-
-
 
 }  // namespace tests
 }  // namespace pfmvp

@@ -11,6 +11,7 @@
 #include <memory>
 
 #include "include/config.h"
+#include "src/utils/log/log.h"
 #include "src/qtui/core/tree_item_qmodel_impl.h"
 #include "utils/basic_utils.h"
 #include "utils/i_trackable.h"

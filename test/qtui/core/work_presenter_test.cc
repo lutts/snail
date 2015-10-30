@@ -91,8 +91,6 @@ void WorkPresenterTest::createAttributeSetView(
     MockObjectRecorder* mock_recorder) {
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
-  constexpr int kCreateViewArgsIdx = 3;
-
   auto attr_set_model =
       std::make_shared<MockAttributeSetModel>();
   auto attr_set_view = std::make_shared<MockAttributeSetView>();
@@ -102,7 +100,8 @@ void WorkPresenterTest::createAttributeSetView(
   std::shared_ptr<IPfModel> attr_set_pmodel = attr_set_model;
   R_EXPECT_CALL(triad_manager, createViewFor(attr_set_pmodel, _, _, _))
       .WillOnce(DoAll(
-          SaveArgPointee<kCreateViewArgsIdx>(&create_attr_set_view_args),
+          SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
+              &create_attr_set_view_args),
           Return(attr_set_view)));
   R_EXPECT_CALL(*view, setWorkAttrSetView(attr_set_view.get()));
 }

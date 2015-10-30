@@ -157,8 +157,6 @@ void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
   R_EXPECT_CALL(*view, setCurrentLinkType(index));
 }
 
-constexpr int kCreateViewArgsIdx = 3;
-
 void KbNodeLinkAttributePopupEditorPresenterTest::createLinkAttributesView(
     MockObjectRecorder* mock_recorder) {
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
@@ -171,7 +169,8 @@ void KbNodeLinkAttributePopupEditorPresenterTest::createLinkAttributesView(
       .WillOnce(Return(attr_set_model));
   R_EXPECT_CALL(triad_manager, createViewFor(attr_set_pfmodel, _, _, _))
       .WillOnce(DoAll(
-          SaveArgPointee<kCreateViewArgsIdx>(&create_attr_set_view_args),
+          SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
+              &create_attr_set_view_args),
           Return(attr_set_view)));
   R_EXPECT_CALL(*view, setLinkAttributeSetView(attr_set_view.get()));
 }
@@ -205,7 +204,8 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
 
   EXPECT_CALL(triad_manager, createViewFor(new_attr_set_pfmodel, _, _, _))
       .WillOnce(DoAll(
-          SaveArgPointee<kCreateViewArgsIdx>(&create_attr_set_view_args),
+          SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
+              &create_attr_set_view_args),
           Return(new_attr_set_view)));
   EXPECT_CALL(*view, setLinkAttributeSetView(new_attr_set_view.get()));
 
