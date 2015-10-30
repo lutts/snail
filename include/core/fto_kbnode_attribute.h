@@ -77,7 +77,7 @@ class KbNodeAttributeTestProxy : public KbNodeAttribute {
   KbNodeAttribute_METHODS
 };
 
-#define INTERFACE_TEST_PROXY_PHASE
+#undef INTERFACE_TEST_PROXY_PHASE
 
 #else  // DISABLE_TEST_CODE
 

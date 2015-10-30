@@ -21,16 +21,28 @@ namespace fto {
 
 #ifndef DISABLE_TEST_CODE
 
+#define INTERFACE_DEFINITION_PHASE
+#include "test/interface.h"
+
+#define LinkType_METHODS                        \
+  SNAIL_CONST_INTERFACE0(attributeSuppliers,    \
+                         std::vector<IAttributeSupplier*>());
+
 class LinkType : public ITreeItem {
  public:
   virtual ~LinkType() = default;
 
-  virtual LinkType* clone() const = 0;
-  virtual std::vector<IAttributeSupplier*> attributeSuppliers() const = 0;
+  SNAIL_CONST_INTERFACE0(clone, fto::LinkType*());
+  LinkType_METHODS
 };
 
+#undef INTERFACE_DEFINITION_PHASE
+
+#define INTERFACE_TEST_PROXY_PHASE
+#include "test/interface.h"
+
 class LinkTypeTestProxy : public LinkType {
-  TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(LinkType);
+  TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(LinkType);
 
  public:
   utils::U8String name() const override {
@@ -41,10 +53,10 @@ class LinkTypeTestProxy : public LinkType {
     return real_obj_->isGroupOnly();
   }
 
-  std::vector<IAttributeSupplier*> attributeSuppliers() const override {
-    return real_obj_->attributeSuppliers();
-  }
+  LinkType_METHODS
 };
+
+#undef INTERFACE_TEST_PROXY_PHASE
 
 #else  // DISABLE_TEST_CODE
 
