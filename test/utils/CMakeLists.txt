@@ -22,5 +22,8 @@ add_gmock_test(qmodelindex_generator_test
 add_executable(boost_signal2_wp_memory_leak_test boost_signal2_wp_memory_leak_test.cc)
 target_link_libraries(boost_signal2_wp_memory_leak_test utils)
 
+add_gmock_test(move_test
+  LIBS utils)
+
 add_subdirectory(log)
 add_subdirectory(command)
