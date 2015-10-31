@@ -21,9 +21,20 @@
     cloneObj(*(rhs.self_));                                             \
   }                                                                     \
                                                                         \
+  RealClass##TestProxy(RealClass##TestProxy&& rhs) {                    \
+    std::swap(self_, rhs.self_);                                        \
+    std::swap(owned_,rhs.owned_);                                       \
+  }                                                                     \
+                                                                        \
   RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) {    \
     removeOldObj();                                                     \
     cloneObj(*(rhs.self_));                                             \
+    return *this;                                                       \
+  }                                                                     \
+                                                                        \
+  RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) {         \
+    std::swap(self_, rhs.self_);                                        \
+    std::swap(owned_, rhs.owned_);                                      \
     return *this;                                                       \
   }                                                                     \
                                                                         \
