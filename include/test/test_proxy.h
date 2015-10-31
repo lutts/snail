@@ -13,66 +13,58 @@
 #define TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)               \
  public:                                                                \
   virtual ~RealClass##TestProxy() {                                     \
-    delete real_obj_;                                                   \
-  }                                                                     \
-                                                                        \
-  void removeOldObj() {                                                 \
-    if (real_obj_)                                                      \
-      delete real_obj_;                                                 \
+    delete self_;                                                       \
   }                                                                     \
                                                                         \
   RealClass##TestProxy(const RealClass##TestProxy& rhs) {               \
     removeOldObj();                                                     \
-    real_obj_ = rhs.real_obj_->clone();                                 \
+    cloneObj(*(rhs.self_));                                             \
   }                                                                     \
                                                                         \
   RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) {    \
     removeOldObj();                                                     \
-    real_obj_ = rhs.real_obj_->clone();                                 \
+    cloneObj(*(rhs.self_));                                             \
     return *this;                                                       \
-  }                                                                     \
-                                                                        \
-  RealClass* clone() const override {                                   \
-    return new RealClass##TestProxy(*this);                             \
   }                                                                     \
                                                                         \
   RealClass##TestProxy(const RealClass& rhs) {                          \
     removeOldObj();                                                     \
-    real_obj_ = rhs.clone();                                            \
+    cloneObj(rhs);                                                      \
   }                                                                     \
                                                                         \
   RealClass##TestProxy& operator=(const RealClass& rhs) {               \
     removeOldObj();                                                     \
-    real_obj_ = rhs.clone();                                            \
+    cloneObj(rhs);                                                      \
     return *this;                                                       \
   }                                                                     \
                                                                         \
-  RealClass& operator*() const noexcept {                               \
-    return *real_obj_;                                                  \
+  /* Test proxy has no "Real Self" */                                   \
+  RealClass* self() const {                                             \
+    return self_;                                                       \
   }                                                                     \
                                                                         \
-  RealClass* operator->() const noexcept {                              \
-    return real_obj_;                                                   \
-  }                                                                     \
-                                                                        \
-  RealClass* operator&() const noexcept {   /* NOLINT */                \
-    return real_obj_;                                                   \
-  }                                                                     \
-                                                                        \
-  RealClass* getRealObject() const {                                    \
-    return real_obj_;                                                   \
-  }                                                                     \
-                                                                        \
-  void setRealObject(RealClass* real_obj) {                             \
-    real_obj_ = real_obj;                                               \
+  void setSelf(RealClass* self_ptr, bool owned = true) {                \
+    self_ = self_ptr;                                                   \
+    owned_ = owned;                                                     \
   }                                                                     \
                                                                         \
  private:                                                               \
-  RealClass* real_obj_ { nullptr };
+  void removeOldObj() {                                                 \
+    if (owned_)                                                         \
+      delete self_;                                                     \
+  }                                                                     \
+                                                                        \
+  void cloneObj(const RealClass& obj) {                                 \
+    self_ = obj.clone();                                                \
+    owned_ = true;                                                      \
+  }                                                                     \
+                                                                        \
+  RealClass* self_ { nullptr };                                         \
+  bool owned_ { true };
 
 // if the default constructor of real object is allowed, use this macro instead
 #define TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(RealClass)  \
- public:                                                \
+  public:                                               \
   RealClass##TestProxy() = default;                     \
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)
 

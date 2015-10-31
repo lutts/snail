@@ -50,28 +50,28 @@ class KbNodeAttribute : public IAttribute {
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
 
-class KbNodeAttributeTestProxy : public KbNodeAttribute {
+class KbNodeAttributeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttribute);
 
  public:
-  utils::U8String displayName() const override {
-    return real_obj_->displayName();
+  utils::U8String displayName() const {
+    return self_->displayName();
   }
 
-  utils::U8String valueText() const override {
-    return real_obj_->valueText();
+  utils::U8String valueText() const {
+    return self_->valueText();
   }
 
-  bool isEmpty() const override {
-    return real_obj_->isEmpty();
+  bool isEmpty() const {
+    return self_->isEmpty();
   }
 
-  void clear() override {
-    real_obj_->clear();
+  void clear() {
+    self_->clear();
   }
 
-  void accept(IAttributeVisitor* visitor) override {
-    real_obj_->accept(visitor);
+  void accept(IAttributeVisitor* visitor) {
+    self_->accept(visitor);
   }
 
   KbNodeAttribute_METHODS

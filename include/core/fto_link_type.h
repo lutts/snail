@@ -41,16 +41,16 @@ class LinkType : public ITreeItem {
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
 
-class LinkTypeTestProxy : public LinkType {
+class LinkTypeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(LinkType);
 
  public:
-  utils::U8String name() const override {
-    return real_obj_->name();
+  utils::U8String name() const {
+    return self_->name();
   }
 
-  bool isGroupOnly() const override {
-    return real_obj_->isGroupOnly();
+  bool isGroupOnly() const {
+    return self_->isGroupOnly();
   }
 
   LinkType_METHODS

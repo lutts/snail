@@ -35,7 +35,7 @@ utils::U8String KbNodeLinkAttributePopupEditorModel::valueAttrName() const {
 std::shared_ptr<IAttributeModel>
 KbNodeLinkAttributePopupEditorModel::createValueAttrModel() {
   auto attr_model =
-      attr_model_factory_->createAttributeModel(&value_attr_copy_);
+      attr_model_factory_->createAttributeModel(value_attr_copy_.self());
 
   auto attr_model_raw = attr_model.get();
   attr_model->whenValidateComplete(
@@ -60,7 +60,7 @@ KbNodeLinkAttributePopupEditorModel::getCurrentProtoLinkType() const {
 std::shared_ptr<IAttributeSetModel>
 KbNodeLinkAttributePopupEditorModel::getCurrentLinkAttrSetModel() {
   auto attr_set_model = attr_set_model_factory_->createAttributeSetModel(
-      link_type_copy_->attributeSuppliers());
+      link_type_copy_.attributeSuppliers());
 
   curr_attr_set_model_ = attr_set_model.get();
 
@@ -88,9 +88,9 @@ void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
 }
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {
-  attr_->setValueAttr(UNFOLD_TEST_PROXY(value_attr_copy_));
+  attr_->setValueAttr(*value_attr_copy_.self());
   attr_->setProtoLinkType(proto_link_type_);
-  attr_->setLinkType(UNFOLD_TEST_PROXY(link_type_copy_));
+  attr_->setLinkType(*link_type_copy_.self());
 }
 
 }  // namespace snailcore

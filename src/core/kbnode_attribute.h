@@ -52,6 +52,9 @@ class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
   fto::KbNodeAttributeSupplier* supplier() const;
   void setKbNode(IKbNode* kbnode);
 
+  // Test proxy requirement
+  KbNodeAttribute* self() { return this; }
+
  private:
   SNAIL_DISABLE_COPY(KbNodeAttribute);
 
