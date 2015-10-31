@@ -48,7 +48,7 @@ class IDataTestProxy {
   }
 };
 
-class Data : public IData {
+class Data final: public IData {
  public:
   Data() : Data(0) { }
   explicit Data(int data) : data_(new int(data)) { }
@@ -80,6 +80,8 @@ class Data : public IData {
   }
 
   void moveFrom(IData&& rhs) {
+    // NOTE: this cast is safe only when Data is the only subclass of IData
+    // and Data itself Does not have any subclasses
     Data&& data = static_cast<Data&&>(rhs);
     operator=(std::move(data));
   }

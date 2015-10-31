@@ -34,7 +34,7 @@ class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
   IKbNode* root_kbnode_ { nullptr };
 };
 
-class KbNodeAttribute : public FTO_INTERFACE(KbNodeAttribute) {
+class KbNodeAttribute final : public FTO_INTERFACE(KbNodeAttribute) {
  public:
   explicit KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier);
   virtual ~KbNodeAttribute();
