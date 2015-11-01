@@ -17,7 +17,7 @@ namespace snailcore {
 namespace tests {
 
 class KbNodeAttributeTest : public ::testing::Test {
- protected:
+ public:
   KbNodeAttributeTest() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
@@ -35,7 +35,7 @@ class KbNodeAttributeTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  std::unique_ptr<fto::KbNodeAttribute> attr;
+  std::unique_ptr<KbNodeAttribute> attr;
   MockKbNodeAttributeSupplier attr_supplier;
 
   MockKbNode kbnode;
@@ -48,6 +48,7 @@ class KbNodeAttributeTest : public ::testing::Test {
 
 void KbNodeAttributeTest::checkEmptyState() {
   ASSERT_TRUE(attr->isEmpty());
+  ASSERT_EQ(nullptr, attr->getKbNode());
   ASSERT_EQ("", attr->valueText());
 }
 
@@ -88,6 +89,7 @@ void KbNodeAttributeTest::setupNonEmptyState() {
 
   // Verify results
   ASSERT_FALSE(attr->isEmpty());
+  ASSERT_EQ(&kbnode, attr->getKbNode());
   ASSERT_EQ(kbnode_name, attr->valueText());
 
   Mock::VerifyAndClearExpectations(&attr_supplier);
@@ -135,6 +137,72 @@ TEST_F(KbNodeAttributeTest,
 
   // Exercise system
   attr->accept(&visitor);
+}
+
+class DummyKbNodeAttrFixture : public TestFixture {
+ public:
+  DummyKbNodeAttrFixture(const utils::U8String& name,
+                         KbNodeAttributeTest* test_case)
+      : TestFixture { name }
+      , supplier_ { &test_case->attr_supplier }
+      , attr_ { supplier_ }
+      , kbnode_ { xtestutils::genDummyPointer<IKbNode>() } {
+        attr_.setKbNode(kbnode_);
+      }
+
+  void setup() override {
+    ASSERT_EQ(supplier_, attr_.supplier());
+    ASSERT_EQ(kbnode_, attr_.getKbNode());
+  }
+
+  fto::KbNodeAttributeSupplier* supplier_;
+  KbNodeAttribute attr_;
+  IKbNode* kbnode_ { nullptr };
+};
+
+
+TEST_F(KbNodeAttributeTest, test_copy_construct) { // NOLINT
+  // Setup fixture
+  FixtureHelper(DummyKbNodeAttrFixture, fixture);
+
+  // Exercise system
+  KbNodeAttribute attr { fixture.attr_ };
+
+  // Verify results
+
+  ASSERT_EQ(fixture.kbnode_, attr.getKbNode());
+  ASSERT_EQ(fixture.supplier_, attr.supplier());
+}
+
+TEST_F(KbNodeAttributeTest,
+       test_move_construct) { // NOLINT
+  // Setup fixture
+  FixtureHelper(DummyKbNodeAttrFixture, fixture);
+
+  // Exercise system
+  KbNodeAttribute attr { std::move(fixture.attr_) };
+
+  // Verify results
+  ASSERT_EQ(nullptr, fixture.attr_.getKbNode());
+  ASSERT_EQ(nullptr, fixture.attr_.supplier());
+  ASSERT_EQ(fixture.kbnode_, attr.getKbNode());
+  ASSERT_EQ(fixture.supplier_, attr.supplier());
+}
+
+TEST_F(KbNodeAttributeTest,
+       test_unified_assignment) { // NOLINT
+  // Setup fixture
+  FixtureHelper(DummyKbNodeAttrFixture, fixture1);
+  FixtureHelper(DummyKbNodeAttrFixture, fixture2);
+
+  // Exercise system
+  fixture2.attr_ = std::move(fixture1.attr_);
+
+  // Verify results
+  ASSERT_EQ(nullptr, fixture1.attr_.getKbNode());
+  ASSERT_EQ(nullptr, fixture1.attr_.supplier());
+  ASSERT_EQ(fixture1.kbnode_, fixture2.attr_.getKbNode());
+  ASSERT_EQ(fixture1.supplier_, fixture2.attr_.supplier());
 }
 
 ////////////////////////////////////////////////

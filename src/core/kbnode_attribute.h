@@ -39,6 +39,10 @@ class KbNodeAttribute final : public FTO_INTERFACE(KbNodeAttribute) {
   explicit KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier);
   virtual ~KbNodeAttribute();
 
+  KbNodeAttribute(const KbNodeAttribute& rhs);
+  KbNodeAttribute(KbNodeAttribute&& rhs);
+  KbNodeAttribute& operator=(KbNodeAttribute rhs);
+
   // IAttribute
   utils::U8String displayName() const override;
   utils::U8String valueText() const override;
@@ -46,24 +50,20 @@ class KbNodeAttribute final : public FTO_INTERFACE(KbNodeAttribute) {
   void clear() override;
   void accept(IAttributeVisitor* visitor) override;
 
-  // TODO(lutts): impl this method
-  fto::KbNodeAttribute* clone() const override { return nullptr; }
-
   fto::KbNodeAttributeSupplier* supplier() const;
   void setKbNode(IKbNode* kbnode);
+  IKbNode* getKbNode() const { return kbnode_; };
 
   // Test proxy requirement
   KbNodeAttribute* self() { return this; }
+  fto::KbNodeAttribute* clone() const {
+    return new KbNodeAttribute(*this);
+  }
 
   TEST_ONLY_MOVE_ASSIGNMENT(KbNodeAttribute);
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeAttribute);
-
-  void swap(KbNodeAttribute& rhs) {
-    // TODO(lutts): impl this method
-    (void)rhs;
-  }
+  void swap(KbNodeAttribute& rhs);
 
   fto::KbNodeAttributeSupplier* attr_supplier_;
   IKbNode* kbnode_ { nullptr };

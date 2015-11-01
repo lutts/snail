@@ -12,7 +12,29 @@ namespace snailcore {
 
 KbNodeAttribute::KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier)
     : attr_supplier_(attr_supplier) { }
+
 KbNodeAttribute::~KbNodeAttribute() = default;
+
+KbNodeAttribute::KbNodeAttribute(const KbNodeAttribute& rhs)
+    : attr_supplier_(rhs.attr_supplier_)
+    , kbnode_(rhs.kbnode_) { }
+
+KbNodeAttribute::KbNodeAttribute(KbNodeAttribute&& rhs)
+    : attr_supplier_(rhs.attr_supplier_)
+    , kbnode_(rhs.kbnode_) {
+  rhs.attr_supplier_ = nullptr;
+  rhs.kbnode_ = nullptr;
+}
+
+KbNodeAttribute& KbNodeAttribute::operator=(KbNodeAttribute rhs) {
+  swap(rhs);
+  return *this;
+}
+
+void KbNodeAttribute::swap(KbNodeAttribute& rhs) {
+  std::swap(attr_supplier_, rhs.attr_supplier_);
+  std::swap(kbnode_, rhs.kbnode_);
+}
 
 // IAttribute
 utils::U8String KbNodeAttribute::displayName() const {
