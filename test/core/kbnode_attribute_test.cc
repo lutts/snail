@@ -150,9 +150,13 @@ class DummyKbNodeAttrFixture : public TestFixture {
         attr_.setKbNode(kbnode_);
       }
 
-  void setup() override {
+  void checkSetup() override {
+    SCOPED_TRACE(name_);
+
     ASSERT_EQ(supplier_, attr_.supplier());
     ASSERT_EQ(kbnode_, attr_.getKbNode());
+
+    abortIfFailure();
   }
 
   fto::KbNodeAttributeSupplier* supplier_;
@@ -163,7 +167,10 @@ class DummyKbNodeAttrFixture : public TestFixture {
 
 TEST_F(KbNodeAttributeTest, test_copy_construct) { // NOLINT
   // Setup fixture
+  std::cout << "1111111111111111111111" << std::endl;
   FixtureHelper(DummyKbNodeAttrFixture, fixture);
+
+  std::cout << "=============================" << std::endl;
 
   // Exercise system
   KbNodeAttribute attr { fixture.attr_ };

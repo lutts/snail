@@ -14,6 +14,7 @@
 #include <vector>
 #include <iostream>  // NOLINT
 #include <string>
+#include <stdexcept>
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/utils.h"
@@ -137,7 +138,36 @@ class TestFixture {
     verify();
   }
 
-  virtual void setup() { }
+  /** setup fixture
+   * the default setup() did not do any setup, but will call
+   * checkSetup(), if need abort when checkSetup() failed, you must call
+   * abortIfFailure() in checkSetup() or set abort_if_failure_ directly
+   *
+   * when override setup(), it is recommended to call TestFixture's setup()
+   * at last
+   */
+  virtual void setup() {
+    checkSetup();
+
+    if (abort_if_failure_)
+      doAbortIfFailure();
+  }
+
+  /** check if setup() did the right things
+   *
+   * we need checkSetup() because HasFatalFailure() will return true only when
+   * failure is raised in a subroutine before HasFatalFailure() call
+   */
+  virtual void checkSetup() { }
+
+  void abortIfFailure() {
+    abort_if_failure_ = true;
+  }
+
+  void doAbortIfFailure() const {
+    if (::testing::Test::HasFatalFailure())
+      throw std::logic_error(name_);
+  }
 
   void verify() {
     if (!mock_obj_recorder.verify()) {
@@ -148,6 +178,8 @@ class TestFixture {
  protected:
   utils::U8String name_;
   MockObjectRecorder mock_obj_recorder;
+
+  bool abort_if_failure_ { false };
 
  private:
   SNAIL_DISABLE_COPY(TestFixture);
