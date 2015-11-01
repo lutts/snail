@@ -167,10 +167,7 @@ class DummyKbNodeAttrFixture : public TestFixture {
 
 TEST_F(KbNodeAttributeTest, test_copy_construct) { // NOLINT
   // Setup fixture
-  std::cout << "1111111111111111111111" << std::endl;
   FixtureHelper(DummyKbNodeAttrFixture, fixture);
-
-  std::cout << "=============================" << std::endl;
 
   // Exercise system
   KbNodeAttribute attr { fixture.attr_ };
