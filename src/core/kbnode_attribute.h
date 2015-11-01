@@ -55,8 +55,15 @@ class KbNodeAttribute final : public FTO_INTERFACE(KbNodeAttribute) {
   // Test proxy requirement
   KbNodeAttribute* self() { return this; }
 
+  TEST_ONLY_MOVE_ASSIGNMENT(KbNodeAttribute);
+
  private:
   SNAIL_DISABLE_COPY(KbNodeAttribute);
+
+  void swap(KbNodeAttribute& rhs) {
+    // TODO(lutts): impl this method
+    (void)rhs;
+  }
 
   fto::KbNodeAttributeSupplier* attr_supplier_;
   IKbNode* kbnode_ { nullptr };

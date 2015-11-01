@@ -29,7 +29,6 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
   void SetUp() override {
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
-    MockKbNodeAttribute value_attr;
     R_EXPECT_CALL(link_attr, valueAttr()).WillOnce(Return(&value_attr));
 
     value_attr_copy = new MockKbNodeAttribute();
@@ -39,7 +38,6 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
     R_EXPECT_CALL(link_attr, protoLinkType())
         .WillOnce(Return(&proto_link_type));
 
-    MockLinkType link_type;
     R_EXPECT_CALL(link_attr, linkType()).WillOnce(Return(&link_type));
 
     link_type_copy = new MockLinkType();
@@ -62,7 +60,10 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
   MockLinkType proto_link_type;
 
   // will release by model
+  MockKbNodeAttribute value_attr;
   MockKbNodeAttribute* value_attr_copy;
+
+  MockLinkType link_type;
   MockLinkType* link_type_copy;
 
   MockAttributeModelFactory attr_model_factory;
@@ -290,10 +291,14 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
        should_sync_local_value_attr_and_link_type_copy_to_link_attr_when_edit_finished) { // NOLINT
+  // Setup fixture
+  EXPECT_CALL(link_attr, valueAttr()).WillOnce(Return(&value_attr));
+  EXPECT_CALL(link_attr, linkType()).WillOnce(Return(&link_type));
+
   // Expectations
-  EXPECT_CALL(link_attr, setValueAttr(Ref(*value_attr_copy)));
+  EXPECT_CALL(value_attr, moveFrom(Ref(*value_attr_copy)));
   EXPECT_CALL(link_attr, setProtoLinkType(&proto_link_type));
-  EXPECT_CALL(link_attr, setLinkType(Ref(*link_type_copy)));
+  EXPECT_CALL(link_type, moveFrom(Ref(*link_type_copy)));
 
   // Exercise system
   model->editFinished();

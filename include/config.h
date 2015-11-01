@@ -18,12 +18,20 @@
 
 #define TEST_PROXY(RealClass) fto::RealClass##TestProxy
 
+#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)          \
+  fto::Cls& operator=(fto::Cls&& rhs) {         \
+    Cls& data = static_cast<Cls&>(rhs);         \
+    swap(data);                                 \
+    return *this;                               \
+  }
+
 #else  // DISABLE_TEST_CODE
 
 #define FTO_BEGIN_NAMESPACE
 #define FTO_END_NAMESPACE
 
 #define TEST_PROXY(RealClass) RealClass
+#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)
 
 #endif
 

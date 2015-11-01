@@ -32,7 +32,9 @@ class LinkType : public ITreeItem {
  public:
   virtual ~LinkType() = default;
 
-  SNAIL_CONST_INTERFACE0(clone, fto::LinkType*());
+  SNAIL_CONST_INTERFACE0(clone, LinkType*());
+  virtual LinkType& operator=(LinkType&& rhs) = 0;
+
   LinkType_METHODS
 };
 

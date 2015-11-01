@@ -88,9 +88,9 @@ void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
 }
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {
-  attr_->setValueAttr(*value_attr_copy_.self());
+  *(attr_->valueAttr()) = std::move(*value_attr_copy_.self());
   attr_->setProtoLinkType(proto_link_type_);
-  attr_->setLinkType(*link_type_copy_.self());
+  *(attr_->linkType()) = std::move(*link_type_copy_.self());
 }
 
 }  // namespace snailcore

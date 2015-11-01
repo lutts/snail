@@ -25,5 +25,7 @@ target_link_libraries(boost_signal2_wp_memory_leak_test utils)
 add_gmock_test(move_test
   LIBS utils)
 
+add_executable(testmove testmove.cc)
+
 add_subdirectory(log)
 add_subdirectory(command)

@@ -16,7 +16,7 @@ class IData {
   virtual void setData(int data) = 0;
   virtual int getData() const = 0;
   virtual IData* clone() const = 0;
-  virtual void moveFrom(IData&& rhs) = 0;
+  virtual IData& operator=(IData&& rhs) = 0;
 };
 
 class MockData : public IData {
@@ -25,10 +25,11 @@ class MockData : public IData {
   MOCK_CONST_METHOD0(getData, int());
   MOCK_CONST_METHOD0(clone, IData*());
 
-  void moveFrom(IData&& rhs) override {
-    moveFrom_(rhs);
+  IData& operator=(IData&& rhs) override {
+    moveFrom(rhs);
+    return *this;
   }
-  MOCK_METHOD1(moveFrom_, void(IData& rhs));
+  MOCK_METHOD1(moveFrom, void(IData& rhs));
 };
 
 class IDataTestProxy {
@@ -42,36 +43,30 @@ class IDataTestProxy {
   int getData() const {
     return self_->getData();
   }
-
-  void moveFrom(IData&& rhs) {
-    self_->moveFrom(std::move(rhs));
-  }
 };
 
 class Data final: public IData {
- public:
+public:
   Data() : Data(0) { }
-  explicit Data(int data) : data_(new int(data)) { }
+  explicit Data(int data) : data_(new int(data)) {
+    std::cout << "constructor called, data_ = " << data_ << std::endl;
+  }
   virtual ~Data() { delete data_; }
 
   Data(const Data& rhs) : data_(new int(*rhs.data_)) {
     std::cout << "copy constructor called" << std::endl;
   }
 
-  Data(Data&& rhs) {
-    std::swap(data_, rhs.data_);
+  Data(Data&& rhs)
+      : data_(rhs.data_) {
+    rhs.data_ = nullptr;
     std::cout << "move constructor called" << std::endl;
   }
 
-  Data& operator=(const Data& rhs) {
-    *data_ = *rhs.data_;
-    std::cout << "copy assignment called" << std::endl;
-    return *this;
-  }
-
-  Data& operator=(Data&& rhs) {
-    std::swap(data_, rhs.data_);
-    std::cout << "move assignment called" << std::endl;
+  Data& operator=(Data rhs) {
+    std::cout << "unified move assignment swaping..." << std::endl;
+    swap(rhs);
+    std::cout << "unified move assignment called" << std::endl;
     return *this;
   }
 
@@ -79,11 +74,14 @@ class Data final: public IData {
     return new Data(*this);
   }
 
-  void moveFrom(IData&& rhs) {
+  // so this method becomes "for test only"
+  IData& operator=(IData&& rhs) {
+    std::cout << "fto move assignment called" << std::endl;
     // NOTE: this cast is safe only when Data is the only subclass of IData
     // and Data itself Does not have any subclasses
-    Data&& data = static_cast<Data&&>(rhs);
-    operator=(std::move(data));
+    Data& data = static_cast<Data&>(rhs);
+    swap(data);
+    return *this;
   }
 
   void setData(int data) override {
@@ -94,7 +92,15 @@ class Data final: public IData {
     return *data_;
   }
 
- private:
+  int* getDataPtr() {
+    return data_;
+  }
+
+private:
+  void swap(Data& rhs) {
+    std::swap(data_, rhs.data_);
+  }
+
   int* data_ { nullptr };
 };
 
@@ -125,8 +131,8 @@ class DataHolder : public IDataHolder {
   }
 
   void setData(IData&& data) override {
-    // *data_ = std::move(data);
-    data_->moveFrom(std::move(data));
+    *data_ = std::move(data);
+    // data_->moveFrom(std::move(data));
   }
 
  private:
@@ -246,7 +252,7 @@ TEST_F(DataHolderTest,
   MockData another_data;
 
   // Expectations
-  EXPECT_CALL(data, moveFrom_(Ref(another_data)));
+  EXPECT_CALL(data, moveFrom(Ref(another_data)));
 
   // Exercise system
   data_holder->setData(std::move(another_data));
@@ -301,9 +307,9 @@ TEST_F(DataTest,
   ASSERT_EQ(another_i, another_data.getData());
 
   // Exercise system
-  data->moveFrom(std::move(another_data));
+  *data = std::move(another_data);
 
   // Verify results
-  ASSERT_EQ(expect_i, another_data.getData());
+  ASSERT_EQ(nullptr, another_data.getDataPtr());
   ASSERT_EQ(another_i, data->getData());
 }

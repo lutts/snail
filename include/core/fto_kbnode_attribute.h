@@ -41,7 +41,8 @@ class KbNodeAttribute : public IAttribute {
  public:
   virtual ~KbNodeAttribute() = default;
 
-  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeAttribute*());
+  SNAIL_CONST_INTERFACE0(clone, KbNodeAttribute*());
+  virtual KbNodeAttribute& operator=(KbNodeAttribute&& rhs) = 0;
   KbNodeAttribute_METHODS
 };
 
