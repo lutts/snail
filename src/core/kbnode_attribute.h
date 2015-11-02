@@ -23,12 +23,12 @@ class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   virtual ~KbNodeAttributeSupplier();
 
-  // GenericAttributeSupplier impls
-  IAttribute* createAttribute() override;
-
   IKbNode* getRootKbNode() const;
 
  private:
+  // GenericAttributeSupplier impls
+  IAttribute* createAttribute() override;
+
   SNAIL_DISABLE_COPY(KbNodeAttributeSupplier);
 
   IKbNode* root_kbnode_ { nullptr };
