@@ -20,7 +20,6 @@ KbNodeLinkAttributePopupEditorModel::KbNodeLinkAttributePopupEditorModel(
     IAttributeSetModelFactory* attr_set_model_factory)
     : attr_(attr)
     , value_attr_copy_(*attr_->valueAttr())
-    , proto_link_type_(attr_->protoLinkType())
     , link_type_copy_(*attr_->linkType())
     , attr_model_factory_(attr_model_factory)
     , attr_set_model_factory_(attr_set_model_factory) { }
@@ -54,7 +53,7 @@ KbNodeLinkAttributePopupEditorModel::getLinkTypeItemProvider() const {
 
 const ITreeItem*
 KbNodeLinkAttributePopupEditorModel::getCurrentProtoLinkType() const {
-  return proto_link_type_;
+  return link_type_copy_.prototype();
 }
 
 std::shared_ptr<IAttributeSetModel>
@@ -79,9 +78,9 @@ void KbNodeLinkAttributePopupEditorModel::validateComplete() {
 
 void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
     ITreeItem* proto_link_type_item) {
-  proto_link_type_ = static_cast<fto::LinkType*>(proto_link_type_item);
+  auto proto_link_type = static_cast<fto::LinkType*>(proto_link_type_item);
 
-  link_type_copy_ = *(proto_link_type_);
+  link_type_copy_ = *(proto_link_type);
 
   auto old_attr_set_model = curr_attr_set_model_;
   LinkTypeChanged(getCurrentLinkAttrSetModel(), old_attr_set_model);
@@ -89,7 +88,6 @@ void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {
   *(attr_->valueAttr()) = std::move(*value_attr_copy_.self());
-  attr_->setProtoLinkType(proto_link_type_);
   *(attr_->linkType()) = std::move(*link_type_copy_.self());
 }
 

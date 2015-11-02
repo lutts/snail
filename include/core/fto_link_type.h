@@ -26,7 +26,8 @@ namespace fto {
 
 #define LinkType_METHODS                        \
   SNAIL_CONST_INTERFACE0(attributeSuppliers,    \
-                         std::vector<IAttributeSupplier*>());
+                         std::vector<IAttributeSupplier*>());   \
+  SNAIL_CONST_INTERFACE0(prototype, fto::LinkType*());
 
 class LinkType : public ITreeItem {
  public:

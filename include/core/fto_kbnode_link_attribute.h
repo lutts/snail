@@ -42,12 +42,7 @@ class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
 #define KbNodeLinkAttribute_METHODS                                     \
   SNAIL_CONST_INTERFACE0(supplier, KbNodeLinkAttributeSupplier*());     \
   SNAIL_INTERFACE0(valueAttr, KbNodeAttribute*());                      \
-  SNAIL_INTERFACE1(setValueAttr, void(const KbNodeAttribute& value_attr)); \
-                                                                        \
-  SNAIL_INTERFACE1(setProtoLinkType, void(const LinkType* proto_link_type)); \
-  SNAIL_CONST_INTERFACE0(protoLinkType, const LinkType*());             \
-  SNAIL_INTERFACE0(linkType, LinkType*());                              \
-  SNAIL_INTERFACE1(setLinkType, void(const LinkType& link_type));        \
+  SNAIL_INTERFACE0(linkType, LinkType*());
 
 class KbNodeLinkAttribute : public IAttribute {
  public:

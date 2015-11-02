@@ -52,7 +52,6 @@ class KbNodeLinkAttributePopupEditorModel
 
   fto::KbNodeLinkAttribute* attr_;
   TEST_PROXY(KbNodeAttribute) value_attr_copy_;
-  mutable const fto::LinkType* proto_link_type_ { nullptr };
   TEST_PROXY(LinkType) link_type_copy_;
 
   IAttributeModelFactory* attr_model_factory_;

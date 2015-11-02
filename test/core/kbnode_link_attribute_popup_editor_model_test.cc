@@ -35,9 +35,6 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
     R_EXPECT_CALL(value_attr, clone()).WillOnce(Return(value_attr_copy));
 
     // setup link types
-    R_EXPECT_CALL(link_attr, protoLinkType())
-        .WillOnce(Return(&proto_link_type));
-
     R_EXPECT_CALL(link_attr, linkType()).WillOnce(Return(&link_type));
 
     link_type_copy = new MockLinkType();
@@ -57,7 +54,6 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
   // region: objects test subject depends on
   MockKbNodeLinkAttribute link_attr;
   MockKbNodeLinkAttributeSupplier link_attr_supplier;
-  MockLinkType proto_link_type;
 
   // will release by model
   MockKbNodeAttribute value_attr;
@@ -128,14 +124,19 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
        should_be_able_to_get_current_proto_link_type) { // NOLINT
+  // Setup fixture
+  auto expect_proto_link_type = xtestutils::genDummyPointer<fto::LinkType>();
+  EXPECT_CALL(*link_type_copy, prototype())
+      .WillRepeatedly(Return(expect_proto_link_type));
+
   // Exercise system
   auto actual_proto_link_type = model->getCurrentProtoLinkType();
 
   // Verify results
-  ASSERT_EQ(&proto_link_type, actual_proto_link_type);
+  ASSERT_EQ(expect_proto_link_type, actual_proto_link_type);
 
   auto actual_proto_link_type_again = model->getCurrentProtoLinkType();
-  ASSERT_EQ(&proto_link_type, actual_proto_link_type_again);
+  ASSERT_EQ(expect_proto_link_type, actual_proto_link_type_again);
 }
 
 class CreateAttrSetModelFixture : public TestFixture {
@@ -232,6 +233,9 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
   model->setProtoLinkType(&new_proto_link_type);
 
   // Verify results
+  EXPECT_CALL(*proto_link_type_copy, prototype())
+      .WillOnce(Return(&new_proto_link_type));
+
   auto curr_link_type = model->getCurrentProtoLinkType();
   ASSERT_EQ(&new_proto_link_type, curr_link_type);
 }
@@ -297,7 +301,6 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 
   // Expectations
   EXPECT_CALL(value_attr, moveFrom(Ref(*value_attr_copy)));
-  EXPECT_CALL(link_attr, setProtoLinkType(&proto_link_type));
   EXPECT_CALL(link_type, moveFrom(Ref(*link_type_copy)));
 
   // Exercise system
