@@ -13,6 +13,9 @@
 #include "snail/i_tree_item.h"
 #include "test/test_proxy.h"
 
+#define INTERFACE_DEFINITION_PHASE
+#include "test/interface.h"
+
 namespace snailcore {
 
 class IAttributeSupplier;
@@ -20,9 +23,6 @@ class IAttributeSupplier;
 namespace fto {
 
 #ifndef DISABLE_TEST_CODE
-
-#define INTERFACE_DEFINITION_PHASE
-#include "test/interface.h"
 
 #define LinkType_METHODS                        \
   SNAIL_CONST_INTERFACE0(attributeSuppliers,    \
@@ -39,13 +39,26 @@ class LinkType : public ITreeItem {
   LinkType_METHODS
 };
 
+#else  // DISABLE_TEST_CODE
+
+class LinkType : public ITreeItem { };
+
+#endif  // DISABLE_TEST_CODE
+
+}  // namespace fto
+}  // namespace snailcore
+
 #undef INTERFACE_DEFINITION_PHASE
 
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
 
+namespace snailcore {
+namespace fto {
+
 class LinkTypeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(LinkType);
+  TEST_PROXY_ENABLE_COPY(LinkType);
 
  public:
   utils::U8String name() const {
@@ -59,16 +72,10 @@ class LinkTypeTestProxy {
   LinkType_METHODS
 };
 
-#undef INTERFACE_TEST_PROXY_PHASE
-
-#else  // DISABLE_TEST_CODE
-
-class LinkType : public ITreeItem { };
-
-#endif  // DISABLE_TEST_CODE
 
 }  // namespace fto
-
 }  // namespace snailcore
+
+#undef INTERFACE_TEST_PROXY_PHASE
 
 #endif  // INCLUDE_CORE_FTO_LINK_TYPE_H_

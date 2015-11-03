@@ -25,6 +25,9 @@ class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
 
   IKbNode* getRootKbNode() const;
 
+  // TODO(lutts): impl this method
+  KbNodeAttributeSupplier* clone() const { return nullptr; }
+
  private:
   // GenericAttributeSupplier impls
   IAttribute* createAttribute() override;

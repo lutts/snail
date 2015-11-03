@@ -12,23 +12,25 @@
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"
 
+#define INTERFACE_DEFINITION_PHASE
+#include "test/interface.h"
+
 namespace snailcore {
 
 class ITreeItemProvider;
+class IKbNode;
 
 namespace fto {
 
 #ifndef DISABLE_TEST_CODE
-
-#define INTERFACE_DEFINITION_PHASE
-#include "test/interface.h"
 
 class KbNodeAttribute;
 class LinkType;
 
 #define KbNodeLinkAttributeSupplier_METHODS                             \
   SNAIL_CONST_INTERFACE0(getLinkTypeItemProvider, ITreeItemProvider*()); \
-  SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const LinkType*());
+  SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const LinkType*());   \
+  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
 
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -51,8 +53,6 @@ class KbNodeLinkAttribute : public IAttribute {
   KbNodeLinkAttribute_METHODS
 };
 
-#undef INTERFACE_DEFINITION_PHASE
-
 #else  // DISABLE_TEST_CODE
 
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
@@ -67,5 +67,7 @@ class KbNodeLinkAttribute : public IAttribute { };
 #endif  // DISABLE_TEST_CODE
 }  // namespace fto
 }  // namespace snailcore
+
+#undef INTERFACE_DEFINITION_PHASE
 
 #endif  // INCLUDE_CORE_FTO_KBNODE_LINK_ATTRIBUTE_H_

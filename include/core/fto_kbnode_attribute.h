@@ -11,7 +11,11 @@
 #include "include/config.h"
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"
+#include "core/i_kbnode_attribute_supplier_factory.h"
 #include "test/test_proxy.h"
+
+#define INTERFACE_DEFINITION_PHASE
+#include "test/interface.h"
 
 namespace snailcore {
 
@@ -21,8 +25,9 @@ namespace fto {
 
 #ifndef DISABLE_TEST_CODE
 
-#define INTERFACE_DEFINITION_PHASE
-#include "test/interface.h"
+#define KbNodeAttributeSupplier_METHODS                         \
+  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());            \
+  SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -30,7 +35,8 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~KbNodeAttributeSupplier() = default;
 
-  virtual IKbNode* getRootKbNode() const = 0;
+
+  KbNodeAttributeSupplier_METHODS
 };
 
 #define KbNodeAttribute_METHODS                                         \
@@ -46,13 +52,46 @@ class KbNodeAttribute : public IAttribute {
   KbNodeAttribute_METHODS
 };
 
+#else  // DISABLE_TEST_CODE
+
+class KbNodeAttributeSupplier : public GenericAttributeSupplier {
+ public:
+  KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
+      : GenericAttributeSupplier(name, max_attrs) { }
+  virtual ~KbNodeAttributeSupplier() = default;
+};
+
+class KbNodeAttribute : public IAttribute { };
+
+#endif  // DISABLE_TEST_CODE
+
+}  // namespace fto
+}  // namespace snailcore
+
 #undef INTERFACE_DEFINITION_PHASE
 
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
 
+namespace snailcore {
+namespace fto {
+
+class KbNodeAttributeSupplierTestProxy {
+  TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttributeSupplier);
+  TEST_PROXY_ENABLE_COPY(KbNodeAttributeSupplier);
+  TEST_PROXY_ENABLE_FACTORY_SUPPORT(IKbNodeAttributeSupplier);
+
+ public:
+  KbNodeAttributeSupplierTestProxy(IKbNode* root_kbnode) {
+    setSelf(getFactory()->createInstance(root_kbnode));
+  }
+
+  KbNodeAttributeSupplier_METHODS
+};
+
 class KbNodeAttributeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttribute);
+  TEST_PROXY_ENABLE_COPY(KbNodeAttribute);
 
  public:
   utils::U8String displayName() const {
@@ -78,22 +117,9 @@ class KbNodeAttributeTestProxy {
   KbNodeAttribute_METHODS
 };
 
-#undef INTERFACE_TEST_PROXY_PHASE
-
-#else  // DISABLE_TEST_CODE
-
-class KbNodeAttributeSupplier : public GenericAttributeSupplier {
- public:
-  KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) { }
-  virtual ~KbNodeAttributeSupplier() = default;
-};
-
-class KbNodeAttribute : public IAttribute { };
-
-#endif  // DISABLE_TEST_CODE
-
 }  // namespace fto
 }  // namespace snailcore
+
+#undef INTERFACE_TEST_PROXY_PHASE
 
 #endif  // INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_

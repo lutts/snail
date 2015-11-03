@@ -42,8 +42,7 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
   // GenericAttributeSupplier mocks
   MOCK_METHOD0(createAttribute, IAttribute*());
 
-  // Self
-  MOCK_CONST_METHOD0(getRootKbNode, IKbNode*());
+  KbNodeAttributeSupplier_METHODS
 };
 
 }  // namespace tests

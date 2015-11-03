@@ -34,6 +34,7 @@ class MockData : public IData {
 
 class IDataTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(IData);
+  TEST_PROXY_ENABLE_COPY(IData);
 
  public:
   void setData(int data) {
