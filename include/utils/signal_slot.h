@@ -30,6 +30,16 @@
                void(sigName##SlotType, std::shared_ptr<utils::ITrackable>)); \
   MOCK_METHOD0(cleanup##sigName##Slots, void());
 
+#define SNAIL_SIGSLOT_PROXY(PrimaryType, sigName)       \
+  void when##sigName(                                   \
+      PrimaryType::sigName##SlotType handler,           \
+      std::shared_ptr<utils::ITrackable> trackObject) { \
+    self_->when##sigName(handler, trackObject);         \
+  }                                                     \
+  void cleanup##sigName##Slots() {                      \
+    self_->cleanup##sigName##Slots();                   \
+  }
+
 #define SNAIL_SIGSLOT_NONVIRTUAL(sigName, ...)                          \
   using sigName##Signature = __VA_ARGS__;                               \
   using sigName##SlotType = std::function<sigName##Signature>;          \
