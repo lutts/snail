@@ -16,6 +16,7 @@ namespace tests {
 class MockAttributeVisitor : public IAttributeVisitor {
  public:
   MOCK_METHOD1(visit, void(fto::KbNodeAttribute* attr));
+  MOCK_METHOD1(visit, void(fto::KbNodeLinkAttribute* attr));
 };
 
 }  // namespace tests

@@ -14,6 +14,7 @@ namespace snailcore {
 
 FTO_BEGIN_NAMESPACE
 class KbNodeAttribute;
+class KbNodeLinkAttribute;
 FTO_END_NAMESPACE
 
 class IAttributeVisitor {
@@ -21,6 +22,7 @@ class IAttributeVisitor {
   virtual ~IAttributeVisitor() = default;
 
   virtual void visit(fto::KbNodeAttribute* attr) = 0;
+  virtual void visit(fto::KbNodeLinkAttribute* attr) = 0;
 };
 
 }  // namespace snailcore

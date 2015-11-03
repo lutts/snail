@@ -23,6 +23,8 @@ class MockLinkType : public fto::LinkType {
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_CONST_METHOD0(isGroupOnly, bool());
 
+  SNAIL_MOCK_SLOT(LinkUpdated);
+
   SNAIL_CONST_INTERFACE0(clone, fto::LinkType*());
   fto::LinkType& operator=(fto::LinkType&& rhs) override {
     moveFrom(rhs);

@@ -11,6 +11,8 @@
 #include <vector>
 
 #include "snail/i_tree_item.h"
+#include "utils/u8string.h"
+#include "utils/signal_slot.h"
 #include "test/test_proxy.h"
 
 #define INTERFACE_DEFINITION_PHASE
@@ -27,11 +29,15 @@ namespace fto {
 #define LinkType_METHODS                        \
   SNAIL_CONST_INTERFACE0(attributeSuppliers,    \
                          std::vector<IAttributeSupplier*>());   \
-  SNAIL_CONST_INTERFACE0(prototype, fto::LinkType*());
+  SNAIL_CONST_INTERFACE0(prototype, fto::LinkType*());          \
+  SNAIL_CONST_INTERFACE0(toString, utils::U8String());          \
+  SNAIL_INTERFACE0(clear, void());
 
 class LinkType : public ITreeItem {
  public:
   virtual ~LinkType() = default;
+
+  SNAIL_SIGSLOT_PURE_VIRTUAL(LinkUpdated, void());
 
   SNAIL_CONST_INTERFACE0(clone, LinkType*());
   virtual LinkType& operator=(LinkType&& rhs) = 0;
@@ -68,6 +74,8 @@ class LinkTypeTestProxy {
   bool isGroupOnly() const {
     return self_->isGroupOnly();
   }
+
+  SNAIL_SIGSLOT_PROXY(LinkType, LinkUpdated);
 
   LinkType_METHODS
 };

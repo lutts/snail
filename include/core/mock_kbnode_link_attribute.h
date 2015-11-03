@@ -22,7 +22,7 @@ namespace snailcore {
 namespace tests {
 
 class MockKbNodeLinkAttributeSupplier
-    : public KbNodeLinkAttributeSupplier {
+    : public fto::KbNodeLinkAttributeSupplier {
  public:
   MockKbNodeLinkAttributeSupplier()
       : KbNodeLinkAttributeSupplier("", 0) { }

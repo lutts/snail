@@ -82,8 +82,24 @@ class KbNodeAttributeSupplierTestProxy {
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(IKbNodeAttributeSupplier);
 
  public:
-  KbNodeAttributeSupplierTestProxy(IKbNode* root_kbnode) {
-    setSelf(getFactory()->createInstance(root_kbnode));
+  KbNodeAttributeSupplierTestProxy(IKbNode* root_kbnode, int max_attrs) {
+    setSelf(getFactory()->createInstance(root_kbnode, max_attrs));
+  }
+
+  utils::U8String name() const {
+    return self_->name();
+  }
+
+  int attr_count() const {
+    return self_->attr_count();
+  }
+
+  IAttribute* addAttribute() {
+    return self_->addAttribute();
+  }
+
+  std::vector<IAttribute*> attributes() const {
+    return self_->attributes();
   }
 
   KbNodeAttributeSupplier_METHODS

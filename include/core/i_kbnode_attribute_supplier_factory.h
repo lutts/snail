@@ -19,9 +19,10 @@ FTO_BEGIN_NAMESPACE
 class KbNodeAttributeSupplier;
 FTO_END_NAMESPACE
 
-#define IKbNodeAttributeSupplierFactory_METHODS \
-  SNAIL_CONST_INTERFACE1(createInstance,        \
-                           fto::KbNodeAttributeSupplier*(IKbNode* root_kbnode));
+#define IKbNodeAttributeSupplierFactory_METHODS                         \
+  SNAIL_CONST_INTERFACE2(createInstance,                                \
+                         fto::KbNodeAttributeSupplier*(                 \
+                             IKbNode* root_kbnode, int max_attrs));
 
 class IKbNodeAttributeSupplierFactory {
  public:

@@ -24,6 +24,11 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
                                  factory_.simple_kbnode_adder_model_factory_));
   }
 
+  void visit(fto::KbNodeLinkAttribute* attr) override {
+    // TODO(lutts): impl this method
+    (void)attr;
+  }
+
  private:
   SNAIL_DISABLE_COPY(AttributeVisitor);
 

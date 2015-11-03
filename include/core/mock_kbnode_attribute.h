@@ -33,8 +33,9 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
 
 class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
  public:
-  MockKbNodeAttributeSupplier()
-      : fto::KbNodeAttributeSupplier("", 0) { }
+  MockKbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
+      : fto::KbNodeAttributeSupplier(name, max_attrs) { }
+  MockKbNodeAttributeSupplier() : MockKbNodeAttributeSupplier { "", 0} { }
   // IAttributeSupplier mocks
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
