@@ -31,6 +31,8 @@ class KbNodeLinkAttributeInlineEditorPresenter
 
  private:
   SNAIL_DISABLE_COPY(KbNodeLinkAttributeInlineEditorPresenter);
+
+  void updateValueText();
 };
 
 #endif  // SRC_QTUI_CORE_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_PRESENTER_H_

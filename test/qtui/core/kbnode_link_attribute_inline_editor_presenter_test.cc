@@ -23,8 +23,17 @@ using namespace snailcore::tests;  // NOLINT
 using namespace pfmvp;  // NOLINT
 using namespace pfmvp::tests;  // NOLINT
 
+class KbNodeLinkAttributeInlineEditorPresenterTest;
+
+class UpdateValueTestFixture : public TestFixture {
+ public:
+  UpdateValueTestFixture(
+      const utils::U8String& name,
+      KbNodeLinkAttributeInlineEditorPresenterTest* test_case);
+};
+
 class KbNodeLinkAttributeInlineEditorPresenterTest : public ::testing::Test {
- protected:
+ public:
   KbNodeLinkAttributeInlineEditorPresenterTest() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
@@ -38,10 +47,7 @@ class KbNodeLinkAttributeInlineEditorPresenterTest : public ::testing::Test {
     // Expectations
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
-    xtestutils::RandomString attr_value_text;
-    R_EXPECT_CALL(*model, valueText())
-        .WillOnce(Return(attr_value_text.ustr()));
-    R_EXPECT_CALL(*view, setValueText(attr_value_text.qstr()));
+    FixtureHelper(UpdateValueTestFixture, fixture);
 
     R_EXPECT_CALL(*view, whenUserClickShowPopupEditor(_, _))
         .WillOnce(SaveArg<0>(&userClickShowPopupEditor));
@@ -74,6 +80,16 @@ class KbNodeLinkAttributeInlineEditorPresenterTest : public ::testing::Test {
   // endregion
 };
 
+UpdateValueTestFixture::UpdateValueTestFixture(
+    const utils::U8String& name,
+    KbNodeLinkAttributeInlineEditorPresenterTest* test_case)
+    : TestFixture(name) {
+  xtestutils::RandomString attr_value_text;
+  R_EXPECT_CALL(*(test_case->model), valueText())
+      .WillOnce(Return(attr_value_text.ustr()));
+  R_EXPECT_CALL(*(test_case->view), setValueText(attr_value_text.qstr()));
+}
+
 TEST_F(KbNodeLinkAttributeInlineEditorPresenterTest,
        should_be_able_to_show_popup_editor_view) { // NOLINT
   // Setup fixture
@@ -89,6 +105,8 @@ TEST_F(KbNodeLinkAttributeInlineEditorPresenterTest,
   using VT = MockKbNodeLinkAttributePopupEditorView;
   triad_manager.expectationsOnShowModalDialog<VT>(popup_editor_model,
                                                   popup_editor_view);
+
+  FixtureHelper(UpdateValueTestFixture, fixture);
 
   // Exercise system
   userClickShowPopupEditor();
