@@ -23,12 +23,12 @@ class IKbNode;
 #include "utils/basic_utils.h"
 
 class KbNodeLinkAttributeSupplier
-    : public FTO_INTERFACE(KbNodeLinkAttributeSupplier) {
+    : public FTO_NAMESPACE::KbNodeLinkAttributeSupplier {
  public:
   KbNodeLinkAttributeSupplier(ITreeItemProvider* link_type_item_provider,
                               const fto::LinkType* default_proto_link_type,
                               IKbNode* root_kbnode, int max_attrs)
-      : FTO_INTERFACE(KbNodeLinkAttributeSupplier)("", max_attrs)
+      : FTO_NAMESPACE::KbNodeLinkAttributeSupplier("", max_attrs)
       , link_type_item_provider_(link_type_item_provider)
       , default_proto_link_type_(default_proto_link_type)
       , root_kbnode_(root_kbnode) { }
@@ -58,7 +58,7 @@ class KbNodeLinkAttributeSupplier
   IKbNode* root_kbnode_;
 };
 
-class KbNodeLinkAttribute : public FTO_INTERFACE(KbNodeLinkAttribute) {
+class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
  public:
   KbNodeLinkAttribute(
       fto::KbNodeLinkAttributeSupplier* link_attr_supplier);

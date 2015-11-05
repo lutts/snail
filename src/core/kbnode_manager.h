@@ -28,7 +28,7 @@ class ITreeItemProvider;
 /** A Node tree is a tree of nodes with name and short descriptions
  *
  */
-class KbNodeManager : public FTO_INTERFACE(KbNodeManager) {
+class KbNodeManager : public FTO_NAMESPACE::KbNodeManager {
  public:
   KbNodeManager();
   virtual ~KbNodeManager();

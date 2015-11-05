@@ -22,7 +22,7 @@ class QTimer;
 class AttributeSetLayoutImpl;
 
 class AttributeSetLayout
-    : public FTO_INTERFACE(AttributeSetLayout)
+    : public FTO_NAMESPACE::AttributeSetLayout
     , public utils::ITrackable
     , public std::enable_shared_from_this<AttributeSetLayout> {
  public:

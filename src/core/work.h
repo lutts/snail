@@ -22,7 +22,7 @@ namespace snailcore {
 class IAttributeSupplier;
 class WorkSignalProxy;
 
-class Work : public FTO_INTERFACE(Work) {
+class Work : public FTO_NAMESPACE::Work {
  public:
   Work();
   virtual ~Work();

@@ -75,7 +75,7 @@ void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
 
 KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
                                                  int max_attrs)
-    : FTO_INTERFACE(KbNodeAttributeSupplier)(root_kbnode->name(), max_attrs)
+    : FTO_NAMESPACE::KbNodeAttributeSupplier(root_kbnode->name(), max_attrs)
     , root_kbnode_(root_kbnode) { }
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;

@@ -9,7 +9,7 @@
 #define INCLUDE_CONFIG_H_
 
 #define FTO_HEADER(path, name) <path/fto_##name.h>
-#define FTO_INTERFACE(c) fto::c
+#define FTO_NAMESPACE fto
 
 #ifndef DISABLE_TEST_CODE
 

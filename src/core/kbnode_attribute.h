@@ -18,7 +18,7 @@ namespace snailcore {
 
 class IKbNode;
 
-class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
+class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
  public:
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   virtual ~KbNodeAttributeSupplier();
@@ -37,7 +37,7 @@ class KbNodeAttributeSupplier : public FTO_INTERFACE(KbNodeAttributeSupplier) {
   IKbNode* root_kbnode_ { nullptr };
 };
 
-class KbNodeAttribute final : public FTO_INTERFACE(KbNodeAttribute) {
+class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
  public:
   explicit KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier);
   virtual ~KbNodeAttribute();

@@ -19,7 +19,7 @@
 #include FTO_HEADER(qtui/core, tree_item_qmodel)
 
 class TreeItemQModel
-    : public FTO_INTERFACE(TreeItemQModel)
+    : public FTO_NAMESPACE::TreeItemQModel
     , public utils::ITrackable
     , public std::enable_shared_from_this<TreeItemQModel> {
  public:
