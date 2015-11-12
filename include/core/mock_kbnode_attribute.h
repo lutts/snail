@@ -43,6 +43,8 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
   // GenericAttributeSupplier mocks
   MOCK_METHOD0(createAttribute, IAttribute*());
 
+  SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
+
   KbNodeAttributeSupplier_METHODS
 };
 

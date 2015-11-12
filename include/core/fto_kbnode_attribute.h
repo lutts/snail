@@ -26,8 +26,7 @@ namespace fto {
 #ifndef DISABLE_TEST_CODE
 
 #define KbNodeAttributeSupplier_METHODS                         \
-  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());            \
-  SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
+  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -35,6 +34,8 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~KbNodeAttributeSupplier() = default;
 
+
+  SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
 
   KbNodeAttributeSupplier_METHODS
 };

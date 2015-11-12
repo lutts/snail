@@ -78,6 +78,10 @@
     return *this;                                                       \
   }                                                                     \
                                                                         \
+  RealClass##TestProxy* clone() const {                                 \
+    return new RealClass##TestProxy(*this);                             \
+  }                                                                     \
+                                                                        \
  private:                                                               \
   void cloneObj(const RealClass& obj) {                                 \
     if (owned_)                                                         \
