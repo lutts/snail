@@ -20,8 +20,6 @@ namespace snailcore {
 
 class IKbNode;
 
-#include "utils/basic_utils.h"
-
 class KbNodeLinkAttributeSupplier
     : public FTO_NAMESPACE::KbNodeLinkAttributeSupplier {
  public:
@@ -47,7 +45,13 @@ class KbNodeLinkAttributeSupplier
     return root_kbnode_;
   }
 
+  fto::KbNodeLinkAttributeSupplier* clone() const {
+    // // TODO(lutts): impl this method
+    return nullptr;
+  }
+
  private:
+  // TODO(lutts): remove this to allow copy
   SNAIL_DISABLE_COPY(KbNodeLinkAttributeSupplier);
 
   // GenericAttributeSupplier impls
@@ -79,6 +83,7 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
   void linkUpdated();
   void initValueAttr();
 
+  // TODO(lutts): remove this to allow copy
   SNAIL_DISABLE_COPY(KbNodeLinkAttribute);
 
   fto::KbNodeLinkAttributeSupplier* link_attr_supplier_;

@@ -48,3 +48,6 @@ add_gmock_unit_test(kbnode_link_attribute_popup_editor_model
 
 add_gmock_unit_test(kbnode_link_attribute
   LIBS testutils)
+
+add_gmock_unit_test(link_type
+  LIBS testutils)

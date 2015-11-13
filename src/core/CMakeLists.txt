@@ -12,6 +12,7 @@ set(core_SRCS ${core_SRCS}
   kbnode_link_attribute_inline_editor_model.cc
   kbnode_link_attribute_popup_editor_model.cc
   kbnode_link_attribute.cc
+  link_type.cc
   )
 
 set(SUBDIRS factory)

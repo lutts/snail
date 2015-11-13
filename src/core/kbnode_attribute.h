@@ -66,7 +66,7 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
   TEST_ONLY_MOVE_ASSIGNMENT(KbNodeAttribute);
 
  private:
-  void swap(KbNodeAttribute& rhs);
+  KbNodeAttribute& swap(KbNodeAttribute& rhs);
 
   fto::KbNodeAttributeSupplier* attr_supplier_;
   IKbNode* kbnode_ { nullptr };

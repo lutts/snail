@@ -30,7 +30,8 @@ class LinkType;
 #define KbNodeLinkAttributeSupplier_METHODS                             \
   SNAIL_CONST_INTERFACE0(getLinkTypeItemProvider, ITreeItemProvider*()); \
   SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const LinkType*());   \
-  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
+  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());                    \
+  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeLinkAttributeSupplier*());
 
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:

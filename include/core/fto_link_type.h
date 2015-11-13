@@ -29,7 +29,7 @@ namespace fto {
 #define LinkType_METHODS                        \
   SNAIL_CONST_INTERFACE0(attributeSuppliers,    \
                          std::vector<IAttributeSupplier*>());   \
-  SNAIL_CONST_INTERFACE0(prototype, fto::LinkType*());          \
+  SNAIL_CONST_INTERFACE0(prototype, const fto::LinkType*());    \
   SNAIL_CONST_INTERFACE0(toString, utils::U8String());          \
   SNAIL_INTERFACE0(clear, void());
 

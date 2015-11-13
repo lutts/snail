@@ -136,6 +136,9 @@ class AttrSupplierTestStub : public IAttributeSupplier {
 
 class MockAttrSupplierTestStub : public AttrSupplierTestStub {
  public:
+  MockAttrSupplierTestStub()
+      : MockAttrSupplierTestStub { xtestutils::genRandomString(), std::rand() }
+  { }
   MockAttrSupplierTestStub(const utils::U8String& name,
                            int max_attrs)
       : AttrSupplierTestStub(name, max_attrs) { }
@@ -143,6 +146,8 @@ class MockAttrSupplierTestStub : public AttrSupplierTestStub {
 
   MOCK_METHOD1(addAttributeCalled, ComplexReturnValue(IAttribute* new_attr));
   MOCK_METHOD1(attributeRemoved, ComplexReturnValue(IAttribute* attr));
+
+  MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 
   static std::vector<std::unique_ptr<MockAttrSupplierTestStub>>
   createAttributeSuppliers();

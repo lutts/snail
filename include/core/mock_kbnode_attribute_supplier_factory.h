@@ -10,11 +10,11 @@
 
 #include "core/i_kbnode_attribute_supplier_factory.h"
 
-namespace snailcore {
-namespace tests {
-
 #define INTERFACE_MOCK_PHASE
 #include "test/interface.h"
+
+namespace snailcore {
+namespace tests {
 
 class MockKbNodeAttributeSupplierFactory
     : public IKbNodeAttributeSupplierFactory {
@@ -22,9 +22,9 @@ class MockKbNodeAttributeSupplierFactory
   IKbNodeAttributeSupplierFactory_METHODS
 };
 
-#undef INTERFACE_MOCK_PHASE
-
 }  // namespace tests
 }  // namespace snailcore
+
+#undef INTERFACE_MOCK_PHASE
 
 #endif  // MOCK_KBNODE_ATTRIBUTE_SUPPLIER_FACTORY_H_

@@ -200,9 +200,10 @@ TEST_F(KbNodeAttributeTest,
   FixtureHelper(DummyKbNodeAttrFixture, fixture2);
 
   // Exercise system
-  fixture2.attr_ = std::move(fixture1.attr_);
+  KbNodeAttribute& ref = (fixture2.attr_ = std::move(fixture1.attr_));
 
   // Verify results
+  EXPECT_THAT(ref, Ref(fixture2.attr_));
   ASSERT_EQ(nullptr, fixture1.attr_.getKbNode());
   ASSERT_EQ(nullptr, fixture1.attr_.supplier());
   ASSERT_EQ(fixture1.kbnode_, fixture2.attr_.getKbNode());

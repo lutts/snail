@@ -27,13 +27,14 @@ KbNodeAttribute::KbNodeAttribute(KbNodeAttribute&& rhs)
 }
 
 KbNodeAttribute& KbNodeAttribute::operator=(KbNodeAttribute rhs) {
-  swap(rhs);
-  return *this;
+  return swap(rhs);
 }
 
-void KbNodeAttribute::swap(KbNodeAttribute& rhs) {
+KbNodeAttribute& KbNodeAttribute::swap(KbNodeAttribute& rhs) {
   std::swap(attr_supplier_, rhs.attr_supplier_);
   std::swap(kbnode_, rhs.kbnode_);
+
+  return *this;
 }
 
 // IAttribute
