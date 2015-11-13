@@ -113,7 +113,7 @@ class KbNodeAttributeSupplierTestProxy {
 
  public:
   KbNodeAttributeSupplierTestProxy(IKbNode* root_kbnode, int max_attrs) {
-    setSelf(getFactory()->createInstance(root_kbnode, max_attrs));
+    createInstance(root_kbnode, max_attrs);
   }
 
   utils::U8String name() const {

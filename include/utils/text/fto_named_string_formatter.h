@@ -96,7 +96,7 @@ class NamedStringFormatterTestProxy {
 
  public:
   NamedStringFormatterTestProxy() {
-    setSelf(getFactory()->createInstance());
+    createInstance();
   }
 
   NamedStringFormatter_METHODS

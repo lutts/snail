@@ -8,6 +8,8 @@
 #ifndef INCLUDE_TEST_TEST_PROXY_H_
 #define INCLUDE_TEST_TEST_PROXY_H_
 
+#include "src/utils/log/log.h"
+
 // NOTE: if default construct for real object is forbided, default constructor
 // in test proxy should also removed
 #define TEST_PROXY_BASE(RealClass)                              \
@@ -48,9 +50,18 @@
         return &factory_;                                               \
   }                                                                     \
                                                                         \
-  const RealClass##Factory* getFactory() {                              \
+  static const RealClass##Factory* getFactory() {                       \
     return *getFactory_();                                              \
   }                                                                     \
+                                                                        \
+  template<class ... Args>                                              \
+  void createInstance(Args && ... args) {                               \
+    if (getFactory()) {                                                 \
+      setSelf(getFactory()->createInstance(std::forward<Args> (args) ...)); \
+    } else {                                                            \
+      ALOGE << #RealClass " factory not set";                           \
+    }                                                                   \
+  }
 
 #define TEST_PROXY_ENABLE_COPY(RealClass)                               \
  public:                                                                \
