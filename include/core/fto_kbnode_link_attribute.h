@@ -40,7 +40,7 @@ namespace fto {
 
 #define KbNodeLinkAttributeSupplier_METHODS                             \
   SNAIL_CONST_INTERFACE0(getLinkTypeItemProvider, ITreeItemProvider*()); \
-  SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const LinkType*());   \
+  SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const fto::LinkType*()); \
   SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());                    \
   SNAIL_CONST_INTERFACE0(clone, fto::KbNodeLinkAttributeSupplier*());
 
@@ -54,9 +54,9 @@ class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
 };
 
 #define KbNodeLinkAttribute_METHODS                                     \
-  SNAIL_CONST_INTERFACE0(supplier, KbNodeLinkAttributeSupplier*());     \
-  SNAIL_INTERFACE0(valueAttr, KbNodeAttribute*());                      \
-  SNAIL_INTERFACE0(linkType, LinkType*());
+  SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeLinkAttributeSupplier*()); \
+  SNAIL_INTERFACE0(valueAttr, fto::KbNodeAttribute*());                 \
+  SNAIL_INTERFACE0(linkType, fto::LinkType*());
 
 class KbNodeLinkAttribute : public IAttribute {
  public:

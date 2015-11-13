@@ -40,7 +40,8 @@ class KbNodeLinkAttributeTest : public ::testing::Test {
         .WillOnce(SaveArg<0>(&linkUpdated));
 
     // setup value attr
-    KbNodeAttributeSupplierTestProxy::setFactory(&kbnode_attr_supplier_factory);
+    fto::KbNodeAttributeSupplierTestProxy::setFactory(
+        &kbnode_attr_supplier_factory);
     auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
     R_EXPECT_CALL(link_attr_supplier, getRootKbNode())
         .WillOnce(Return(root_kbnode));

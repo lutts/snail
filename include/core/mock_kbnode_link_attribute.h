@@ -18,8 +18,6 @@
 #define INTERFACE_MOCK_PHASE
 #include "test/interface.h"
 
-using namespace snailcore::fto;  // NOLINT
-
 namespace snailcore {
 namespace tests {
 
@@ -38,7 +36,7 @@ class MockKbNodeLinkAttributeSupplier
   KbNodeLinkAttributeSupplier_METHODS
 };
 
-class MockKbNodeLinkAttribute : public KbNodeLinkAttribute {
+class MockKbNodeLinkAttribute : public fto::KbNodeLinkAttribute {
  public:
   COMMON_ATTRIBUTE_MOCKS
   KbNodeLinkAttribute_METHODS
