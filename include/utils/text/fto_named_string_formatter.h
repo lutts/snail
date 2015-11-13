@@ -8,22 +8,31 @@
 #ifndef FTO_NAMED_STRING_FORMATER_H_
 #define FTO_NAMED_STRING_FORMATER_H_
 
-#include "include/config.h"
-#include "test/test_proxy.h"
-#include "utils/u8string.h"
-#include "utils/text/i_named_string_formatter_factory.h"
+// region: shared with impl
 
-#define INTERFACE_DEFINITION_PHASE
-#include "test/interface.h"
+#include "include/config.h"
+#include "utils/u8string.h"
 
 namespace utils {
 namespace text {
 
 class VariableResolver;
 
-namespace fto {
+}  // namespace text
+}  // namespace utils
+
+// endregion: shared
+
+// region: Interface
 
 #ifndef DISABLE_TEST_CODE
+
+#define INTERFACE_DEFINITION_PHASE
+#include "test/interface.h"
+
+namespace utils {
+namespace text {
+namespace fto {
 
 #define NamedStringFormatter_METHODS                                    \
   SNAIL_CONST_INTERFACE2(                                               \
@@ -37,11 +46,16 @@ class NamedStringFormatter {
   NamedStringFormatter_METHODS
 };
 
-#else  // DISABLE_TEST_CODE
+#define NamedStringFormatterFactory_METHODS             \
+  SNAIL_CONST_INTERFACE0(createInstance,                \
+                         fto::NamedStringFormatter*());
 
-class NamedStringFormatter { };
+class NamedStringFormatterFactory {
+ public:
+  virtual ~NamedStringFormatterFactory() = default;
 
-#endif  // DISABLE_TEST_CODE
+  NamedStringFormatterFactory_METHODS
+};
 
 }  // namespace fto
 }  // namespace text
@@ -49,7 +63,26 @@ class NamedStringFormatter { };
 
 #undef INTERFACE_DEFINITION_PHASE
 
+#else  // DISABLE_TEST_CODE
+
+namespace utils {
+namespace text {
+namespace fto {
+
+class NamedStringFormatter { };
+
+}  // namespace fto
+}  // namespace text
+}  // namespace utils
+
+#endif  // DISABLE_TEST_CODE
+// endregion: Interface
+
+// region: TestProxy
 #ifndef DISABLE_TEST_CODE
+
+#include "test/test_proxy.h"
+
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
 
@@ -58,11 +91,10 @@ namespace text {
 namespace fto {
 
 class NamedStringFormatterTestProxy {
-  TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(NamedStringFormatter);
-  TEST_PROXY_ENABLE_FACTORY_SUPPORT(INamedStringFormatter);
+  TEST_PROXY_BASE(NamedStringFormatter);
+  TEST_PROXY_ENABLE_FACTORY_SUPPORT(NamedStringFormatter);
 
  public:
-  // default constructor
   NamedStringFormatterTestProxy() {
     setSelf(getFactory()->createInstance());
   }
@@ -77,5 +109,6 @@ class NamedStringFormatterTestProxy {
 #undef INTERFACE_TEST_PROXY_PHASE
 #endif  // DISABLE_TEST_CODE
 
+// endregion: TestProxy
 
 #endif  // FTO_NAMED_STRING_FORMATER_H_

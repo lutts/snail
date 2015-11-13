@@ -8,6 +8,8 @@
 #ifndef INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_H_
 #define INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_H_
 
+// region: Mocks
+
 #include "core/fto_kbnode_link_attribute.h"
 #include "snail/mock_attribute.h"  // COMMON_ATTRIBUTE_MOCKS
 #include "core/fto_kbnode_attribute.h"
@@ -46,5 +48,7 @@ class MockKbNodeLinkAttribute : public KbNodeLinkAttribute {
 }  // namespace snailcore
 
 #undef INTERFACE_MOCK_PHASE
+
+// endregion: Mocks
 
 #endif  // INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_H_

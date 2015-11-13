@@ -8,24 +8,29 @@
 #ifndef INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
 #define INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_
 
+// region: shared with impl
+
 #include "include/config.h"
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"
-#include "core/i_kbnode_attribute_supplier_factory.h"
-#include "test/test_proxy.h"
+
+namespace snailcore {
+class IKbNode;
+}  // namespace snailcore
+
+// endregion: shared
+
+// region: Interface
+
+#ifndef DISABLE_TEST_CODE
 
 #define INTERFACE_DEFINITION_PHASE
 #include "test/interface.h"
 
 namespace snailcore {
-
-class IKbNode;
-
 namespace fto {
 
-#ifndef DISABLE_TEST_CODE
-
-#define KbNodeAttributeSupplier_METHODS                         \
+#define KbNodeAttributeSupplier_METHODS                 \
   SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
@@ -34,10 +39,21 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
       : GenericAttributeSupplier(name, max_attrs) { }
   virtual ~KbNodeAttributeSupplier() = default;
 
-
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
 
   KbNodeAttributeSupplier_METHODS
+};
+
+#define KbNodeAttributeSupplierFactory_METHODS                          \
+  SNAIL_CONST_INTERFACE2(createInstance,                                \
+                         fto::KbNodeAttributeSupplier*(                 \
+                             IKbNode* root_kbnode, int max_attrs));
+
+class KbNodeAttributeSupplierFactory {
+ public:
+  virtual ~KbNodeAttributeSupplierFactory() = default;
+
+  KbNodeAttributeSupplierFactory_METHODS
 };
 
 #define KbNodeAttribute_METHODS                                         \
@@ -50,10 +66,19 @@ class KbNodeAttribute : public IAttribute {
 
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttribute*());
   virtual KbNodeAttribute& operator=(KbNodeAttribute&& rhs) = 0;
+
   KbNodeAttribute_METHODS
 };
 
+}  // namespace fto
+}  // namespace snailcore
+
+#undef INTERFACE_DEFINITION_PHASE
+
 #else  // DISABLE_TEST_CODE
+
+namespace snailcore {
+namespace fto {
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
@@ -64,12 +89,16 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
 
 class KbNodeAttribute : public IAttribute { };
 
-#endif  // DISABLE_TEST_CODE
-
 }  // namespace fto
 }  // namespace snailcore
 
-#undef INTERFACE_DEFINITION_PHASE
+#endif  // DISABLE_TEST_CODE
+// endregion: Interface
+
+// region: TestProxy
+#ifndef DISABLE_TEST_CODE
+
+#include "test/test_proxy.h"
 
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
@@ -80,7 +109,7 @@ namespace fto {
 class KbNodeAttributeSupplierTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttributeSupplier);
   TEST_PROXY_ENABLE_COPY(KbNodeAttributeSupplier);
-  TEST_PROXY_ENABLE_FACTORY_SUPPORT(IKbNodeAttributeSupplier);
+  TEST_PROXY_ENABLE_FACTORY_SUPPORT(KbNodeAttributeSupplier);
 
  public:
   KbNodeAttributeSupplierTestProxy(IKbNode* root_kbnode, int max_attrs) {
@@ -134,9 +163,15 @@ class KbNodeAttributeTestProxy {
   KbNodeAttribute_METHODS
 };
 
+#undef INTERFACE_TEST_PROXY_PHASE
+
 }  // namespace fto
 }  // namespace snailcore
 
 #undef INTERFACE_TEST_PROXY_PHASE
+#endif  // DISABLE_TEST_CODE
+
+// endregion: TestProxy
+
 
 #endif  // INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_

@@ -10,7 +10,7 @@
 
 // NOTE: if default construct for real object is forbided, default constructor
 // in test proxy should also removed
-#define TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)       \
+#define TEST_PROXY_BASE(RealClass)                              \
  public:                                                        \
   virtual ~RealClass##TestProxy() {                             \
     if (owned_)                                                 \
@@ -30,6 +30,11 @@
  private:                                                       \
   RealClass* self_ { nullptr };                                 \
   bool owned_ { true };
+
+#define TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)       \
+  TEST_PROXY_BASE(RealClass)                                    \
+ private:                                                       \
+  RealClass##TestProxy() = delete;
 
 #define TEST_PROXY_ENABLE_FACTORY_SUPPORT(RealClass)                    \
   public:                                                               \
@@ -95,6 +100,6 @@
 #define TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(RealClass)  \
   public:                                               \
   RealClass##TestProxy() = default;                     \
-  TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)
+  TEST_PROXY_BASE(RealClass)
 
 #endif  // INCLUDE_TEST_TEST_PROXY_H_

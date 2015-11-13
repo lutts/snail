@@ -22,6 +22,12 @@ class MockNamedStringFormatter : public fto::NamedStringFormatter {
   NamedStringFormatter_METHODS
 };
 
+class MockNamedStringFormatterFactory
+    : public fto::NamedStringFormatterFactory {
+ public:
+  NamedStringFormatterFactory_METHODS
+};
+
 }  // namespace tests
 }  // namespace text
 }  // namespace utils

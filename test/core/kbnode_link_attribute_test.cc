@@ -10,7 +10,6 @@
 #include "src/core/kbnode_link_attribute.h"
 #include "core/mock_kbnode_link_attribute.h"
 #include "core/mock_kbnode_attribute.h"
-#include "core/mock_kbnode_attribute_supplier_factory.h"
 #include "core/mock_link_type.h"
 #include "core/mock_kbnode.h"
 

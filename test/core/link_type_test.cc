@@ -11,7 +11,6 @@
 #include "test/core/attribute_test_stub.h"
 #include "utils/text/variable_resolver.h"
 #include "utils/text/mock_named_string_formatter.h"
-#include "utils/text/mock_named_string_formatter_factory.h"
 
 namespace snailcore {
 namespace tests {

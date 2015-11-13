@@ -48,6 +48,12 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
   KbNodeAttributeSupplier_METHODS
 };
 
+class MockKbNodeAttributeSupplierFactory
+    : public fto::KbNodeAttributeSupplierFactory {
+ public:
+  KbNodeAttributeSupplierFactory_METHODS
+};
+
 }  // namespace tests
 }  // namespace snailcore
 

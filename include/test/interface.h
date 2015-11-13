@@ -4,7 +4,6 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-
 #undef SNAIL_INTERFACE0
 #undef SNAIL_INTERFACE1
 #undef SNAIL_INTERFACE2
