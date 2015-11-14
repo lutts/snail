@@ -29,6 +29,10 @@ class MockNamedStringFormatterFactory
     fto::NamedStringFormatterTestProxy::setFactory(this);
   }
 
+  virtual ~MockNamedStringFormatterFactory() {
+    fto::NamedStringFormatterTestProxy::setFactory(nullptr);
+  }
+
   NamedStringFormatterFactory_METHODS
 };
 
