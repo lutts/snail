@@ -28,15 +28,15 @@ class LinkTypeTest : public ::testing::Test {
   // void TearDown() override { }
 };
 
-class LinkTypeData {
+class LinkTypeState {
  public:
-  LinkTypeData() = default;
+  LinkTypeState() = default;
   // attr suppliers is not copied
-  LinkTypeData(const LinkTypeData& rhs)
+  LinkTypeState(const LinkTypeState& rhs)
       : name_(rhs.name_)
       , is_group_only_(rhs.is_group_only_)
       , prototype_(rhs.prototype_){ }
-  LinkTypeData& operator=(const LinkTypeData& rhs) {
+  LinkTypeState& operator=(const LinkTypeState& rhs) {
     name_ = rhs.name_;
     is_group_only_ = rhs.is_group_only_;
     prototype_ = rhs.prototype_;
@@ -50,7 +50,7 @@ class LinkTypeData {
 };
 
 void validateLinkType(const LinkType& actual_link_type,
-                      const LinkTypeData& expect_link_type) {
+                      const LinkTypeState& expect_link_type) {
   ASSERT_EQ(expect_link_type.name_, actual_link_type.name());
   ASSERT_EQ(expect_link_type.is_group_only_, actual_link_type.isGroupOnly());
   if (!expect_link_type.prototype_) {
@@ -70,11 +70,11 @@ TEST_F(LinkTypeTest,
   LinkType link_type { expect_name, expect_group_only };
 
   // Verify results
-  LinkTypeData link_type_data;
-  link_type_data.name_ = expect_name;
-  link_type_data.is_group_only_ = expect_group_only;
+  LinkTypeState link_type_state;
+  link_type_state.name_ = expect_name;
+  link_type_state.is_group_only_ = expect_group_only;
 
-  CUSTOM_ASSERT(validateLinkType(link_type, link_type_data));
+  CUSTOM_ASSERT(validateLinkType(link_type, link_type_state));
 }
 
 class AttrSupplierFixture : public TestFixture {
@@ -101,21 +101,21 @@ class AttrSupplierFixture : public TestFixture {
 
     link_type.setAttributeSuppliers(std::move(attr_suppliers_up));
 
-    link_type_data.name_ = link_type.name();
-    link_type_data.is_group_only_ = link_type.isGroupOnly();
-    link_type_data.attr_suppliers_ = std::move(attr_suppliers);
-    link_type_data.prototype_ = &link_type;
+    link_type_state.name_ = link_type.name();
+    link_type_state.is_group_only_ = link_type.isGroupOnly();
+    link_type_state.attr_suppliers_ = std::move(attr_suppliers);
+    link_type_state.prototype_ = &link_type;
   }
 
   void checkSetup() {
     SCOPED_TRACE(name_);
 
-    validateLinkType(link_type, link_type_data);
+    validateLinkType(link_type, link_type_state);
 
     abortIfFailure();
   }
 
-  void setupClonedLinkTypeData() {
+  void setupClonedLinkTypeState() {
     std::vector<IAttributeSupplier*> cloned_attr_suppliers;
     for (auto & supplier : mock_attr_suppliers_) {
       auto cloned_supplier = new MockAttrSupplierTestStub;
@@ -123,8 +123,8 @@ class AttrSupplierFixture : public TestFixture {
       cloned_attr_suppliers.push_back(cloned_supplier);
     }
 
-    cloned_link_type_data = link_type_data;
-    cloned_link_type_data.attr_suppliers_ = std::move(cloned_attr_suppliers);
+    cloned_link_type_state = link_type_state;
+    cloned_link_type_state.attr_suppliers_ = std::move(cloned_attr_suppliers);
   }
 
   void fillSupplierWithAttributes() {
@@ -137,8 +137,8 @@ class AttrSupplierFixture : public TestFixture {
   }
 
   LinkType link_type;
-  LinkTypeData link_type_data;
-  LinkTypeData cloned_link_type_data;
+  LinkTypeState link_type_state;
+  LinkTypeState cloned_link_type_state;
   std::vector<MockAttrSupplierTestStub*> mock_attr_suppliers_;
   std::map<utils::U8String,
            std::vector<utils::U8String> > supplier_to_attr_values;
@@ -153,23 +153,23 @@ TEST_F(LinkTypeTest,
        test_copy_construct) { // NOLINT
   // Setup fixture
   FixtureHelper(AttrSupplierFixture, fixture);
-  fixture.setupClonedLinkTypeData();
+  fixture.setupClonedLinkTypeState();
 
   // Exercise system
   LinkType cloned_link_type { fixture.link_type };
 
   // Verify results
   CUSTOM_ASSERT(validateLinkType(cloned_link_type,
-                                 fixture.cloned_link_type_data));
+                                 fixture.cloned_link_type_state));
   // ensure fixture's link_type is not changed
-  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_data));
+  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_state));
 }
 
 TEST_F(LinkTypeTest,
        test_copy_assignment) { // NOLINT
   // Setup fixture
   FixtureHelper(AttrSupplierFixture, fixture);
-  fixture.setupClonedLinkTypeData();
+  fixture.setupClonedLinkTypeState();
 
   LinkType cloned_link_type { "", false };
 
@@ -179,9 +179,9 @@ TEST_F(LinkTypeTest,
   // Verify results
   EXPECT_THAT(ref, Ref(cloned_link_type));
   CUSTOM_ASSERT(validateLinkType(cloned_link_type,
-                                 fixture.cloned_link_type_data));
+                                 fixture.cloned_link_type_state));
   // ensure fixture's link_type is not changed
-  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_data));
+  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_state));
 }
 
 TEST_F(LinkTypeTest,
@@ -189,14 +189,14 @@ TEST_F(LinkTypeTest,
   // Setup fixture
   FixtureHelper(AttrSupplierFixture, fixture);
 
-  LinkTypeData empty_data;
+  LinkTypeState empty_state;
 
   // Exercise system
   LinkType link_type { std::move(fixture.link_type) };
 
   // Verify results
-  CUSTOM_ASSERT(validateLinkType(link_type, fixture.link_type_data));
-  CUSTOM_ASSERT(validateLinkType(fixture.link_type, empty_data));
+  CUSTOM_ASSERT(validateLinkType(link_type, fixture.link_type_state));
+  CUSTOM_ASSERT(validateLinkType(fixture.link_type, empty_state));
 }
 
 TEST_F(LinkTypeTest,
@@ -204,7 +204,7 @@ TEST_F(LinkTypeTest,
   // Setup fixture
   FixtureHelper(AttrSupplierFixture, fixture);
 
-  LinkTypeData empty_data;
+  LinkTypeState empty_state;
   LinkType link_type { "", false };
 
   // Exercise system
@@ -212,8 +212,8 @@ TEST_F(LinkTypeTest,
 
   // Verify results
   EXPECT_THAT(ref, Ref(link_type));
-  CUSTOM_ASSERT(validateLinkType(link_type, fixture.link_type_data));
-  CUSTOM_ASSERT(validateLinkType(fixture.link_type, empty_data));
+  CUSTOM_ASSERT(validateLinkType(link_type, fixture.link_type_state));
+  CUSTOM_ASSERT(validateLinkType(fixture.link_type, empty_state));
 }
 
 TEST_F(LinkTypeTest,
@@ -225,28 +225,28 @@ TEST_F(LinkTypeTest,
   fixture.link_type.clear();
 
   // Verify results
-  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_data));
+  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_state));
 }
 
 TEST_F(LinkTypeTest,
        should_clear_non_prototype_link_type_return_to_prototype_state) { // NOLINT
   // Setup fixture
   FixtureHelper(AttrSupplierFixture, fixture);
-  fixture.setupClonedLinkTypeData();
+  fixture.setupClonedLinkTypeState();
 
   LinkType cloned_link_type = fixture.link_type;
 
   fixture.verify();
 
-  fixture.setupClonedLinkTypeData();
+  fixture.setupClonedLinkTypeState();
 
   // Exercise system
   cloned_link_type.clear();
 
   // Verify results
   CUSTOM_ASSERT(validateLinkType(cloned_link_type,
-                                 fixture.cloned_link_type_data));
-  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_data));
+                                 fixture.cloned_link_type_state));
+  CUSTOM_ASSERT(validateLinkType(fixture.link_type, fixture.link_type_state));
 }
 
 TEST_F(LinkTypeTest,
