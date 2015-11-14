@@ -129,7 +129,7 @@ void QtCompleterImpl::autoResizePopup(
   (void)first;
   (void)last;
 
-  if (popup)
+  if (!popup)
     return;
 
   if (popup && !popup->isVisible())
