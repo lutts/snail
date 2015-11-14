@@ -12,6 +12,8 @@
 #include "utils/text/variable_resolver.h"
 #include "utils/text/mock_named_string_formatter.h"
 
+using namespace utils::text::tests;  // NOLINT
+
 namespace snailcore {
 namespace tests {
 
@@ -22,24 +24,8 @@ class LinkTypeTest : public ::testing::Test {
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~LinkTypeTest() { }
-  void SetUp() override {
-    utils::text::fto::NamedStringFormatterTestProxy::setFactory(
-        &named_str_formatter_factory);
-
-
-    EXPECT_CALL(named_str_formatter_factory, createInstance())
-        .WillRepeatedly(Invoke([this]() {
-              named_string_formatter =
-                  new utils::text::tests::MockNamedStringFormatter();
-              return named_string_formatter;
-            }));;
-  }
+  void SetUp() override { }
   // void TearDown() override { }
-
-  utils::text::tests::MockNamedStringFormatterFactory
-  named_str_formatter_factory;
-
-  utils::text::tests::MockNamedStringFormatter* named_string_formatter;
 };
 
 class LinkTypeData {
@@ -291,6 +277,12 @@ TEST_F(LinkTypeTest,
 TEST_F(LinkTypeTest,
        should_toString_will_call_named_string_formatter_with_link_type_itself_as_variable_resolver) { // NOLINT
   // Setup fixture
+  MockNamedStringFormatterFactory named_str_formatter_factory;
+
+  auto named_string_formatter = new MockNamedStringFormatter();
+  EXPECT_CALL(named_str_formatter_factory, createInstance())
+      .WillOnce(Return(named_string_formatter));
+
   FixtureHelper(AttrSupplierFixture, fixture);
 
   auto expect_str = xtestutils::genRandomString();

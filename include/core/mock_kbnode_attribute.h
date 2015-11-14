@@ -51,6 +51,9 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
 class MockKbNodeAttributeSupplierFactory
     : public fto::KbNodeAttributeSupplierFactory {
  public:
+  MockKbNodeAttributeSupplierFactory() {
+    fto::KbNodeAttributeSupplierTestProxy::setFactory(this);
+  }
   KbNodeAttributeSupplierFactory_METHODS
 };
 

@@ -25,6 +25,10 @@ class MockNamedStringFormatter : public fto::NamedStringFormatter {
 class MockNamedStringFormatterFactory
     : public fto::NamedStringFormatterFactory {
  public:
+  MockNamedStringFormatterFactory() {
+    fto::NamedStringFormatterTestProxy::setFactory(this);
+  }
+
   NamedStringFormatterFactory_METHODS
 };
 
