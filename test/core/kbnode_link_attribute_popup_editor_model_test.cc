@@ -272,22 +272,28 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
     InSequence seq;
 
     attr_model_valid = true;
+    (void)attr_model_valid;  // make scan-build happy
     attr_set_model_valid = false;  // changed
     EXPECT_CALL(*mock_listener, ValidateComplete(false));
     attrSetModelValidateComplete(attr_set_model_valid);
 
     attr_model_valid = false;  // changed
     attr_set_model_valid = false;
+    (void)attr_model_valid;  // make scan-build happy
+    (void)attr_set_model_valid;  // make scan-build happy
     EXPECT_CALL(*mock_listener, ValidateComplete(false));
     attrModelValidateComplete();
 
     attr_model_valid = false;
+    (void)attr_model_valid;  // make scan-build happy
     attr_set_model_valid = true;  // changed
     EXPECT_CALL(*mock_listener, ValidateComplete(false));
     attrSetModelValidateComplete(attr_set_model_valid);
 
     attr_model_valid = true;  // changed
     attr_set_model_valid = true;
+    (void)attr_model_valid;  // make scan-build happy
+    (void)attr_set_model_valid;  // make scan-build happy
     EXPECT_CALL(*mock_listener, ValidateComplete(true));
     attrModelValidateComplete();
   }
