@@ -11,13 +11,12 @@
 #include "core/i_kbnode.h"
 #include "snail/mock_tree_item_provider.h"
 
-std::ostream& operator<< (std::ostream& os,
-                          const std::vector<snailcore::IKbNode*>& kbnodes) {
+utils::U8String printKbNodes(const std::vector<snailcore::IKbNode*>& kbnodes) {
+  std::ostringstream os;
   for (auto kbnode : kbnodes) {
     os << "(" << kbnode->id() << ", \"" << kbnode->name() << "\"), ";
   }
-
-  return os;
+  return os.str();
 }
 
 namespace snailcore {
@@ -180,8 +179,8 @@ TEST_F(KbNodeManagerTest,
   std::sort(actual_search_result.begin(), actual_search_result.end(),
             kbnode_compare);
   ASSERT_EQ(expect_search_result, actual_search_result)
-      << "expect: {" << expect_search_result << "}, "
-      << "actual: {" << actual_search_result << "}";
+      << "expect: {" << printKbNodes(expect_search_result) << "}, "
+      << "actual: {" << printKbNodes(actual_search_result) << "}";
 
   expect_search_result.push_back(top_level_node_);
   std::sort(expect_search_result.begin(), expect_search_result.end(),
@@ -191,8 +190,8 @@ TEST_F(KbNodeManagerTest,
   std::sort(actual_search_result_top.begin(), actual_search_result_top.end(),
             kbnode_compare);
   ASSERT_EQ(expect_search_result, actual_search_result_top)
-      << "expect: {" << expect_search_result << "}, "
-      << "actual: {" << actual_search_result_top << "}";
+      << "expect: {" << printKbNodes(expect_search_result) << "}, "
+      << "actual: {" << printKbNodes(actual_search_result_top) << "}";
 }
 
 TEST_F(KbNodeManagerTest,
@@ -207,8 +206,8 @@ TEST_F(KbNodeManagerTest,
     auto actual_subnodes = kbnode_manager_->childItems(kbnode);
     auto & expect_subnodes = kbnode_to_subnodes[kbnode];
     ASSERT_EQ(expect_subnodes, actual_subnodes)
-        << "expect: {" << expect_subnodes << "}, "
-        << "actual: {" << actual_subnodes << "}";
+        << "expect: {" << printKbNodes(expect_subnodes) << "}, "
+        << "actual: {" << printKbNodes(actual_subnodes) << "}";
   }
 }
 
