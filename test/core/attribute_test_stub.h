@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "utils/basic_utils.h"
+#include "utils/signal_slot_impl.h"
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
 
