@@ -2,20 +2,20 @@
 
 all: debug-build
 
-release-build: FORCE
+debug-build: FORCE
 	make -C build
 	cp build/compile_commands.json ./
 
-debug-build: FORCE
+check-build: FORCE
 	scan-build make -C build
 	cp build/compile_commands.json ./
 
 # TODO(lutts): should not use BUILD_SHARED_LIBS here, pls find a solution
-release-prepare:
+debug-prepare:
 	-mkdir build
 	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
 
-debug-prepare:
+check-prepare:
 	/bin/rm -rf build
 	mkdir build
 	cd build && scan-build cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
