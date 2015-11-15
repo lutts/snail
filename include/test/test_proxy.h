@@ -107,6 +107,15 @@
     owned_ = true;                                                      \
   }                                                                     \
 
+#define TEST_PROXY_DISABLE_COPY(RealClass)                              \
+ private:                                                               \
+  RealClass##TestProxy(const RealClass##TestProxy& rhs) = delete;       \
+  RealClass##TestProxy(RealClass##TestProxy&& rhs)= delete;             \
+  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) = delete; \
+  RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) = delete; \
+  RealClass##TestProxy(const RealClass& rhs);                           \
+  RealClass##TestProxy& operator=(const RealClass& rhs);                \
+
 // if the default constructor of real object is allowed, use this macro instead
 #define TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(RealClass)  \
   public:                                               \

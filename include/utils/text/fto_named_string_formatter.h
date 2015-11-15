@@ -43,6 +43,7 @@ class NamedStringFormatter {
  public:
   virtual ~NamedStringFormatter() = default;
 
+  SNAIL_CONST_INTERFACE0(clone, fto::NamedStringFormatter*());
   NamedStringFormatter_METHODS
 };
 
@@ -92,6 +93,7 @@ namespace fto {
 
 class NamedStringFormatterTestProxy {
   TEST_PROXY_BASE(NamedStringFormatter);
+  TEST_PROXY_ENABLE_COPY(NamedStringFormatter);
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(NamedStringFormatter);
 
  public:

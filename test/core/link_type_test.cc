@@ -26,6 +26,8 @@ class LinkTypeTest : public ::testing::Test {
   // ~LinkTypeTest() { }
   void SetUp() override { }
   // void TearDown() override { }
+
+  MockNamedStringFormatterFactory named_str_formatter_factory_;
 };
 
 class LinkTypeState {
@@ -77,13 +79,36 @@ TEST_F(LinkTypeTest,
   CUSTOM_ASSERT(validateLinkType(link_type, link_type_state));
 }
 
-class AttrSupplierFixture : public TestFixture {
+class FormatterFixture : public TestFixture {
+ public:
+  FormatterFixture(const utils::U8String& name,
+                   LinkTypeTest* test_case)
+      : TestFixture(name)
+      , formatter_factory_(&test_case->named_str_formatter_factory_) {
+    Mock::VerifyAndClearExpectations(formatter_factory_);
+
+    formatter_ = new MockNamedStringFormatter();
+    R_EXPECT_CALL(*formatter_factory_, createInstance())
+        .WillOnce(Return(formatter_));
+  }
+
+  void setupClonedFormatter() {
+    cloned_formatter_ = new MockNamedStringFormatter();
+    EXPECT_CALL(*formatter_, clone())
+        .WillOnce(Return(cloned_formatter_));
+  }
+
+  MockNamedStringFormatterFactory* formatter_factory_;
+  MockNamedStringFormatter* formatter_;
+  MockNamedStringFormatter* cloned_formatter_;
+};
+
+class AttrSupplierFixture : public FormatterFixture {
  public:
   AttrSupplierFixture(const utils::U8String& name,
               LinkTypeTest* test_case)
-      : TestFixture(name)
-      , link_type { xtestutils::genRandomString(),
-        xtestutils::randomBool() } {
+      : FormatterFixture(name, test_case)
+      , link_type { xtestutils::genRandomString(), xtestutils::randomBool() } {
     (void)test_case;
 
     const int TEST_ATTR_SUPPLIER_COUNT = 3;
@@ -155,6 +180,9 @@ TEST_F(LinkTypeTest,
   FixtureHelper(AttrSupplierFixture, fixture);
   fixture.setupClonedLinkTypeState();
 
+  // Expectations
+  fixture.setupClonedFormatter();
+
   // Exercise system
   LinkType cloned_link_type { fixture.link_type };
 
@@ -171,7 +199,11 @@ TEST_F(LinkTypeTest,
   FixtureHelper(AttrSupplierFixture, fixture);
   fixture.setupClonedLinkTypeState();
 
+  FixtureHelper(FormatterFixture, prepare_create_link_type);
   LinkType cloned_link_type { "", false };
+
+  // Expectations
+  fixture.setupClonedFormatter();
 
   // Exercise system
   LinkType& ref = (cloned_link_type = fixture.link_type);
@@ -204,8 +236,9 @@ TEST_F(LinkTypeTest,
   // Setup fixture
   FixtureHelper(AttrSupplierFixture, fixture);
 
-  LinkTypeState empty_state;
+  FixtureHelper(FormatterFixture, prepare_create_link_type);
   LinkType link_type { "", false };
+  LinkTypeState empty_state;
 
   // Exercise system
   LinkType& ref = (link_type = std::move(fixture.link_type));
@@ -277,20 +310,16 @@ TEST_F(LinkTypeTest,
 TEST_F(LinkTypeTest,
        should_toString_will_call_named_string_formatter_with_link_type_itself_as_variable_resolver) { // NOLINT
   // Setup fixture
-  MockNamedStringFormatterFactory named_str_formatter_factory;
-
-  auto named_string_formatter = new MockNamedStringFormatter();
-  EXPECT_CALL(named_str_formatter_factory, createInstance())
-      .WillOnce(Return(named_string_formatter));
-
   FixtureHelper(AttrSupplierFixture, fixture);
 
   auto expect_str = xtestutils::genRandomString();
   auto link_phrase = xtestutils::genRandomString();
   fixture.link_type.setLinkPhrase(link_phrase);
 
+  auto formatter = fixture.formatter_;
+
   // Expectations
-  EXPECT_CALL(*named_string_formatter, format(link_phrase, &fixture.link_type))
+  EXPECT_CALL(*formatter, format(link_phrase, &fixture.link_type))
       .WillOnce(Return(expect_str));
 
   // Exercise system

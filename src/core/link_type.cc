@@ -9,16 +9,25 @@
 
 namespace snailcore {
 
+// region: constructor, destructor and assignments
+#pragma GCC diagnostic push
+#pragma GCC diagnostic error "-Weffc++"
+
 LinkType::LinkType(const utils::U8String& name,
                    bool is_group_only)
-    : name_(name)
-    , is_group_only_(is_group_only) { }
+    : name_{name}
+    , is_group_only_{is_group_only}
+    , attr_suppliers_{ }
+    , link_phrase_{ }
+    , named_string_formatter_{ } { }
 
 LinkType::LinkType(const LinkType& rhs)
     : name_(rhs.name_)
     , is_group_only_(rhs.is_group_only_)
-    , prototype_(rhs.getPrototype()) {
-
+    , prototype_(rhs.getPrototype())
+    , attr_suppliers_ { }
+    , link_phrase_{rhs.link_phrase_}
+    , named_string_formatter_{rhs.named_string_formatter_} {
   for (auto & supplier : rhs.attr_suppliers_) {
     std::unique_ptr<IAttributeSupplier> supplier_clone(supplier->clone());
     attr_suppliers_.push_back(std::move(supplier_clone));
@@ -26,11 +35,12 @@ LinkType::LinkType(const LinkType& rhs)
 }
 
 LinkType::LinkType(LinkType&& rhs)
-    : name_ (rhs.name_)
-    , is_group_only_ (rhs.is_group_only_)
-    , prototype_(rhs.getPrototype())
-    , attr_suppliers_ (std::move(rhs.attr_suppliers_)) {
-  rhs.name_.clear();
+    : name_ (std::move(rhs.name_))
+    , is_group_only_ (std::move(rhs.is_group_only_))
+    , prototype_(rhs.getPrototype())  // copy
+    , attr_suppliers_ (std::move(rhs.attr_suppliers_))
+    , link_phrase_{std::move(rhs.link_phrase_)}
+    , named_string_formatter_{std::move(rhs.named_string_formatter_)} {
   rhs.is_group_only_ = false;
   rhs.prototype_ = nullptr;
 }
@@ -44,11 +54,16 @@ LinkType& LinkType::swap(LinkType& rhs) noexcept {
   std::swap(is_group_only_, rhs.is_group_only_);
   std::swap(prototype_, rhs.prototype_);
   std::swap(attr_suppliers_, rhs.attr_suppliers_);
+  std::swap(link_phrase_, rhs.link_phrase_);
+  std::swap(named_string_formatter_, rhs.named_string_formatter_);
 
   return *this;
 }
 
 LinkType::~LinkType() = default;
+
+#pragma GCC diagnostic pop
+// endregion: constructor, destructor and assignments
 
 utils::U8String LinkType::name() const {
   return name_;

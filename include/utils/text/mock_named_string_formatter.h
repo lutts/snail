@@ -19,6 +19,7 @@ namespace tests {
 
 class MockNamedStringFormatter : public fto::NamedStringFormatter {
  public:
+  SNAIL_CONST_INTERFACE0(clone, fto::NamedStringFormatter*());
   NamedStringFormatter_METHODS
 };
 

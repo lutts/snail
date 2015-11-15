@@ -12,8 +12,10 @@
 
 #include "utils/signal_slot.h"
 
+// NOTE: signal do not allow copy
+
 #define SNAIL_SIGSLOT_IMPL_(sigName, ovrd)                              \
-  sigName##SignalType sigName;                                          \
+  sigName##SignalType sigName { };                                      \
                                                                         \
   void when##sigName(                                                   \
       sigName##SlotType handler,                                        \
@@ -29,7 +31,7 @@
   }
 
 #define SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn_num, ovrd)       \
-  sigName##SignalType sigName;                                          \
+  sigName##SignalType sigName { };                                      \
                                                                         \
   void when##sigName(                                                   \
       sigName##SlotType handler,                                        \
