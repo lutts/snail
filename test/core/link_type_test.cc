@@ -26,8 +26,6 @@ class LinkTypeTest : public ::testing::Test {
   // ~LinkTypeTest() { }
   void SetUp() override { }
   // void TearDown() override { }
-
-  MockNamedStringFormatterFactory named_str_formatter_factory_;
 };
 
 class LinkTypeState {
@@ -84,8 +82,9 @@ class FormatterFixture : public TestFixture {
   FormatterFixture(const utils::U8String& name,
                    LinkTypeTest* test_case)
       : TestFixture(name)
-      , formatter_factory_(&test_case->named_str_formatter_factory_) {
-    Mock::VerifyAndClearExpectations(formatter_factory_);
+      , formatter_factory_(MockNamedStringFormatterFactory::getInstance()) {
+    (void)test_case;
+    Mock::VerifyAndClearExpectations(formatter_factory_.get());
 
     formatter_ = new MockNamedStringFormatter();
     R_EXPECT_CALL(*formatter_factory_, createInstance())
@@ -98,7 +97,7 @@ class FormatterFixture : public TestFixture {
         .WillOnce(Return(cloned_formatter_));
   }
 
-  MockNamedStringFormatterFactory* formatter_factory_;
+  std::shared_ptr<MockNamedStringFormatterFactory> formatter_factory_;
   MockNamedStringFormatter* formatter_;
   MockNamedStringFormatter* cloned_formatter_;
 };

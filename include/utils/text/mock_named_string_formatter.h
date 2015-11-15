@@ -9,6 +9,7 @@
 #define MOCK_NAMED_STRING_FORMATTER_H_
 
 #include "utils/text/fto_named_string_formatter.h"
+#include "utils/weak_singleton.h"
 
 #define INTERFACE_MOCK_PHASE
 #include "test/interface.h"
@@ -24,7 +25,8 @@ class MockNamedStringFormatter : public fto::NamedStringFormatter {
 };
 
 class MockNamedStringFormatterFactory
-    : public fto::NamedStringFormatterFactory {
+    : public fto::NamedStringFormatterFactory
+    , public WeakSingleton<MockNamedStringFormatterFactory> {
  public:
   MockNamedStringFormatterFactory() {
     fto::NamedStringFormatterTestProxy::setFactory(this);
