@@ -19,6 +19,7 @@ add_gmock_unit_test(work
   LIBS testutils)
 
 add_gmock_unit_test(attribute_set_model
+  ${PROJECT_SOURCE_DIR}/test/core/attribute_test_stub.cc
   LIBS testutils)
 
 add_gmock_unit_test(generic_attribute_supplier
@@ -50,4 +51,5 @@ add_gmock_unit_test(kbnode_link_attribute
   LIBS testutils)
 
 add_gmock_unit_test(link_type
+  ${PROJECT_SOURCE_DIR}/test/core/attribute_test_stub.cc
   LIBS testutils)

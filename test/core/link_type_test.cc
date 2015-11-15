@@ -28,6 +28,21 @@ class LinkTypeTest : public ::testing::Test {
   // void TearDown() override { }
 };
 
+TEST_F(LinkTypeTest,
+       behavior_sentence) { // NOLINT
+  // Setup fixture
+
+  // Expectations
+
+  // Exercise system
+
+  // Verify results
+
+  // Teardown fixture
+  //  * ensuring runs even when the test is failed
+  //  * do not introduce additional errors
+}
+
 class LinkTypeState {
  public:
   LinkTypeState() = default;

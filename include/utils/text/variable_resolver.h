@@ -8,6 +8,8 @@
 #ifndef VARIABLE_RESOLVER_H_
 #define VARIABLE_RESOLVER_H_
 
+#include <vector>
+
 #include "utils/u8string.h"
 
 namespace utils {

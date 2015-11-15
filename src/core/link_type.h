@@ -11,7 +11,6 @@
 #include "include/config.h"
 #include "snail/i_tree_item.h"
 #include "utils/u8string.h"
-#include "utils/signal_slot_impl.h"
 #include "utils/text/variable_resolver.h"
 #include "snail/i_attribute_supplier.h"
 #include "utils/text/fto_named_string_formatter.h"
@@ -19,6 +18,8 @@
 #include FTO_HEADER(core, link_type)
 
 namespace snailcore {
+
+class LinkTypeSignalProxy;
 
 class LinkType : public FTO_NAMESPACE::LinkType
                , public utils::text::VariableResolver {
@@ -55,11 +56,14 @@ class LinkType : public FTO_NAMESPACE::LinkType
   }
   TEST_ONLY_MOVE_ASSIGNMENT(LinkType);
 
- private:
-  SNAIL_SIGSLOT_IMPL(LinkUpdated, void());
+ public:
+  SNAIL_SIGSLOT_NONVIRTUAL(LinkUpdated, void());
 
+ private:
   LinkType& swap(LinkType& rhs) noexcept;
   const LinkType* getPrototype() const;
+
+  std::unique_ptr<LinkTypeSignalProxy> signal_proxy_;
 
   utils::U8String name_;
   bool is_group_only_;

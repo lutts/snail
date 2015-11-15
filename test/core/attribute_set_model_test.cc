@@ -271,6 +271,7 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
   EXPECT_CALL(*mock_listener, ValidateComplete(false));
 
   attr_model2_valid = false;
+  (void)attr_model2_valid;  // make scan-build happy
   validateComplete2();
 
   Mock::VerifyAndClearExpectations(mock_listener.get());
@@ -278,6 +279,7 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
   // still false when another attr_model report validate fals
   EXPECT_CALL(*mock_listener, ValidateComplete(false));
   attr_model3_valid = false;
+  (void)attr_model3_valid;  // make scan-build happy
   validateComplete3();
 
   Mock::VerifyAndClearExpectations(mock_listener.get());
@@ -285,6 +287,7 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
   // still false when only one of the two invalid attr_model reports valid
   EXPECT_CALL(*mock_listener, ValidateComplete(false));
   attr_model2_valid = true;
+  (void)attr_model2_valid;  // make scan-build happy
   validateComplete2();
 
   Mock::VerifyAndClearExpectations(mock_listener.get());
@@ -292,6 +295,7 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
   // should signal true when all attr_model becomes valid
   EXPECT_CALL(*mock_listener, ValidateComplete(true));
   attr_model3_valid = true;
+  (void)attr_model3_valid;  // make scan-build happy
   validateComplete3();
 
   Mock::VerifyAndClearExpectations(mock_listener.get());

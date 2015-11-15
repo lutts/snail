@@ -6,8 +6,19 @@
 // [Desc]
 #include "src/core/link_type.h"
 #include "snail/i_attribute.h"
+#include "utils/signal_slot_impl.h"
+#include "utils/basic_utils.h"
 
 namespace snailcore {
+
+class LinkTypeSignalProxy {
+ public:
+  SNAIL_SIGSLOT_PIMPL(LinkType, LinkUpdated);
+
+  friend class LinkType;
+};
+
+SNAIL_SIGSLOT_DELEGATE(LinkType, LinkUpdated, signal_proxy_);
 
 // region: constructor, destructor and assignments
 #pragma GCC diagnostic push
@@ -15,14 +26,16 @@ namespace snailcore {
 
 LinkType::LinkType(const utils::U8String& name,
                    bool is_group_only)
-    : name_{name}
+    : signal_proxy_{utils::make_unique<LinkTypeSignalProxy>()}
+    , name_{name}
     , is_group_only_{is_group_only}
     , attr_suppliers_{ }
     , link_phrase_{ }
     , named_string_formatter_{ } { }
 
 LinkType::LinkType(const LinkType& rhs)
-    : name_(rhs.name_)
+    : signal_proxy_{utils::make_unique<LinkTypeSignalProxy>()}
+    , name_(rhs.name_)
     , is_group_only_(rhs.is_group_only_)
     , prototype_(rhs.getPrototype())
     , attr_suppliers_ { }
@@ -34,8 +47,10 @@ LinkType::LinkType(const LinkType& rhs)
   }
 }
 
+// signals are not move and copied
 LinkType::LinkType(LinkType&& rhs)
-    : name_ (std::move(rhs.name_))
+    : signal_proxy_{utils::make_unique<LinkTypeSignalProxy>()}
+    , name_ (std::move(rhs.name_))
     , is_group_only_ (std::move(rhs.is_group_only_))
     , prototype_(rhs.getPrototype())  // copy
     , attr_suppliers_ (std::move(rhs.attr_suppliers_))
@@ -49,6 +64,7 @@ LinkType& LinkType::operator=(LinkType rhs) {
   return swap(rhs);
 }
 
+// NOTE: signals not changed
 LinkType& LinkType::swap(LinkType& rhs) noexcept {
   std::swap(name_, rhs.name_);
   std::swap(is_group_only_, rhs.is_group_only_);

@@ -37,6 +37,7 @@ add_gmock_unit_test(attribute_set_presenter
   LIBS testutils)
 
 add_gmock_unit_test(attribute_set_layout
+  ${PROJECT_SOURCE_DIR}/test/core/attribute_test_stub.cc
   LIBS testutils qttestutils Qt5::Widgets QSCore
   NO_GMOCK_MAIN)
 
