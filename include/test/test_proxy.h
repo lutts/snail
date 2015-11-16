@@ -104,7 +104,7 @@
   void cloneObj(const RealClass& obj) {                                 \
     if (owned_) {                                                       \
       delete self_;                                                     \
-    }
+    }                                                                   \
                                                                         \
     self_ = obj.clone();                                                \
     owned_ = true;                                                      \
