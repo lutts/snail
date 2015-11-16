@@ -5,8 +5,11 @@
 //
 // [Desc]
 
-#ifndef LINK_TYPE_H_
-#define LINK_TYPE_H_
+#ifndef SRC_CORE_LINK_TYPE_H_
+#define SRC_CORE_LINK_TYPE_H_
+
+#include <algorithm>
+#include <vector>
 
 #include "include/config.h"
 #include "snail/i_tree_item.h"
@@ -77,4 +80,4 @@ class LinkType : public FTO_NAMESPACE::LinkType
 
 }  // namespace snailcore
 
-#endif  // LINK_TYPE_H_
+#endif  // SRC_CORE_LINK_TYPE_H_

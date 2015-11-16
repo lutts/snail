@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INTERFACE_TEST_PROXY_H_
-#define INTERFACE_TEST_PROXY_H_
+#ifndef INCLUDE_TEST_INTERFACE_TEST_PROXY_H_
+#define INCLUDE_TEST_INTERFACE_TEST_PROXY_H_
 
 #include "test/function_signature_extracter.h"
 
@@ -120,4 +120,4 @@
     return self_->Method(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);      \
   }
 
-#endif  // INTERFACE_TEST_PROXY_H_
+#endif  // INCLUDE_TEST_INTERFACE_TEST_PROXY_H_

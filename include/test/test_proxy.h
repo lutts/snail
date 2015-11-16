@@ -8,6 +8,8 @@
 #ifndef INCLUDE_TEST_TEST_PROXY_H_
 #define INCLUDE_TEST_TEST_PROXY_H_
 
+#include <algorithm>
+
 #include "src/utils/log/log.h"
 
 // NOTE: if default construct for real object is forbided, default constructor
@@ -69,9 +71,9 @@
     cloneObj(*(rhs.self_));                                             \
   }                                                                     \
                                                                         \
-  RealClass##TestProxy(RealClass##TestProxy&& rhs) {                    \
+  RealClass##TestProxy(RealClass##TestProxy && rhs) {                   \
     std::swap(self_, rhs.self_);                                        \
-    std::swap(owned_,rhs.owned_);                                       \
+    std::swap(owned_, rhs.owned_);                                      \
   }                                                                     \
                                                                         \
   RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) {    \
@@ -79,7 +81,7 @@
     return *this;                                                       \
   }                                                                     \
                                                                         \
-  RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) {         \
+  RealClass##TestProxy& operator=(RealClass##TestProxy && rhs) {        \
     std::swap(self_, rhs.self_);                                        \
     std::swap(owned_, rhs.owned_);                                      \
     return *this;                                                       \
@@ -100,8 +102,9 @@
                                                                         \
  private:                                                               \
   void cloneObj(const RealClass& obj) {                                 \
-    if (owned_)                                                         \
+    if (owned_) {                                                       \
       delete self_;                                                     \
+    }
                                                                         \
     self_ = obj.clone();                                                \
     owned_ = true;                                                      \
@@ -110,9 +113,9 @@
 #define TEST_PROXY_DISABLE_COPY(RealClass)                              \
  private:                                                               \
   RealClass##TestProxy(const RealClass##TestProxy& rhs) = delete;       \
-  RealClass##TestProxy(RealClass##TestProxy&& rhs)= delete;             \
+  RealClass##TestProxy(RealClass##TestProxy && rhs)= delete;            \
   RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) = delete; \
-  RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) = delete; \
+  RealClass##TestProxy& operator=(RealClass##TestProxy && rhs) = delete; \
   RealClass##TestProxy(const RealClass& rhs);                           \
   RealClass##TestProxy& operator=(const RealClass& rhs);                \
 

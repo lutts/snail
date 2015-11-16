@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef WEAK_SINGLETON_H_
-#define WEAK_SINGLETON_H_
+#ifndef INCLUDE_UTILS_WEAK_SINGLETON_H_
+#define INCLUDE_UTILS_WEAK_SINGLETON_H_
 
 #include <memory>
 
@@ -47,4 +47,4 @@ class WeakSingleton {
   }
 };
 
-#endif  // WEAK_SINGLETON_H_
+#endif  // INCLUDE_UTILS_WEAK_SINGLETON_H_

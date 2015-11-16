@@ -10,6 +10,8 @@
 
 // region: shared with impl
 
+#include <vector>
+
 #include "include/config.h"
 #include "snail/i_attribute.h"
 #include "core/generic_attribute_supplier.h"

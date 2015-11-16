@@ -116,29 +116,51 @@
 #define SNAIL_INTERFACE9(m, ...) SNAIL_INTERFACE9_(, , , m, __VA_ARGS__)
 #define SNAIL_INTERFACE10(m, ...) SNAIL_INTERFACE10_(, , , m, __VA_ARGS__)
 
-#define SNAIL_CONST_INTERFACE0(m, ...) SNAIL_INTERFACE0_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE1(m, ...) SNAIL_INTERFACE1_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE2(m, ...) SNAIL_INTERFACE2_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE3(m, ...) SNAIL_INTERFACE3_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE4(m, ...) SNAIL_INTERFACE4_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE5(m, ...) SNAIL_INTERFACE5_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE6(m, ...) SNAIL_INTERFACE6_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE7(m, ...) SNAIL_INTERFACE7_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE8(m, ...) SNAIL_INTERFACE8_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE9(m, ...) SNAIL_INTERFACE9_(, const, , m, __VA_ARGS__)
-#define SNAIL_CONST_INTERFACE10(m, ...) SNAIL_INTERFACE10_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE0(m, ...)          \
+  SNAIL_INTERFACE0_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE1(m, ...)          \
+  SNAIL_INTERFACE1_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE2(m, ...)          \
+  SNAIL_INTERFACE2_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE3(m, ...)          \
+  SNAIL_INTERFACE3_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE4(m, ...)          \
+  SNAIL_INTERFACE4_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE5(m, ...)          \
+  SNAIL_INTERFACE5_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE6(m, ...)          \
+  SNAIL_INTERFACE6_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE7(m, ...)          \
+  SNAIL_INTERFACE7_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE8(m, ...)          \
+  SNAIL_INTERFACE8_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE9(m, ...)          \
+  SNAIL_INTERFACE9_(, const, , m, __VA_ARGS__)
+#define SNAIL_CONST_INTERFACE10(m, ...)         \
+  SNAIL_INTERFACE10_(, const, , m, __VA_ARGS__)
 
-#define SNAIL_INTERFACE0_T(m, ...) SNAIL_INTERFACE0_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE1_T(m, ...) SNAIL_INTERFACE1_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE2_T(m, ...) SNAIL_INTERFACE2_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE3_T(m, ...) SNAIL_INTERFACE3_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE4_T(m, ...) SNAIL_INTERFACE4_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE5_T(m, ...) SNAIL_INTERFACE5_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE6_T(m, ...) SNAIL_INTERFACE6_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE7_T(m, ...) SNAIL_INTERFACE7_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE8_T(m, ...) SNAIL_INTERFACE8_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE9_T(m, ...) SNAIL_INTERFACE9_(typename, , , m, __VA_ARGS__)
-#define SNAIL_INTERFACE10_T(m, ...) SNAIL_INTERFACE10_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE0_T(m, ...)                      \
+  SNAIL_INTERFACE0_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE1_T(m, ...)                      \
+  SNAIL_INTERFACE1_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE2_T(m, ...)                      \
+  SNAIL_INTERFACE2_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE3_T(m, ...)                      \
+  SNAIL_INTERFACE3_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE4_T(m, ...)                      \
+  SNAIL_INTERFACE4_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE5_T(m, ...)                      \
+  SNAIL_INTERFACE5_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE6_T(m, ...)                      \
+  SNAIL_INTERFACE6_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE7_T(m, ...)                      \
+  SNAIL_INTERFACE7_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE8_T(m, ...)                      \
+  SNAIL_INTERFACE8_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE9_T(m, ...)                      \
+  SNAIL_INTERFACE9_(typename, , , m, __VA_ARGS__)
+#define SNAIL_INTERFACE10_T(m, ...)                     \
+  SNAIL_INTERFACE10_(typename, , , m, __VA_ARGS__)
 
 #define SNAIL_CONST_INTERFACE0_T(m, ...)                \
   SNAIL_INTERFACE0_(typename, const, , m, __VA_ARGS__)

@@ -29,7 +29,7 @@ class MockData : public IData {
     moveFrom(rhs);
     return *this;
   }
-  MOCK_METHOD1(moveFrom, void(IData& rhs));
+  MOCK_METHOD1(moveFrom, void(IData& rhs));  // NOLINT
 };
 
 class IDataTestProxy {
@@ -47,7 +47,7 @@ class IDataTestProxy {
 };
 
 class Data final: public IData {
-public:
+ public:
   Data() : Data(0) { }
   explicit Data(int data) : data_(new int(data)) {
     std::cout << "constructor called, data_ = " << data_ << std::endl;
@@ -97,7 +97,7 @@ public:
     return data_;
   }
 
-private:
+ private:
   void swap(Data& rhs) {
     std::swap(data_, rhs.data_);
   }
@@ -120,12 +120,12 @@ class MockDataHolder : public IDataHolder {
   void setData(IData&& data) override {
     setData_(data);
   }
-  MOCK_METHOD1(setData_, void(IData& data));
+  MOCK_METHOD1(setData_, void(IData& data));  // NOLINT
 };
 
 class DataHolder : public IDataHolder {
  public:
-  DataHolder(IData* data) : data_(data) { }
+  explicit DataHolder(IData* data) : data_(data) { }
 
   IData* getData() override {
     return data_;
@@ -142,7 +142,7 @@ class DataHolder : public IDataHolder {
 
 class DataDisplayer {
  public:
-  DataDisplayer(IDataHolder* data_holder)
+  explicit DataDisplayer(IDataHolder* data_holder)
       : data_holder_(data_holder)
       , data_copy_(*(data_holder->getData())) { }
 

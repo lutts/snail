@@ -57,7 +57,7 @@ class LinkType : public ITreeItem { };
 #undef INTERFACE_DEFINITION_PHASE
 
 #define INTERFACE_TEST_PROXY_PHASE
-#include "test/interface.h"
+#include "test/interface.h"  // NOLINT
 
 namespace snailcore {
 namespace fto {

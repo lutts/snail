@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef VARIABLE_RESOLVER_H_
-#define VARIABLE_RESOLVER_H_
+#ifndef INCLUDE_UTILS_TEXT_VARIABLE_RESOLVER_H_
+#define INCLUDE_UTILS_TEXT_VARIABLE_RESOLVER_H_
 
 #include <vector>
 
@@ -25,4 +25,4 @@ class VariableResolver {
 }  // namespace text
 }  // namespace utils
 
-#endif  // VARIABLE_RESOLVER_H_
+#endif  // INCLUDE_UTILS_TEXT_VARIABLE_RESOLVER_H_

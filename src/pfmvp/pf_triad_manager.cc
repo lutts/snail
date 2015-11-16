@@ -515,11 +515,13 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
     return true;                                                        \
   }                                                                     \
   void THISCLASS::cleanup##sigName(ObjType* obj) {                      \
-    if (obj == nullptr)                                                 \
+    if (obj == nullptr) {                                               \
       return;                                                           \
+    }                                                                   \
                                                                         \
-    if (!impl->ExistChecker(obj))                                       \
+    if (!impl->ExistChecker(obj)) {                                     \
       return;                                                           \
+    }                                                                   \
                                                                         \
     auto & sig = impl->sigName##SignalOf(obj);                          \
     SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sig);    \

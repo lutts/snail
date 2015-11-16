@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef INTERFACE_VIRTURL_H_
-#define INTERFACE_VIRTURL_H_
+#ifndef INCLUDE_TEST_INTERFACE_PURE_VIRTUAL_H_
+#define INCLUDE_TEST_INTERFACE_PURE_VIRTUAL_H_
 
 #include "test/function_signature_extracter.h"
 
@@ -98,4 +98,4 @@
       SNAIL_ARG_(tn, 9, __VA_ARGS__) a9,                        \
       SNAIL_ARG_(tn, 10, __VA_ARGS__) a10) constness = 0
 
-#endif  // INTERFACE_VIRTURL_H_
+#endif  // INCLUDE_TEST_INTERFACE_PURE_VIRTUAL_H_

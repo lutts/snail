@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef FTO_NAMED_STRING_FORMATER_H_
-#define FTO_NAMED_STRING_FORMATER_H_
+#ifndef INCLUDE_UTILS_TEXT_FTO_NAMED_STRING_FORMATTER_H_
+#define INCLUDE_UTILS_TEXT_FTO_NAMED_STRING_FORMATTER_H_
 
 // region: shared with impl
 
@@ -113,4 +113,4 @@ class NamedStringFormatterTestProxy {
 
 // endregion: TestProxy
 
-#endif  // FTO_NAMED_STRING_FORMATER_H_
+#endif  // INCLUDE_UTILS_TEXT_FTO_NAMED_STRING_FORMATTER_H_

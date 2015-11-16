@@ -33,9 +33,9 @@
 #define TEST_PROXY(RealClass) fto::RealClass##TestProxy
 
 #define TEST_ONLY_MOVE_ASSIGNMENT(Cls)          \
-  fto::Cls& operator=(fto::Cls&& rhs) {         \
+  fto::Cls& operator=(fto::Cls && rhs) {        \
     Cls& data = static_cast<Cls&>(rhs);         \
-    swap(data);                                 \
+    this->swap(data);                           \
     return *this;                               \
   }
 

@@ -50,7 +50,7 @@ class LinkTypeState {
   LinkTypeState(const LinkTypeState& rhs)
       : name_(rhs.name_)
       , is_group_only_(rhs.is_group_only_)
-      , prototype_(rhs.prototype_){ }
+      , prototype_(rhs.prototype_) { }
   LinkTypeState& operator=(const LinkTypeState& rhs) {
     name_ = rhs.name_;
     is_group_only_ = rhs.is_group_only_;

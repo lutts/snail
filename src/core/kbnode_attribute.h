@@ -8,6 +8,8 @@
 #ifndef SRC_CORE_KBNODE_ATTRIBUTE_H_
 #define SRC_CORE_KBNODE_ATTRIBUTE_H_
 
+#include <algorithm>
+
 #include "include/config.h"
 #include "utils/basic_utils.h"
 #include "core/generic_attribute_supplier.h"
@@ -55,7 +57,7 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
 
   fto::KbNodeAttributeSupplier* supplier() const;
   void setKbNode(IKbNode* kbnode);
-  IKbNode* getKbNode() const { return kbnode_; };
+  IKbNode* getKbNode() const { return kbnode_; }
 
   // Test proxy requirement
   KbNodeAttribute* self() { return this; }

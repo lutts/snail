@@ -4,6 +4,9 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+#include <algorithm>
+#include <vector>
+
 #include "src/core/link_type.h"
 #include "snail/i_attribute.h"
 #include "utils/signal_slot_impl.h"
@@ -50,10 +53,10 @@ LinkType::LinkType(const LinkType& rhs)
 // signals are not move and copied
 LinkType::LinkType(LinkType&& rhs)
     : signal_helper_{utils::make_unique<LinkTypeSignalHelper>()}
-    , name_ (std::move(rhs.name_))
-    , is_group_only_ (std::move(rhs.is_group_only_))
+    , name_(std::move(rhs.name_))
+    , is_group_only_(std::move(rhs.is_group_only_))
     , prototype_(rhs.getPrototype())  // copy
-    , attr_suppliers_ (std::move(rhs.attr_suppliers_))
+    , attr_suppliers_(std::move(rhs.attr_suppliers_))
     , link_phrase_{std::move(rhs.link_phrase_)}
     , named_string_formatter_{std::move(rhs.named_string_formatter_)} {
   rhs.is_group_only_ = false;

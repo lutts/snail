@@ -1,4 +1,11 @@
-#include <iostream>
+// Copyright (c) 2015
+// All rights reserved.
+//
+// Author: Lutts Cao <<lutts.cao@gmail.com>>
+//
+// [Desc]
+
+#include <iostream>  // NOLINT
 #include <utility>
 
 // NOTE: if default construct for real object is forbided, default constructor
@@ -115,7 +122,7 @@ class Data : public IData {
   // NOTE: this cast is safe only when Data is the only subclass of IData
   // and Data itself Does not have any subclasses
 #define TEST_ONLY_MOVE_ASSIGNMENT(Cls)          \
-  I##Cls& operator=(I##Cls&& rhs) {             \
+  I##Cls& operator=(I##Cls && rhs) {            \
     Cls& data = static_cast<Cls&>(rhs);         \
     swap(data);                                 \
     return *this;                               \
@@ -163,8 +170,8 @@ class IDataHolder {
 };
 
 class DataHolder : public IDataHolder {
-public:
-  DataHolder(IData* data) : data_(data) { }
+ public:
+  explicit DataHolder(IData* data) : data_(data) { }
 
   IData* getData() override {
     return data_;
@@ -181,7 +188,7 @@ public:
 
 class DataDisplayer {
  public:
-  DataDisplayer(IDataHolder* data_holder)
+  explicit DataDisplayer(IDataHolder* data_holder)
       : data_holder_(data_holder)
       , data_copy_(*(data_holder->getData())) { }
 

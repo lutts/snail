@@ -17,7 +17,7 @@
 template <typename SignalType>
 class SignalConnectionHelper {
  public:
-  static void connectSignal(SignalType& sig,
+  static void connectSignal(SignalType& sig,  // NOLINT
                             typename SignalType::slot_type subscriber,
                             std::shared_ptr<utils::ITrackable> trackObject) {
     if (trackObject)
@@ -26,7 +26,7 @@ class SignalConnectionHelper {
       sig.connect(subscriber);
   }
 
-  static void connectSignal(SignalType& sig,
+  static void connectSignal(SignalType& sig,  // NOLINT
                             typename SignalType::slot_type subscriber,
                             std::shared_ptr<utils::ITrackable> trackObject,
                             int max_connections) {
@@ -35,7 +35,7 @@ class SignalConnectionHelper {
     connectSignal(sig, subscriber, trackObject);
   }
 
-  static void cleanupSignal(SignalType& sig) {
+  static void cleanupSignal(SignalType& sig) {  // NOLINT
     // call num_slots() will cleanup expired connections, this is a WorkAround!
     sig.num_slots();
   }

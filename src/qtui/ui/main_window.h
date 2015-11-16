@@ -40,7 +40,8 @@ class MainWindow : public QMainWindow, public IMainWindowView {
 
  private:
   SNAIL_SIGSLOT_OVERRIDE_IMPL(UserClickAddWork)
-  SNAIL_SIGSLOT_COMBINER_OVERRIDE_IMPL(RequestClose, and_slot_bool_result_combiner)
+  SNAIL_SIGSLOT_COMBINER_OVERRIDE_IMPL(RequestClose,
+                                       and_slot_bool_result_combiner)
 };
 
 #endif  // SRC_QTUI_UI_MAIN_WINDOW_H_

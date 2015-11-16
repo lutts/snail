@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef FUNCTION_SIGNATURE_EXTRACTER_H_
-#define FUNCTION_SIGNATURE_EXTRACTER_H_
+#ifndef INCLUDE_TEST_FUNCTION_SIGNATURE_EXTRACTER_H_
+#define INCLUDE_TEST_FUNCTION_SIGNATURE_EXTRACTER_H_
 
 // Template struct FunctionSignatureExtracter<F>, where F must be a function
 // type, contains the following typedefs:
@@ -108,4 +108,4 @@ struct FunctionSignatureExtracter<R(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)>
 #define SNAIL_ARG_(tn, N, ...)                                  \
   tn FunctionSignatureExtracter<__VA_ARGS__>::Argument##N
 
-#endif  // FUNCTION_SIGNATURE_EXTRACTER_H_
+#endif  // INCLUDE_TEST_FUNCTION_SIGNATURE_EXTRACTER_H_

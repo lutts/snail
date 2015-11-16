@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef MOCK_NAMED_STRING_FORMATTER_H_
-#define MOCK_NAMED_STRING_FORMATTER_H_
+#ifndef INCLUDE_UTILS_TEXT_MOCK_NAMED_STRING_FORMATTER_H_
+#define INCLUDE_UTILS_TEXT_MOCK_NAMED_STRING_FORMATTER_H_
 
 #include "utils/text/fto_named_string_formatter.h"
 #include "utils/weak_singleton.h"
@@ -45,4 +45,4 @@ class MockNamedStringFormatterFactory
 
 #undef INTERFACE_MOCK_PHASE
 
-#endif  // MOCK_NAMED_STRING_FORMATTER_H_
+#endif  // INCLUDE_UTILS_TEXT_MOCK_NAMED_STRING_FORMATTER_H_

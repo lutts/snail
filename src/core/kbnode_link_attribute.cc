@@ -7,8 +7,6 @@
 #include "src/core/kbnode_link_attribute.h"
 #include "core/i_attribute_visitor.h"
 
-#include <iostream>
-
 namespace snailcore {
 
 KbNodeLinkAttribute::KbNodeLinkAttribute(

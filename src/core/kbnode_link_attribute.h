@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef KBNODE_LINK_ATTRIBUTE_H_
-#define KBNODE_LINK_ATTRIBUTE_H_
+#ifndef SRC_CORE_KBNODE_LINK_ATTRIBUTE_H_
+#define SRC_CORE_KBNODE_LINK_ATTRIBUTE_H_
 
 #include "include/config.h"
 #include "utils/basic_utils.h"
@@ -95,4 +95,4 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
 
 }  // namespace snailcore
 
-#endif  // KBNODE_LINK_ATTRIBUTE_H_
+#endif  // SRC_CORE_KBNODE_LINK_ATTRIBUTE_H_
