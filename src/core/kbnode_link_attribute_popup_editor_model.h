@@ -11,7 +11,6 @@
 #include "include/config.h"
 #include "snail/i_kbnode_link_attribute_popup_editor_model.h"
 #include "utils/basic_utils.h"
-#include "utils/signal_slot_impl.h"
 #include "core/fto_kbnode_attribute.h"
 #include "core/fto_link_type.h"
 
@@ -24,6 +23,8 @@ FTO_END_NAMESPACE
 
 class IAttributeModelFactory;
 class IAttributeSetModelFactory;
+
+class KbNodeLinkAttributePopupEditorModelSignalHelper;
 
 class KbNodeLinkAttributePopupEditorModel
     : public IKbNodeLinkAttributePopupEditorModel {
@@ -42,13 +43,16 @@ class KbNodeLinkAttributePopupEditorModel
   void setProtoLinkType(ITreeItem* proto_link_type_item) override;
   void editFinished() override;
 
- private:
-  SNAIL_DISABLE_COPY(KbNodeLinkAttributePopupEditorModel);
-
+ public:
   SNAIL_SIGSLOT_OVERRIDE(LinkTypeChanged);
   SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 
+ private:
+  SNAIL_DISABLE_COPY(KbNodeLinkAttributePopupEditorModel);
   void validateComplete();
+
+  std::unique_ptr<KbNodeLinkAttributePopupEditorModelSignalHelper>
+  signal_helper_;
 
   fto::KbNodeLinkAttribute* attr_;
   TEST_PROXY(KbNodeAttribute) value_attr_copy_;

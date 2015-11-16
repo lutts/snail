@@ -9,14 +9,16 @@
 #define SRC_CORE_ATTRIBUTE_SET_MODEL_H_
 
 #include <vector>
+#include <memory>
 
 #include "snail/i_attribute_set_model.h"
 #include "utils/basic_utils.h"
-#include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
 class IAttributeModelFactory;
+
+class AttributeSetModelSignalHelper;
 
 class AttributeSetModel : public IAttributeSetModel {
  public:
@@ -33,16 +35,19 @@ class AttributeSetModel : public IAttributeSetModel {
 
   void closeAttributeEditors(pfmvp::IPfTriadManager* triad_manager) override;
 
+ public:
+  SNAIL_SIGSLOT_OVERRIDE(SwitchToEditMode);
+  SNAIL_SIGSLOT_OVERRIDE(SwitchToDisplayMode)
+  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
+
  private:
   SNAIL_DISABLE_COPY(AttributeSetModel);
-
-  SNAIL_SIGSLOT_OVERRIDE(SwitchToEditMode);
-  SNAIL_SIGSLOT_OVERRIDE(SwitchToDisplayMode);
-  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 
   void switchToEditMode();
   void switchToDisplayMode();
   void validateComplete();
+
+  std::unique_ptr<AttributeSetModelSignalHelper> signal_helper_;
 
   std::vector<IAttributeSupplier*> attr_suppliers_;
   IAttributeModelFactory* attr_model_factory_;

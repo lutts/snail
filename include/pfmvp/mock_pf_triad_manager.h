@@ -17,7 +17,8 @@ namespace tests {
 
 #define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)               \
   MOCK_METHOD3(when##sigName, bool(ObjType*, sigName##SlotType, \
-                                   std::shared_ptr<utils::ITrackable>))
+                                   std::shared_ptr<utils::ITrackable>)); \
+  MOCK_METHOD1(cleanup##sigName, void(ObjType*))
 
 class MockPfTriadManager : public IPfTriadManager {
  public:

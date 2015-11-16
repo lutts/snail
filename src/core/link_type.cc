@@ -11,14 +11,14 @@
 
 namespace snailcore {
 
-class LinkTypeSignalProxy {
+class LinkTypeSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(LinkType, LinkUpdated);
 
   friend class LinkType;
 };
 
-SNAIL_SIGSLOT_DELEGATE(LinkType, LinkUpdated, signal_proxy_);
+SNAIL_SIGSLOT_DELEGATE(LinkType, LinkUpdated, signal_helper_);
 
 // region: constructor, destructor and assignments
 #pragma GCC diagnostic push
@@ -26,7 +26,7 @@ SNAIL_SIGSLOT_DELEGATE(LinkType, LinkUpdated, signal_proxy_);
 
 LinkType::LinkType(const utils::U8String& name,
                    bool is_group_only)
-    : signal_proxy_{utils::make_unique<LinkTypeSignalProxy>()}
+    : signal_helper_{utils::make_unique<LinkTypeSignalHelper>()}
     , name_{name}
     , is_group_only_{is_group_only}
     , attr_suppliers_{ }
@@ -34,7 +34,7 @@ LinkType::LinkType(const utils::U8String& name,
     , named_string_formatter_{ } { }
 
 LinkType::LinkType(const LinkType& rhs)
-    : signal_proxy_{utils::make_unique<LinkTypeSignalProxy>()}
+    : signal_helper_{utils::make_unique<LinkTypeSignalHelper>()}
     , name_(rhs.name_)
     , is_group_only_(rhs.is_group_only_)
     , prototype_(rhs.getPrototype())
@@ -49,7 +49,7 @@ LinkType::LinkType(const LinkType& rhs)
 
 // signals are not move and copied
 LinkType::LinkType(LinkType&& rhs)
-    : signal_proxy_{utils::make_unique<LinkTypeSignalProxy>()}
+    : signal_helper_{utils::make_unique<LinkTypeSignalHelper>()}
     , name_ (std::move(rhs.name_))
     , is_group_only_ (std::move(rhs.is_group_only_))
     , prototype_(rhs.getPrototype())  // copy

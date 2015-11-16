@@ -27,8 +27,8 @@ namespace pfmvp {
   virtual bool when##sigName(                                   \
       ObjType* obj,                                             \
       sigName##SlotType handler,                                \
-      std::shared_ptr<utils::ITrackable> trackObject) = 0
-
+      std::shared_ptr<utils::ITrackable> trackObject) = 0;      \
+  virtual void cleanup##sigName(ObjType* obj) = 0;
 
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE_(sigName, ObjType)           \
   sigName##SignalType sigName;                                          \
@@ -36,7 +36,8 @@ namespace pfmvp {
   bool when##sigName(                                                   \
       ObjType* obj,                                                     \
       sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) override
+      std::shared_ptr<utils::ITrackable> trackObject) override;         \
+  void cleanup##sigName(ObjType* obj) override;
 
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE(sigName, ObjType)            \
   using sigName##SignalType = boost::signals2::signal<sigName##Signature>; \

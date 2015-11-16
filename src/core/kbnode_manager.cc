@@ -8,13 +8,27 @@
 
 #include <vector>
 
+#include "utils/signal_slot_impl.h"
 #include "src/core/kbnode_item_provider.h"
 #include "src/core/kbnode.h"
 
 namespace snailcore {
 
+class KbNodeManagerSignalHelper {
+ public:
+  SNAIL_SIGSLOT_IMPL(KbNodeAdded, void(const IKbNode* new_kbnode,
+                                       const IKbNode* parent_kbnode));
+
+ public:
+  void emitKbNodeAdded(const IKbNode* new_kbnode,
+                       const IKbNode* parent_kbnode) {
+    KbNodeAdded(new_kbnode, parent_kbnode);
+  }
+};
+
 KbNodeManager::KbNodeManager()
-    : dummy_root_(new KbNode(0, "", false)) { }
+    : signal_helper_(utils::make_unique<KbNodeManagerSignalHelper>())
+    , dummy_root_(new KbNode(0, "", false)) { }
 
 KbNodeManager::~KbNodeManager() {
   // NOTE: we do not need to delete the nodes, because KbNodeManager will be a
@@ -36,7 +50,7 @@ KbNodeManager::createTreeItemProvider(IKbNode* root_kbnode) {
   auto item_provider =
       utils::make_trackable<KbNodeItemProvider>(root_kbnode, this);
   auto raw_item_provider = item_provider.get();
-  whenKbNodeAdded(
+  signal_helper_->whenKbNodeAdded(
       [raw_item_provider](const IKbNode* new_kbnode,
                           const IKbNode* parent_kbnode) {
         raw_item_provider->itemAdded(new_kbnode, parent_kbnode);
@@ -101,7 +115,7 @@ IKbNode* KbNodeManager::addKbNode(
   if (kbnode) {
     id_to_kbnode_[kbnode->id()] = kbnode;
     kbnode_to_subnodes_[parent].push_back(kbnode);
-    KbNodeAdded(kbnode, parent);
+    signal_helper_->emitKbNodeAdded(kbnode, parent);
   }
 
   return kbnode;

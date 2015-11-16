@@ -11,7 +11,6 @@
 #include "include/config.h"
 #include "snail/i_simple_kbnode_adder_model.h"
 #include "utils/basic_utils.h"
-#include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 

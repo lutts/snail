@@ -5,6 +5,8 @@
 //
 // [Desc]
 #include "src/core/kbnode_item_provider.h"
+
+#include "utils/signal_slot_impl.h"
 #include "core/fto_kbnode_manager.h"
 #include "core/i_kbnode.h"
 
@@ -37,10 +39,23 @@ class KbNodeIterator :
 
 }  // namespace
 
+class KbNodeItemProviderSignalHelper {
+ public:
+  SNAIL_SIGSLOT_PIMPL(KbNodeItemProvider, BeginFilter);
+ public:
+  SNAIL_SIGSLOT_PIMPL(KbNodeItemProvider, FinishFilter);
+ public:
+  SNAIL_SIGSLOT_PIMPL(KbNodeItemProvider, ItemAdded);
+};
+
+SNAIL_SIGSLOT_DELEGATE2(KbNodeItemProvider, BeginFilter);
+SNAIL_SIGSLOT_DELEGATE2(KbNodeItemProvider, FinishFilter);
+SNAIL_SIGSLOT_DELEGATE2(KbNodeItemProvider, ItemAdded);
 
 KbNodeItemProvider::KbNodeItemProvider(IKbNode* root_kbnode,
-                               fto::KbNodeManager* node_manager)
-    : node_manager_(node_manager)
+                                       fto::KbNodeManager* node_manager)
+    : signal_helper_(utils::make_unique<KbNodeItemProviderSignalHelper>())
+    , node_manager_(node_manager)
     , root_kbnode_(root_kbnode) { }
 
 KbNodeItemProvider::~KbNodeItemProvider() = default;
@@ -64,10 +79,10 @@ void KbNodeItemProvider::setFilterPattern(
   if (filter_pattern_ == filter_pattern)
     return;
 
-  BeginFilter();
+  signal_helper_->emitBeginFilter();
   if (filter_pattern != "")
     matched_kbnodes_ = node_manager_->findKbNode(filter_pattern, root_kbnode_);
-  FinishFilter();
+  signal_helper_->emitFinishFilter();
 
   filter_pattern_ = filter_pattern;
 }
@@ -102,7 +117,7 @@ void KbNodeItemProvider::itemAdded(const ITreeItem* new_item,
   if (new_item_parent == root_kbnode_)
     effect_item_parent = nullptr;
 
-  ItemAdded(new_item, effect_item_parent);
+  signal_helper_->emitItemAdded(new_item, effect_item_parent);
 }
 
 }  // namespace snailcore

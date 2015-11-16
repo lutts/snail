@@ -8,10 +8,11 @@
 #ifndef SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_
 #define SRC_CORE_KBNODE_ATTRIBUTE_MODEL_H_
 
+#include <memory>
+
 #include "include/config.h"
 #include "utils/basic_utils.h"
 #include "snail/i_kbnode_attribute_model.h"
-#include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
@@ -21,6 +22,8 @@ class KbNodeAttribute;
 FTO_END_NAMESPACE
 
 class ISimpleKbNodeAdderModelFactory;
+
+class KbNodeAttributeModelSignalHelper;
 
 class KbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
@@ -41,10 +44,14 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
   void setKbNode(ITreeItem* item) override;
   int setKbNodeByName(const utils::U8String& name) override;
 
+ public:
+  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
+
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeModel);
-
   void validateComplete(bool result);
+
+  std::unique_ptr<KbNodeAttributeModelSignalHelper> signal_helper_;
 
   fto::KbNodeAttribute* kbnode_attr_;
   fto::KbNodeManager* kbnode_manager_;
@@ -53,9 +60,6 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
   mutable std::shared_ptr<ITreeItemProvider> kbnode_provider_;
 
   bool last_validate_result_ { true };
-
- private:
-  SNAIL_SIGSLOT_OVERRIDE(ValidateComplete);
 };
 
 

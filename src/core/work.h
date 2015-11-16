@@ -20,7 +20,7 @@
 namespace snailcore {
 
 class IAttributeSupplier;
-class WorkSignalProxy;
+class WorkSignalHelper;
 
 class Work : public FTO_NAMESPACE::Work {
  public:
@@ -39,7 +39,7 @@ class Work : public FTO_NAMESPACE::Work {
                            void(const utils::U8String& new_name));
 
  private:
-  std::unique_ptr<WorkSignalProxy> signal_proxy_;
+  std::unique_ptr<WorkSignalHelper> signal_helper_;
 
  private:
   Work(const Work& other) = delete;

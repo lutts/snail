@@ -49,7 +49,7 @@ class WorkView : public QWidget, public IWorkView {
   QSint::ActionGroup* related_work_group_ { nullptr };
 
  private:
-  SNAIL_SIGSLOT_OVERRIDE(UserSetWorkName);
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(UserSetWorkName);
 };
 
 #endif  // SRC_QTUI_UI_WORK_VIEW_H_

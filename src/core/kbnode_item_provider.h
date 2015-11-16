@@ -15,7 +15,6 @@
 #include "snail/i_tree_item_provider.h"
 #include "utils/basic_utils.h"
 #include "utils/i_trackable.h"
-#include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
@@ -24,6 +23,8 @@ class IKbNode;
 FTO_BEGIN_NAMESPACE
 class KbNodeManager;
 FTO_END_NAMESPACE
+
+class KbNodeItemProviderSignalHelper;
 
 class KbNodeItemProvider : public ITreeItemProvider
                          , public utils::ITrackable {
@@ -45,12 +46,15 @@ class KbNodeItemProvider : public ITreeItemProvider
   void itemAdded(const ITreeItem* new_item,
                  const ITreeItem* new_item_parent);
 
- private:
-  SNAIL_DISABLE_COPY(KbNodeItemProvider);
-
+ public:
   SNAIL_SIGSLOT_OVERRIDE(BeginFilter);
   SNAIL_SIGSLOT_OVERRIDE(FinishFilter);
   SNAIL_SIGSLOT_OVERRIDE(ItemAdded);
+
+ private:
+  SNAIL_DISABLE_COPY(KbNodeItemProvider);
+
+  std::unique_ptr<KbNodeItemProviderSignalHelper> signal_helper_;
 
   fto::KbNodeManager* node_manager_;
   IKbNode* root_kbnode_ { nullptr };

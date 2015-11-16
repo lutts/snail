@@ -11,13 +11,13 @@
 #include <memory>  // std::shared_ptr;
 
 #include "snail/i_main_window_model.h"
-#include "utils/signal_slot.h"
-#include "utils/signal_slot_impl.h"
 #include "utils/and_slot_bool_result_combiner.h"
 
 namespace snailcore {
 
 class IWorkSpaceModel;
+
+class MainWindowModelSignalHelper;
 
 class MainWindowModel : public IMainWindowModel {
  public:
@@ -32,16 +32,18 @@ class MainWindowModel : public IMainWindowModel {
 
   bool requestClose() const override;
 
+ public:
+  SNAIL_SIGSLOT_OVERRIDE(WindowTitleChanged)
+  SNAIL_SIGSLOT_OVERRIDE(RequestClose);
+
  private:
   MainWindowModel(const MainWindowModel& other) = delete;
   MainWindowModel& operator=(const MainWindowModel& other) = delete;
 
+  std::unique_ptr<MainWindowModelSignalHelper> signal_helper_;
+
   utils::U8String windowTitle_;
   std::shared_ptr<IWorkSpaceModel> workspace_model_;
-
- private:
-  SNAIL_SIGSLOT_OVERRIDE(WindowTitleChanged)
-  SNAIL_SIGSLOT_COMBINER_OVERRIDE(RequestClose, and_slot_bool_result_combiner)
 };
 
 }  // namespace snailcore

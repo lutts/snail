@@ -8,6 +8,8 @@
 
 #include <vector>
 
+#include "utils/basic_utils.h"
+#include "utils/signal_slot_impl.h"
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
 #include "core/i_attribute_model_factory.h"
@@ -17,10 +19,24 @@
 
 namespace snailcore {
 
+class AttributeSetModelSignalHelper {
+ public:
+  SNAIL_SIGSLOT_PIMPL(AttributeSetModel, SwitchToEditMode);
+ public:
+  SNAIL_SIGSLOT_PIMPL(AttributeSetModel, SwitchToDisplayMode);
+ public:
+  SNAIL_SIGSLOT_PIMPL(AttributeSetModel, ValidateComplete);
+};
+
+SNAIL_SIGSLOT_DELEGATE(AttributeSetModel, SwitchToEditMode, signal_helper_);
+SNAIL_SIGSLOT_DELEGATE(AttributeSetModel, SwitchToDisplayMode, signal_helper_);
+SNAIL_SIGSLOT_DELEGATE2(AttributeSetModel, ValidateComplete);
+
 AttributeSetModel::AttributeSetModel(
     const std::vector<IAttributeSupplier*>& attr_suppliers,
     IAttributeModelFactory* attr_model_factory)
-    : attr_suppliers_(attr_suppliers)
+    : signal_helper_(utils::make_unique<AttributeSetModelSignalHelper>())
+    , attr_suppliers_(attr_suppliers)
     , attr_model_factory_(attr_model_factory) { }
 
 AttributeSetModel::~AttributeSetModel() = default;
@@ -46,7 +62,7 @@ void AttributeSetModel::switchToEditMode() {
   }
 
   edit_mode_ = true;
-  SwitchToEditMode();
+  signal_helper_->emitSwitchToEditMode();
 }
 
 void AttributeSetModel::switchToDisplayMode() {
@@ -59,7 +75,7 @@ void AttributeSetModel::switchToDisplayMode() {
   }
 
   edit_mode_ = false;
-  SwitchToDisplayMode();
+  signal_helper_->emitSwitchToDisplayMode();
 }
 
 std::shared_ptr<IAttributeModel>
@@ -94,7 +110,7 @@ void AttributeSetModel::validateComplete() {
   }
 
   if (emit_signal)
-    ValidateComplete(valid);
+    signal_helper_->emitValidateComplete(valid);
 }
 
 void AttributeSetModel::closeAttributeEditors(

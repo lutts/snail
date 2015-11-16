@@ -5,14 +5,25 @@
 //
 // [Desc]
 #include "src/core/work_model.h"
+
+#include "utils/basic_utils.h"
+#include "utils/signal_slot_impl.h"
 #include "core/fto_work.h"
 #include "core/i_attribute_set_model_factory.h"
 
 namespace snailcore {
 
+class WorkModelSignalHelper {
+ public:
+  SNAIL_SIGSLOT_PIMPL(WorkModel, NameChanged);
+};
+
+SNAIL_SIGSLOT_DELEGATE2(WorkModel, NameChanged);
+
 WorkModel::WorkModel(
     IAttributeSetModelFactory* attr_set_model_factory)
-    : attr_set_model_factory_{attr_set_model_factory} { }
+    : signal_helper_(utils::make_unique<WorkModelSignalHelper>())
+    , attr_set_model_factory_{attr_set_model_factory} { }
 
 WorkModel::~WorkModel() {
   // TODO(lutts): delete work is not our responsibility,
@@ -25,7 +36,7 @@ void WorkModel::set_work(fto::Work* work) {
 
   work_->whenNameChanged(
       [this](const utils::U8String& new_name) {
-        NameChanged(new_name);
+        signal_helper_->emitNameChanged(new_name);
       },
       shared_from_this());
 }

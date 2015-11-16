@@ -48,7 +48,7 @@
       std::shared_ptr<utils::ITrackable> trackObject = nullptr);        \
   void cleanup##sigName##Slots();
 
-#define SNAIL_OVERRIDE_SLOT(sigName)                                  \
+#define SNAIL_SIGSLOT_OVERRIDE(sigName)                                  \
   void when##sigName(                                                 \
       sigName##SlotType handler,                                      \
       std::shared_ptr<utils::ITrackable> trackObject) override;       \

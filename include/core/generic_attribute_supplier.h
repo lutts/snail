@@ -75,7 +75,7 @@ class GenericAttributeSupplier : public IAttributeSupplier {
   SNAIL_DISABLE_COPY(GenericAttributeSupplier);
 
  private:
-  SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(AttributeChanged);
 
  private:
   utils::U8String name_;

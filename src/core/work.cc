@@ -13,24 +13,22 @@
 
 namespace snailcore {
 
-class WorkSignalProxy {
+class WorkSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(Work, NameChanged);
-
-  friend class Work;
 };
 
-SNAIL_SIGSLOT_DELEGATE(Work, NameChanged, signal_proxy_);
+SNAIL_SIGSLOT_DELEGATE(Work, NameChanged, signal_helper_);
 
 Work::Work()
-    : signal_proxy_(utils::make_unique<WorkSignalProxy>()) { }
+    : signal_helper_(utils::make_unique<WorkSignalHelper>()) { }
 
 Work::~Work() = default;
 
 bool Work::set_name(const utils::U8String& new_name) {
   if (this->name_ != new_name) {
     name_ = new_name;
-    signal_proxy_->NameChanged(name_);
+    signal_helper_->emitNameChanged(name_);
     return true;
   }
 

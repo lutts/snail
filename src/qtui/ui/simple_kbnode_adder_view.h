@@ -32,10 +32,10 @@ class SimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
  private:
   SNAIL_DISABLE_COPY(SimpleKbNodeAdderView);
 
-  SNAIL_SIGSLOT_OVERRIDE(UserSelectIndex);
-  SNAIL_SIGSLOT_OVERRIDE(NewKbNodeNameChanged);
-  SNAIL_SIGSLOT_OVERRIDE(UserToggleCategoryCheckbox);
-  SNAIL_SIGSLOT_OVERRIDE(UserClickAddButton);
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(UserSelectIndex);
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(NewKbNodeNameChanged);
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(UserToggleCategoryCheckbox);
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(UserClickAddButton);
 
   std::unique_ptr<SimpleKbNodeAdderViewImpl> impl;
   friend class SimpleKbNodeAdderViewImpl;

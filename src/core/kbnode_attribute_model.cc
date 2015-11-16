@@ -5,6 +5,8 @@
 //
 // [Desc]
 #include "src/core/kbnode_attribute_model.h"
+
+#include "utils/signal_slot_impl.h"
 #include "core/fto_kbnode_attribute.h"
 #include "core/fto_kbnode_manager.h"
 #include "snail/i_tree_item_provider.h"
@@ -13,11 +15,19 @@
 
 namespace snailcore {
 
+class KbNodeAttributeModelSignalHelper {
+ public:
+  SNAIL_SIGSLOT_PIMPL(KbNodeAttributeModel, ValidateComplete);
+};
+
+SNAIL_SIGSLOT_DELEGATE2(KbNodeAttributeModel, ValidateComplete);
+
 KbNodeAttributeModel::KbNodeAttributeModel(
     fto::KbNodeAttribute* kbnode_attr,
     fto::KbNodeManager* kbnode_manager,
-    ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
-    : kbnode_attr_(kbnode_attr)
+      ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
+    : signal_helper_(utils::make_unique<KbNodeAttributeModelSignalHelper>())
+    , kbnode_attr_(kbnode_attr)
     , kbnode_manager_(kbnode_manager)
     , simple_kbnode_adder_model_factory_(simple_kbnode_adder_model_factory) { }
 
@@ -30,7 +40,7 @@ bool KbNodeAttributeModel::isValid() const {
 // NOTE: validate and attr empty is not the same thing
 void KbNodeAttributeModel::validateComplete(bool result) {
   last_validate_result_ = result;
-  ValidateComplete();
+  signal_helper_->emitValidateComplete();
 }
 
 ITreeItemProvider* KbNodeAttributeModel::getKbNodeProvider() const {

@@ -509,9 +509,20 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
     }                                                                   \
                                                                         \
     auto& sig = impl->sigName##SignalOf(obj);                           \
-                sigName##SignalType::slot_type subscriber(handler);     \
-                    sig.connect(subscriber.track_foreign(trackObject)); \
-                    return true;                                        \
+    SignalConnectionHelper<sigName##SignalType>::connectSignal(sig,     \
+                                                               handler, \
+                                                               trackObject); \
+    return true;                                                        \
+  }                                                                     \
+  void THISCLASS::cleanup##sigName(ObjType* obj) {                      \
+    if (obj == nullptr)                                                 \
+      return;                                                           \
+                                                                        \
+    if (!impl->ExistChecker(obj))                                       \
+      return;                                                           \
+                                                                        \
+    auto & sig = impl->sigName##SignalOf(obj);                          \
+    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sig);    \
   }
 
 SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,

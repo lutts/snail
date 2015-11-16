@@ -15,7 +15,6 @@
 #include "include/config.h"
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
-#include "utils/signal_slot_impl.h"
 #include "core/kb_global.h"
 
 #include FTO_HEADER(core, kbnode_manager)
@@ -24,6 +23,8 @@ namespace snailcore {
 
 class IKbNode;
 class ITreeItemProvider;
+
+class KbNodeManagerSignalHelper;
 
 /** A Node tree is a tree of nodes with name and short descriptions
  *
@@ -47,11 +48,10 @@ class KbNodeManager : public FTO_NAMESPACE::KbNodeManager {
  private:
   SNAIL_DISABLE_COPY(KbNodeManager);
 
-  SNAIL_SIGSLOT_IMPL(KbNodeAdded, void(const IKbNode* new_kbnode,
-                                       const IKbNode* parent_kbnode));
-
   KbNodeIdType nextId();
   void erase(IKbNode* parent);
+
+  std::unique_ptr<KbNodeManagerSignalHelper> signal_helper_;
 
   std::unordered_map<KbNodeIdType, IKbNode*> id_to_kbnode_;
   std::unordered_map<const IKbNode*, std::vector<IKbNode*> > kbnode_to_subnodes_; // NOLINT

@@ -12,11 +12,12 @@
 
 #include "utils/i_trackable.h"
 #include "snail/i_work_model.h"
-#include "utils/signal_slot_impl.h"
 
 namespace snailcore {
 
 class IAttributeSetModelFactory;
+
+class WorkModelSignalHelper;
 
 class WorkModel : public IWorkModel
                 , public utils::ITrackable
@@ -34,15 +35,16 @@ class WorkModel : public IWorkModel
   std::shared_ptr<IAttributeSetModel>
   createAttributeSetModel() override;
 
+ public:
+  SNAIL_SIGSLOT_OVERRIDE(NameChanged);
+
  private:
   WorkModel(const WorkModel& other) = delete;
   WorkModel& operator=(const WorkModel& other) = delete;
 
+  std::unique_ptr<WorkModelSignalHelper> signal_helper_;
   fto::Work* work_ { nullptr };
   IAttributeSetModelFactory* attr_set_model_factory_;
-
- private:
-  SNAIL_SIGSLOT_OVERRIDE(NameChanged);
 };
 
 }  // namespace snailcore

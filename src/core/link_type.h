@@ -19,7 +19,7 @@
 
 namespace snailcore {
 
-class LinkTypeSignalProxy;
+class LinkTypeSignalHelper;
 
 class LinkType : public FTO_NAMESPACE::LinkType
                , public utils::text::VariableResolver {
@@ -63,7 +63,7 @@ class LinkType : public FTO_NAMESPACE::LinkType
   LinkType& swap(LinkType& rhs) noexcept;
   const LinkType* getPrototype() const;
 
-  std::unique_ptr<LinkTypeSignalProxy> signal_proxy_;
+  std::unique_ptr<LinkTypeSignalHelper> signal_helper_;
 
   utils::U8String name_;
   bool is_group_only_;

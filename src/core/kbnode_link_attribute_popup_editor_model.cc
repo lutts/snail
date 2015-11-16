@@ -5,6 +5,8 @@
 //
 // [Desc]
 #include "src/core/kbnode_link_attribute_popup_editor_model.h"
+
+#include "utils/signal_slot_impl.h"
 #include "core/fto_kbnode_link_attribute.h"
 #include "core/i_attribute_model_factory.h"
 #include "core/i_attribute_set_model_factory.h"
@@ -14,11 +16,23 @@
 
 namespace snailcore {
 
+class KbNodeLinkAttributePopupEditorModelSignalHelper {
+ public:
+  SNAIL_SIGSLOT_PIMPL(KbNodeLinkAttributePopupEditorModel, LinkTypeChanged);
+ public:
+  SNAIL_SIGSLOT_PIMPL(KbNodeLinkAttributePopupEditorModel, ValidateComplete);
+};
+
+SNAIL_SIGSLOT_DELEGATE2(KbNodeLinkAttributePopupEditorModel, LinkTypeChanged);
+SNAIL_SIGSLOT_DELEGATE2(KbNodeLinkAttributePopupEditorModel, ValidateComplete);
+
 KbNodeLinkAttributePopupEditorModel::KbNodeLinkAttributePopupEditorModel(
     fto::KbNodeLinkAttribute* attr,
     IAttributeModelFactory* attr_model_factory,
     IAttributeSetModelFactory* attr_set_model_factory)
-    : attr_(attr)
+    : signal_helper_(
+          utils::make_unique<KbNodeLinkAttributePopupEditorModelSignalHelper>())
+    , attr_(attr)
     , value_attr_copy_(*attr_->valueAttr())
     , link_type_copy_(*attr_->linkType())
     , attr_model_factory_(attr_model_factory)
@@ -73,7 +87,8 @@ KbNodeLinkAttributePopupEditorModel::getCurrentLinkAttrSetModel() {
 }
 
 void KbNodeLinkAttributePopupEditorModel::validateComplete() {
-  ValidateComplete(attr_model_valid_ & attr_set_model_valid_);
+  signal_helper_->emitValidateComplete(
+      attr_model_valid_ & attr_set_model_valid_);
 }
 
 void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
@@ -83,7 +98,8 @@ void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
   link_type_copy_ = *(proto_link_type);
 
   auto old_attr_set_model = curr_attr_set_model_;
-  LinkTypeChanged(getCurrentLinkAttrSetModel(), old_attr_set_model);
+  signal_helper_->emitLinkTypeChanged(getCurrentLinkAttrSetModel(),
+                                      old_attr_set_model);
 }
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {
