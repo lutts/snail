@@ -22,7 +22,12 @@
  *  fto namespace should always explicitly specified, eg. fto:XXX, fto::YYY
  */
 
-#define FTO_HEADER(path, name) <path/fto_##name.h>
+// clang-format off
+#define QUOTEME(x) QUOTEME_(x)
+#define QUOTEME_(x) #x
+#define FTO_HEADER(prefix, name) QUOTEME(prefix/fto_##name.h)
+// clang-format on
+
 #define FTO_NAMESPACE fto
 
 #ifndef DISABLE_TEST_CODE

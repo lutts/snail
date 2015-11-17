@@ -11,9 +11,9 @@
 #include <vector>
 
 #include "include/config.h"
-/* clang-format off */
+// clang-format off
 #include FTO_HEADER(qtui/core, attribute_set_layout)
-/* clang-format on */
+// clang-format on
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
 #include "utils/signal_slot_impl.h"
