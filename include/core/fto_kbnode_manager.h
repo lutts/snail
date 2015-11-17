@@ -27,14 +27,13 @@ class KbNodeManager {
  public:
   virtual ~KbNodeManager() = default;
 
-  virtual std::shared_ptr<ITreeItemProvider>
-  createTreeItemProvider(IKbNode* root_kbnode) = 0;
+  virtual std::shared_ptr<ITreeItemProvider> createTreeItemProvider(
+      IKbNode* root_kbnode) = 0;
   virtual IKbNode* idToKbNode(KbNodeIdType kbnode_id) = 0;
   virtual std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
                                            const IKbNode* parent_node) = 0;
   virtual std::vector<IKbNode*> childItems(const IKbNode* parent_node) = 0;
-  virtual IKbNode* addKbNode(const utils::U8String& name,
-                             const IKbNode* parent,
+  virtual IKbNode* addKbNode(const utils::U8String& name, const IKbNode* parent,
                              bool is_category = false) = 0;
   virtual void incRef(IKbNode* kbnode) = 0;
 };
@@ -49,11 +48,10 @@ class KbNodeManager {
 namespace snailcore {
 namespace fto {
 
-class KbNodeManager { };
+class KbNodeManager {};
 
 }  // namespace fto
 }  // namespace snailcore
-
 
 #endif  // DISABLE_TEST_CODE
 #endif  // INCLUDE_CORE_FTO_KBNODE_MANAGER_H_

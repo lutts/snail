@@ -14,13 +14,10 @@ namespace utils {
 
 class Command {
  public:
-  enum CmdType {
-    NORMAL,
-    NO_CHANGE
-  };
-  virtual ~Command() { }
+  enum CmdType { NORMAL, NO_CHANGE };
+  virtual ~Command() {}
   virtual void redo() = 0;
-  virtual void undo() { }
+  virtual void undo() {}
 
   virtual utils::U8String display_text() const { return utils::U8String(""); }
   virtual utils::U8String help_text() const { return utils::U8String(""); }

@@ -13,10 +13,8 @@
 template <typename T>
 class MockObjectGenerator {
  public:
-  MockObjectGenerator() { }
-  virtual ~MockObjectGenerator() {
-    clear();
-  }
+  MockObjectGenerator() {}
+  virtual ~MockObjectGenerator() { clear(); }
 
   T* generate() {
     auto obj = new T();
@@ -26,7 +24,7 @@ class MockObjectGenerator {
 
   template <typename... Args>
   T* generate(Args&&... args) {
-    auto obj =  new T(std::forward<Args>(args)...);
+    auto obj = new T(std::forward<Args>(args)...);
     mock_objs.push_back(obj);
     return obj;
   }
@@ -45,6 +43,5 @@ class MockObjectGenerator {
 
   std::vector<T*> mock_objs;
 };
-
 
 #endif  // TEST_TESTUTILS_MOCK_OBJECT_GENERATOR_H_

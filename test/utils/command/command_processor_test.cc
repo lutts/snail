@@ -16,23 +16,19 @@
 namespace utils {
 namespace tests {
 
-class MockListener : public GenericMockListener<MockListener,
-                                                ICommandProcessor> {
+class MockListener
+    : public GenericMockListener<MockListener, ICommandProcessor> {
  public:
   MOCK_METHOD1(CanUndoChanged, void(bool canUndo));
   MOCK_METHOD1(CanRedoChanged, void(bool canRedo));
 
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           ICommandProcessor* commandProcessor) {
+                           ICommandProcessor *commandProcessor) {
     commandProcessor->whenCanUndoChanged(
-        [this](bool canUndo) {
-          CanUndoChanged(canUndo);
-        }, trackObject);
+        [this](bool canUndo) { CanUndoChanged(canUndo); }, trackObject);
 
     commandProcessor->whenCanRedoChanged(
-        [this](bool canRedo) {
-          CanRedoChanged(canRedo);
-        }, trackObject);
+        [this](bool canRedo) { CanRedoChanged(canRedo); }, trackObject);
   }
 
   static std::shared_ptr<StrictMock<MockListener>>
@@ -51,18 +47,16 @@ class CommandProcessorTest : public ::testing::Test {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  ~CommandProcessorTest() { }
+  ~CommandProcessorTest() {}
 
   virtual void SetUp() {
     // DefaultValue<Command::CmdType>::Set(Command::NORMAL);
 
     commandProcessor = new CommandProcessor;
   }
-  virtual void TearDown() {
-    delete commandProcessor;
-  }
+  virtual void TearDown() { delete commandProcessor; }
 
-  MockCommand* generateNormalCommand();
+  MockCommand *generateNormalCommand();
 
   void enterCanUndoTrue_canRedoFalse_withOneCmd();
   void enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One();
@@ -81,12 +75,12 @@ class CommandProcessorTest : public ::testing::Test {
   void build_oneDoneCmd_oneUndoneCmd_plus_other_undone_cmds(
       int total_count, MockCommand **done_cmd, MockCommand **undone_cmd);
 
-  std::vector<StrictMock<MockCommand>*> fillWithStrictMockCommands(int count);
+  std::vector<StrictMock<MockCommand> *> fillWithStrictMockCommands(int count);
 
   CommandProcessor *commandProcessor;
 };
 
-inline MockCommand* CommandProcessorTest::generateNormalCommand() {
+inline MockCommand *CommandProcessorTest::generateNormalCommand() {
   MockCommand *cmd = new MockCommand;
 
   ON_CALL(*cmd, getType()).WillByDefault(Return(Command::NORMAL));
@@ -139,7 +133,6 @@ TEST_F(CommandProcessorTest, clear_two_Cause_count_reset_to_zero) {
   // Verify results
   ASSERT_EQ(0, commandProcessor->count());
 }
-
 
 TEST_F(CommandProcessorTest, clear_willCauseCommandDestroy_one) {
   MockCommand *cmd = generateNormalCommand();
@@ -321,7 +314,8 @@ TEST_F(CommandProcessorTest, canUndo_initially_false) {
   ASSERT_FALSE(commandProcessor->canUndo());
 }
 
-TEST_F(CommandProcessorTest, redo_when_canRedo_and_canUndo_false_remains_false) { // NOLINT
+TEST_F(CommandProcessorTest,
+       redo_when_canRedo_and_canUndo_false_remains_false) {  // NOLINT
   // Exercise system
   commandProcessor->redo();
 
@@ -342,7 +336,8 @@ TEST_F(CommandProcessorTest, do_first_cmd_cause_canUndo_true) {
   ASSERT_TRUE(commandProcessor->canUndo());
 }
 
-inline void CommandProcessorTest::enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One() { // NOLINT
+inline void CommandProcessorTest::
+    enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One() {  // NOLINT
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
   // do another command
@@ -500,7 +495,8 @@ TEST_F(CommandProcessorTest, clear_cause_both_canRedo_canUndo_false) {
   ASSERT_FALSE(commandProcessor->canUndo());
 }
 
-TEST_F(CommandProcessorTest, redo_undone_cmd_when_canUndo_false_changed_to_true) { // NOLINT
+TEST_F(CommandProcessorTest,
+       redo_undone_cmd_when_canUndo_false_changed_to_true) {  // NOLINT
   // Setup fixture
   enterCanRedoTrue_canUndoFalse_withTwoCmds();
 
@@ -549,15 +545,13 @@ TEST_F(CommandProcessorTest, do_cmd_discards_undo_stack) {
   commandProcessor->do_cmd(new DummyCommand());
 
   // Verify results
-  const int newCmdCount = oldCmdCount
-                          + 1   // one more new command
-                          - 1;  // one command discarded
+  const int newCmdCount = oldCmdCount + 1  // one more new command
+                          - 1;             // one command discarded
   ASSERT_EQ(newCmdCount, commandProcessor->count());
   ASSERT_FALSE(commandProcessor->canRedo());
 }
 
 //////// undo/redo status test end ////////
-
 
 //////// listener test begin ////////
 
@@ -575,7 +569,8 @@ TEST_F(CommandProcessorTest, fire_canUndoChanged_true_when_do_first_cmd) {
   // auto detached; nothing to do
 }
 
-TEST_F(CommandProcessorTest, not_fire_canUndoChanged_when_canUndo_already_true) { // NOLINT
+TEST_F(CommandProcessorTest,
+       not_fire_canUndoChanged_when_canUndo_already_true) {  // NOLINT
   // Setup fixture
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
@@ -590,7 +585,8 @@ TEST_F(CommandProcessorTest, not_fire_canUndoChanged_when_canUndo_already_true) 
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, not_fire_canUndoChanged_when_canUndo_already_true_two) { // NOLINT
+TEST_F(CommandProcessorTest,
+       not_fire_canUndoChanged_when_canUndo_already_true_two) {  // NOLINT
   // Setup fixture
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
@@ -604,7 +600,8 @@ TEST_F(CommandProcessorTest, not_fire_canUndoChanged_when_canUndo_already_true_t
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_clear_canUndo_true_one) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canUndoChanged_false_when_clear_canUndo_true_one) {  // NOLINT
   // Setup fixture
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
@@ -618,7 +615,8 @@ TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_clear_canUndo_true_o
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_clear_canUndo_true_two) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canUndoChanged_false_when_clear_canUndo_true_two) {  // NOLINT
   // Setup fixture
   enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One();
 
@@ -632,7 +630,9 @@ TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_clear_canUndo_true_t
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, not_fire_canUndoChanged_when_undo_when_canUndo_canRedo_false) { // NOLINT
+TEST_F(
+    CommandProcessorTest,
+    not_fire_canUndoChanged_when_undo_when_canUndo_canRedo_false) {  // NOLINT
   // expectations
   auto mockListener = MockListener::attachStrictTo(commandProcessor);
 
@@ -642,7 +642,8 @@ TEST_F(CommandProcessorTest, not_fire_canUndoChanged_when_undo_when_canUndo_canR
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canRedoChanged_true_when_undo_cmd_cause_canRedo_true) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canRedoChanged_true_when_undo_cmd_cause_canRedo_true) {  // NOLINT
   // Setup fixture
   enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One();
 
@@ -656,7 +657,8 @@ TEST_F(CommandProcessorTest, fire_canRedoChanged_true_when_undo_cmd_cause_canRed
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_undo_all_cmds_one) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canUndoChanged_false_when_undo_all_cmds_one) {  // NOLINT
   // Setup fixture
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
@@ -671,7 +673,8 @@ TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_undo_all_cmds_one) {
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_undo_all_cmds_two) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canUndoChanged_false_when_undo_all_cmds_two) {  // NOLINT
   // Setup fixture
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
@@ -687,7 +690,8 @@ TEST_F(CommandProcessorTest, fire_canUndoChanged_false_when_undo_all_cmds_two) {
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canRedoChanged_false_when_clear_canRedo_true_one) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canRedoChanged_false_when_clear_canRedo_true_one) {  // NOLINT
   // Setup fixture
   enterCanRedoTrue_canUndoFalse_withOneCmd();
 
@@ -701,7 +705,8 @@ TEST_F(CommandProcessorTest, fire_canRedoChanged_false_when_clear_canRedo_true_o
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canRedoChanged_false_when_clear_canRedo_true_two) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canRedoChanged_false_when_clear_canRedo_true_two) {  // NOLINT
   // Setup fixture
   enterCanRedoTrue_canUndoFalse_withTwoCmds();
 
@@ -715,7 +720,9 @@ TEST_F(CommandProcessorTest, fire_canRedoChanged_false_when_clear_canRedo_true_t
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canRedoChanged_canUndoChanged_false_when_clear_when_both_canRedo_canUndo_true) { // NOLINT
+TEST_F(
+    CommandProcessorTest,
+    fire_canRedoChanged_canUndoChanged_false_when_clear_when_both_canRedo_canUndo_true) {  // NOLINT
   // Setup fixture
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
@@ -730,7 +737,9 @@ TEST_F(CommandProcessorTest, fire_canRedoChanged_canUndoChanged_false_when_clear
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canUndoChanged_true_when_redo_undone_cmd_if_canUndo_false) { // NOLINT
+TEST_F(
+    CommandProcessorTest,
+    fire_canUndoChanged_true_when_redo_undone_cmd_if_canUndo_false) {  // NOLINT
   // Setup fixture
   enterCanRedoTrue_canUndoFalse_withTwoCmds();
 
@@ -744,7 +753,8 @@ TEST_F(CommandProcessorTest, fire_canUndoChanged_true_when_redo_undone_cmd_if_ca
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, fire_canRedoChanged_false_when_do_cmd_discard_undo_stack) { // NOLINT
+TEST_F(CommandProcessorTest,
+       fire_canRedoChanged_false_when_do_cmd_discard_undo_stack) {  // NOLINT
   // Setup fixture
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
@@ -761,7 +771,7 @@ TEST_F(CommandProcessorTest, fire_canRedoChanged_false_when_do_cmd_discard_undo_
 
 //////// undo limit test start ////////
 
-TEST_F(CommandProcessorTest, undo_limit_initially_unlimited) { // NOLINT
+TEST_F(CommandProcessorTest, undo_limit_initially_unlimited) {  // NOLINT
   // Verify results
   ASSERT_EQ(CommandProcessor::UNDO_UNLIMITED, commandProcessor->undo_limit());
 }
@@ -776,7 +786,7 @@ inline void CommandProcessorTest::resetUndoLimit() {
   commandProcessor->set_undo_limit(CommandProcessor::UNDO_UNLIMITED);
 }
 
-TEST_F(CommandProcessorTest, set_undo_limit_get_setted_value) { // NOLINT
+TEST_F(CommandProcessorTest, set_undo_limit_get_setted_value) {  // NOLINT
   const int kNewUnLimited = 8;
 
   // Exercise system
@@ -789,7 +799,7 @@ TEST_F(CommandProcessorTest, set_undo_limit_get_setted_value) { // NOLINT
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, set_undo_limit_to_zero_has_no_effect) { // NOLINT
+TEST_F(CommandProcessorTest, set_undo_limit_to_zero_has_no_effect) {  // NOLINT
   // Setup fixture
   int old_limit = setTestUndoLimit();
 
@@ -815,7 +825,8 @@ void CommandProcessorTest::undoAllCommands() {
   }
 }
 
-TEST_F(CommandProcessorTest, undo_limit_includes_done_and_undone_cmds) { // NOLINT
+TEST_F(CommandProcessorTest,
+       undo_limit_includes_done_and_undone_cmds) {  // NOLINT
   // Test Logic: undo will not cause oldest command be dropped
 
   // Setup fixture
@@ -837,7 +848,8 @@ TEST_F(CommandProcessorTest, undo_limit_includes_done_and_undone_cmds) { // NOLI
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_oldest_cmd_one) { // NOLINT
+TEST_F(CommandProcessorTest,
+       do_cmd_when_exceed_limit_drop_oldest_cmd_one) {  // NOLINT
   // Setup fixture
   int limit = setTestUndoLimit();
   MockCommand *oldest_cmd = generateNormalCommand();
@@ -854,7 +866,8 @@ TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_oldest_cmd_one) { // 
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_oldest_cmd_two) { // NOLINT
+TEST_F(CommandProcessorTest,
+       do_cmd_when_exceed_limit_drop_oldest_cmd_two) {  // NOLINT
   // Setup fixture
   int limit = setTestUndoLimit();
 
@@ -885,7 +898,8 @@ TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_oldest_cmd_two) { // 
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_undone_cmds_before_done_cmds) { // NOLINT
+TEST_F(CommandProcessorTest,
+       do_cmd_when_exceed_limit_drop_undone_cmds_before_done_cmds) {  // NOLINT
   // Setup fixture
   int limit = setTestUndoLimit();
 
@@ -916,7 +930,9 @@ TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_undone_cmds_before_do
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_undone_cmds_fire_canRedoChanged_false) { // NOLINT
+TEST_F(
+    CommandProcessorTest,
+    do_cmd_when_exceed_limit_drop_undone_cmds_fire_canRedoChanged_false) {  // NOLINT
   // Setup fixture
   fillWithDummyCommands(setTestUndoLimit());
   commandProcessor->undo();
@@ -932,7 +948,8 @@ TEST_F(CommandProcessorTest, do_cmd_when_exceed_limit_drop_undone_cmds_fire_canR
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_history_list_one) { // NOLINT
+TEST_F(CommandProcessorTest,
+       set_smaller_undo_limit_shrink_history_list_one) {  // NOLINT
   // Setup fixture
   int limit = setTestUndoLimit();
 
@@ -951,7 +968,8 @@ TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_history_list_one) { /
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_history_list_two) { // NOLINT
+TEST_F(CommandProcessorTest,
+       set_smaller_undo_limit_shrink_history_list_two) {  // NOLINT
   // Setup fixture
   int limit = setTestUndoLimit();
 
@@ -992,14 +1010,14 @@ void CommandProcessorTest::build_oneDoneCmd_oneUndoneCmd_plus_other_undone_cmds(
     commandProcessor->undo();
   }
 
-  if (done_cmd)
-    *done_cmd = done_cmd_;
+  if (done_cmd) *done_cmd = done_cmd_;
 
-  if (undone_cmd)
-    *undone_cmd = undone_cmd_;
+  if (undone_cmd) *undone_cmd = undone_cmd_;
 }
 
-TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_oldest_done_cmds_befor_undone_cmds) { // NOLINT
+TEST_F(
+    CommandProcessorTest,
+    set_smaller_undo_limit_shrink_oldest_done_cmds_befor_undone_cmds) {  // NOLINT
   // Setup fixture
   const int limit = 3;
   commandProcessor->set_undo_limit(3);
@@ -1007,8 +1025,7 @@ TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_oldest_done_cmds_befo
   MockCommand *done_cmd = nullptr;
   MockCommand *undone_cmd = nullptr;
 
-  build_oneDoneCmd_oneUndoneCmd_plus_other_undone_cmds(limit,
-                                                       &done_cmd,
+  build_oneDoneCmd_oneUndoneCmd_plus_other_undone_cmds(limit, &done_cmd,
                                                        &undone_cmd);
 
   // expectations
@@ -1030,10 +1047,12 @@ TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_oldest_done_cmds_befo
   resetUndoLimit();
 }
 
-TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_history_list_may_fire_canUndoChanged_false) { // NOLINT
+TEST_F(
+    CommandProcessorTest,
+    set_smaller_undo_limit_shrink_history_list_may_fire_canUndoChanged_false) {  // NOLINT
   // Setup fixture
-  build_oneDoneCmd_oneUndoneCmd_plus_other_undone_cmds(
-      setTestUndoLimit(), nullptr, nullptr);
+  build_oneDoneCmd_oneUndoneCmd_plus_other_undone_cmds(setTestUndoLimit(),
+                                                       nullptr, nullptr);
 
   // expectations
   auto mockListener = MockListener::attachStrictTo(commandProcessor);
@@ -1046,9 +1065,9 @@ TEST_F(CommandProcessorTest, set_smaller_undo_limit_shrink_history_list_may_fire
   resetUndoLimit();
 }
 
-std::vector<StrictMock<MockCommand>*>
+std::vector<StrictMock<MockCommand> *>
 CommandProcessorTest::fillWithStrictMockCommands(int count) {
-  std::vector<StrictMock<MockCommand>*> cmds;
+  std::vector<StrictMock<MockCommand> *> cmds;
 
   for (int i = 0; i < count; ++i) {
     StrictMock<MockCommand> *cmd = new StrictMock<MockCommand>;
@@ -1065,7 +1084,8 @@ CommandProcessorTest::fillWithStrictMockCommands(int count) {
   return cmds;
 }
 
-TEST_F(CommandProcessorTest, set_unlimit_will_not_affect_history_list) { // NOLINT
+TEST_F(CommandProcessorTest,
+       set_unlimit_will_not_affect_history_list) {  // NOLINT
   // Setup fixture
   fillWithStrictMockCommands(setTestUndoLimit());
 
@@ -1079,7 +1099,8 @@ TEST_F(CommandProcessorTest, set_unlimit_will_not_affect_history_list) { // NOLI
   // Teardown fixture
 }
 
-TEST_F(CommandProcessorTest, set_larger_limit_will_not_affect_history_list) { // NOLINT
+TEST_F(CommandProcessorTest,
+       set_larger_limit_will_not_affect_history_list) {  // NOLINT
   // Setup fixture
   fillWithStrictMockCommands(setTestUndoLimit());
 

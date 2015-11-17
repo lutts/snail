@@ -22,8 +22,10 @@ namespace snailcore {
 class AttributeSetModelSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(AttributeSetModel, SwitchToEditMode);
+
  public:
   SNAIL_SIGSLOT_PIMPL(AttributeSetModel, SwitchToDisplayMode);
+
  public:
   SNAIL_SIGSLOT_PIMPL(AttributeSetModel, ValidateComplete);
 };
@@ -35,14 +37,14 @@ SNAIL_SIGSLOT_DELEGATE2(AttributeSetModel, ValidateComplete);
 AttributeSetModel::AttributeSetModel(
     const std::vector<IAttributeSupplier*>& attr_suppliers,
     IAttributeModelFactory* attr_model_factory)
-    : signal_helper_(utils::make_unique<AttributeSetModelSignalHelper>())
-    , attr_suppliers_(attr_suppliers)
-    , attr_model_factory_(attr_model_factory) { }
+    : signal_helper_(utils::make_unique<AttributeSetModelSignalHelper>()),
+      attr_suppliers_(attr_suppliers),
+      attr_model_factory_(attr_model_factory) {}
 
 AttributeSetModel::~AttributeSetModel() = default;
 
-std::vector<IAttributeSupplier*>
-AttributeSetModel::getAttributeSuppliers() const {
+std::vector<IAttributeSupplier*> AttributeSetModel::getAttributeSuppliers()
+    const {
   return attr_suppliers_;
 }
 
@@ -55,7 +57,7 @@ void AttributeSetModel::switchMode() {
 }
 
 void AttributeSetModel::switchToEditMode() {
-  for (auto & supplier : attr_suppliers_) {
+  for (auto& supplier : attr_suppliers_) {
     if (supplier->max_attrs() == 1 && supplier->attr_count() == 0) {
       supplier->addAttribute();
     }
@@ -66,11 +68,10 @@ void AttributeSetModel::switchToEditMode() {
 }
 
 void AttributeSetModel::switchToDisplayMode() {
-  for (auto & supplier : attr_suppliers_) {
+  for (auto& supplier : attr_suppliers_) {
     auto attrs = supplier->attributes();
-    for (auto & attr : attrs) {
-      if (attr->isEmpty())
-        supplier->removeAttribute(attr);
+    for (auto& attr : attrs) {
+      if (attr->isEmpty()) supplier->removeAttribute(attr);
     }
   }
 
@@ -78,22 +79,18 @@ void AttributeSetModel::switchToDisplayMode() {
   signal_helper_->emitSwitchToDisplayMode();
 }
 
-std::shared_ptr<IAttributeModel>
-AttributeSetModel::createAttributeModel(IAttribute* attr) {
+std::shared_ptr<IAttributeModel> AttributeSetModel::createAttributeModel(
+    IAttribute* attr) {
   auto attr_model = attr_model_factory_->createAttributeModel(attr);
   attr_models_.push_back(attr_model);
 
-  attr_model->whenValidateComplete(
-      [this]() {
-        validateComplete();
-      });
+  attr_model->whenValidateComplete([this]() { validateComplete(); });
 
   return attr_model;
 }
 
 void AttributeSetModel::validateComplete() {
-  if (!edit_mode_)
-    return;
+  if (!edit_mode_) return;
 
   bool valid = true;
   bool emit_signal = (attr_models_.size() != 0);
@@ -109,13 +106,12 @@ void AttributeSetModel::validateComplete() {
     }
   }
 
-  if (emit_signal)
-    signal_helper_->emitValidateComplete(valid);
+  if (emit_signal) signal_helper_->emitValidateComplete(valid);
 }
 
 void AttributeSetModel::closeAttributeEditors(
     pfmvp::IPfTriadManager* triad_manager) {
-  for (auto & attr_model : attr_models_) {
+  for (auto& attr_model : attr_models_) {
     auto amodel = attr_model.lock();
     if (amodel) {
       amodel->cleanupValidateCompleteSlots();

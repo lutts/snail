@@ -22,5 +22,4 @@ class IKbNodeLinkAttributeInlineEditorView : public GenericViewBase {
   virtual void setValueText(const QString& value_text) = 0;
 };
 
-
 #endif  // INCLUDE_QTUI_UI_I_KBNODE_LINK_ATTRIBUTE_INLINE_EDITOR_VIEW_H_

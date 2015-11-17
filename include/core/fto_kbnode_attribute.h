@@ -32,13 +32,13 @@ class IKbNode;
 namespace snailcore {
 namespace fto {
 
-#define KbNodeAttributeSupplier_METHODS                 \
+#define KbNodeAttributeSupplier_METHODS \
   SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
 
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
   KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) { }
+      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeAttributeSupplier() = default;
 
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
@@ -46,10 +46,10 @@ class KbNodeAttributeSupplier : public GenericAttributeSupplier {
   KbNodeAttributeSupplier_METHODS
 };
 
-#define KbNodeAttributeSupplierFactory_METHODS                          \
-  SNAIL_CONST_INTERFACE2(createInstance,                                \
-                         fto::KbNodeAttributeSupplier*(                 \
-                             IKbNode* root_kbnode, int max_attrs));
+#define KbNodeAttributeSupplierFactory_METHODS \
+  SNAIL_CONST_INTERFACE2(                      \
+      createInstance,                          \
+      fto::KbNodeAttributeSupplier*(IKbNode * root_kbnode, int max_attrs));
 
 class KbNodeAttributeSupplierFactory {
  public:
@@ -58,9 +58,9 @@ class KbNodeAttributeSupplierFactory {
   KbNodeAttributeSupplierFactory_METHODS
 };
 
-#define KbNodeAttribute_METHODS                                         \
-  SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeAttributeSupplier*());    \
-  SNAIL_INTERFACE1(setKbNode, void(IKbNode* kbnode));
+#define KbNodeAttribute_METHODS                                      \
+  SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeAttributeSupplier*()); \
+  SNAIL_INTERFACE1(setKbNode, void(IKbNode * kbnode));
 
 class KbNodeAttribute : public IAttribute {
  public:
@@ -85,11 +85,11 @@ namespace fto {
 class KbNodeAttributeSupplier : public GenericAttributeSupplier {
  public:
   KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) { }
+      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeAttributeSupplier() = default;
 };
 
-class KbNodeAttribute : public IAttribute { };
+class KbNodeAttribute : public IAttribute {};
 
 }  // namespace fto
 }  // namespace snailcore
@@ -118,21 +118,13 @@ class KbNodeAttributeSupplierTestProxy {
     createInstance(root_kbnode, max_attrs);
   }
 
-  utils::U8String name() const {
-    return self_->name();
-  }
+  utils::U8String name() const { return self_->name(); }
 
-  int attr_count() const {
-    return self_->attr_count();
-  }
+  int attr_count() const { return self_->attr_count(); }
 
-  IAttribute* addAttribute() {
-    return self_->addAttribute();
-  }
+  IAttribute* addAttribute() { return self_->addAttribute(); }
 
-  std::vector<IAttribute*> attributes() const {
-    return self_->attributes();
-  }
+  std::vector<IAttribute*> attributes() const { return self_->attributes(); }
 
   KbNodeAttributeSupplier_METHODS
 };
@@ -142,25 +134,15 @@ class KbNodeAttributeTestProxy {
   TEST_PROXY_ENABLE_COPY(KbNodeAttribute);
 
  public:
-  utils::U8String displayName() const {
-    return self_->displayName();
-  }
+  utils::U8String displayName() const { return self_->displayName(); }
 
-  utils::U8String valueText() const {
-    return self_->valueText();
-  }
+  utils::U8String valueText() const { return self_->valueText(); }
 
-  bool isEmpty() const {
-    return self_->isEmpty();
-  }
+  bool isEmpty() const { return self_->isEmpty(); }
 
-  void clear() {
-    self_->clear();
-  }
+  void clear() { self_->clear(); }
 
-  void accept(IAttributeVisitor* visitor) {
-    self_->accept(visitor);
-  }
+  void accept(IAttributeVisitor* visitor) { self_->accept(visitor); }
 
   KbNodeAttribute_METHODS
 };
@@ -174,6 +156,5 @@ class KbNodeAttributeTestProxy {
 #endif  // DISABLE_TEST_CODE
 
 // endregion: TestProxy
-
 
 #endif  // INCLUDE_CORE_FTO_KBNODE_ATTRIBUTE_H_

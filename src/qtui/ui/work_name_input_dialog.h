@@ -17,7 +17,7 @@ class WorkNameInputDialog : public QDialog {
   explicit WorkNameInputDialog(QWidget *parent = 0);
 
   const QString name() const;
-  void setName(const QString& defaultName);
+  void setName(const QString &defaultName);
 
  private:
   QLineEdit *workName;

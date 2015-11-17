@@ -23,7 +23,6 @@ class KbNodeIdGenerator {
   }
 };
 
-
 }  // namespace tests
 }  // namespace snailcore
 

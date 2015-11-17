@@ -28,8 +28,7 @@ class PfCreateViewArgsMemento {
   }
 
   bool equals(const PfCreateViewArgsMemento& rhs) const {
-    if (!do_equals(rhs))
-      return false;
+    if (!do_equals(rhs)) return false;
 
     return view_factory_id_ == rhs.view_factory_id();
   }
@@ -41,14 +40,14 @@ class PfCreateViewArgsMemento {
   }
 
  private:
-  IPfViewFactory::ViewFactoryIdType view_factory_id_ {
-    INVALID_PF_VIEW_FACTORY_ID };
+  IPfViewFactory::ViewFactoryIdType view_factory_id_{
+      INVALID_PF_VIEW_FACTORY_ID};
 };
 
 class PfCreateViewArgs {
  public:
   PfCreateViewArgs() = default;
-  virtual ~PfCreateViewArgs()  = default;
+  virtual ~PfCreateViewArgs() = default;
 
   void set_view_factory_id(
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) {
@@ -68,8 +67,7 @@ class PfCreateViewArgs {
   }
 
   bool memento_equals(const PfCreateViewArgsMemento& memento) const {
-    if (!do_memento_equals(memento))
-      return false;
+    if (!do_memento_equals(memento)) return false;
 
     PfCreateViewArgsMemento my_memento;
     initMemento(&my_memento);
@@ -78,13 +76,11 @@ class PfCreateViewArgs {
   }
 
  private:
-  virtual
-  std::unique_ptr<PfCreateViewArgsMemento> createMemento() const {
+  virtual std::unique_ptr<PfCreateViewArgsMemento> createMemento() const {
     return utils::make_unique<PfCreateViewArgsMemento>();
   }
 
-  virtual
-  bool do_memento_equals(const PfCreateViewArgsMemento& memento) const {
+  virtual bool do_memento_equals(const PfCreateViewArgsMemento& memento) const {
     (void)memento;
     return true;
   }
@@ -92,12 +88,11 @@ class PfCreateViewArgs {
  private:
   void initMemento(PfCreateViewArgsMemento* memento) const {
     // parent_presenter & auto_remove_child is not checked
-    memento->
-        set_view_factory_id(view_factory_id_);
+    memento->set_view_factory_id(view_factory_id_);
   }
 
-  IPfViewFactory::ViewFactoryIdType view_factory_id_ {
-    INVALID_PF_VIEW_FACTORY_ID };
+  IPfViewFactory::ViewFactoryIdType view_factory_id_{
+      INVALID_PF_VIEW_FACTORY_ID};
 };
 
 }  // namespace pfmvp

@@ -25,22 +25,19 @@ namespace expr = boost::log::expressions;
 
 BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", LogSeverityLevel)
 
-LogTestSpy::LogTestSpy() {
-}
+LogTestSpy::LogTestSpy() {}
 
 void LogTestSpy::start() {
-  typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
-  boost::shared_ptr< text_sink > sink = boost::make_shared< text_sink >();
+  typedef sinks::synchronous_sink<sinks::text_ostream_backend> text_sink;
+  boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
 
-  sink->locked_backend()->add_stream(
-      boost::make_shared< std::stringstream >());
+  sink->locked_backend()->add_stream(boost::make_shared<std::stringstream>());
 
-  sink->set_formatter([this](logging::record_view const& rec,
-                             logging::formatting_ostream&) {
-                        actual_messages.emplace_back(
-                            rec[severity].get(),
-                            utils::U8String(rec[expr::smessage].get()));
-                      });
+  sink->set_formatter(
+      [this](logging::record_view const &rec, logging::formatting_ostream &) {
+        actual_messages.emplace_back(
+            rec[severity].get(), utils::U8String(rec[expr::smessage].get()));
+      });
 
   logging::core::get()->add_sink(sink);
 
@@ -55,10 +52,9 @@ LogTestSpy::~LogTestSpy() {
   logging::core::get()->remove_all_sinks();
 }
 
-
 std::ostream &operator<<(std::ostream &s, const LogTestSpy::Message &msg) {
-  s << "<" << (std::underlying_type<LogSeverityLevel>::type)(msg.level)
-    << ", " << msg.message << ">";
+  s << "<" << (std::underlying_type<LogSeverityLevel>::type)(msg.level) << ", "
+    << msg.message << ">";
 
   return s;
 }

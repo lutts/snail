@@ -15,8 +15,7 @@
 namespace snailcore {
 namespace tests {
 
-class MockAttributeSetModelFactory
-    : public IAttributeSetModelFactory {
+class MockAttributeSetModelFactory : public IAttributeSetModelFactory {
  public:
   MOCK_METHOD1(createAttributeSetModel,
                std::shared_ptr<IAttributeSetModel>(

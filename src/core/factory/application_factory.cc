@@ -27,33 +27,29 @@
 
 namespace snailcore {
 
-class ApplicationFactoryImpl
-    : public ISimpleKbNodeAdderModelFactory
-    , public IAttributeSetModelFactory
-    , public IWorkModelFactory {
+class ApplicationFactoryImpl : public ISimpleKbNodeAdderModelFactory,
+                               public IAttributeSetModelFactory,
+                               public IWorkModelFactory {
  public:
   ApplicationFactoryImpl()
-      : kbnode_manager_(utils::make_unique<KbNodeManager>())
-      , attr_model_factory_(
-          utils::make_unique<AttributeModelFactory>(
-              kbnode_manager_.get(), this))
-      , work_factory_(utils::make_unique<WorkFactory>(kbnode_manager_.get())) {
-  }
+      : kbnode_manager_(utils::make_unique<KbNodeManager>()),
+        attr_model_factory_(utils::make_unique<AttributeModelFactory>(
+            kbnode_manager_.get(), this)),
+        work_factory_(utils::make_unique<WorkFactory>(kbnode_manager_.get())) {}
   ~ApplicationFactoryImpl() = default;
 
   // ISimpleKbNodeAdderModelFactory
-  std::shared_ptr<ISimpleKbNodeAdderModel>
-  createSimpleKbNodeAdderModel(ITreeItemProvider* provider) const override {
+  std::shared_ptr<ISimpleKbNodeAdderModel> createSimpleKbNodeAdderModel(
+      ITreeItemProvider* provider) const override {
     return std::make_shared<SimpleKbNodeAdderModel>(provider,
-                                                 kbnode_manager_.get());
+                                                    kbnode_manager_.get());
   }
 
   // IAttributeSetModelFactory
-  std::shared_ptr<IAttributeSetModel>
-  createAttributeSetModel(
+  std::shared_ptr<IAttributeSetModel> createAttributeSetModel(
       const std::vector<IAttributeSupplier*>& attr_suppliers) override {
-    return std::make_shared<AttributeSetModel>(
-        attr_suppliers, attr_model_factory_.get());
+    return std::make_shared<AttributeSetModel>(attr_suppliers,
+                                               attr_model_factory_.get());
   }
 
   // IWorkModelFactory
@@ -72,10 +68,8 @@ class ApplicationFactoryImpl
   std::unique_ptr<WorkFactory> work_factory_;
 };
 
-
 ApplicationFactory::ApplicationFactory()
-    : impl_(utils::make_unique<ApplicationFactoryImpl>()) {
-}
+    : impl_(utils::make_unique<ApplicationFactoryImpl>()) {}
 
 ApplicationFactory::~ApplicationFactory() = default;
 
@@ -88,9 +82,8 @@ std::shared_ptr<IMainWindowModel> ApplicationFactory::makeMainWindowModel() {
 
   auto model = cache.lock();
   if (!model) {
-    auto workspace_model =
-        std::make_shared<WorkSpaceModel>(impl_.get(),
-                                         impl_->work_factory_.get());
+    auto workspace_model = std::make_shared<WorkSpaceModel>(
+        impl_.get(), impl_->work_factory_.get());
     model = std::make_shared<MainWindowModel>(workspace_model);
     cache = model;
   }

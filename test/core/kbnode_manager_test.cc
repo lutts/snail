@@ -30,8 +30,7 @@ class KbNodeManagerTest : public ::testing::Test {
   }
   // ~KbNodeManagerTest() { }
   virtual void SetUp() {
-    kbnode_manager_ =
-        utils::make_unique<KbNodeManager>();
+    kbnode_manager_ = utils::make_unique<KbNodeManager>();
     setupTestKbNodes();
   }
   // virtual void TearDown() { }
@@ -39,7 +38,7 @@ class KbNodeManagerTest : public ::testing::Test {
   void setupTestKbNodes();
 
   // region: objects test subject depends on
-  IKbNode* top_level_node_ { nullptr };
+  IKbNode* top_level_node_{nullptr};
   std::vector<IKbNode*> all_nodes;
   std::map<IKbNode*, std::vector<IKbNode*> > kbnode_to_subnodes;
   std::vector<IKbNode*> expect_search_result;
@@ -127,12 +126,11 @@ void KbNodeManagerTest::setupTestKbNodes() {
       kbnode_to_subnodes[tree_subnode3].push_back(tree_subnode3_subnode1);
 
       {  // grand son has search str
-        IKbNode* tree_subnode3_subnode1_subnode1 =
-            kbnode_manager_->addKbNode("est laborum lutts",
-                                      tree_subnode3_subnode1);
+        IKbNode* tree_subnode3_subnode1_subnode1 = kbnode_manager_->addKbNode(
+            "est laborum lutts", tree_subnode3_subnode1);
         all_nodes.push_back(tree_subnode3_subnode1_subnode1);
-        kbnode_to_subnodes[tree_subnode3_subnode1].
-            push_back(tree_subnode3_subnode1_subnode1);
+        kbnode_to_subnodes[tree_subnode3_subnode1].push_back(
+            tree_subnode3_subnode1_subnode1);
         expect_search_result.push_back(tree_subnode3_subnode1_subnode1);
       }
     }
@@ -160,7 +158,7 @@ void KbNodeManagerTest::setupTestKbNodes() {
 }
 
 TEST_F(KbNodeManagerTest,
-       should_be_able_to_get_KbNode_instance_by_id) { // NOLINT
+       should_be_able_to_get_KbNode_instance_by_id) {  // NOLINT
   for (auto expect_kbnode : all_nodes) {
     auto actual_kbnode = kbnode_manager_->idToKbNode(expect_kbnode->id());
     ASSERT_EQ(expect_kbnode, actual_kbnode);
@@ -172,10 +170,9 @@ TEST_F(KbNodeManagerTest,
 // We currently use simply strstr(), we do not impl this behavior because the
 // pattern can be more complex, such as AND or OR, and we do not want these
 // complex at this very begining time.
-TEST_F(KbNodeManagerTest,
-       should_be_able_to_find_by_pattern) { // NOLINT
-  auto actual_search_result = kbnode_manager_->findKbNode(SEARCH_STR,
-                                                         top_level_node_);
+TEST_F(KbNodeManagerTest, should_be_able_to_find_by_pattern) {  // NOLINT
+  auto actual_search_result =
+      kbnode_manager_->findKbNode(SEARCH_STR, top_level_node_);
   std::sort(actual_search_result.begin(), actual_search_result.end(),
             kbnode_compare);
   ASSERT_EQ(expect_search_result, actual_search_result)
@@ -195,7 +192,7 @@ TEST_F(KbNodeManagerTest,
 }
 
 TEST_F(KbNodeManagerTest,
-       should_be_able_to_get_child_nodes_of_specified_parent) { // NOLINT
+       should_be_able_to_get_child_nodes_of_specified_parent) {  // NOLINT
   std::vector<IKbNode*> expect_top_level_nodes;
   expect_top_level_nodes.push_back(top_level_node_);
 
@@ -204,7 +201,7 @@ TEST_F(KbNodeManagerTest,
 
   for (auto kbnode : all_nodes) {
     auto actual_subnodes = kbnode_manager_->childItems(kbnode);
-    auto & expect_subnodes = kbnode_to_subnodes[kbnode];
+    auto& expect_subnodes = kbnode_to_subnodes[kbnode];
     ASSERT_EQ(expect_subnodes, actual_subnodes)
         << "expect: {" << printKbNodes(expect_subnodes) << "}, "
         << "actual: {" << printKbNodes(actual_subnodes) << "}";
@@ -212,7 +209,7 @@ TEST_F(KbNodeManagerTest,
 }
 
 TEST_F(KbNodeManagerTest,
-       should_notify_item_provider_after_add_kbnode) { // NOLINT
+       should_notify_item_provider_after_add_kbnode) {  // NOLINT
   // Setup fixture
   auto item_provider = kbnode_manager_->createTreeItemProvider(top_level_node_);
 
@@ -230,14 +227,12 @@ TEST_F(KbNodeManagerTest,
       .WillOnce(DoAll(SaveArg<0>(&new_item2), SaveArg<1>(&new_item2_parent)));
 
   // Exercise system
-  IKbNode* expect_new_item1 =
-      kbnode_manager_->addKbNode(xtestutils::genRandomString(),
-                                 top_level_node_, false);
+  IKbNode* expect_new_item1 = kbnode_manager_->addKbNode(
+      xtestutils::genRandomString(), top_level_node_, false);
   ITreeItem* expect_new_item1_parent = nullptr;
 
-  IKbNode* expect_new_item2 =
-      kbnode_manager_->addKbNode(xtestutils::genRandomString(),
-                                 expect_new_item1, false);
+  IKbNode* expect_new_item2 = kbnode_manager_->addKbNode(
+      xtestutils::genRandomString(), expect_new_item1, false);
   ITreeItem* expect_new_item2_parent = expect_new_item1;
 
   // Verify results

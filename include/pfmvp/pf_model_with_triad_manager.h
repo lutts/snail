@@ -24,14 +24,13 @@ class PfModelWithTriadManager : public IPfModel {
   }
 
   void removeTriadBy(IPfModel* model) {
-    if (!triad_manager_)
-      return;
+    if (!triad_manager_) return;
 
     triad_manager_->removeTriadBy(model);
   }
 
  private:
-  IPfTriadManager* triad_manager_ { nullptr };
+  IPfTriadManager* triad_manager_{nullptr};
 
  private:
   SNAIL_DISABLE_COPY(PfModelWithTriadManager)

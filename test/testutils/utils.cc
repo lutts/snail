@@ -26,11 +26,11 @@ utils::U8String genRandomString(const int len) {
     str.push_back(alphanum[rand() % (sizeof(alphanum) - 1)]);
   }
 
-  return utils::U8String { std::move(str) };
+  return utils::U8String{std::move(str)};
 }
 
 utils::U8String genRandomDifferentString(const utils::U8String& refStr,
-                                        const int len) {
+                                         const int len) {
   utils::U8String newStr = genRandomString(len);
 
   while (refStr == newStr) {

@@ -29,7 +29,7 @@ class CommandProcessor : public ICommandProcessor {
   // will take ownership of this \a cmd or not
   //   * NORMAL: take ownership
   //   * NO_CHANGE: will delete this cmd object
-  void do_cmd(Command *cmd) override;
+  void do_cmd(Command* cmd) override;
 
   bool canRedo() const override;
   void redo() override;  // redo the last undo command(s)
@@ -73,7 +73,7 @@ class CommandProcessor : public ICommandProcessor {
   std::list<std::shared_ptr<Command>> done_stack;
   std::list<std::shared_ptr<Command>> undo_stack;
 
-  int undo_limit_ { UNDO_UNLIMITED };
+  int undo_limit_{UNDO_UNLIMITED};
 
  private:
   SNAIL_SIGSLOT_OVERRIDE_IMPL(CanUndoChanged)

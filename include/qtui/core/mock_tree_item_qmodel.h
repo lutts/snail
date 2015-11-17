@@ -18,8 +18,8 @@ class MockTreeItemQModel : public fto::TreeItemQModel {
   MOCK_CONST_METHOD1_T(indexToItem, ITreeItem*(const QModelIndex& index));
   MOCK_CONST_METHOD1(itemToIndex, QModelIndex(const ITreeItem* item));
   MOCK_CONST_METHOD1(isAddMore, bool(const QModelIndex& index));
-  MOCK_METHOD2(itemAdded, void(const ITreeItem* new_item,
-                               const ITreeItem* parent_item));
+  MOCK_METHOD2(itemAdded,
+               void(const ITreeItem* new_item, const ITreeItem* parent_item));
 };
 
 #endif  // INCLUDE_QTUI_CORE_MOCK_TREE_ITEM_QMODEL_H_

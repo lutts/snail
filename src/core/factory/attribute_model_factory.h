@@ -27,20 +27,19 @@ class AttributeModelFactory : public IAttributeModelFactory {
   AttributeModelFactory(
       fto::KbNodeManager* kbnode_manager,
       ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory)
-      : kbnode_manager_{kbnode_manager}
-      , simple_kbnode_adder_model_factory_{simple_kbnode_adder_model_factory} {}
+      : kbnode_manager_{kbnode_manager},
+        simple_kbnode_adder_model_factory_{simple_kbnode_adder_model_factory} {}
   virtual ~AttributeModelFactory() = default;
 
-  std::shared_ptr<IAttributeModel>
-  createAttributeModel(IAttribute* attr) const override;
+  std::shared_ptr<IAttributeModel> createAttributeModel(
+      IAttribute* attr) const override;
 
  private:
   SNAIL_DISABLE_COPY(AttributeModelFactory);
 
-  fto::KbNodeManager* kbnode_manager_ { nullptr };
-  ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_ { nullptr};
+  fto::KbNodeManager* kbnode_manager_{nullptr};
+  ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory_{nullptr};
 };
-
 
 }  // namespace snailcore
 

@@ -34,8 +34,8 @@ WorkView::WorkView() {
 
   name_desc_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
 
-  connect(name_desc_group_, SIGNAL(editButtonClicked()),
-          this, SLOT(toggleNameDescEditMode()));
+  connect(name_desc_group_, SIGNAL(editButtonClicked()), this,
+          SLOT(toggleNameDescEditMode()));
 
   parts_group_ = action_panel_->createGroup(tr("Parts"));
   parts_group_->addWidget(new QLabel(QStringLiteral("PlaceHolder"), this));
@@ -78,7 +78,6 @@ void WorkView::setWorkName(const QString& work_name) {
   name_desc_group_->setHeaderText(work_name);
 }
 
-void WorkView::setWorkAttrSetView(
-    IAttributeSetView* attr_set_view) {
+void WorkView::setWorkAttrSetView(IAttributeSetView* attr_set_view) {
   action_panel_->insertWidget(1, attr_set_view->getWidget());
 }

@@ -47,7 +47,6 @@ class KbNodeAttributeModelTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-
   // region: objects test subject depends on
   MockKbNodeAttributeSupplier kbnode_attr_supplier;
   MockKbNodeAttribute kbnode_attr;
@@ -67,7 +66,7 @@ class KbNodeAttributeModelTest : public ::testing::Test {
 };
 
 TEST_F(KbNodeAttributeModelTest,
-       should_be_able_to_return_a_kbnode_provider) { // NOLINT
+       should_be_able_to_return_a_kbnode_provider) {  // NOLINT
   // Exercise system
   auto actual_provider = model->getKbNodeProvider();
 
@@ -80,13 +79,12 @@ TEST_F(KbNodeAttributeModelTest,
 }
 
 TEST_F(KbNodeAttributeModelTest,
-       should_getKbNodeName_return_the_kbnode_attr_value_text) { // NOLINT
+       should_getKbNodeName_return_the_kbnode_attr_value_text) {  // NOLINT
   // Setup fixture
   auto expect_name = xtestutils::genRandomString();
 
   // Expectations
-  EXPECT_CALL(kbnode_attr, valueText())
-      .WillOnce(Return(expect_name));
+  EXPECT_CALL(kbnode_attr, valueText()).WillOnce(Return(expect_name));
 
   // Exercise system
   auto actual_name = model->getKbNodeName();
@@ -106,8 +104,7 @@ BIND_SIGNAL0(ValidateComplete, void);
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-TEST_F(KbNodeAttributeModelTest,
-       test_setKbNode) { // NOLINT
+TEST_F(KbNodeAttributeModelTest, test_setKbNode) {  // NOLINT
   // Setup fixture
   auto kbnode = xtestutils::genDummyPointer<IKbNode>();
 
@@ -128,14 +125,13 @@ TEST_F(KbNodeAttributeModelTest,
 }
 
 TEST_F(KbNodeAttributeModelTest,
-       test_setKbNodeByName_with_the_same_name_as_current_kbnode) { // NOLINT
+       test_setKbNodeByName_with_the_same_name_as_current_kbnode) {  // NOLINT
   // Setup fixture
   auto expect_name = xtestutils::genRandomString();
   int expect_result = IKbNodeAttributeModel::kSetKbNodeSuccess;
 
   // Expectations
-  EXPECT_CALL(kbnode_attr, valueText())
-      .WillOnce(Return(expect_name));
+  EXPECT_CALL(kbnode_attr, valueText()).WillOnce(Return(expect_name));
 
   EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
 
@@ -157,7 +153,7 @@ TEST_F(KbNodeAttributeModelTest,
 }
 
 TEST_F(KbNodeAttributeModelTest,
-       test_setKbNodeByName_with_no_match_in_provider) { // NOLINT
+       test_setKbNodeByName_with_no_match_in_provider) {  // NOLINT
   // Setup fixture
   auto name = xtestutils::genRandomString();
   int expect_result = IKbNodeAttributeModel::kSetKbNodeNotFound;
@@ -183,7 +179,7 @@ TEST_F(KbNodeAttributeModelTest,
 }
 
 TEST_F(KbNodeAttributeModelTest,
-       test_setKbNodeByName_with_only_one_match) { // NOLINT
+       test_setKbNodeByName_with_only_one_match) {  // NOLINT
   // Setup fixture
   auto name = xtestutils::genRandomString();
   int expect_result = IKbNodeAttributeModel::kSetKbNodeSuccess;
@@ -212,7 +208,7 @@ TEST_F(KbNodeAttributeModelTest,
 }
 
 TEST_F(KbNodeAttributeModelTest,
-       test_setKbNodeByName_with_multi_match) { // NOLINT
+       test_setKbNodeByName_with_multi_match) {  // NOLINT
   // Setup fixture
   auto name = xtestutils::genRandomString();
   int expect_result = IKbNodeAttributeModel::kSetKbNodeMultpicMatched;
@@ -239,7 +235,7 @@ TEST_F(KbNodeAttributeModelTest,
 }
 
 TEST_F(KbNodeAttributeModelTest,
-       should_create_kbnode_provider_model_by_the_factory) { // NOLINT
+       should_create_kbnode_provider_model_by_the_factory) {  // NOLINT
   // Setup fixture
   auto expect_provider_model = std::make_shared<MockSimpleKbNodeAdderModel>();
 

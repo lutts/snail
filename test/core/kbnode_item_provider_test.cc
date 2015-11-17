@@ -28,17 +28,16 @@ class KbNodeItemProviderTestBase : public TestBase {
   // ~KbNodeItemProviderTestBase() { }
   virtual void SetUp() {
     root_kbnode_name_ = xtestutils::genRandomString();
-    EXPECT_CALL(root_kbnode_, name())
-        .WillRepeatedly(Return(root_kbnode_name_));
+    EXPECT_CALL(root_kbnode_, name()).WillRepeatedly(Return(root_kbnode_name_));
 
-    kbnode_provider_ = utils::make_unique<KbNodeItemProvider>(&root_kbnode_,
-                                                          &node_manager_);
+    kbnode_provider_ =
+        utils::make_unique<KbNodeItemProvider>(&root_kbnode_, &node_manager_);
   }
   // virtual void TearDown() { }
 
   void checkSubNodes(
       IKbNode* parent_node,
-      std::map<const IKbNode*, std::vector<IKbNode*> >*  kbnode_to_subnodes);
+      std::map<const IKbNode*, std::vector<IKbNode*>>* kbnode_to_subnodes);
   void checkNonFilterModelKbNodeHierarchy();
 
   // region: objects test subject depends on
@@ -57,20 +56,20 @@ class KbNodeItemProviderTestBase : public TestBase {
 };
 
 class KbNodeItemProviderTest
-    : public KbNodeItemProviderTestBase<::testing::Test> { };
+    : public KbNodeItemProviderTestBase<::testing::Test> {};
 
 TEST_F(KbNodeItemProviderTest,
-       should_be_able_to_get_back_the_root_kbnode) { // NOLINT
+       should_be_able_to_get_back_the_root_kbnode) {  // NOLINT
   // Exercise system
-  auto actual_root_kbnode
-      = static_cast<IKbNode*>(kbnode_provider_->getRootItem());
+  auto actual_root_kbnode =
+      static_cast<IKbNode*>(kbnode_provider_->getRootItem());
 
   // Verify results
   ASSERT_EQ(&root_kbnode_, actual_root_kbnode);
 }
 
 TEST_F(KbNodeItemProviderTest,
-       should_provider_name_be_root_kbnode_name) { // NOLINT
+       should_provider_name_be_root_kbnode_name) {  // NOLINT
   ASSERT_EQ(root_kbnode_name_, kbnode_provider_->name());
 }
 
@@ -87,9 +86,8 @@ BIND_SIGNAL0(FinishFilter, void);
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-
 TEST_F(KbNodeItemProviderTest,
-       test_setFilterPattern_with_non_empty_string) { // NOLINT
+       test_setFilterPattern_with_non_empty_string) {  // NOLINT
   // Setup fixture
   auto filter_pattern = xtestutils::genRandomString();
 
@@ -138,8 +136,9 @@ TEST_F(KbNodeItemProviderTest,
   ASSERT_EQ(expect_kbnodes, actual_kbnodes);
 }
 
-TEST_F(KbNodeItemProviderTest,
-       should_setFilterPattern_to_empty_will_emit_signals_but_not_call_node_manager_findKbNode) { // NOLINT
+TEST_F(
+    KbNodeItemProviderTest,
+    should_setFilterPattern_to_empty_will_emit_signals_but_not_call_node_manager_findKbNode) {  // NOLINT
   // Setup fixture
   kbnode_provider_->setFilterPattern(xtestutils::genRandomString());
 
@@ -164,30 +163,29 @@ TEST_F(KbNodeItemProviderTest,
 template <typename TestBase>
 void KbNodeItemProviderTestBase<TestBase>::checkSubNodes(
     IKbNode* parent_node,
-    std::map<const IKbNode*, std::vector<IKbNode*> >*  kbnode_to_subnodes) {
+    std::map<const IKbNode*, std::vector<IKbNode*>>* kbnode_to_subnodes) {
   std::vector<IKbNode*> actual_subnodes;
   auto iter = kbnode_provider_->childItems(parent_node);
   while (iter->hasNext()) {
     auto kbnode = static_cast<IKbNode*>(iter->next());
-    actual_subnodes.push_back(kbnode);;
+    actual_subnodes.push_back(kbnode);
 
     checkSubNodes(kbnode, kbnode_to_subnodes);
   }
 
-  if (parent_node == nullptr)
-    parent_node = &root_kbnode_;
+  if (parent_node == nullptr) parent_node = &root_kbnode_;
   ASSERT_EQ((*kbnode_to_subnodes)[parent_node], actual_subnodes);
 }
 
 template <typename TestBase>
-void
-KbNodeItemProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
+void KbNodeItemProviderTestBase<
+    TestBase>::checkNonFilterModelKbNodeHierarchy() {
   std::vector<IKbNode*> level1_nodes;
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());
   level1_nodes.push_back(xtestutils::genDummyPointer<IKbNode>());
 
-  std::map<const IKbNode*, std::vector<IKbNode*> > kbnode_to_subnodes;
+  std::map<const IKbNode*, std::vector<IKbNode*>> kbnode_to_subnodes;
 
   std::vector<IKbNode*> level2_subnodes0;
   level2_subnodes0.push_back(xtestutils::genDummyPointer<IKbNode>());
@@ -221,8 +219,9 @@ KbNodeItemProviderTestBase<TestBase>::checkNonFilterModelKbNodeHierarchy() {
   checkSubNodes(nullptr, &kbnode_to_subnodes);
 }
 
-TEST_F(KbNodeItemProviderTest,
-       should_be_able_to_iterator_the_kbnode_hierarchy_when_not_in_filter_mode) { // NOLINT
+TEST_F(
+    KbNodeItemProviderTest,
+    should_be_able_to_iterator_the_kbnode_hierarchy_when_not_in_filter_mode) {  // NOLINT
   CUSTOM_ASSERT(checkNonFilterModelKbNodeHierarchy());
 }
 

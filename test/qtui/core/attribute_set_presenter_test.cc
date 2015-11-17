@@ -19,10 +19,10 @@
 #include "snail/mock_attribute_model.h"
 #include "qtui/ui/mock_attribute_editor_view.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 class AttributeSetPresenterTest : public ::testing::Test {
  protected:
@@ -76,8 +76,8 @@ class AttributeSetPresenterTest : public ::testing::Test {
         .WillOnce(SaveArg<0>(&validateComplete));
 
     // Excercise system
-    presenter = std::make_shared<AttributeSetPresenter>(
-        model, view, attr_set_layout);
+    presenter =
+        std::make_shared<AttributeSetPresenter>(model, view, attr_set_layout);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -101,8 +101,7 @@ class AttributeSetPresenterTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  using UserSwitchModeSlotType =
-      IAttributeSetView::UserSwitchModeSlotType;
+  using UserSwitchModeSlotType = IAttributeSetView::UserSwitchModeSlotType;
   SlotCatcher<UserSwitchModeSlotType> userSwitchMode;
 
   using CreateAttrEditorSlotType =
@@ -113,22 +112,20 @@ class AttributeSetPresenterTest : public ::testing::Test {
       fto::AttributeSetLayout::CloseAttributeEditorsSlotType;
   SlotCatcher<CloseAttributeEditorsSlotType> closeAttributeEditors;
 
-  using SwitchToEditModeSlotType =
-      IAttributeSetModel::SwitchToEditModeSlotType;
+  using SwitchToEditModeSlotType = IAttributeSetModel::SwitchToEditModeSlotType;
   SlotCatcher<SwitchToEditModeSlotType> switchToEditMode;
 
   using SwitchToDisplayModeSlotType =
       IAttributeSetModel::SwitchToDisplayModeSlotType;
   SlotCatcher<SwitchToDisplayModeSlotType> switchToDisplayMode;
 
-  using ValidateCompleteSlotType =
-      IAttributeSetModel::ValidateCompleteSlotType;
+  using ValidateCompleteSlotType = IAttributeSetModel::ValidateCompleteSlotType;
   SlotCatcher<ValidateCompleteSlotType> validateComplete;
   // endregion
 };
 
 TEST_F(AttributeSetPresenterTest,
-       should_tell_model_when_user_switch_mode) { // NOLINT
+       should_tell_model_when_user_switch_mode) {  // NOLINT
   // Expectations
 
   EXPECT_CALL(*model, switchMode());
@@ -137,11 +134,11 @@ TEST_F(AttributeSetPresenterTest,
   userSwitchMode();
 }
 
-TEST_F(AttributeSetPresenterTest,
-       should_tell_layout_and_view_to_enter_edit_mode_when_model_switch_to_edit_mode) { // NOLINT
+TEST_F(
+    AttributeSetPresenterTest,
+    should_tell_layout_and_view_to_enter_edit_mode_when_model_switch_to_edit_mode) {  // NOLINT
   // Expectations
-  EXPECT_CALL(*model, getAttributeSuppliers())
-      .WillOnce(Return(attr_suppliers));
+  EXPECT_CALL(*model, getAttributeSuppliers()).WillOnce(Return(attr_suppliers));
   EXPECT_CALL(*attr_set_layout, setAttributeSuppliers(attr_suppliers, true));
   EXPECT_CALL(*view, switchToEditMode());
 
@@ -149,11 +146,11 @@ TEST_F(AttributeSetPresenterTest,
   switchToEditMode();
 }
 
-TEST_F(AttributeSetPresenterTest,
-       should_tell_layout_and_view_to_enter_display_model_when_model_switch_to_display_mode) { // NOLINT
+TEST_F(
+    AttributeSetPresenterTest,
+    should_tell_layout_and_view_to_enter_display_model_when_model_switch_to_display_mode) {  // NOLINT
   // Expectations
-  EXPECT_CALL(*model, getAttributeSuppliers())
-      .WillOnce(Return(attr_suppliers));
+  EXPECT_CALL(*model, getAttributeSuppliers()).WillOnce(Return(attr_suppliers));
   EXPECT_CALL(*attr_set_layout, setAttributeSuppliers(attr_suppliers, false));
   EXPECT_CALL(*view, switchToDisplayMode());
 
@@ -161,8 +158,9 @@ TEST_F(AttributeSetPresenterTest,
   switchToDisplayMode();
 }
 
-TEST_F(AttributeSetPresenterTest,
-       should_ask_model_to_close_created_attr_editor_triads_when_attr_set_layout_request_close) { // NOLINT
+TEST_F(
+    AttributeSetPresenterTest,
+    should_ask_model_to_close_created_attr_editor_triads_when_attr_set_layout_request_close) {  // NOLINT
   // Expectations
   EXPECT_CALL(*model, closeAttributeEditors(&triad_manager));
 
@@ -170,8 +168,9 @@ TEST_F(AttributeSetPresenterTest,
   closeAttributeEditors();
 }
 
-TEST_F(AttributeSetPresenterTest,
-       should_be_able_to_create_attr_editors_when_layout_request_create_attr_editor) { // NOLINT
+TEST_F(
+    AttributeSetPresenterTest,
+    should_be_able_to_create_attr_editors_when_layout_request_create_attr_editor) {  // NOLINT
   // Setup fixture
   IAttribute* attr = xtestutils::genDummyPointer<IAttribute>();
   auto attr_model = std::make_shared<MockAttributeModel>();
@@ -179,8 +178,7 @@ TEST_F(AttributeSetPresenterTest,
   auto attr_editor_view = std::make_shared<MockAttributeEditorView>();
 
   // Expectations
-  EXPECT_CALL(*model, createAttributeModel(attr))
-      .WillOnce(Return(attr_model));
+  EXPECT_CALL(*model, createAttributeModel(attr)).WillOnce(Return(attr_model));
   EXPECT_CALL(triad_manager, createViewFor(attr_pfmodel, _, _, _))
       .WillOnce(Return(attr_editor_view));
 
@@ -191,8 +189,9 @@ TEST_F(AttributeSetPresenterTest,
   ASSERT_EQ(attr_editor_view.get(), actual_editor_view);
 }
 
-TEST_F(AttributeSetPresenterTest,
-       should_update_switch_mode_button_state_when_model_validate_complete) { // NOLINT
+TEST_F(
+    AttributeSetPresenterTest,
+    should_update_switch_mode_button_state_when_model_validate_complete) {  // NOLINT
   // Setup fixture
   auto validate_result = xtestutils::randomBool();
 

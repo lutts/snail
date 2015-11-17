@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget *parent = 0);
+  explicit MainWindow(QWidget* parent = 0);
   ~MainWindow();
 
   bool showView(bool modal) override;
@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow, public IMainWindowView {
   void setWorkSpaceView(IWorkSpaceView* workspace_view) override;
 
  protected:
-  void closeEvent(QCloseEvent *event) override;
+  void closeEvent(QCloseEvent* event) override;
 
  private:
   void createToolbars();

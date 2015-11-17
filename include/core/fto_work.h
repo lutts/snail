@@ -44,7 +44,7 @@ class Work {
 namespace snailcore {
 namespace fto {
 
-class Work { };
+class Work {};
 
 }  // namespace fto
 }  // namespace snailcore

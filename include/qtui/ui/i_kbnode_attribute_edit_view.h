@@ -31,5 +31,4 @@ class IKbNodeAttributeEditView : public IAttributeEditorView {
   virtual void clearWarningMessages() = 0;
 };
 
-
 #endif  // INCLUDE_QTUI_UI_I_KBNODE_ATTRIBUTE_EDIT_VIEW_H_

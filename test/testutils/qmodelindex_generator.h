@@ -15,8 +15,8 @@
 
 class QModelIndexGenerator : public QAbstractTableModel {
  public:
-  QModelIndexGenerator() { }
-  virtual ~QModelIndexGenerator() { }
+  QModelIndexGenerator() {}
+  virtual ~QModelIndexGenerator() {}
 
   using QAbstractTableModel::index;
 
@@ -35,13 +35,10 @@ class QModelIndexGenerator : public QAbstractTableModel {
     return RAND_MAX;
   }
 
-  QModelIndex index() const {
-    return index(std::rand(), std::rand());
-  }
+  QModelIndex index() const { return index(std::rand(), std::rand()); }
 
  private:
   SNAIL_DISABLE_COPY(QModelIndexGenerator)
 };
-
 
 #endif  // TEST_TESTUTILS_QMODELINDEX_GENERATOR_H_

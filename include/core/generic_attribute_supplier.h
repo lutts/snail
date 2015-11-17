@@ -21,34 +21,23 @@ namespace snailcore {
 class GenericAttributeSupplier : public IAttributeSupplier {
  public:
   GenericAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : name_(name)
-      , max_attrs_(max_attrs) { }
+      : name_(name), max_attrs_(max_attrs) {}
   virtual ~GenericAttributeSupplier() {
-    for (auto attr : attrs_)
-      delete attr;
+    for (auto attr : attrs_) delete attr;
   }
 
-  utils::U8String name() const override {
-    return name_;
-  }
+  utils::U8String name() const override { return name_; }
 
-  int attr_count() const override {
-    return attrs_.size();
-  }
+  int attr_count() const override { return attrs_.size(); }
 
-  std::vector<IAttribute*> attributes() const override {
-    return attrs_;
-  }
+  std::vector<IAttribute*> attributes() const override { return attrs_; }
 
-  int max_attrs() const override {
-    return max_attrs_;
-  }
+  int max_attrs() const override { return max_attrs_; }
 
   IAttribute* addAttribute() override {
     // TODO(lutts): when add in full state, should we throw expection
     // currently not, because the UI will ensure this will not happen
-    if (attrs_.size() == static_cast<size_t>(max_attrs_))
-      return nullptr;
+    if (attrs_.size() == static_cast<size_t>(max_attrs_)) return nullptr;
 
     auto attr = createAttribute();
     attrs_.push_back(attr);
@@ -64,9 +53,7 @@ class GenericAttributeSupplier : public IAttributeSupplier {
     }
   }
 
-  void attributeChanged(IAttribute* attr) override {
-    AttributeChanged(attr);
-  }
+  void attributeChanged(IAttribute* attr) override { AttributeChanged(attr); }
 
  private:
   virtual IAttribute* createAttribute() = 0;

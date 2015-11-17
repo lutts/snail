@@ -15,15 +15,15 @@
 
 class MockDummy {
  public:
-  MockDummy() { }
-  explicit MockDummy(int dummy) : dummy_(dummy) { }
+  MockDummy() {}
+  explicit MockDummy(int dummy) : dummy_(dummy) {}
   ~MockDummy() { destruct(); }
   MOCK_METHOD0(destruct, void());
 
   int dummy() { return dummy_; }
 
  private:
-  int dummy_ { 0 };
+  int dummy_{0};
 };
 
 class MockObjectGeneratorTest : public ::testing::Test {
@@ -38,23 +38,23 @@ class MockObjectGeneratorTest : public ::testing::Test {
     mock_obj1 = generator->generate();
     mock_obj2 = generator->generate();
   }
-  virtual void TearDown() {
-    delete generator;
-  }
+  virtual void TearDown() { delete generator; }
 
-  MockObjectGenerator<MockDummy>* generator { nullptr };
-  MockDummy* mock_obj1 { nullptr };
-  MockDummy* mock_obj2 { nullptr };
+  MockObjectGenerator<MockDummy>* generator{nullptr};
+  MockDummy* mock_obj1{nullptr};
+  MockDummy* mock_obj2{nullptr};
 };
 
-TEST_F(MockObjectGeneratorTest, should_be_able_to_generate_different_mock_objects) { // NOLINT
+TEST_F(MockObjectGeneratorTest,
+       should_be_able_to_generate_different_mock_objects) {  // NOLINT
   // Verify results
   ASSERT_NE(nullptr, mock_obj1);
   ASSERT_NE(nullptr, mock_obj2);
   ASSERT_NE(mock_obj1, mock_obj2);
 }
 
-TEST_F(MockObjectGeneratorTest, should_destruct_generated_mocks_when_destruct_generator) { // NOLINT
+TEST_F(MockObjectGeneratorTest,
+       should_destruct_generated_mocks_when_destruct_generator) {  // NOLINT
   // Expectations
   EXPECT_CALL(*mock_obj1, destruct());
   EXPECT_CALL(*mock_obj2, destruct());
@@ -64,7 +64,8 @@ TEST_F(MockObjectGeneratorTest, should_destruct_generated_mocks_when_destruct_ge
   generator = nullptr;
 }
 
-TEST_F(MockObjectGeneratorTest, should_be_able_to_clear_generated_mocks_and_destruct_them) { // NOLINT
+TEST_F(MockObjectGeneratorTest,
+       should_be_able_to_clear_generated_mocks_and_destruct_them) {  // NOLINT
   MockFunction<void(string check_point_name)> check;
 
   // Expectations
@@ -82,7 +83,7 @@ TEST_F(MockObjectGeneratorTest, should_be_able_to_clear_generated_mocks_and_dest
 }
 
 TEST_F(MockObjectGeneratorTest,
-       should_be_able_to_generate_with_args) { // NOLINT
+       should_be_able_to_generate_with_args) {  // NOLINT
   // Expectations
   int expect_dummy = std::rand();
 

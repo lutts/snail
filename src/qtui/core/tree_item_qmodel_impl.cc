@@ -4,7 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
-#include "src/qtui/core/tree_item_qmodel.h"
+#include "src/qtui/core/tree_item_qmodel_impl.h"
 
 #include <QObject>
 // #include <QDebug>
@@ -20,15 +20,14 @@ class QtTreeItem : QObject {
 
  public:
   QtTreeItem() = default;
-  QtTreeItem(ITreeItemProvider* item_provider,
-             ITreeItem* tree_item, QtTreeItem* parent)
-      : item_provider_(item_provider)
-      , tree_item_(tree_item), parent_(parent) {
+  QtTreeItem(ITreeItemProvider* item_provider, ITreeItem* tree_item,
+             QtTreeItem* parent)
+      : item_provider_(item_provider), tree_item_(tree_item), parent_(parent) {
     if (tree_item_) {
       text_ = U8StringToQString(tree_item_->name());
     }
   }
-  virtual ~QtTreeItem() { }
+  virtual ~QtTreeItem() {}
 
   virtual std::unique_ptr<QtTreeItem> createQtTreeItem(ITreeItem* tree_item) {
     return utils::make_unique<QtTreeItem>(item_provider_, tree_item, this);
@@ -38,30 +37,20 @@ class QtTreeItem : QObject {
     item_provider_ = item_provider;
   }
 
-  ITreeItemProvider* itemProvider() const {
-    return item_provider_;
-  }
+  ITreeItemProvider* itemProvider() const { return item_provider_; }
 
-  ITreeItem* tree_item() const {
-    return tree_item_;
-  }
+  ITreeItem* tree_item() const { return tree_item_; }
 
-  QString text() const {
-    return text_;
-  }
+  QString text() const { return text_; }
 
-  void setText(const QString& text) {
-    text_ = text;
-  }
+  void setText(const QString& text) { text_ = text; }
 
   int row() const {
-    if (!parent_)
-      return -1;
+    if (!parent_) return -1;
 
     int index = 0;
     for (auto& item : parent_->children_) {
-      if (item.get() == this)
-        break;
+      if (item.get() == this) break;
 
       ++index;
     }
@@ -69,28 +58,21 @@ class QtTreeItem : QObject {
     return index;
   }
 
-  QtTreeItem* parent() const {
-    return parent_;
-  }
+  QtTreeItem* parent() const { return parent_; }
 
-  bool isRoot() const {
-    return parent_ == nullptr;
-  }
+  bool isRoot() const { return parent_ == nullptr; }
 
   int num_children() const {
     lazy_populate_children();
     return children_.size();
   }
 
-  bool children_populated() const {
-    return children_populated_;
-  }
+  bool children_populated() const { return children_populated_; }
 
   QtTreeItem* children(int index) const {
     lazy_populate_children();
 
-    if (index >= static_cast<int>(children_.size()))
-      return nullptr;
+    if (index >= static_cast<int>(children_.size())) return nullptr;
 
     return children_[index].get();
   }
@@ -98,25 +80,21 @@ class QtTreeItem : QObject {
   // NOTE: null item is NOT handled because there maybe multi null tree_item
   //       items, and we do NOT know which to return
   QtTreeItem* findByTreeItem(const ITreeItem* tree_item) {
-    if (tree_item == nullptr)
-      return nullptr;
+    if (tree_item == nullptr) return nullptr;
 
     if (tree_item == this->tree_item_) {
       return this;
     }
 
-    for (auto & item : children_) {
+    for (auto& item : children_) {
       auto found_item = item->findByTreeItem(tree_item);
-      if (found_item)
-        return found_item;
+      if (found_item) return found_item;
     }
 
     return nullptr;
   }
 
-  virtual int next_append_pos() {
-    return children_.size();
-  }
+  virtual int next_append_pos() { return children_.size(); }
 
   QtTreeItem* appendTreeItem(ITreeItem* tree_item) {
     auto pos = children_.begin();
@@ -130,9 +108,7 @@ class QtTreeItem : QObject {
     return new_item_ptr;
   }
 
-  void markAsPopulated() {
-    children_populated_ = true;
-  }
+  void markAsPopulated() { children_populated_ = true; }
 
   void clear() {
     children_.clear();
@@ -140,9 +116,7 @@ class QtTreeItem : QObject {
   }
 
  protected:
-  std::vector<std::unique_ptr<QtTreeItem> >& children() {
-    return children_;
-  }
+  std::vector<std::unique_ptr<QtTreeItem> >& children() { return children_; }
 
   virtual void populate_children() {
     auto child_node_iterator = item_provider_->childItems(tree_item_);
@@ -159,8 +133,7 @@ class QtTreeItem : QObject {
   SNAIL_DISABLE_COPY(QtTreeItem);
 
   void lazy_populate_children() const {
-    if (children_populated_)
-      return;
+    if (children_populated_) return;
 
 #if 0
     if (isRoot()) {
@@ -181,11 +154,11 @@ class QtTreeItem : QObject {
     children_populated_ = true;
   }
 
-  ITreeItemProvider* item_provider_ { nullptr };
-  ITreeItem* tree_item_ { nullptr };
-  QtTreeItem* parent_ { nullptr };
+  ITreeItemProvider* item_provider_{nullptr};
+  ITreeItem* tree_item_{nullptr};
+  QtTreeItem* parent_{nullptr};
   QString text_;
-  mutable bool children_populated_ { false };
+  mutable bool children_populated_{false};
 
   mutable std::vector<std::unique_ptr<QtTreeItem> > children_;
 };
@@ -194,22 +167,20 @@ class QtTreeItem : QObject {
 
 ////////////////////////////////////////////////////////////////
 
-TreeItemQModelImpl::TreeItemQModelImpl() { }
+TreeItemQModelImpl::TreeItemQModelImpl() {}
 
 TreeItemQModelImpl::~TreeItemQModelImpl() = default;
 
 //////////////// fto::TreeItemQModelImpl ////////////////
 
 QtTreeItem* TreeItemQModelImpl::indexToQtItem(const QModelIndex& index) const {
-  if (!index.isValid())
-    return rootItem();
+  if (!index.isValid()) return rootItem();
 
   return reinterpret_cast<QtTreeItem*>(index.internalPointer());
 }
 
 QModelIndex TreeItemQModelImpl::qtItemToIndex(QtTreeItem* item) const {
-  if (!item || item->isRoot())
-    return QModelIndex();
+  if (!item || item->isRoot()) return QModelIndex();
 
   return createIndex(item->row(), 0, item);
 }
@@ -244,21 +215,17 @@ void TreeItemQModelImpl::beginResetQModel() {
   clear();
 }
 
-void TreeItemQModelImpl::endResetQModel() {
-  endResetModel();
-}
+void TreeItemQModelImpl::endResetQModel() { endResetModel(); }
 
-void TreeItemQModelImpl::itemAdded(
-    const ITreeItem* new_tree_item, const ITreeItem* parent_tree_item) {
+void TreeItemQModelImpl::itemAdded(const ITreeItem* new_tree_item,
+                                   const ITreeItem* parent_tree_item) {
   auto parent_item = indexToQtItem(itemToIndex(parent_tree_item));
-  if (!parent_item)
-    return;
+  if (!parent_item) return;
 
   if (parent_item->isRoot() && (parent_tree_item != nullptr))
     return;  // NOT found
 
-  if (!parent_item->children_populated())
-    return;
+  if (!parent_item->children_populated()) return;
 
   int row = parent_item->next_append_pos();
   beginInsertRows(qtItemToIndex(parent_item), row, row);
@@ -268,13 +235,11 @@ void TreeItemQModelImpl::itemAdded(
 
 //////////////// QAbstractItemModel ////////////////
 
-QVariant TreeItemQModelImpl::data(const QModelIndex &index, int role) const {
-  if (!index.isValid())
-    return QVariant();
+QVariant TreeItemQModelImpl::data(const QModelIndex& index, int role) const {
+  if (!index.isValid()) return QVariant();
 
   auto item = indexToQtItem(index);
-  if (!item || item->isRoot())
-    return QVariant();
+  if (!item || item->isRoot()) return QVariant();
 
   return itemData(item, role);
 }
@@ -288,7 +253,7 @@ QVariant TreeItemQModelImpl::itemData(QtTreeItem* item, int role) const {
   }
 }
 
-Qt::ItemFlags TreeItemQModelImpl::flags(const QModelIndex &index) const {
+Qt::ItemFlags TreeItemQModelImpl::flags(const QModelIndex& index) const {
   auto flags = QAbstractItemModel::flags(index);
 
   auto tree_item = indexToItem(index);
@@ -299,42 +264,37 @@ Qt::ItemFlags TreeItemQModelImpl::flags(const QModelIndex &index) const {
   return flags;
 }
 
-QModelIndex TreeItemQModelImpl::index(
-    int row, int column, const QModelIndex &parent) const {
-  if (!hasIndex(row, column, parent))
-    return QModelIndex();
+QModelIndex TreeItemQModelImpl::index(int row, int column,
+                                      const QModelIndex& parent) const {
+  if (!hasIndex(row, column, parent)) return QModelIndex();
 
   auto parent_item = indexToQtItem(parent);
-  if (!parent_item)
-    return QModelIndex();
+  if (!parent_item) return QModelIndex();
 
   return qtItemToIndex(parent_item->children(row));
 }
 
-QModelIndex TreeItemQModelImpl::parent(const QModelIndex &index) const {
-  if (!index.isValid())
-    return QModelIndex();
+QModelIndex TreeItemQModelImpl::parent(const QModelIndex& index) const {
+  if (!index.isValid()) return QModelIndex();
 
   auto item = indexToQtItem(index);
-  if (!item || item->isRoot())
-    return QModelIndex();
+  if (!item || item->isRoot()) return QModelIndex();
 
   return qtItemToIndex(item->parent());
 }
 
-int TreeItemQModelImpl::rowCount(const QModelIndex &parent) const {
+int TreeItemQModelImpl::rowCount(const QModelIndex& parent) const {
   auto item = indexToQtItem(parent);
   return item->num_children();
 }
 
-int TreeItemQModelImpl::columnCount(const QModelIndex &parent) const {
+int TreeItemQModelImpl::columnCount(const QModelIndex& parent) const {
   (void)parent;
   return 1;
 }
 
 QtTreeItem* TreeItemQModelImpl::rootItem() const {
-  if (!root_item_)
-    root_item_ = createRootItem();
+  if (!root_item_) root_item_ = createRootItem();
   return root_item_.get();
 }
 
@@ -343,8 +303,7 @@ std::unique_ptr<QtTreeItem> TreeItemQModelImpl::createRootItem() const {
 }
 
 void TreeItemQModelImpl::clear() {
-  if (rootItem())
-    rootItem()->clear();
+  if (rootItem()) rootItem()->clear();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -354,26 +313,21 @@ class QtTreeItemWithEmptyAddMore : public QtTreeItem {
   QtTreeItemWithEmptyAddMore() = default;
   QtTreeItemWithEmptyAddMore(ITreeItemProvider* item_provider,
                              ITreeItem* tree_item, QtTreeItem* parent)
-      : QtTreeItem(item_provider, tree_item, parent) { }
+      : QtTreeItem(item_provider, tree_item, parent) {}
 
   std::unique_ptr<QtTreeItem> createQtTreeItem(ITreeItem* tree_item) override {
     return createItem_(tree_item);
   }
 
-  bool isAddMore() const {
-    return is_add_more_;
-  }
+  bool isAddMore() const { return is_add_more_; }
 
-  bool isSpecial() const {
-    return is_add_more_ || is_empty_row_;
-  }
+  bool isSpecial() const { return is_add_more_ || is_empty_row_; }
 
   int next_append_pos() override {
     int pos = children().size();
-    if (pos == 0)
-      return pos;
+    if (pos == 0) return pos;
 
-    auto & last = children().back();
+    auto& last = children().back();
     auto item = static_cast<QtTreeItemWithEmptyAddMore*>(last.get());
     if (item->is_add_more_) {
       --pos;
@@ -383,11 +337,9 @@ class QtTreeItemWithEmptyAddMore : public QtTreeItem {
   }
 
   void populate_children() override {
-    if (is_add_more_)
-      return;
+    if (is_add_more_) return;
 
-    if (is_empty_row_)
-      return;
+    if (is_empty_row_) return;
 
     if (isRoot()) {
       auto empty_item = createItem_(nullptr);
@@ -410,25 +362,25 @@ class QtTreeItemWithEmptyAddMore : public QtTreeItem {
   }
 
  private:
-  std::unique_ptr<QtTreeItemWithEmptyAddMore>
-  createItem_(ITreeItem* tree_item) {
-    return utils::make_unique<QtTreeItemWithEmptyAddMore>(
-        itemProvider(), tree_item, this);
+  std::unique_ptr<QtTreeItemWithEmptyAddMore> createItem_(
+      ITreeItem* tree_item) {
+    return utils::make_unique<QtTreeItemWithEmptyAddMore>(itemProvider(),
+                                                          tree_item, this);
   }
 
-  bool is_add_more_ { false };
-  bool is_empty_row_ { false };
+  bool is_add_more_{false};
+  bool is_empty_row_{false};
 };
 
 TreeItemQModelImplWithClearAndAddMoreRow::
-TreeItemQModelImplWithClearAndAddMoreRow()
-    : TreeItemQModelImpl() { }
+    TreeItemQModelImplWithClearAndAddMoreRow()
+    : TreeItemQModelImpl() {}
 
 TreeItemQModelImplWithClearAndAddMoreRow::
-~TreeItemQModelImplWithClearAndAddMoreRow() = default;
+    ~TreeItemQModelImplWithClearAndAddMoreRow() = default;
 
-QVariant TreeItemQModelImplWithClearAndAddMoreRow::itemData(
-    QtTreeItem* item, int role) const {
+QVariant TreeItemQModelImplWithClearAndAddMoreRow::itemData(QtTreeItem* item,
+                                                            int role) const {
   auto our_item = static_cast<QtTreeItemWithEmptyAddMore*>(item);
   if (our_item->isSpecial() && role == Qt::TextAlignmentRole) {
     return static_cast<int>(Qt::AlignCenter | Qt::AlignVCenter);
@@ -451,20 +403,19 @@ bool TreeItemQModelImplWithClearAndAddMoreRow::isAddMore(
 ////////////////////////////////////////////////////////////////
 
 TreeItemQModelImplWithProviderRoot::TreeItemQModelImplWithProviderRoot()
-    : TreeItemQModelImpl() { }
+    : TreeItemQModelImpl() {}
 
-TreeItemQModelImplWithProviderRoot::
-~TreeItemQModelImplWithProviderRoot() = default;
+TreeItemQModelImplWithProviderRoot::~TreeItemQModelImplWithProviderRoot() =
+    default;
 
 Qt::ItemFlags TreeItemQModelImplWithProviderRoot::flags(
-    const QModelIndex &index) const {
+    const QModelIndex& index) const {
   auto flags = TreeItemQModelImpl::flags(index);
   return flags | Qt::ItemIsSelectable;
 }
 
 void TreeItemQModelImplWithProviderRoot::clear() {
-  if (provider_item_)
-    provider_item_->clear();
+  if (provider_item_) provider_item_->clear();
 }
 
 void TreeItemQModelImplWithProviderRoot::setTreeItemProvider(
@@ -474,8 +425,7 @@ void TreeItemQModelImplWithProviderRoot::setTreeItemProvider(
     rootItem()->markAsPopulated();
   }
 
-  if (!provider_item_)
-    return;
+  if (!provider_item_) return;
 
   auto text = U8StringToQString(item_provider->name());
   provider_item_->setText(text);

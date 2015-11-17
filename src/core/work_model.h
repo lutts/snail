@@ -19,12 +19,11 @@ class IAttributeSetModelFactory;
 
 class WorkModelSignalHelper;
 
-class WorkModel : public IWorkModel
-                , public utils::ITrackable
-                , public std::enable_shared_from_this<WorkModel> {
+class WorkModel : public IWorkModel,
+                  public utils::ITrackable,
+                  public std::enable_shared_from_this<WorkModel> {
  public:
-  WorkModel(
-      IAttributeSetModelFactory* attr_set_model_factory);
+  explicit WorkModel(IAttributeSetModelFactory* attr_set_model_factory);
   virtual ~WorkModel();
 
   void set_work(fto::Work* work) override;
@@ -32,8 +31,7 @@ class WorkModel : public IWorkModel
   utils::U8String name() const override;
   bool set_name(const utils::U8String& new_name) override;
 
-  std::shared_ptr<IAttributeSetModel>
-  createAttributeSetModel() override;
+  std::shared_ptr<IAttributeSetModel> createAttributeSetModel() override;
 
  public:
   SNAIL_SIGSLOT_OVERRIDE(NameChanged);
@@ -43,7 +41,7 @@ class WorkModel : public IWorkModel
   WorkModel& operator=(const WorkModel& other) = delete;
 
   std::unique_ptr<WorkModelSignalHelper> signal_helper_;
-  fto::Work* work_ { nullptr };
+  fto::Work* work_{nullptr};
   IAttributeSetModelFactory* attr_set_model_factory_;
 };
 

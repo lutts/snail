@@ -18,7 +18,7 @@ class MockMainWindowModel : public IMainWindowModel {
   SNAIL_MOCK_SLOT(WindowTitleChanged);
   SNAIL_MOCK_SLOT(RequestClose);
 
-  MOCK_CONST_METHOD0(windowTitle, const utils::U8String& ());
+  MOCK_CONST_METHOD0(windowTitle, const utils::U8String&());
   MOCK_METHOD1(setWindowTitle, void(const utils::U8String& newTitle));
   MOCK_METHOD0(getWorkSpaceModel, std::shared_ptr<IWorkSpaceModel>());
   MOCK_METHOD1(createWork, void(const utils::U8String& work_name));

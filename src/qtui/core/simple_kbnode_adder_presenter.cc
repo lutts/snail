@@ -12,12 +12,10 @@
 #include "qtui/core/fto_tree_item_qmodel.h"
 
 SimpleKbNodeAdderPresenter::SimpleKbNodeAdderPresenter(
-    std::shared_ptr<model_type> model,
-    std::shared_ptr<view_type> view,
+    std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
     std::shared_ptr<fto::TreeItemQModel> kbnode_qmodel)
-    : SimpleKbNodeAdderPresenterBase(model, view)
-    , kbnode_qmodel_(kbnode_qmodel) {
-}
+    : SimpleKbNodeAdderPresenterBase(model, view),
+      kbnode_qmodel_(kbnode_qmodel) {}
 
 SimpleKbNodeAdderPresenter::~SimpleKbNodeAdderPresenter() = default;
 
@@ -37,12 +35,12 @@ void SimpleKbNodeAdderPresenter::initialize() {
   auto index = kbnode_qmodel_->itemToIndex(new_kbnode_parent);
   view()->selectIndex(index);
 
-  view()->whenUserSelectIndex(
-      [this](const QModelIndex& index) {
-        auto kbnode = kbnode_qmodel_->indexToItem(index);
-        model()->setNewKbNodeParent(kbnode);
-      },
-      shared_from_this());
+  view()->whenUserSelectIndex([this](const QModelIndex& index) {
+                                auto kbnode =
+                                    kbnode_qmodel_->indexToItem(index);
+                                model()->setNewKbNodeParent(kbnode);
+                              },
+                              shared_from_this());
 
   view()->whenNewKbNodeNameChanged(
       [this](const QString& name) {
@@ -52,14 +50,9 @@ void SimpleKbNodeAdderPresenter::initialize() {
       shared_from_this());
 
   view()->whenUserToggleCategoryCheckbox(
-      [this](bool checked) {
-        model()->setIsCategory(checked);
-      },
+      [this](bool checked) { model()->setIsCategory(checked); },
       shared_from_this());
 
-  view()->whenUserClickAddButton(
-      [this]() {
-        model()->addKbNode();
-      },
-      shared_from_this());
+  view()->whenUserClickAddButton([this]() { model()->addKbNode(); },
+                                 shared_from_this());
 }

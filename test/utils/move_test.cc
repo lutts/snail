@@ -37,18 +37,14 @@ class IDataTestProxy {
   TEST_PROXY_ENABLE_COPY(IData);
 
  public:
-  void setData(int data) {
-    self_->setData(data);
-  }
+  void setData(int data) { self_->setData(data); }
 
-  int getData() const {
-    return self_->getData();
-  }
+  int getData() const { return self_->getData(); }
 };
 
-class Data final: public IData {
+class Data final : public IData {
  public:
-  Data() : Data(0) { }
+  Data() : Data(0) {}
   explicit Data(int data) : data_(new int(data)) {
     std::cout << "constructor called, data_ = " << data_ << std::endl;
   }
@@ -58,8 +54,7 @@ class Data final: public IData {
     std::cout << "copy constructor called" << std::endl;
   }
 
-  Data(Data&& rhs)
-      : data_(rhs.data_) {
+  Data(Data&& rhs) : data_(rhs.data_) {
     rhs.data_ = nullptr;
     std::cout << "move constructor called" << std::endl;
   }
@@ -71,9 +66,7 @@ class Data final: public IData {
     return *this;
   }
 
-  IData* clone() const override {
-    return new Data(*this);
-  }
+  IData* clone() const override { return new Data(*this); }
 
   // so this method becomes "for test only"
   IData& operator=(IData&& rhs) {
@@ -85,24 +78,16 @@ class Data final: public IData {
     return *this;
   }
 
-  void setData(int data) override {
-    *data_ = data;
-  }
+  void setData(int data) override { *data_ = data; }
 
-  int getData() const override {
-    return *data_;
-  }
+  int getData() const override { return *data_; }
 
-  int* getDataPtr() {
-    return data_;
-  }
+  int* getDataPtr() { return data_; }
 
  private:
-  void swap(Data& rhs) {
-    std::swap(data_, rhs.data_);
-  }
+  void swap(Data& rhs) { std::swap(data_, rhs.data_); }
 
-  int* data_ { nullptr };
+  int* data_{nullptr};
 };
 
 class IDataHolder {
@@ -117,19 +102,15 @@ class MockDataHolder : public IDataHolder {
  public:
   MOCK_METHOD0(getData, IData*());
 
-  void setData(IData&& data) override {
-    setData_(data);
-  }
+  void setData(IData&& data) override { setData_(data); }
   MOCK_METHOD1(setData_, void(IData& data));  // NOLINT
 };
 
 class DataHolder : public IDataHolder {
  public:
-  explicit DataHolder(IData* data) : data_(data) { }
+  explicit DataHolder(IData* data) : data_(data) {}
 
-  IData* getData() override {
-    return data_;
-  }
+  IData* getData() override { return data_; }
 
   void setData(IData&& data) override {
     *data_ = std::move(data);
@@ -143,23 +124,18 @@ class DataHolder : public IDataHolder {
 class DataDisplayer {
  public:
   explicit DataDisplayer(IDataHolder* data_holder)
-      : data_holder_(data_holder)
-      , data_copy_(*(data_holder->getData())) { }
+      : data_holder_(data_holder), data_copy_(*(data_holder->getData())) {}
 
   void printData() const {
     std::cout << "Display: data = " << data_copy_.getData() << std::endl;
   }
 
-  void setData(int data) {
-    data_copy_.setData(data);
-  }
+  void setData(int data) { data_copy_.setData(data); }
 
-  void saveData() {
-    data_holder_->setData(std::move(*data_copy_.self()));
-  }
+  void saveData() { data_holder_->setData(std::move(*data_copy_.self())); }
 
  private:
-  IDataHolder* data_holder_ { nullptr };
+  IDataHolder* data_holder_{nullptr};
   IDataTestProxy data_copy_;
 };
 
@@ -172,10 +148,8 @@ class MoveTest : public ::testing::Test {
   // ~MoveTest() { }
   void SetUp() override {
     data_copy = new MockData();
-    EXPECT_CALL(data_orig, clone())
-        .WillOnce(Return(data_copy));
-    EXPECT_CALL(data_holder, getData())
-        .WillOnce(Return(&data_orig));
+    EXPECT_CALL(data_orig, clone()).WillOnce(Return(data_copy));
+    EXPECT_CALL(data_holder, getData()).WillOnce(Return(&data_orig));
 
     data_displayer = utils::make_unique<DataDisplayer>(&data_holder);
   }
@@ -195,13 +169,12 @@ class MoveTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(MoveTest, should_construct_properly) { // NOLINT
+TEST_F(MoveTest, should_construct_properly) {  // NOLINT
   // See SetUp()
   SUCCEED();
 }
 
-TEST_F(MoveTest,
-       test_setData) { // NOLINT
+TEST_F(MoveTest, test_setData) {  // NOLINT
   // Setup fixture
   int data = std::rand();
 
@@ -212,8 +185,7 @@ TEST_F(MoveTest,
   data_displayer->setData(data);
 }
 
-TEST_F(MoveTest,
-       test_saveData) { // NOLINT
+TEST_F(MoveTest, test_saveData) {  // NOLINT
   // Expectations
   EXPECT_CALL(data_holder, setData_(Ref(*data_copy)));
 
@@ -247,8 +219,7 @@ class DataHolderTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(DataHolderTest,
-       test_setData) { // NOLINT
+TEST_F(DataHolderTest, test_setData) {  // NOLINT
   // Setup fixture
   MockData another_data;
 
@@ -287,8 +258,7 @@ class DataTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(DataTest,
-       test_setData) { // NOLINT
+TEST_F(DataTest, test_setData) {  // NOLINT
   // Setup fixture
   auto expect_data = std::rand();
 
@@ -300,11 +270,10 @@ TEST_F(DataTest,
   ASSERT_EQ(expect_data, actual_data);
 }
 
-TEST_F(DataTest,
-       test_moveFrom) { // NOLINT
+TEST_F(DataTest, test_moveFrom) {  // NOLINT
   // Setup fixture
   int another_i = expect_i + std::rand();
-  Data another_data { another_i };
+  Data another_data{another_i};
   ASSERT_EQ(another_i, another_data.getData());
 
   // Exercise system

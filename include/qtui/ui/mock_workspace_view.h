@@ -18,8 +18,8 @@ class MockWorkSpaceView : public IWorkSpaceView {
   MOCK_METHOD2(addWorkView, void(IWorkView*, const utils::U8String&));
   MOCK_METHOD1(setActiveWorkView, void(IWorkView*));
   MOCK_METHOD1(removeWorkView, void(IWorkView* work_view));
-  MOCK_METHOD2(updateWorkViewTitle, void(IWorkView* work_view,
-                                         const utils::U8String& new_title));
+  MOCK_METHOD2(updateWorkViewTitle,
+               void(IWorkView* work_view, const utils::U8String& new_title));
 };
 
 #endif  // INCLUDE_QTUI_UI_MOCK_WORKSPACE_VIEW_H_

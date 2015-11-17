@@ -21,9 +21,10 @@ class AttrSupplierTestStubSignalProxy {
 SNAIL_SIGSLOT_DELEGATE(AttrSupplierTestStub, AttributeChanged, signal_proxy_);
 
 AttrSupplierTestStub::AttrSupplierTestStub(const utils::U8String& name,
-                     int max_attrs)
-    : signal_proxy_(utils::make_unique<AttrSupplierTestStubSignalProxy>())
-    , name_(name), max_attrs_(max_attrs) { }
+                                           int max_attrs)
+    : signal_proxy_(utils::make_unique<AttrSupplierTestStubSignalProxy>()),
+      name_(name),
+      max_attrs_(max_attrs) {}
 
 AttrSupplierTestStub::~AttrSupplierTestStub() {
   for (auto attr : attributes_) {
@@ -85,7 +86,7 @@ MockAttrSupplierTestStub::createAttributeSuppliers() {
   attr_supplier->addAttribute("Attribute 08", "Value 8-3");
   attr_suppliers.push_back(std::move(attr_supplier));
 
-#define VERIFY_SUPPLIER(attrName)                                       \
+#define VERIFY_SUPPLIER(attrName) \
   ASSERT_EQ(attr_suppliers[kIdx_##attrName]->name(), #attrName);
 
   auto verifier = [&attr_suppliers]() {

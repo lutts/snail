@@ -18,8 +18,8 @@ class LogTestSpy {
  public:
   struct Message {
     Message(LogSeverityLevel lvl, const utils::U8String& msg)
-        : level(lvl), message(msg) { }
-    bool operator== (const Message& other) const {
+        : level(lvl), message(msg) {}
+    bool operator==(const Message& other) const {
       return (level == other.level) && (message == other.message);
     }
 
@@ -38,9 +38,9 @@ class LogTestSpy {
   LogTestSpy(const LogTestSpy& other) = delete;
   LogTestSpy& operator=(const LogTestSpy& other) = delete;
 
-  virtual void beforeEnableLogHook() { }
+  virtual void beforeEnableLogHook() {}
 };
 
-std::ostream &operator<<(std::ostream &s, const LogTestSpy::Message &msg);
+std::ostream& operator<<(std::ostream& s, const LogTestSpy::Message& msg);
 
 #endif  // TEST_TESTUTILS_LOG_TESTSPY_H_

@@ -19,10 +19,10 @@
 #include "snail/mock_attribute_set_model.h"
 #include "qtui/ui/mock_attribute_set_view.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 class WorkPresenterTest : public ::testing::Test {
  protected:
@@ -46,7 +46,6 @@ class WorkPresenterTest : public ::testing::Test {
     R_EXPECT_CALL(*model, description()).WillOnce(Return(work_desc));
     R_EXPECT_CALL(*view, setWorkDescription());
 #endif
-
 
     // create attribute set view
     createAttributeSetView(&mock_obj_recorder);
@@ -81,8 +80,7 @@ class WorkPresenterTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  using UserSetWorkNameSlotType =
-      IWorkView::UserSetWorkNameSlotType;
+  using UserSetWorkNameSlotType = IWorkView::UserSetWorkNameSlotType;
   SlotCatcher<UserSetWorkNameSlotType> userSetWorkName;
   // endregion
 };
@@ -91,23 +89,21 @@ void WorkPresenterTest::createAttributeSetView(
     MockObjectRecorder* mock_recorder) {
   MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
-  auto attr_set_model =
-      std::make_shared<MockAttributeSetModel>();
+  auto attr_set_model = std::make_shared<MockAttributeSetModel>();
   auto attr_set_view = std::make_shared<MockAttributeSetView>();
 
   R_EXPECT_CALL(*model, createAttributeSetModel())
       .WillOnce(Return(attr_set_model));
   std::shared_ptr<IPfModel> attr_set_pmodel = attr_set_model;
   R_EXPECT_CALL(triad_manager, createViewFor(attr_set_pmodel, _, _, _))
-      .WillOnce(DoAll(
-          SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
-              &create_attr_set_view_args),
-          Return(attr_set_view)));
+      .WillOnce(DoAll(SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
+                          &create_attr_set_view_args),
+                      Return(attr_set_view)));
   R_EXPECT_CALL(*view, setWorkAttrSetView(attr_set_view.get()));
 }
 
 TEST_F(WorkPresenterTest,
-       should_set_new_name_to_model_when_user_set_work_name) { // NOLINT
+       should_set_new_name_to_model_when_user_set_work_name) {  // NOLINT
   // Setup fixture
   xtestutils::RandomString new_name;
 

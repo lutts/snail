@@ -53,22 +53,19 @@ class WorkModelTest : public ::testing::Test {
   // endregion
 };
 
-class MockListener : public GenericMockListener<MockListener,
-                                                IWorkModel> {
+class MockListener : public GenericMockListener<MockListener, IWorkModel> {
  public:
   MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
 
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
                            IWorkModel* model) {
-    model->whenNameChanged(
-        [this](const utils::U8String& new_name) {
-          NameChanged(new_name);
-        },
-        trackObject);
+    model->whenNameChanged([this](const utils::U8String& new_name) {
+      NameChanged(new_name);
+    }, trackObject);
   }
 };
 
-TEST_F(WorkModelTest, should_name_be_the_backing_work_name) { // NOLINT
+TEST_F(WorkModelTest, should_name_be_the_backing_work_name) {  // NOLINT
   // Setup fixture
   auto work_name = xtestutils::genRandomString();
 
@@ -78,14 +75,13 @@ TEST_F(WorkModelTest, should_name_be_the_backing_work_name) { // NOLINT
   ASSERT_EQ(work_name, work_model->name());
 }
 
-TEST_F(WorkModelTest, should_relay_set_name_to_backing_work) { // NOLINT
+TEST_F(WorkModelTest, should_relay_set_name_to_backing_work) {  // NOLINT
   // Setup fixture
   auto tester = [this](bool expect_result) {
     auto new_name = xtestutils::genRandomString();
 
     // Expectations
-    EXPECT_CALL(work, set_name(new_name))
-    .WillOnce(Return(expect_result));
+    EXPECT_CALL(work, set_name(new_name)).WillOnce(Return(expect_result));
 
     // Verify results
     ASSERT_EQ(expect_result, work_model->set_name(new_name));
@@ -95,7 +91,8 @@ TEST_F(WorkModelTest, should_relay_set_name_to_backing_work) { // NOLINT
   tester(false);
 }
 
-TEST_F(WorkModelTest, should_relay_NameChanged_signal_fired_by_backing_work) { // NOLINT
+TEST_F(WorkModelTest,
+       should_relay_NameChanged_signal_fired_by_backing_work) {  // NOLINT
   auto new_name = xtestutils::genRandomString();
   // Expectations
   auto mockListener = MockListener::attachTo(work_model.get());
@@ -105,11 +102,9 @@ TEST_F(WorkModelTest, should_relay_NameChanged_signal_fired_by_backing_work) { /
   workNameChanged(new_name);
 }
 
-TEST_F(WorkModelTest,
-       should_be_able_to_create_attribute_set_model) { // NOLINT
+TEST_F(WorkModelTest, should_be_able_to_create_attribute_set_model) {  // NOLINT
   // Setup fixture
-  auto expect_attr_set_model =
-      std::make_shared<MockAttributeSetModel>();
+  auto expect_attr_set_model = std::make_shared<MockAttributeSetModel>();
 
   std::vector<IAttributeSupplier*> attr_suppliers;
   attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
@@ -117,10 +112,8 @@ TEST_F(WorkModelTest,
   attr_suppliers.push_back(xtestutils::genDummyPointer<IAttributeSupplier>());
 
   // Expectations
-  EXPECT_CALL(work, attributeSuppliers())
-      .WillOnce(Return(attr_suppliers));
-  EXPECT_CALL(attr_set_model_factory,
-              createAttributeSetModel(attr_suppliers))
+  EXPECT_CALL(work, attributeSuppliers()).WillOnce(Return(attr_suppliers));
+  EXPECT_CALL(attr_set_model_factory, createAttributeSetModel(attr_suppliers))
       .WillOnce(Return(expect_attr_set_model));
 
   // Exercise system

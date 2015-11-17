@@ -13,13 +13,13 @@
 void KbNodeLinkAttributeInlineEditorPresenter::initialize() {
   updateValueText();
 
-  view()->whenUserClickShowPopupEditor(
-      [this]() {
-        auto popup_editor_model = model()->createPopupEditorModel();
-        showDialog(popup_editor_model);
-        updateValueText();
-      },
-      shared_from_this());
+  view()->whenUserClickShowPopupEditor([this]() {
+                                         auto popup_editor_model =
+                                             model()->createPopupEditorModel();
+                                         showDialog(popup_editor_model);
+                                         updateValueText();
+                                       },
+                                       shared_from_this());
 }
 
 void KbNodeLinkAttributeInlineEditorPresenter::updateValueText() {

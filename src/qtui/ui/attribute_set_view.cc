@@ -9,20 +9,16 @@
 #include "qsint/include/QSint"
 
 AttributeSetViewForWorkView::AttributeSetViewForWorkView()
-    : action_group_(new QSint::ActionGroup(tr("Attributes")))
-    , attr_set_container_(new QWidget(action_group_)) {
+    : action_group_(new QSint::ActionGroup(tr("Attributes"))),
+      attr_set_container_(new QWidget(action_group_)) {
   action_group_->setHasEditButton(true);
   action_group_->addWidget(attr_set_container_);
 
   QObject::connect(action_group_, &QSint::ActionGroup::editButtonClicked,
-                   [this]() {
-                     UserSwitchMode();
-                   });
+                   [this]() { UserSwitchMode(); });
 }
 
-QWidget* AttributeSetViewForWorkView::getWidget() {
-  return action_group_;
-}
+QWidget* AttributeSetViewForWorkView::getWidget() { return action_group_; }
 
 void AttributeSetViewForWorkView::switchToDisplayMode() {
   action_group_->setEditButtonText(QStringLiteral("[Edit]"));

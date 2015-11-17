@@ -28,8 +28,8 @@ class AttributeSetLayout {
  public:
   virtual ~AttributeSetLayout() = default;
 
-  SNAIL_SIGSLOT_PURE_VIRTUAL(CreateAttrEditor,
-                 IAttributeEditorView*(snailcore::IAttribute* attr));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(
+      CreateAttrEditor, IAttributeEditorView*(snailcore::IAttribute* attr));
   SNAIL_SIGSLOT_PURE_VIRTUAL(CloseAttributeEditors, void());
 
   virtual void setAttributeSuppliers(
@@ -39,11 +39,10 @@ class AttributeSetLayout {
 
 #else  // DISABLE_TEST_CODE
 
-class AttributeSetLayout { };
+class AttributeSetLayout {};
 
 #endif  // DISABLE_TEST_CODE
 
 }  // namespace fto
-
 
 #endif  // INCLUDE_QTUI_CORE_FTO_ATTRIBUTE_SET_LAYOUT_H_

@@ -52,18 +52,17 @@ void KbNodeAttributeTest::checkEmptyState() {
   ASSERT_EQ("", attr->valueText());
 }
 
-TEST_F(KbNodeAttributeTest,
-       check_initial_state) { // NOLINT
+TEST_F(KbNodeAttributeTest, check_initial_state) {  // NOLINT
   CUSTOM_ASSERT(checkEmptyState());
 }
 
 TEST_F(KbNodeAttributeTest,
-       should_be_able_to_get_back_the_kbnode_supplier) { // NOLINT
+       should_be_able_to_get_back_the_kbnode_supplier) {  // NOLINT
   ASSERT_EQ(&attr_supplier, attr->supplier());
 }
 
 TEST_F(KbNodeAttributeTest,
-       should_attribute_display_name_be_supplier_name) { // NOLINT
+       should_attribute_display_name_be_supplier_name) {  // NOLINT
   // Setup fixture
   auto expect_name = xtestutils::genRandomString();
 
@@ -95,13 +94,12 @@ void KbNodeAttributeTest::setupNonEmptyState() {
   Mock::VerifyAndClearExpectations(&attr_supplier);
 }
 
-TEST_F(KbNodeAttributeTest,
-       check_state_after_set_an_valid_kbnode) { // NOLINT
+TEST_F(KbNodeAttributeTest, check_state_after_set_an_valid_kbnode) {  // NOLINT
   CUSTOM_ASSERT(setupNonEmptyState());
 }
 
 TEST_F(KbNodeAttributeTest,
-       check_state_after_set_kbnode_to_nullptr) { // NOLINT
+       check_state_after_set_kbnode_to_nullptr) {  // NOLINT
   // Setup fixture
   CUSTOM_ASSERT(setupNonEmptyState());
 
@@ -115,8 +113,7 @@ TEST_F(KbNodeAttributeTest,
   CUSTOM_ASSERT(checkEmptyState());
 }
 
-TEST_F(KbNodeAttributeTest,
-       should_clear_enter_empty_state) { // NOLINT
+TEST_F(KbNodeAttributeTest, should_clear_enter_empty_state) {  // NOLINT
   // Expectations
   CUSTOM_ASSERT(setupNonEmptyState());
 
@@ -128,7 +125,7 @@ TEST_F(KbNodeAttributeTest,
 }
 
 TEST_F(KbNodeAttributeTest,
-       should_attribute_visitor_visit_IKbNodeAttribute) { // NOLINT
+       should_attribute_visitor_visit_IKbNodeAttribute) {  // NOLINT
   // Setup fixture
   MockAttributeVisitor visitor;
 
@@ -143,12 +140,12 @@ class DummyKbNodeAttrFixture : public TestFixture {
  public:
   DummyKbNodeAttrFixture(const utils::U8String& name,
                          KbNodeAttributeTest* test_case)
-      : TestFixture { name }
-      , supplier_ { &test_case->attr_supplier }
-      , attr_ { supplier_ }
-      , kbnode_ { xtestutils::genDummyPointer<IKbNode>() } {
-        attr_.setKbNode(kbnode_);
-      }
+      : TestFixture{name},
+        supplier_{&test_case->attr_supplier},
+        attr_{supplier_},
+        kbnode_{xtestutils::genDummyPointer<IKbNode>()} {
+    attr_.setKbNode(kbnode_);
+  }
 
   void checkSetup() override {
     SCOPED_TRACE(name_);
@@ -161,16 +158,15 @@ class DummyKbNodeAttrFixture : public TestFixture {
 
   fto::KbNodeAttributeSupplier* supplier_;
   KbNodeAttribute attr_;
-  IKbNode* kbnode_ { nullptr };
+  IKbNode* kbnode_{nullptr};
 };
 
-
-TEST_F(KbNodeAttributeTest, test_copy_construct) { // NOLINT
+TEST_F(KbNodeAttributeTest, test_copy_construct) {  // NOLINT
   // Setup fixture
   FixtureHelper(DummyKbNodeAttrFixture, fixture);
 
   // Exercise system
-  KbNodeAttribute attr { fixture.attr_ };
+  KbNodeAttribute attr{fixture.attr_};
 
   // Verify results
 
@@ -178,13 +174,12 @@ TEST_F(KbNodeAttributeTest, test_copy_construct) { // NOLINT
   ASSERT_EQ(fixture.supplier_, attr.supplier());
 }
 
-TEST_F(KbNodeAttributeTest,
-       test_move_construct) { // NOLINT
+TEST_F(KbNodeAttributeTest, test_move_construct) {  // NOLINT
   // Setup fixture
   FixtureHelper(DummyKbNodeAttrFixture, fixture);
 
   // Exercise system
-  KbNodeAttribute attr { std::move(fixture.attr_) };
+  KbNodeAttribute attr{std::move(fixture.attr_)};
 
   // Verify results
   ASSERT_EQ(nullptr, fixture.attr_.getKbNode());
@@ -193,8 +188,7 @@ TEST_F(KbNodeAttributeTest,
   ASSERT_EQ(fixture.supplier_, attr.supplier());
 }
 
-TEST_F(KbNodeAttributeTest,
-       test_unified_assignment) { // NOLINT
+TEST_F(KbNodeAttributeTest, test_unified_assignment) {  // NOLINT
   // Setup fixture
   FixtureHelper(DummyKbNodeAttrFixture, fixture1);
   FixtureHelper(DummyKbNodeAttrFixture, fixture2);
@@ -222,8 +216,7 @@ class KbNodeAttributeSupplierTest : public ::testing::Test {
   virtual void SetUp() {
     expect_max_attrs = std::rand();
 
-    EXPECT_CALL(root_kbnode, name())
-        .WillRepeatedly(Return(root_kbnode_name));
+    EXPECT_CALL(root_kbnode, name()).WillRepeatedly(Return(root_kbnode_name));
 
     attr_supplier = utils::make_unique<KbNodeAttributeSupplier>(
         &root_kbnode, expect_max_attrs);
@@ -245,8 +238,9 @@ class KbNodeAttributeSupplierTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(KbNodeAttributeSupplierTest,
-       should_createAttribute_create_KbNodeAttribute_instance_with_this_as_the_supplier) { // NOLINT
+TEST_F(
+    KbNodeAttributeSupplierTest,
+    should_createAttribute_create_KbNodeAttribute_instance_with_this_as_the_supplier) {  // NOLINT
   // Exercise system
   auto new_attr = attr_supplier->addAttribute();
 

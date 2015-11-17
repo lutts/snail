@@ -12,8 +12,7 @@
 #include "test/testutils/qt/gui_tester.h"
 
 void DelayedAction::run() {
-  if (next)
-    QTimer::singleShot(next->delay, next, SLOT(run()));
+  if (next) QTimer::singleShot(next->delay, next, SLOT(run()));
 }
 
 /*
@@ -25,7 +24,7 @@ class ClickLaterAction : public DelayedAction {
  public:
   explicit ClickLaterAction(QWidget *widget,
                             Qt::MouseButton button = Qt::LeftButton) {
-    this->widget  = widget;
+    this->widget = widget;
     this->button = button;
   }
 
@@ -47,7 +46,7 @@ class DoubleClickLaterAction : public DelayedAction {
  public:
   explicit DoubleClickLaterAction(QWidget *widget,
                                   Qt::MouseButton button = Qt::LeftButton) {
-    this->widget  = widget;
+    this->widget = widget;
     this->button = button;
   }
 
@@ -67,8 +66,9 @@ class KeyClickLaterAction : public DelayedAction {
   Q_OBJECT
 
  public:
-  explicit KeyClickLaterAction(QWidget *widget, Qt::Key key,
-                               Qt::KeyboardModifiers modifier = Qt::NoModifier) { // NOLINT
+  explicit KeyClickLaterAction(
+      QWidget *widget, Qt::Key key,
+      Qt::KeyboardModifiers modifier = Qt::NoModifier) {  // NOLINT
     this->widget = widget;
     this->key = key;
     this->modifier = modifier;
@@ -89,31 +89,27 @@ class KeyClickLaterAction : public DelayedAction {
 
 ////////////////////////////////////////////////////////////
 
-GuiTester::GuiTester() {
-  clearSequence();
-}
+GuiTester::GuiTester() { clearSequence(); }
 
+// clang-format off
 GuiTester::~GuiTester() {
   foreach(DelayedAction *action, actions)
-      delete action;
+    delete action;
 }
+// clang-format on
 
-void GuiTester::clickLater(QWidget *widget,
-                           int delay_msec,
+void GuiTester::clickLater(QWidget *widget, int delay_msec,
                            Qt::MouseButton button) {
   createSingleActionSeq(new ClickLaterAction(widget, button), delay_msec);
 }
 
-void GuiTester::doubleClickLater(QWidget *widget,
-                                 int delay_msec,
+void GuiTester::doubleClickLater(QWidget *widget, int delay_msec,
                                  Qt::MouseButton button) {
   createSingleActionSeq(new DoubleClickLaterAction(widget, button), delay_msec);
 }
 
-void GuiTester::keyClickLater(QWidget *widget,
-                              Qt::Key key,
-                              Qt::KeyboardModifiers modifier,
-                              int delay_msec) {
+void GuiTester::keyClickLater(QWidget *widget, Qt::Key key,
+                              Qt::KeyboardModifiers modifier, int delay_msec) {
   createSingleActionSeq(new KeyClickLaterAction(widget, key, modifier),
                         delay_msec);
 }
@@ -135,7 +131,7 @@ void GuiTester::runSequence() {
   QTimer::singleShot(0, startAction, SLOT(run()));
 }
 
-void GuiTester::createSingleActionSeq(DelayedAction* action, int delay_msec) {
+void GuiTester::createSingleActionSeq(DelayedAction *action, int delay_msec) {
   clearSequence();
   addToSequence(action, delay_msec);
   runSequence();

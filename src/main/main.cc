@@ -17,7 +17,7 @@
 #include "qtui/ui/i_main_window_view.h"
 
 using namespace snailcore;  // NOLINT
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 
 int main() {
   initLog();
@@ -39,10 +39,11 @@ int main() {
   main_window_view->showView();
 
   auto raw_triad_manager = triad_manager.get();
-  ((snailcore::IUiEngine*)&qtUiEngine)->whenAboutToQuit(
-      [raw_triad_manager, main_window]() {
-        raw_triad_manager->removeTriadBy(main_window);
-      }, triad_manager);
+  ((snailcore::IUiEngine*)&qtUiEngine)
+      ->whenAboutToQuit([raw_triad_manager, main_window]() {
+                          raw_triad_manager->removeTriadBy(main_window);
+                        },
+                        triad_manager);
 
   int ret = qtUiEngine.run();
   cleanupLog();

@@ -10,62 +10,57 @@
 
 // NOTE: if default construct for real object is forbided, default constructor
 // in test proxy should also removed
-#define TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)               \
-  public:                                                               \
-  virtual ~RealClass##TestProxy() {                                     \
-    delete self_;                                                       \
-  }                                                                     \
-                                                                        \
-  RealClass##TestProxy(const RealClass##TestProxy& rhs) {               \
-    removeOldObj();                                                     \
-    cloneObj(*(rhs.self_));                                             \
-  }                                                                     \
-                                                                        \
-  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) {    \
-    removeOldObj();                                                     \
-    cloneObj(*(rhs.self_));                                             \
-    return *this;                                                       \
-  }                                                                     \
-                                                                        \
-  RealClass##TestProxy(const RealClass& rhs) {                          \
-    removeOldObj();                                                     \
-    cloneObj(rhs);                                                      \
-  }                                                                     \
-                                                                        \
-  RealClass##TestProxy& operator=(const RealClass& rhs) {               \
-    removeOldObj();                                                     \
-    cloneObj(rhs);                                                      \
-    return *this;                                                       \
-  }                                                                     \
-                                                                        \
-  /* Test proxy has no "Real Self" */                                   \
-  RealClass* self() const {                                             \
-    return self_;                                                       \
-  }                                                                     \
-                                                                        \
-  void setSelf(RealClass* self_ptr, bool owned = true) {                \
-    self_ = self_ptr;                                                   \
-    owned_ = owned;                                                     \
-  }                                                                     \
-                                                                        \
-private:                                                                \
-void removeOldObj() {                                                   \
-  if (owned_)                                                           \
-    delete self_;                                                       \
-}                                                                       \
-                                                                        \
-void cloneObj(const RealClass& obj) {                                   \
-  self_ = obj.clone();                                                  \
-  owned_ = true;                                                        \
-}                                                                       \
-                                                                        \
-RealClass* self_ { nullptr };                                           \
-bool owned_ { true };
+#define TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)            \
+ public:                                                             \
+  virtual ~RealClass##TestProxy() { delete self_; }                  \
+                                                                     \
+  RealClass##TestProxy(const RealClass##TestProxy& rhs) {            \
+    removeOldObj();                                                  \
+    cloneObj(*(rhs.self_));                                          \
+  }                                                                  \
+                                                                     \
+  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) { \
+    removeOldObj();                                                  \
+    cloneObj(*(rhs.self_));                                          \
+    return *this;                                                    \
+  }                                                                  \
+                                                                     \
+  RealClass##TestProxy(const RealClass& rhs) {                       \
+    removeOldObj();                                                  \
+    cloneObj(rhs);                                                   \
+  }                                                                  \
+                                                                     \
+  RealClass##TestProxy& operator=(const RealClass& rhs) {            \
+    removeOldObj();                                                  \
+    cloneObj(rhs);                                                   \
+    return *this;                                                    \
+  }                                                                  \
+                                                                     \
+  /* Test proxy has no "Real Self" */                                \
+  RealClass* self() const { return self_; }                          \
+                                                                     \
+  void setSelf(RealClass* self_ptr, bool owned = true) {             \
+    self_ = self_ptr;                                                \
+    owned_ = owned;                                                  \
+  }                                                                  \
+                                                                     \
+ private:                                                            \
+  void removeOldObj() {                                              \
+    if (owned_) delete self_;                                        \
+  }                                                                  \
+                                                                     \
+  void cloneObj(const RealClass& obj) {                              \
+    self_ = obj.clone();                                             \
+    owned_ = true;                                                   \
+  }                                                                  \
+                                                                     \
+  RealClass* self_{nullptr};                                         \
+  bool owned_{true};
 
 // if the default constructor of real object is allowed, use this macro instead
-#define TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(RealClass)  \
-  public:                                               \
-  RealClass##TestProxy() = default;                     \
+#define TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(RealClass) \
+ public:                                               \
+  RealClass##TestProxy() = default;                    \
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(RealClass)
 
 class IData {
@@ -83,27 +78,22 @@ class IDataTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(IData);
 
  public:
-  void setData(int data) {
-    self_->setData(data);
-  }
+  void setData(int data) { self_->setData(data); }
 
-  int getData() const {
-    return self_->getData();
-  }
+  int getData() const { return self_->getData(); }
 };
 
 class Data : public IData {
  public:
-  Data() : Data(0) { }
-  explicit Data(int data) : data_(new int(data)) { }
+  Data() : Data(0) {}
+  explicit Data(int data) : data_(new int(data)) {}
   virtual ~Data() { delete data_; }
 
   Data(const Data& rhs) : data_(new int(*rhs.data_)) {
     std::cout << "copy constructor called" << std::endl;
   }
 
-  Data(Data&& rhs)
-      : data_(rhs.data_) {
+  Data(Data&& rhs) : data_(rhs.data_) {
     rhs.data_ = nullptr;
     std::cout << "move constructor called" << std::endl;
   }
@@ -115,17 +105,15 @@ class Data : public IData {
     return *this;
   }
 
-  IData* clone() const override {
-    return new Data(*this);
-  }
+  IData* clone() const override { return new Data(*this); }
 
-  // NOTE: this cast is safe only when Data is the only subclass of IData
-  // and Data itself Does not have any subclasses
-#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)          \
-  I##Cls& operator=(I##Cls && rhs) {            \
-    Cls& data = static_cast<Cls&>(rhs);         \
-    swap(data);                                 \
-    return *this;                               \
+// NOTE: this cast is safe only when Data is the only subclass of IData
+// and Data itself Does not have any subclasses
+#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)           \
+  I##Cls& operator=(I##Cls&& rhs) { /* NOLINT */ \
+    Cls& data = static_cast<Cls&>(rhs);          \
+    swap(data);                                  \
+    return *this;                                \
   }
 
   TEST_ONLY_MOVE_ASSIGNMENT(Data);
@@ -141,24 +129,16 @@ class Data : public IData {
   }
 #endif
 
-  void setData(int data) override {
-    *data_ = data;
-  }
+  void setData(int data) override { *data_ = data; }
 
-  int getData() const override {
-    return *data_;
-  }
+  int getData() const override { return *data_; }
 
-  int* getDataPtr() override {
-    return data_;
-  }
+  int* getDataPtr() override { return data_; }
 
  private:
-  void swap(Data& rhs) {
-    std::swap(data_, rhs.data_);
-  }
+  void swap(Data& rhs) { std::swap(data_, rhs.data_); }
 
-  int* data_ { nullptr };
+  int* data_{nullptr};
 };
 
 class IDataHolder {
@@ -171,11 +151,9 @@ class IDataHolder {
 
 class DataHolder : public IDataHolder {
  public:
-  explicit DataHolder(IData* data) : data_(data) { }
+  explicit DataHolder(IData* data) : data_(data) {}
 
-  IData* getData() override {
-    return data_;
-  }
+  IData* getData() override { return data_; }
 
   void setData(IData&& data) override {
     *data_ = std::move(data);
@@ -189,30 +167,25 @@ class DataHolder : public IDataHolder {
 class DataDisplayer {
  public:
   explicit DataDisplayer(IDataHolder* data_holder)
-      : data_holder_(data_holder)
-      , data_copy_(*(data_holder->getData())) { }
+      : data_holder_(data_holder), data_copy_(*(data_holder->getData())) {}
 
   void printData() const {
     std::cout << "Display: data = " << data_copy_.getData() << std::endl;
   }
 
-  void setData(int data) {
-    data_copy_.setData(data);
-  }
+  void setData(int data) { data_copy_.setData(data); }
 
-  void saveData() {
-    data_holder_->setData(std::move(*data_copy_.self()));
-  }
+  void saveData() { data_holder_->setData(std::move(*data_copy_.self())); }
 
  private:
-  IDataHolder* data_holder_ { nullptr };
+  IDataHolder* data_holder_{nullptr};
   IDataTestProxy data_copy_;
 };
 
 int main() {
   std::cout << "prepare data......" << std::endl;
   Data data{100};
-  DataHolder data_holder { &data };
+  DataHolder data_holder{&data};
 
   std::cout << "create data displayer......" << std::endl;
   DataDisplayer data_displayer(&data_holder);
@@ -225,14 +198,14 @@ int main() {
 
   std::cout << "saved data: " << data.getData() << std::endl;
 
-  Data data1 { 101 };
-  Data data2 { 102 };
+  Data data1{101};
+  Data data2{102};
   data2 = std::move(data1);
   std::cout << "data1 data ptr = " << data1.getDataPtr() << std::endl;
   std::cout << "data2 = " << data2.getData() << std::endl;
 
-  IData* data3 = new Data { 103 };
-  IData* data4 = new Data { 104 };
+  IData* data3 = new Data{103};
+  IData* data4 = new Data{104};
   *data4 = std::move(*data3);
   std::cout << "data3 data ptr = " << data3->getDataPtr() << std::endl;
   std::cout << "data4 = " << data4->getData() << std::endl;

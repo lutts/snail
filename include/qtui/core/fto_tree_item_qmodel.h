@@ -39,7 +39,7 @@ class TreeItemQModel {
 
 #else  // DISABLE_TEST_CODE
 
-class TreeItemQModel { };
+class TreeItemQModel {};
 
 #endif  // DISABLE_TEST_CODE
 

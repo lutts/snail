@@ -18,10 +18,10 @@
 #include "snail/mock_tree_item_provider.h"
 #include "qtui/core/mock_tree_item_qmodel.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 template <typename TestBase>
 class SimpleKbNodeAdderPresenterTestBase : public TestBase {
@@ -78,8 +78,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
       // highlight the current parent node
       auto index = index_generator.index();
       auto kbnode = xtestutils::genDummyPointer<ITreeItem>();
-      R_EXPECT_CALL(*model, getNewKbNodeParent())
-          .WillOnce(Return(kbnode));
+      R_EXPECT_CALL(*model, getNewKbNodeParent()).WillOnce(Return(kbnode));
       R_EXPECT_CALL(*kbnode_qmodel, itemToIndex(kbnode))
           .WillOnce(Return(index));
       R_EXPECT_CALL(*view, selectIndex(index));
@@ -98,8 +97,8 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
         .WillOnce(SaveArg<0>(&userClickAddButton));
 
     // Excercise system
-    presenter = std::make_shared<SimpleKbNodeAdderPresenter>(
-        model, view, kbnode_qmodel);
+    presenter = std::make_shared<SimpleKbNodeAdderPresenter>(model, view,
+                                                             kbnode_qmodel);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -140,15 +139,14 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
 };
 
 class SimpleKbNodeAdderPresenterTest
-    : public SimpleKbNodeAdderPresenterTestBase<::testing::Test> { };
+    : public SimpleKbNodeAdderPresenterTestBase<::testing::Test> {};
 
 TEST_F(SimpleKbNodeAdderPresenterTest,
-       should_set_current_select_kbnode_as_new_kbnode_parent) { // NOLINT
+       should_set_current_select_kbnode_as_new_kbnode_parent) {  // NOLINT
   auto index = index_generator.index();
   auto kbnode = xtestutils::genDummyPointer<ITreeItem>();
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, indexToItem(index))
-      .WillOnce(Return(kbnode));
+  EXPECT_CALL(*kbnode_qmodel, indexToItem(index)).WillOnce(Return(kbnode));
 
   EXPECT_CALL(*model, setNewKbNodeParent(kbnode));
 
@@ -157,14 +155,15 @@ TEST_F(SimpleKbNodeAdderPresenterTest,
 }
 
 class SimpleKbNodeAdderPresenterTest_BoolParam
-    : public SimpleKbNodeAdderPresenterTestBase<::testing::TestWithParam<bool>> {}; // NOLINT
+    : public SimpleKbNodeAdderPresenterTestBase<
+          ::testing::TestWithParam<bool>> {};  // NOLINT
 
-INSTANTIATE_TEST_CASE_P(BoolParam,
-                        SimpleKbNodeAdderPresenterTest_BoolParam,
+INSTANTIATE_TEST_CASE_P(BoolParam, SimpleKbNodeAdderPresenterTest_BoolParam,
                         ::testing::Bool());
 
-TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
-       should_set_user_entered_new_kbnode_name_to_model_and_update_view_with_validate_status) { // NOLINT
+TEST_P(
+    SimpleKbNodeAdderPresenterTest_BoolParam,
+    should_set_user_entered_new_kbnode_name_to_model_and_update_view_with_validate_status) {  // NOLINT
   // Setup fixture
   xtestutils::RandomString new_name;
   bool validate_result = GetParam();
@@ -183,8 +182,9 @@ TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
   newKbNodeNameChanged(new_name.qstr());
 }
 
-TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
-       should_set_isGroupOnly_status_to_model_when_user_toggle_category_checkbox) { // NOLINT
+TEST_P(
+    SimpleKbNodeAdderPresenterTest_BoolParam,
+    should_set_isGroupOnly_status_to_model_when_user_toggle_category_checkbox) {  // NOLINT
   bool checked = GetParam();
   // Expectations
   EXPECT_CALL(*model, setIsCategory(checked));
@@ -194,7 +194,7 @@ TEST_P(SimpleKbNodeAdderPresenterTest_BoolParam,
 }
 
 TEST_F(SimpleKbNodeAdderPresenterTest,
-       should_call_model_addKbNode_when_user_click_Add_button) { // NOLINT
+       should_call_model_addKbNode_when_user_click_Add_button) {  // NOLINT
   // Setup fixture
 
   // Expectations

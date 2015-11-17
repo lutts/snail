@@ -7,26 +7,22 @@
 #include "src/qtui/core/workspace_presenter.h"
 
 using namespace snailcore;  // NOLINT
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 
 void WorkSpacePresenter::initialize() {
-  view()->whenUserClickAddWork(
-      [this](const utils::U8String& work_name) {
-        model()->createWork(work_name);
-      },
-      shared_from_this());
+  view()->whenUserClickAddWork([this](const utils::U8String& work_name) {
+                                 model()->createWork(work_name);
+                               },
+                               shared_from_this());
 
   view()->whenUserCloseWork(
-      [this](IWorkView* work_view) {
-        removeTriadBy(work_view);
-      },
+      [this](IWorkView* work_view) { removeTriadBy(work_view); },
       shared_from_this());
 
-  model()->whenWorkModelAdded(
-      [this](std::shared_ptr<IWorkModel> work_model) {
-        onWorkModelAdded(work_model);
-      },
-      shared_from_this());
+  model()->whenWorkModelAdded([this](std::shared_ptr<IWorkModel> work_model) {
+                                onWorkModelAdded(work_model);
+                              },
+                              shared_from_this());
 
   model()->whenActiveWorkModelChanged(
       [this](IWorkModel* work_model) {
@@ -38,9 +34,7 @@ void WorkSpacePresenter::initialize() {
       shared_from_this());
 
   model()->whenWorkModelActivelyRemoved(
-      [this](IWorkModel* work_model) {
-        removeTriadBy(work_model);
-      },
+      [this](IWorkModel* work_model) { removeTriadBy(work_model); },
       shared_from_this());
 }
 
@@ -52,20 +46,20 @@ void WorkSpacePresenter::onWorkModelAdded(
     view()->setActiveWorkView(work_view);
 
     triad_manager()->whenAboutToDestroyModel(
-        work_model.get(),
-        [this](IPfModel* pfmodel) {
-          auto work_model = dynamic_cast<IWorkModel*>(pfmodel);
-          if (work_model)
-            model()->removeWorkModel(work_model);
-        }, shared_from_this());
+        work_model.get(), [this](IPfModel* pfmodel) {
+                            auto work_model =
+                                dynamic_cast<IWorkModel*>(pfmodel);
+                            if (work_model)
+                              model()->removeWorkModel(work_model);
+                          },
+        shared_from_this());
 
     triad_manager()->whenAboutToDestroyView(
-        work_view,
-        [this](IPfView* pfview){
-          auto work_view = dynamic_cast<IWorkView*>(pfview);
-          if (work_view)
-            view()->removeWorkView(work_view);
-        }, shared_from_this());
+        work_view, [this](IPfView* pfview) {
+                     auto work_view = dynamic_cast<IWorkView*>(pfview);
+                     if (work_view) view()->removeWorkView(work_view);
+                   },
+        shared_from_this());
 
     work_model->whenNameChanged(
         [this, work_view](const utils::U8String& new_name) {

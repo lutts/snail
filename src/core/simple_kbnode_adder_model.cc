@@ -12,10 +12,8 @@
 namespace snailcore {
 
 SimpleKbNodeAdderModel::SimpleKbNodeAdderModel(
-    ITreeItemProvider* kbnode_provider,
-    fto::KbNodeManager* kbnode_manager)
-    : kbnode_provider_(kbnode_provider)
-    , kbnode_manager_(kbnode_manager) { }
+    ITreeItemProvider* kbnode_provider, fto::KbNodeManager* kbnode_manager)
+    : kbnode_provider_(kbnode_provider), kbnode_manager_(kbnode_manager) {}
 
 SimpleKbNodeAdderModel::~SimpleKbNodeAdderModel() = default;
 
@@ -54,8 +52,7 @@ void SimpleKbNodeAdderModel::setIsCategory(bool category) {
 }
 
 void SimpleKbNodeAdderModel::addKbNode() {
-  if (!isNewKbNodeNameValid())
-    return;
+  if (!isNewKbNodeNameValid()) return;
 
   IKbNode* actual_kbnode_parent = new_kbnode_parent_;
   if (!actual_kbnode_parent) {
@@ -63,9 +60,7 @@ void SimpleKbNodeAdderModel::addKbNode() {
         static_cast<IKbNode*>(kbnode_provider_->getRootItem());
   }
 
-  kbnode_manager_->addKbNode(new_name_,
-                             actual_kbnode_parent,
-                             is_category_);
+  kbnode_manager_->addKbNode(new_name_, actual_kbnode_parent, is_category_);
 }
 
 }  // namespace snailcore

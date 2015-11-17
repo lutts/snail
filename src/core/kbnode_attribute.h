@@ -36,7 +36,7 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
 
   SNAIL_DISABLE_COPY(KbNodeAttributeSupplier);
 
-  IKbNode* root_kbnode_ { nullptr };
+  IKbNode* root_kbnode_{nullptr};
 };
 
 class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
@@ -61,9 +61,7 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
 
   // Test proxy requirement
   KbNodeAttribute* self() { return this; }
-  fto::KbNodeAttribute* clone() const {
-    return new KbNodeAttribute(*this);
-  }
+  fto::KbNodeAttribute* clone() const { return new KbNodeAttribute(*this); }
 
   TEST_ONLY_MOVE_ASSIGNMENT(KbNodeAttribute);
 
@@ -71,7 +69,7 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
   KbNodeAttribute& swap(KbNodeAttribute& rhs);
 
   fto::KbNodeAttributeSupplier* attr_supplier_;
-  IKbNode* kbnode_ { nullptr };
+  IKbNode* kbnode_{nullptr};
 };
 
 }  // namespace snailcore

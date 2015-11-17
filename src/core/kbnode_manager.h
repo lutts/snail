@@ -34,14 +34,13 @@ class KbNodeManager : public FTO_NAMESPACE::KbNodeManager {
   KbNodeManager();
   virtual ~KbNodeManager();
 
-  std::shared_ptr<ITreeItemProvider>
-  createTreeItemProvider(IKbNode* root_kbnode);
+  std::shared_ptr<ITreeItemProvider> createTreeItemProvider(
+      IKbNode* root_kbnode);
   IKbNode* idToKbNode(KbNodeIdType kbnode_id);
   std::vector<IKbNode*> findKbNode(const utils::U8String& pattern,
                                    const IKbNode* parent_kbnode);
   std::vector<IKbNode*> childItems(const IKbNode* parent_node);
-  IKbNode* addKbNode(const utils::U8String& name,
-                     const IKbNode* parent,
+  IKbNode* addKbNode(const utils::U8String& name, const IKbNode* parent,
                      bool is_category = false);
   void incRef(IKbNode* kbnode);
 
@@ -54,13 +53,13 @@ class KbNodeManager : public FTO_NAMESPACE::KbNodeManager {
   std::unique_ptr<KbNodeManagerSignalHelper> signal_helper_;
 
   std::unordered_map<KbNodeIdType, IKbNode*> id_to_kbnode_;
-  std::unordered_map<const IKbNode*, std::vector<IKbNode*> > kbnode_to_subnodes_; // NOLINT
+  std::unordered_map<const IKbNode*, std::vector<IKbNode*> >
+      kbnode_to_subnodes_;  // NOLINT
 
-  KbNodeIdType id { 0 };
+  KbNodeIdType id{0};
 
-  IKbNode* dummy_root_ { nullptr };
+  IKbNode* dummy_root_{nullptr};
 };
-
 
 }  // namespace snailcore
 

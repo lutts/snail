@@ -15,10 +15,10 @@ namespace utils {
 
 void init_locale();
 
-template<typename... Args>
+template <typename... Args>
 U8String formatString(const char* format, Args const&... args) {
   boost::locale::format fmt(format);
-  int dummy[sizeof...(Args)] = { ( fmt % args, 0)... };
+  int dummy[sizeof...(Args)] = {(fmt % args, 0)...};
   (void)dummy;
   return fmt.str();
 }

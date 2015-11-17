@@ -17,15 +17,13 @@
 #include "qtui/ui/i_work_view.h"
 
 using WorkSpacePresenterBase =
-    pfmvp::PfPresenterT<snailcore::IWorkSpaceModel,
-                        IWorkSpaceView>;
+    pfmvp::PfPresenterT<snailcore::IWorkSpaceModel, IWorkSpaceView>;
 
 class WorkSpacePresenter : public WorkSpacePresenterBase {
  public:
   WorkSpacePresenter(std::shared_ptr<model_type> model,
                      std::shared_ptr<view_type> view)
-      : WorkSpacePresenterBase(model, view) {
-  }
+      : WorkSpacePresenterBase(model, view) {}
 
   void initialize() override;
 

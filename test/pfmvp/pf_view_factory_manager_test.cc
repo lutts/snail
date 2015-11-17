@@ -35,8 +35,8 @@ class TestXXXViewFactory : public IPfViewFactory {
 
   DEF_VIEW_FACTORY_ID(TestXXXViewFactory);
 
-  std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model, PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createView(std::shared_ptr<IPfModel> model,
+                                          PfCreateViewArgs* args) override {
     (void)model;
     (void)args;
     return nullptr;
@@ -54,9 +54,8 @@ class TestYYYViewFactory : public IPfViewFactory {
 
   DEF_VIEW_FACTORY_ID(TestYYYViewFactory);
 
-  std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model,
-             PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createView(std::shared_ptr<IPfModel> model,
+                                          PfCreateViewArgs* args) override {
     (void)model;
     (void)args;
     return nullptr;
@@ -74,9 +73,8 @@ class TestZZZViewFactory : public IPfViewFactory {
 
   DEF_VIEW_FACTORY_ID(TestZZZViewFactory);
 
-  std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model,
-             PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createView(std::shared_ptr<IPfModel> model,
+                                          PfCreateViewArgs* args) override {
     (void)model;
     (void)args;
     return nullptr;
@@ -104,35 +102,27 @@ class PfViewFactoryManagerTest : public ::testing::Test {
       ASSERT_EQ(0, vfs.size());
 
       ASSERT_EQ(nullptr, vf_manager_->getViewFactory(TestBobModel::modelId()));
-      ASSERT_EQ(nullptr,
-                vf_manager_->getViewFactory(
-                    TestBobModel::modelId(),
-                    TestXXXViewFactory::viewFactoryId()));
-      ASSERT_EQ(nullptr,
-                vf_manager_->getViewFactory(
-                    TestBobModel::modelId(),
-                    TestYYYViewFactory::viewFactoryId()));
-      ASSERT_EQ(nullptr,
-                vf_manager_->getViewFactory(
-                    TestBobModel::modelId(),
-                    TestZZZViewFactory::viewFactoryId()));
+      ASSERT_EQ(nullptr, vf_manager_->getViewFactory(
+                             TestBobModel::modelId(),
+                             TestXXXViewFactory::viewFactoryId()));
+      ASSERT_EQ(nullptr, vf_manager_->getViewFactory(
+                             TestBobModel::modelId(),
+                             TestYYYViewFactory::viewFactoryId()));
+      ASSERT_EQ(nullptr, vf_manager_->getViewFactory(
+                             TestBobModel::modelId(),
+                             TestZZZViewFactory::viewFactoryId()));
     }
 
-    vf_manager_->addViewFactory(TestBobModel::modelId(),
-                                &xxx_factory);
-    vf_manager_->addViewFactory(TestBobModel::modelId(),
-                                &yyy_factory);
-    vf_manager_->addViewFactory(TestBobModel::modelId(),
-                                &zzz_factory);
+    vf_manager_->addViewFactory(TestBobModel::modelId(), &xxx_factory);
+    vf_manager_->addViewFactory(TestBobModel::modelId(), &yyy_factory);
+    vf_manager_->addViewFactory(TestBobModel::modelId(), &zzz_factory);
 
     factories.push_back(&xxx_factory);
     factories.push_back(&yyy_factory);
     factories.push_back(&zzz_factory);
     std::sort(factories.begin(), factories.end());
   }
-  virtual void TearDown() {
-    delete vf_manager_;
-  }
+  virtual void TearDown() { delete vf_manager_; }
 
   // region: objects test subject depends on
   // For Bob
@@ -143,14 +133,15 @@ class PfViewFactoryManagerTest : public ::testing::Test {
   // endregion
 
   // region: test subject
-  IPfViewFactoryManager* vf_manager_ { nullptr };
+  IPfViewFactoryManager* vf_manager_{nullptr};
   // endregion
 
   // region: object depends on test subject
   // endregion
 };
 
-TEST_F(PfViewFactoryManagerTest, should_be_able_to_add_view_factory_with_specified_model_id) { // NOLINT
+TEST_F(PfViewFactoryManagerTest,
+       should_be_able_to_add_view_factory_with_specified_model_id) {  // NOLINT
   // Expectations
   std::vector<IPfViewFactory*> expect_factories = factories;
 
@@ -181,7 +172,9 @@ TEST_F(PfViewFactoryManagerTest, should_be_able_to_add_view_factory_with_specifi
   ASSERT_EQ(expect_alice_factories, actual_alice_factories);
 }
 
-TEST_F(PfViewFactoryManagerTest, should_replace_existing_factory_when_factory_with_the_same_id) { // NOLINT
+TEST_F(
+    PfViewFactoryManagerTest,
+    should_replace_existing_factory_when_factory_with_the_same_id) {  // NOLINT
   // Setup fixture
   TestYYYViewFactory yyy_factory2;
 
@@ -202,14 +195,17 @@ TEST_F(PfViewFactoryManagerTest, should_replace_existing_factory_when_factory_wi
   ASSERT_EQ(expect_factories, actual_factories);
 }
 
-TEST_F(PfViewFactoryManagerTest, should_getViewFactory_return_some_factory_we_added) { // NOLINT
+TEST_F(PfViewFactoryManagerTest,
+       should_getViewFactory_return_some_factory_we_added) {  // NOLINT
   // Verify results
   auto vf = vf_manager_->getViewFactory(TestBobModel::modelId());
   ASSERT_NE(nullptr, vf);
   EXPECT_THAT(factories, Contains(vf));
 }
 
-TEST_F(PfViewFactoryManagerTest, should_getViewFactory_with_factory_id_return_exactly_the_factory_with_the_id) { // NOLINT
+TEST_F(
+    PfViewFactoryManagerTest,
+    should_getViewFactory_with_factory_id_return_exactly_the_factory_with_the_id) {  // NOLINT
   // Setup fixture
 
   // Expectations

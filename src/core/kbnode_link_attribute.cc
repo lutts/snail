@@ -11,13 +11,10 @@ namespace snailcore {
 
 KbNodeLinkAttribute::KbNodeLinkAttribute(
     fto::KbNodeLinkAttributeSupplier* link_attr_supplier)
-    : link_attr_supplier_(link_attr_supplier)
-    , link_type_(*link_attr_supplier->getDefaultProtoLinkType())
-    , value_attr_supplier_(link_attr_supplier->getRootKbNode(), 1) {
-  link_type_.whenLinkUpdated(
-      [this]() {
-        linkUpdated();
-      }, nullptr);
+    : link_attr_supplier_(link_attr_supplier),
+      link_type_(*link_attr_supplier->getDefaultProtoLinkType()),
+      value_attr_supplier_(link_attr_supplier->getRootKbNode(), 1) {
+  link_type_.whenLinkUpdated([this]() { linkUpdated(); }, nullptr);
 }
 
 KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
@@ -55,8 +52,7 @@ bool KbNodeLinkAttribute::isEmpty() const {
 }
 
 void KbNodeLinkAttribute::clear() {
-  if (value_attr_)
-    value_attr_->clear();
+  if (value_attr_) value_attr_->clear();
   link_type_.clear();
 }
 
@@ -69,15 +65,14 @@ fto::KbNodeLinkAttributeSupplier* KbNodeLinkAttribute::supplier() const {
 }
 
 void KbNodeLinkAttribute::initValueAttr() {
-  if (value_attr_)
-    return;
+  if (value_attr_) return;
 
   IAttribute* attr;
   if (value_attr_supplier_.attr_count() == 0) {
     attr = value_attr_supplier_.addAttribute();
   } else {
     auto attrs = value_attr_supplier_.attributes();
-    attr =  attrs[0];
+    attr = attrs[0];
   }
 
   value_attr_ = static_cast<fto::KbNodeAttribute*>(attr);
@@ -88,9 +83,7 @@ fto::KbNodeAttribute* KbNodeLinkAttribute::valueAttr() {
   return value_attr_;
 }
 
-fto::LinkType* KbNodeLinkAttribute::linkType() {
-  return link_type_.self();
-}
+fto::LinkType* KbNodeLinkAttribute::linkType() { return link_type_.self(); }
 
 IAttribute* KbNodeLinkAttributeSupplier::createAttribute() {
   return new KbNodeLinkAttribute(this);

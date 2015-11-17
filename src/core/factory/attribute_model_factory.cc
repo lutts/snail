@@ -15,7 +15,7 @@ namespace snailcore {
 class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
  public:
   explicit AttributeVisitor(const AttributeModelFactory& factory)
-      : factory_(factory) { }
+      : factory_(factory) {}
   virtual ~AttributeVisitor() = default;
 
   void visit(fto::KbNodeAttribute* attr) override {
@@ -38,8 +38,8 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
   friend class AttributeModelFactory;
 };
 
-std::shared_ptr<IAttributeModel>
-AttributeModelFactory::createAttributeModel(IAttribute* attr) const {
+std::shared_ptr<IAttributeModel> AttributeModelFactory::createAttributeModel(
+    IAttribute* attr) const {
   AttributeVisitor visitor{*this};
   attr->accept(&visitor);
   return visitor.attr_model_;

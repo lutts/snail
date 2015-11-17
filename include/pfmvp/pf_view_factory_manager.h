@@ -20,9 +20,8 @@ namespace tests {
 class PfViewFactoryManagerTest;
 }  // namespace tests
 
-class PfViewFactoryManager :
-      public IPfViewFactoryManager,
-      public Singleton<PfViewFactoryManager> {
+class PfViewFactoryManager : public IPfViewFactoryManager,
+                             public Singleton<PfViewFactoryManager> {
  public:
   void addViewFactory(const IPfModel::ModelIdType& model_id,
                       IPfViewFactory* view_factory) override;
@@ -33,8 +32,8 @@ class PfViewFactoryManager :
   IPfViewFactory* getViewFactory(
       const IPfModel::ModelIdType& model_id,
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) const override;
-  std::vector<IPfViewFactory*>
-  getAllViewFactory(const IPfModel::ModelIdType& model_id) const override;
+  std::vector<IPfViewFactory*> getAllViewFactory(
+      const IPfModel::ModelIdType& model_id) const override;
 
  private:
   PfViewFactoryManager() = default;
@@ -48,25 +47,22 @@ class PfViewFactoryManager :
   using ViewFactoryStoreType =
       std::unordered_map<IPfViewFactory::ViewFactoryIdType, IPfViewFactory*>;
   std::unordered_map<IPfModel::ModelIdType, ViewFactoryStoreType>
-  model_viewfactory_map_;
+      model_viewfactory_map_;
 };
 
 template <typename M, typename F>
 class view_factory_t {
   F factory;
+
  public:
-  view_factory_t() {
-    addToViewFactoryManager();
-  }
+  view_factory_t() { addToViewFactoryManager(); }
 
   ~view_factory_t() {
-    PfViewFactoryManager::getInstance().
-        removeViewFactory(M::modelId(), &factory);
+    PfViewFactoryManager::getInstance().removeViewFactory(M::modelId(),
+                                                          &factory);
   }
 
-  F& FTO_getFactory() {
-    return factory;
-  }
+  F& FTO_getFactory() { return factory; }
 
  private:
   void addToViewFactoryManager() {

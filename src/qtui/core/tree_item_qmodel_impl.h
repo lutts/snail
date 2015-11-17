@@ -36,13 +36,13 @@ class TreeItemQModelImpl : public QAbstractItemModel {
   void itemAdded(const ITreeItem* new_item, const ITreeItem* parent_item);
 
   // QAbstractItemModel
-  QVariant data(const QModelIndex &index, int role) const override;
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  QVariant data(const QModelIndex& index, int role) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
   QModelIndex index(int row, int column,
-                    const QModelIndex &parent) const override;
-  QModelIndex parent(const QModelIndex &index) const override;
-  int rowCount(const QModelIndex &parent) const override;
-  int columnCount(const QModelIndex &parent) const override;
+                    const QModelIndex& parent) const override;
+  QModelIndex parent(const QModelIndex& index) const override;
+  int rowCount(const QModelIndex& parent) const override;
+  int columnCount(const QModelIndex& parent) const override;
 
  protected:
   QtTreeItem* rootItem() const;
@@ -78,14 +78,13 @@ class TreeItemQModelImplWithProviderRoot : public TreeItemQModelImpl {
   ~TreeItemQModelImplWithProviderRoot();
   void setTreeItemProvider(ITreeItemProvider* item_provider) override;
 
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
 
  private:
   void clear() override;
   QModelIndex itemToIndex(const ITreeItem* item) const override;
 
-  QtTreeItem* provider_item_ { nullptr };
+  QtTreeItem* provider_item_{nullptr};
 };
-
 
 #endif  // SRC_QTUI_CORE_TREE_ITEM_QMODEL_IMPL_H_

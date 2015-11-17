@@ -18,10 +18,10 @@
 #include "snail/mock_kbnode_link_attribute_popup_editor_model.h"
 #include "qtui/ui/mock_kbnode_link_attribute_popup_editor_view.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 class KbNodeLinkAttributeInlineEditorPresenterTest;
 
@@ -91,7 +91,7 @@ UpdateValueTestFixture::UpdateValueTestFixture(
 }
 
 TEST_F(KbNodeLinkAttributeInlineEditorPresenterTest,
-       should_be_able_to_show_popup_editor_view) { // NOLINT
+       should_be_able_to_show_popup_editor_view) {  // NOLINT
   // Setup fixture
   auto popup_editor_model =
       std::make_shared<MockKbNodeLinkAttributePopupEditorModel>();

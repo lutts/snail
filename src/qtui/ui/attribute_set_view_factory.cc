@@ -16,7 +16,7 @@
 #include "pfmvp/pf_view_factory_manager.h"
 #include "src/qtui/core/attribute_set_layout.h"
 
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 using namespace snailcore;  // NOLINT
 
 class AttributeSetViewForWorkViewFactory
@@ -27,9 +27,9 @@ class AttributeSetViewForWorkViewFactory
 
   DEF_VIEW_FACTORY_ID(AttributeSetViewForWorkViewFactory)
 
-  std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<IAttributeSetModel> model,
-                PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createViewFor(
+      std::shared_ptr<IAttributeSetModel> model,
+      PfCreateViewArgs* args) override {
     (void)args;
     auto view = std::make_shared<AttributeSetViewForWorkView>();
     auto layout = std::make_shared<AttributeSetLayout>();
@@ -42,4 +42,4 @@ class AttributeSetViewForWorkViewFactory
 };
 
 static view_factory_t<IAttributeSetModel, AttributeSetViewForWorkViewFactory>
-g_attributeset_view_factory;
+    g_attributeset_view_factory;

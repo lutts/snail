@@ -15,8 +15,8 @@
 namespace pfmvp {
 namespace tests {
 
-#define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)               \
-  MOCK_METHOD3(when##sigName, bool(ObjType*, sigName##SlotType, \
+#define SNAIL_PFTRIAD_MOCK_SLOT(sigName, ObjType)                        \
+  MOCK_METHOD3(when##sigName, bool(ObjType*, sigName##SlotType,          \
                                    std::shared_ptr<utils::ITrackable>)); \
   MOCK_METHOD1(cleanup##sigName, void(ObjType*))
 
@@ -40,8 +40,7 @@ class MockPfTriadManager : public IPfTriadManager {
   MOCK_METHOD1(removeTriadBy, void(IPfView* view));
   MOCK_METHOD1(requestRemoveTriadByView, bool(IPfView* view));
 
-  MOCK_CONST_METHOD1(findViewByModel,
-                     std::vector<IPfView*>(IPfModel* model));
+  MOCK_CONST_METHOD1(findViewByModel, std::vector<IPfView*>(IPfModel* model));
   MOCK_CONST_METHOD1(findModelByView, IPfModel*(IPfView* view));
 
   MOCK_CONST_METHOD2(
@@ -51,9 +50,8 @@ class MockPfTriadManager : public IPfTriadManager {
           const IPfViewFactory::ViewFactoryIdType& view_factory_id));
 
   MOCK_CONST_METHOD2(findViewByModel_if,
-                     std::vector<IPfView*>(
-                         IPfModel* model,
-                         MementoPredicate pred));
+                     std::vector<IPfView*>(IPfModel* model,
+                                           MementoPredicate pred));
 
   template <typename V>
   void expectationsOnShowModalDialog(std::shared_ptr<IPfModel> pfmodel,

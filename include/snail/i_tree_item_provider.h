@@ -32,9 +32,8 @@ class ITreeItemProvider {
 
   SNAIL_SIGSLOT_PURE_VIRTUAL(BeginFilter, void());
   SNAIL_SIGSLOT_PURE_VIRTUAL(FinishFilter, void());
-  SNAIL_SIGSLOT_PURE_VIRTUAL(ItemAdded,
-                             void(const ITreeItem* new_item,
-                                  const ITreeItem* parent_item));
+  SNAIL_SIGSLOT_PURE_VIRTUAL(ItemAdded, void(const ITreeItem* new_item,
+                                             const ITreeItem* parent_item));
 
   // external
   virtual utils::U8String name() const = 0;
@@ -42,8 +41,8 @@ class ITreeItemProvider {
   virtual utils::U8String getFilterPattern() const = 0;
   virtual bool isFilterMode() const = 0;
   virtual ITreeItem* getRootItem() const = 0;
-  virtual std::unique_ptr<IChildItemIterator>
-  childItems(ITreeItem* parent_item) const = 0;
+  virtual std::unique_ptr<IChildItemIterator> childItems(
+      ITreeItem* parent_item) const = 0;
 };
 
 }  // namespace snailcore

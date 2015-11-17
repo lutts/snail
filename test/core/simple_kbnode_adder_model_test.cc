@@ -25,7 +25,7 @@ class SimpleKbNodeAdderModelTestBase : public TestBase {
   void SetUp() override {
     // TODO(lutts): kbnode manager may be get from kbnode provider
     model = utils::make_unique<SimpleKbNodeAdderModel>(&kbnode_provider,
-                                                    &kbnode_manager);
+                                                       &kbnode_manager);
   }
   // virtual void TearDown() { }
 
@@ -42,11 +42,11 @@ class SimpleKbNodeAdderModelTestBase : public TestBase {
   // endregion
 };
 
-class SimpleKbNodeAdderModelTest :
-      public SimpleKbNodeAdderModelTestBase<::testing::Test> { };
+class SimpleKbNodeAdderModelTest
+    : public SimpleKbNodeAdderModelTestBase<::testing::Test> {};
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_model_name_be_provider_name) { // NOLINT
+       should_model_name_be_provider_name) {  // NOLINT
   // Setup fixture
   auto provider_name = xtestutils::genRandomString();
 
@@ -61,12 +61,12 @@ TEST_F(SimpleKbNodeAdderModelTest,
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_be_able_to_get_the_kbnode_provider) { // NOLINT
+       should_be_able_to_get_the_kbnode_provider) {  // NOLINT
   ASSERT_EQ(&kbnode_provider, model->getKbNodeProvider());
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_filter_pattern_be_provider_filter_pattern) { // NOLINT
+       should_filter_pattern_be_provider_filter_pattern) {  // NOLINT
   // Setup fixture
   auto expect_pattern = xtestutils::genRandomString();
 
@@ -84,7 +84,7 @@ TEST_F(SimpleKbNodeAdderModelTest,
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_be_able_to_set_and_get_new_kbnode_parent) { // NOLINT
+       should_be_able_to_set_and_get_new_kbnode_parent) {  // NOLINT
   // Setup fixture
   auto expect_kbnode = xtestutils::genDummyPointer<IKbNode>();
 
@@ -99,7 +99,7 @@ TEST_F(SimpleKbNodeAdderModelTest,
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_validate_false_when_set_an_empty_name) { // NOLINT
+       should_validate_false_when_set_an_empty_name) {  // NOLINT
   // initially false
   ASSERT_EQ(false, model->isNewKbNodeNameValid());
 
@@ -111,7 +111,7 @@ TEST_F(SimpleKbNodeAdderModelTest,
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_validate_true_when_set_an_non_empty_name) { // NOLINT
+       should_validate_true_when_set_an_non_empty_name) {  // NOLINT
   // Setup fixture
   auto name = xtestutils::genRandomString();
 
@@ -126,14 +126,14 @@ TEST_F(SimpleKbNodeAdderModelTest,
 }
 
 class SimpleKbNodeAdderModelTest_BoolParam
-    : public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool> > { }; // NOLINT
+    : public SimpleKbNodeAdderModelTestBase<::testing::TestWithParam<bool>> {
+};  // NOLINT
 
-INSTANTIATE_TEST_CASE_P(BoolParam,
-                        SimpleKbNodeAdderModelTest_BoolParam,
+INSTANTIATE_TEST_CASE_P(BoolParam, SimpleKbNodeAdderModelTest_BoolParam,
                         ::testing::Bool());
 
 TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
-       should_add_kbnode_with_use_setted_params) { // NOLINT
+       should_add_kbnode_with_use_setted_params) {  // NOLINT
   // Setup fixture
   auto expect_parent_kbnode = xtestutils::genDummyPointer<IKbNode>();
   auto expect_new_name = xtestutils::genRandomString();
@@ -144,16 +144,16 @@ TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
   model->setIsCategory(expect_category);
 
   // Expectations
-  EXPECT_CALL(kbnode_manager,
-              addKbNode(expect_new_name,
-                        expect_parent_kbnode, expect_category));
+  EXPECT_CALL(kbnode_manager, addKbNode(expect_new_name, expect_parent_kbnode,
+                                        expect_category));
 
   // Exercise system
   model->addKbNode();
 }
 
-TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
-       should_use_provider_root_kbnode_as_parent_when_user_setted_parent_is_nullptr) { // NOLINT
+TEST_P(
+    SimpleKbNodeAdderModelTest_BoolParam,
+    should_use_provider_root_kbnode_as_parent_when_user_setted_parent_is_nullptr) {  // NOLINT
   // Setup fixture
   auto expect_new_name = xtestutils::genRandomString();
   auto expect_category = GetParam();
@@ -164,8 +164,7 @@ TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
 
   MockKbNode root_kbnode;
 
-  EXPECT_CALL(kbnode_provider, getRootItem())
-      .WillOnce(Return(&root_kbnode));
+  EXPECT_CALL(kbnode_provider, getRootItem()).WillOnce(Return(&root_kbnode));
 
   // Expectations
   EXPECT_CALL(kbnode_manager,
@@ -176,7 +175,7 @@ TEST_P(SimpleKbNodeAdderModelTest_BoolParam,
 }
 
 TEST_F(SimpleKbNodeAdderModelTest,
-       should_not_add_kbnode_to_provider_when_name_is_invalid) { // NOLINT
+       should_not_add_kbnode_to_provider_when_name_is_invalid) {  // NOLINT
   // Expectations
   EXPECT_CALL(kbnode_manager, addKbNode(_, _, _)).Times(0);
 

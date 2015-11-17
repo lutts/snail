@@ -5,7 +5,6 @@
 //
 // [Desc]
 
-
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -16,8 +15,7 @@
 
 #include "src/qtui/ui/work_name_input_dialog.h"
 
-WorkNameInputDialog::WorkNameInputDialog(QWidget *parent)
-    : QDialog(parent) {
+WorkNameInputDialog::WorkNameInputDialog(QWidget *parent) : QDialog(parent) {
   setObjectName(QStringLiteral("newWorkNameDialog"));
   setModal(true);
 
@@ -40,7 +38,8 @@ WorkNameInputDialog::WorkNameInputDialog(QWidget *parent)
   QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
   buttonBox->setObjectName(QStringLiteral("buttonBox"));
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+  buttonBox->setStandardButtons(QDialogButtonBox::Cancel |
+                                QDialogButtonBox::Ok);
   buttonBox->setCenterButtons(true);
   QPushButton *okBtn = buttonBox->button(QDialogButtonBox::Ok);
   okBtn->setEnabled(false);
@@ -48,17 +47,13 @@ WorkNameInputDialog::WorkNameInputDialog(QWidget *parent)
   verticalLayout->addWidget(buttonBox);
 
   connect(workName, &QLineEdit::textChanged,
-          [okBtn](const QString & text) {
-            okBtn->setEnabled(!text.isEmpty());
-          });
+          [okBtn](const QString &text) { okBtn->setEnabled(!text.isEmpty()); });
 
   QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-const QString WorkNameInputDialog::name() const {
-  return workName->text();
-}
-void WorkNameInputDialog::setName(const QString& defaultName) {
+const QString WorkNameInputDialog::name() const { return workName->text(); }
+void WorkNameInputDialog::setName(const QString &defaultName) {
   workName->setText(defaultName);
 }

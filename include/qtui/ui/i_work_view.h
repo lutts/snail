@@ -23,9 +23,7 @@ class IWorkView : public GenericViewBase {
   virtual void setWorkName(const QString& work_name) = 0;
 
   // sub views
-  virtual void setWorkAttrSetView(
-      IAttributeSetView* attr_set_view) = 0;
+  virtual void setWorkAttrSetView(IAttributeSetView* attr_set_view) = 0;
 };
-
 
 #endif  // INCLUDE_QTUI_UI_I_WORK_VIEW_H_

@@ -24,27 +24,18 @@ class EnumClassRangeTest : public ::testing::Test {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  ~EnumClassRangeTest() { }
-  virtual void SetUp() { }
-  virtual void TearDown() { }
+  ~EnumClassRangeTest() {}
+  virtual void SetUp() {}
+  virtual void TearDown() {}
 };
 
-enum class test_enum {
-  zero,
-    one,
-    two,
-    three,
-    count
-};
+enum class test_enum { zero, one, two, three, count };
 
-TEST_F(EnumClassRangeTest, iterateOverEnumClassRangeShouldGotAllPossibleValues) { // NOLINT
+TEST_F(EnumClassRangeTest,
+       iterateOverEnumClassRangeShouldGotAllPossibleValues) {  // NOLINT
   // expectations
-  test_enum expect_values[] = {
-    test_enum::zero,
-    test_enum::one,
-    test_enum::two,
-    test_enum::three
-  };
+  test_enum expect_values[] = {test_enum::zero, test_enum::one, test_enum::two,
+                               test_enum::three};
 
   // Verify results
   int i = 0;
@@ -54,14 +45,11 @@ TEST_F(EnumClassRangeTest, iterateOverEnumClassRangeShouldGotAllPossibleValues) 
   }
 }
 
-TEST_F(EnumClassRangeTest, enumWithSpecifiedFirst) { // NOLINT
+TEST_F(EnumClassRangeTest, enumWithSpecifiedFirst) {  // NOLINT
   // Setup fixture
 
   // expectations
-  test_enum expect_values[] = {
-    test_enum::two,
-    test_enum::three
-  };
+  test_enum expect_values[] = {test_enum::two, test_enum::three};
 
   // Verify results
   int i = 0;
@@ -71,17 +59,14 @@ TEST_F(EnumClassRangeTest, enumWithSpecifiedFirst) { // NOLINT
   }
 }
 
-TEST_F(EnumClassRangeTest, enumWithSpecifiedFirstLast) { // NOLINT
+TEST_F(EnumClassRangeTest, enumWithSpecifiedFirstLast) {  // NOLINT
   // expectations
-  test_enum expect_values[] = {
-    test_enum::one,
-    test_enum::two
-  };
+  test_enum expect_values[] = {test_enum::one, test_enum::two};
 
   // Verify results
   int i = 0;
-  for (const auto& e : enum_class_range<test_enum,
-           test_enum::one, test_enum::three>()) {
+  for (const auto& e :
+       enum_class_range<test_enum, test_enum::one, test_enum::three>()) {
     ASSERT_EQ(expect_values[i], e);
     ++i;
   }

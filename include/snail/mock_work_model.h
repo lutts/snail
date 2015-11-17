@@ -22,8 +22,7 @@ class MockWorkModel : public IWorkModel {
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(set_name, bool(const utils::U8String& new_name));
 
-  MOCK_METHOD0(createAttributeSetModel,
-               std::shared_ptr<IAttributeSetModel>());
+  MOCK_METHOD0(createAttributeSetModel, std::shared_ptr<IAttributeSetModel>());
 };
 
 }  // namespace tests

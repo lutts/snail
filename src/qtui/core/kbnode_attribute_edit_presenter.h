@@ -15,19 +15,16 @@
 #include "qtui/ui/i_kbnode_attribute_edit_view.h"
 #include "qtui/core/fto_tree_item_qmodel.h"
 
-using KbNodeAttributeEditPresenterBase =
-    pfmvp::PfPresenterT<snailcore::IKbNodeAttributeModel,
-                        IKbNodeAttributeEditView>;
+using KbNodeAttributeEditPresenterBase = pfmvp::PfPresenterT<
+    snailcore::IKbNodeAttributeModel, IKbNodeAttributeEditView>;
 
 class KbNodeAttributeEditPresenter : public KbNodeAttributeEditPresenterBase {
  public:
   KbNodeAttributeEditPresenter(
-      std::shared_ptr<model_type> model,
-      std::shared_ptr<view_type> view,
+      std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
       std::shared_ptr<fto::TreeItemQModel> kbnode_qmodel)
-      : KbNodeAttributeEditPresenterBase(model, view)
-      , kbnode_qmodel_(std::move(kbnode_qmodel)) {
-  }
+      : KbNodeAttributeEditPresenterBase(model, view),
+        kbnode_qmodel_(std::move(kbnode_qmodel)) {}
 
   void initialize() override;
 

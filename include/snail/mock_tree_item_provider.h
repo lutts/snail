@@ -41,8 +41,8 @@ BEGIN_BIND_SIGNAL(ITreeItemProvider)
 
 BIND_SIGNAL0(BeginFilter, void);
 BIND_SIGNAL0(FinishFilter, void);
-BIND_SIGNAL2(ItemAdded,
-             void, const ITreeItem*, new_item, const ITreeItem*, parent_item);
+BIND_SIGNAL2(ItemAdded, void, const ITreeItem*, new_item, const ITreeItem*,
+             parent_item);
 
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()

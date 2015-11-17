@@ -30,24 +30,21 @@ class FilterWidget : public QLineEdit {
   void complete();
 
  private:
-  enum {
-    kShowCompletionEvent = QEvent::User
-  };
+  enum { kShowCompletionEvent = QEvent::User };
 
   FilterWidget(const FilterWidget& other) = delete;
   FilterWidget& operator=(const FilterWidget& other) = delete;
 
-  void focusInEvent(QFocusEvent *e);
-  void focusOutEvent(QFocusEvent *e);
-  void mouseReleaseEvent(QMouseEvent * e) override;
+  void focusInEvent(QFocusEvent* e);
+  void focusOutEvent(QFocusEvent* e);
+  void mouseReleaseEvent(QMouseEvent* e) override;
   void customEvent(QEvent* e);
   void mayShowCompleterOnEmptyContent();
 
   void complete(const QString& filter_pattern);
 
-  QtCompleter* completer_ { nullptr };
+  QtCompleter* completer_{nullptr};
   QTimer timer;
 };
-
 
 #endif  // SRC_QTUI_UI_WIDGETS_FILTERWIDGET_H_

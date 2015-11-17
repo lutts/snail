@@ -12,27 +12,25 @@
 
 #define V_UNUSED(v) (void)(v)
 
-#define LINE_TRACE                              \
-  do {                                          \
-    std::cout << "enter "                       \
-              << __PRETTY_FUNCTION__ << ":"     \
-              << __LINE__                       \
-              << std::endl;                     \
+#define LINE_TRACE                                                  \
+  do {                                                              \
+    std::cout << "enter " << __PRETTY_FUNCTION__ << ":" << __LINE__ \
+              << std::endl;                                         \
   } while (0)
 
-#define SNAIL_DISABLE_COPY(Class)              \
-  Class(const Class&) = delete;                \
+#define SNAIL_DISABLE_COPY(Class) \
+  Class(const Class&) = delete;   \
   Class& operator=(const Class&) = delete;
 
 namespace utils {
 // default deleter version
-template<typename T, typename... Args>
+template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
 template <typename T, int N>
-constexpr int sizeof_array(const T (&)[N] ) {
+constexpr int sizeof_array(const T(&)[N]) {
   return N;
 }
 

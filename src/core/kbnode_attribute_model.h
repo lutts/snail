@@ -28,8 +28,7 @@ class KbNodeAttributeModelSignalHelper;
 class KbNodeAttributeModel : public IKbNodeAttributeModel {
  public:
   KbNodeAttributeModel(
-      fto::KbNodeAttribute* kbnode_attr,
-      fto::KbNodeManager* kbnode_manager,
+      fto::KbNodeAttribute* kbnode_attr, fto::KbNodeManager* kbnode_manager,
       ISimpleKbNodeAdderModelFactory* simple_kbnode_adder_model_factory);
   virtual ~KbNodeAttributeModel();
 
@@ -37,8 +36,8 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
   ITreeItemProvider* getKbNodeProvider() const override;
 
-  std::shared_ptr<ISimpleKbNodeAdderModel>
-  createSimpleKbNodeAdderModel() const override;
+  std::shared_ptr<ISimpleKbNodeAdderModel> createSimpleKbNodeAdderModel()
+      const override;
 
   utils::U8String getKbNodeName() const override;
   void setKbNode(ITreeItem* item) override;
@@ -59,9 +58,8 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
   mutable std::shared_ptr<ITreeItemProvider> kbnode_provider_;
 
-  bool last_validate_result_ { true };
+  bool last_validate_result_{true};
 };
-
 
 }  // namespace snailcore
 

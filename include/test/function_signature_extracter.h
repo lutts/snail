@@ -8,6 +8,8 @@
 #ifndef INCLUDE_TEST_FUNCTION_SIGNATURE_EXTRACTER_H_
 #define INCLUDE_TEST_FUNCTION_SIGNATURE_EXTRACTER_H_
 
+#include <tuple>
+
 // Template struct FunctionSignatureExtracter<F>, where F must be a function
 // type, contains the following typedefs:
 //
@@ -24,8 +26,7 @@ struct FunctionSignatureExtracter<R()> {
 };
 
 template <typename R, typename A1>
-struct FunctionSignatureExtracter<R(A1)>
-    : FunctionSignatureExtracter<R()> {
+struct FunctionSignatureExtracter<R(A1)> : FunctionSignatureExtracter<R()> {
   typedef A1 Argument1;
   typedef ::std::tuple<A1> ArgumentTuple;
 };
@@ -97,15 +98,14 @@ template <typename R, typename A1, typename A2, typename A3, typename A4,
 struct FunctionSignatureExtracter<R(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)>
     : FunctionSignatureExtracter<R(A1, A2, A3, A4, A5, A6, A7, A8, A9)> {
   typedef A10 Argument10;
-  typedef ::std::tuple<A1, A2, A3, A4, A5, A6, A7, A8, A9,
-                       A10> ArgumentTuple;
+  typedef ::std::tuple<A1, A2, A3, A4, A5, A6, A7, A8, A9, A10> ArgumentTuple;
 };
 
-#define SNAIL_RESULT_(tn, ...)                          \
+#define SNAIL_RESULT_(tn, ...) \
   tn FunctionSignatureExtracter<__VA_ARGS__>::Result
 
 // The type of argument N of the given function type.
-#define SNAIL_ARG_(tn, N, ...)                                  \
+#define SNAIL_ARG_(tn, N, ...) \
   tn FunctionSignatureExtracter<__VA_ARGS__>::Argument##N
 
 #endif  // INCLUDE_TEST_FUNCTION_SIGNATURE_EXTRACTER_H_

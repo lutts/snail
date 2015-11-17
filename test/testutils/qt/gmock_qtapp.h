@@ -23,7 +23,7 @@ class QAppEnvironment : public testing::Environment {
   }
 
   QApplication* qt_app_;
-  int dummy_argc { 0 };
+  int dummy_argc{0};
 };
 
 GTEST_API_ int main(int argc, char** argv) {

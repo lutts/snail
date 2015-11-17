@@ -33,8 +33,7 @@ class KbNodeLinkAttributeTest : public ::testing::Test {
     R_EXPECT_CALL(link_attr_supplier, getDefaultProtoLinkType())
         .WillOnce(Return(&default_proto_link_type));
     link_type = new MockLinkType();
-    R_EXPECT_CALL(default_proto_link_type, clone())
-        .WillOnce(Return(link_type));
+    R_EXPECT_CALL(default_proto_link_type, clone()).WillOnce(Return(link_type));
 
     R_EXPECT_CALL(*link_type, whenLinkUpdated(_, _))
         .WillOnce(SaveArg<0>(&linkUpdated));
@@ -67,24 +66,24 @@ class KbNodeLinkAttributeTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  using LinkUpdatedSlotType =
-      fto::LinkType::LinkUpdatedSlotType;
+  using LinkUpdatedSlotType = fto::LinkType::LinkUpdatedSlotType;
   SlotCatcher<LinkUpdatedSlotType> linkUpdated;
   // endregion
 };
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_be_able_to_get_link_attr_supplier) { // NOLINT
+       should_be_able_to_get_link_attr_supplier) {  // NOLINT
   ASSERT_EQ(&link_attr_supplier, link_attr->supplier());
 }
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_be_able_to_get_current_link_type) { // NOLINT
+       should_be_able_to_get_current_link_type) {  // NOLINT
   EXPECT_EQ(link_type, link_attr->linkType());
 }
 
-TEST_F(KbNodeLinkAttributeTest,
-       should_attribute_display_name_be_value_supplier_name_when_link_type_render_to_empty_string) { // NOLINT
+TEST_F(
+    KbNodeLinkAttributeTest,
+    should_attribute_display_name_be_value_supplier_name_when_link_type_render_to_empty_string) {  // NOLINT
   // Setup fixture
   EXPECT_CALL(*link_type, toString()).WillOnce(Return(""));
 
@@ -99,8 +98,9 @@ TEST_F(KbNodeLinkAttributeTest,
   ASSERT_EQ(value_supplier_name, actual_name);
 }
 
-TEST_F(KbNodeLinkAttributeTest,
-       should_attr_display_name_be_link_type_rendered_string_when_link_type_render_to_non_empty_string) { // NOLINT
+TEST_F(
+    KbNodeLinkAttributeTest,
+    should_attr_display_name_be_link_type_rendered_string_when_link_type_render_to_non_empty_string) {  // NOLINT
   // Setup fixture
   auto link_name = xtestutils::genRandomString();
   EXPECT_CALL(*link_type, toString()).WillOnce(Return(link_name));
@@ -113,7 +113,7 @@ TEST_F(KbNodeLinkAttributeTest,
 }
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_fire_attributeChanged_event_when_link_type_updated) { // NOLINT
+       should_fire_attributeChanged_event_when_link_type_updated) {  // NOLINT
   // Expectations
   EXPECT_CALL(link_attr_supplier, attributeChanged(link_attr.get()));
 
@@ -135,7 +135,7 @@ class ValueAttrFixture : public TestFixture {
 };
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_be_able_to_get_current_value_attr) { // NOLINT
+       should_be_able_to_get_current_value_attr) {  // NOLINT
   // Setup fixture
   FixtureHelper(ValueAttrFixture, fixture);
 
@@ -151,7 +151,7 @@ TEST_F(KbNodeLinkAttributeTest,
 }
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_valueText_be_value_attr_s_valueText) { // NOLINT
+       should_valueText_be_value_attr_s_valueText) {  // NOLINT
   // Setup fixture
   FixtureHelper(ValueAttrFixture, fixture);
 
@@ -164,20 +164,19 @@ TEST_F(KbNodeLinkAttributeTest,
 }
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_isEmpty_be_value_attr_s_isEmpty) { // NOLINT
+       should_isEmpty_be_value_attr_s_isEmpty) {  // NOLINT
   // Setup fixture
   FixtureHelper(ValueAttrFixture, fixture);
 
   bool expect_empty = xtestutils::randomBool();
-  EXPECT_CALL(*fixture.value_attr_, isEmpty())
-      .WillOnce(Return(expect_empty));
+  EXPECT_CALL(*fixture.value_attr_, isEmpty()).WillOnce(Return(expect_empty));
 
   // Verify results
   ASSERT_EQ(expect_empty, link_attr->isEmpty());
 }
 
 TEST_F(KbNodeLinkAttributeTest,
-       should_clear_clear_both_value_attr_and_link_type) { // NOLINT
+       should_clear_clear_both_value_attr_and_link_type) {  // NOLINT
   // Setup fixture
   FixtureHelper(ValueAttrFixture, fixture);
   link_attr->valueAttr();  // init value attr
@@ -191,14 +190,13 @@ TEST_F(KbNodeLinkAttributeTest,
 }
 
 TEST(KbNodeLinkAttributeSupplierTest,
-     should_get_back_components_passed_in_constructor) { // NOLINT
+     should_get_back_components_passed_in_constructor) {  // NOLINT
   auto link_item_provider = xtestutils::genDummyPointer<ITreeItemProvider>();
   auto default_proto_link_type = xtestutils::genDummyPointer<fto::LinkType>();
   auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
 
-  KbNodeLinkAttributeSupplier attr_supplier(link_item_provider,
-                                            default_proto_link_type,
-                                            root_kbnode, std::rand());
+  KbNodeLinkAttributeSupplier attr_supplier(
+      link_item_provider, default_proto_link_type, root_kbnode, std::rand());
   ASSERT_EQ(link_item_provider, attr_supplier.getLinkTypeItemProvider());
   ASSERT_EQ(default_proto_link_type, attr_supplier.getDefaultProtoLinkType());
   ASSERT_EQ(root_kbnode, attr_supplier.getRootKbNode());

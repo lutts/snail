@@ -22,9 +22,7 @@ void KbNodeAttributeEditPresenter::initialize() {
   view()->setKbNodeTreeQModel(kbnode_qmodel_->qmodel());
 
   view()->whenUserClickedIndex(
-      [this](const QModelIndex& index) {
-        on_UserClickedIndex(index);
-      },
+      [this](const QModelIndex& index) { on_UserClickedIndex(index); },
       shared_from_this());
 
   view()->whenFilterPatternChanged(
@@ -36,16 +34,10 @@ void KbNodeAttributeEditPresenter::initialize() {
       shared_from_this());
 
   view()->whenEditingFinished(
-      [this](const QString& text) {
-        on_editingFinished(text);
-      },
+      [this](const QString& text) { on_editingFinished(text); },
       shared_from_this());
 
-  view()->whenUserClickAddKbNode(
-      [this]() {
-        addKbNode();
-      },
-      shared_from_this());
+  view()->whenUserClickAddKbNode([this]() { addKbNode(); }, shared_from_this());
 }
 
 void KbNodeAttributeEditPresenter::addKbNode() {
@@ -65,7 +57,7 @@ void KbNodeAttributeEditPresenter::on_UserClickedIndex(
   }
 }
 
-void KbNodeAttributeEditPresenter::on_editingFinished(const QString &text) {
+void KbNodeAttributeEditPresenter::on_editingFinished(const QString& text) {
   int ret = model()->setKbNodeByName(QStringToU8String(text));
   auto kbnode_provider = model()->getKbNodeProvider();
   QString provider_name = U8StringToQString(kbnode_provider->name());
@@ -78,7 +70,7 @@ void KbNodeAttributeEditPresenter::on_editingFinished(const QString &text) {
       break;
     case IKbNodeAttributeModel::kSetKbNodeSuccess:
       view()->clearWarningMessages();
-    default: { }
+    default: {}
       // do nothing
   }
 }

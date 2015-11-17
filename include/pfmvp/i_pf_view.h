@@ -16,8 +16,11 @@ class IPfView {
 
   // @return: for dialog views, true for user accepted, false for rejected
   //          for other views, the meaning of the result is undefined
-  virtual bool showView(bool modal = false) { (void)modal; return false; }
-  virtual void onDestroy() { }
+  virtual bool showView(bool modal = false) {
+    (void)modal;
+    return false;
+  }
+  virtual void onDestroy() {}
 };
 
 }  // namespace pfmvp

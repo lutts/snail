@@ -16,8 +16,7 @@ class MockWorkView : public IWorkView {
 
   MOCK_METHOD1(setWorkName, void(const QString& work_name));
 
-  MOCK_METHOD1(setWorkAttrSetView,
-               void(IAttributeSetView* attr_set_view));
+  MOCK_METHOD1(setWorkAttrSetView, void(IAttributeSetView* attr_set_view));
 };
 
 #endif  // INCLUDE_QTUI_UI_MOCK_WORK_VIEW_H_

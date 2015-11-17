@@ -25,11 +25,10 @@ class PfTriadManager : public IPfTriadManager {
   explicit PfTriadManager(const IPfViewFactoryManager& view_factory_mgr);
   virtual ~PfTriadManager();
 
-  std::shared_ptr<IPfView>
-  createViewFor(std::shared_ptr<IPfModel> model,
-                PfPresenter* parent,
-                bool auto_remove_child,
-                PfCreateViewArgs* args) override;
+  std::shared_ptr<IPfView> createViewFor(std::shared_ptr<IPfModel> model,
+                                         PfPresenter* parent,
+                                         bool auto_remove_child,
+                                         PfCreateViewArgs* args) override;
 
   void removeTriadBy(IPfModel* model) override;
   void removeTriadBy(IPfView* view) override;
@@ -43,8 +42,7 @@ class PfTriadManager : public IPfTriadManager {
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) const override;
 
   std::vector<IPfView*> findViewByModel_if(
-      IPfModel* model,
-      MementoPredicate pred) const override;
+      IPfModel* model, MementoPredicate pred) const override;
 
  private:
   PfTriadManager(const PfTriadManager& other) = delete;
@@ -54,13 +52,11 @@ class PfTriadManager : public IPfTriadManager {
   std::unique_ptr<PfTriadManagerImpl> impl;
 
  private:
-  SNAIL_PFTRIAD_SIGSLOT_COMBINER_IMPL_DECLARE(RequestRemoveModel,
-                                              IPfModel,
+  SNAIL_PFTRIAD_SIGSLOT_COMBINER_IMPL_DECLARE(RequestRemoveModel, IPfModel,
                                               and_slot_bool_result_combiner);
   SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE(AboutToDestroyModel, IPfModel);
   SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE(AboutToDestroyView, IPfView);
 };
-
 
 }  // namespace pfmvp
 

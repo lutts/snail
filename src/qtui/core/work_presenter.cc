@@ -17,14 +17,12 @@ void WorkPresenter::initialize() {
 
   pfmvp::PfCreateViewArgs args;
   args.set_view_factory_id(PF_VIEW_FACTORY(AttributeSetViewForWorkViewFactory));
-  auto attr_set_view =
-      createRawViewFor<IAttributeSetView>(
-          model()->createAttributeSetModel(), &args);
+  auto attr_set_view = createRawViewFor<IAttributeSetView>(
+      model()->createAttributeSetModel(), &args);
   view()->setWorkAttrSetView(attr_set_view);
 
-  view()->whenUserSetWorkName(
-      [this](const QString& new_name) {
-        model()->set_name(QStringToU8String(new_name));
-      },
-      shared_from_this());
+  view()->whenUserSetWorkName([this](const QString& new_name) {
+                                model()->set_name(QStringToU8String(new_name));
+                              },
+                              shared_from_this());
 }

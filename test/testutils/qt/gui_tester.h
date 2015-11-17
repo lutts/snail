@@ -18,8 +18,8 @@
 class DelayedAction : public QObject {
   Q_OBJECT
  public:
-  DelayedAction() : delay(0), next(nullptr) { }
-  virtual ~DelayedAction() { }
+  DelayedAction() : delay(0), next(nullptr) {}
+  virtual ~DelayedAction() {}
 
  public slots:
   virtual void run();
@@ -37,16 +37,13 @@ class GuiTester : public QObject {
   virtual ~GuiTester();
 
  protected:
-  void clickLater(QWidget *widget,
-                  int delay_msec = 0,
+  void clickLater(QWidget *widget, int delay_msec = 0,
                   Qt::MouseButton button = Qt::LeftButton);
 
-  void doubleClickLater(QWidget *widget,
-                        int delay_msec = 0,
+  void doubleClickLater(QWidget *widget, int delay_msec = 0,
                         Qt::MouseButton button = Qt::LeftButton);
 
-  void keyClickLater(QWidget *widget,
-                     Qt::Key key,
+  void keyClickLater(QWidget *widget, Qt::Key key,
                      Qt::KeyboardModifiers modifier = Qt::NoModifier,
                      int delay_msec = 0);
 
@@ -54,12 +51,10 @@ class GuiTester : public QObject {
   void addToSequence(DelayedAction *action, int delay = 0);
   void runSequence();
 
-  inline static QWindow* qWaitForNamedWindowExposed(
-      QObject *parent,
-      QString objectName,
+  inline static QWindow *qWaitForNamedWindowExposed(
+      QObject *parent, QString objectName,
       Qt::FindChildOptions options = Qt::FindChildrenRecursively,
-      int timeout = 1000,
-      int complain_threshold = 30) {
+      int timeout = 1000, int complain_threshold = 30) {
     QElapsedTimer timer;
     timer.start();
 
@@ -67,31 +62,27 @@ class GuiTester : public QObject {
 
     while (!window || !window->isExposed()) {
       int remaining = timeout - static_cast<int>(timer.elapsed());
-      if (remaining <= 0)
-        break;
+      if (remaining <= 0) break;
 
       if (timer.elapsed() > complain_threshold) {
         qDebug() << "WARNING: Window " << objectName
-                 << " still not exposed after "
-                 << complain_threshold << "ms";
+                 << " still not exposed after " << complain_threshold << "ms";
       }
 
       QCoreApplication::processEvents(QEventLoop::AllEvents, remaining);
       QCoreApplication::sendPostedEvents(0, QEvent::DeferredDelete);
       QTest::qSleep(1);
 
-      window = parent->findChild<QWindow*>(objectName, options);
+      window = parent->findChild<QWindow *>(objectName, options);
     }
 
     return window;
   }
 
-  inline static QWidget* qWaitForNamedWidgetVisible(
-      QObject *parent,
-      QString objectName,
+  inline static QWidget *qWaitForNamedWidgetVisible(
+      QObject *parent, QString objectName,
       Qt::FindChildOptions options = Qt::FindChildrenRecursively,
-      int timeout = 1000,
-      int complain_threshold = 30) {
+      int timeout = 1000, int complain_threshold = 30) {
     QElapsedTimer timer;
     timer.start();
 
@@ -99,36 +90,31 @@ class GuiTester : public QObject {
 
     while (!widget || !widget->isVisible()) {
       int remaining = timeout - static_cast<int>(timer.elapsed());
-      if (remaining <= 0)
-        break;
+      if (remaining <= 0) break;
 
       if (timer.elapsed() > complain_threshold) {
         qDebug() << "WARNING: Widget " << objectName
-                 << " still not visible after "
-                 << timer.elapsed() << "ms";
+                 << " still not visible after " << timer.elapsed() << "ms";
       }
 
       QCoreApplication::processEvents(QEventLoop::AllEvents, remaining);
       QCoreApplication::sendPostedEvents(0, QEvent::DeferredDelete);
       QTest::qSleep(1);
 
-      widget = parent->findChild<QWidget*>(objectName, options);
+      widget = parent->findChild<QWidget *>(objectName, options);
     }
 
     return widget;
   }
 
-
   inline static bool qWaitNamedWidgetDeleted(
-      QObject *parent,
-      QString objectName,
+      QObject *parent, QString objectName,
       Qt::FindChildOptions options = Qt::FindChildrenRecursively,
-      int timeout = 1000,
-      int complain_threshold = 30) {
+      int timeout = 1000, int complain_threshold = 30) {
     QElapsedTimer timer;
     timer.start();
 
-    QWidget *widget = parent->findChild<QWidget*>(objectName, options);
+    QWidget *widget = parent->findChild<QWidget *>(objectName, options);
 
     while (widget) {
       int remaining = timeout - static_cast<int>(timer.elapsed());
@@ -137,8 +123,7 @@ class GuiTester : public QObject {
       }
 
       if (timer.elapsed() > complain_threshold) {
-        qDebug() << "WARNING: Widget " << objectName
-                 << " still exist after "
+        qDebug() << "WARNING: Widget " << objectName << " still exist after "
                  << timer.elapsed() << "ms";
       }
 
@@ -146,7 +131,7 @@ class GuiTester : public QObject {
       QCoreApplication::sendPostedEvents(0, QEvent::DeferredDelete);
       QTest::qSleep(1);
 
-      widget = parent->findChild<QWidget*>(objectName, options);
+      widget = parent->findChild<QWidget *>(objectName, options);
     }
 
     return true;
@@ -177,13 +162,11 @@ class GuiTester : public QObject {
       }
 
       int remaining = timeout - static_cast<int>(timer.elapsed());
-      if (remaining <= 0)
-        break;
+      if (remaining <= 0) break;
 
       if (timer.elapsed() > complain_threshold) {
         qDebug() << "WARNING: Top level widget " << objectName
-                 << " still visible after "
-                 << complain_threshold << "ms";
+                 << " still visible after " << complain_threshold << "ms";
       }
 
       QCoreApplication::processEvents(QEventLoop::AllEvents, remaining);
@@ -195,13 +178,11 @@ class GuiTester : public QObject {
   }
 
  private:
-  void createSingleActionSeq(DelayedAction* action, int delay_msec);
+  void createSingleActionSeq(DelayedAction *action, int delay_msec);
 
   QSet<DelayedAction *> actions;
   DelayedAction *startAction;
   DelayedAction *lastAction;
 };
-
-
 
 #endif  // TEST_TESTUTILS_QT_GUI_TESTER_H_

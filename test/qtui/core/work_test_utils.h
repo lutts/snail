@@ -9,9 +9,9 @@
 #define TEST_QTUI_CORE_WORK_TEST_UTILS_H_
 
 #include <memory>
-#include "snail/mock_work_model.h"      // MockWork
-#include "utils/u8string.h"   // U8String
-#include "test/testutils/utils.h"  // xtestutils
+#include "snail/mock_work_model.h"  // MockWork
+#include "utils/u8string.h"         // U8String
+#include "test/testutils/utils.h"   // xtestutils
 
 using snailcore::tests::MockWorkModel;
 

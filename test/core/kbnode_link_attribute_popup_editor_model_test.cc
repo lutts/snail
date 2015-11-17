@@ -38,8 +38,7 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
     R_EXPECT_CALL(link_attr, linkType()).WillOnce(Return(&link_type));
 
     link_type_copy = new MockLinkType();
-    R_EXPECT_CALL(link_type, clone())
-        .WillOnce(Return(link_type_copy));
+    R_EXPECT_CALL(link_type, clone()).WillOnce(Return(link_type_copy));
 
     model = utils::make_unique<KbNodeLinkAttributePopupEditorModel>(
         &link_attr, &attr_model_factory, &attr_set_model_factory);
@@ -77,11 +76,11 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
 class CreateAttrModelFixture : public TestFixture {
  public:
   CreateAttrModelFixture(const utils::U8String& name,
-                            KbNodeLinkAttributePopupEditorModelTest* test_case)
+                         KbNodeLinkAttributePopupEditorModelTest* test_case)
       : TestFixture(name) {
     attr_model = std::make_shared<MockAttributeModel>();
     R_EXPECT_CALL(test_case->attr_model_factory,
-                createAttributeModel(test_case->value_attr_copy))
+                  createAttributeModel(test_case->value_attr_copy))
         .WillOnce(Return(attr_model));
 
     R_EXPECT_CALL(*attr_model, whenValidateComplete(_, _))
@@ -90,25 +89,24 @@ class CreateAttrModelFixture : public TestFixture {
 
   std::shared_ptr<MockAttributeModel> attr_model;
 
-  using ValidateCompleteSlotType =
-      IAttributeModel::ValidateCompleteSlotType;
+  using ValidateCompleteSlotType = IAttributeModel::ValidateCompleteSlotType;
   SlotCatcher<ValidateCompleteSlotType> validateComplete;
 };
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_be_able_to_create_attr_model_for_value_attr) { // NOLINT
+       should_be_able_to_create_attr_model_for_value_attr) {  // NOLINT
   // Setup fixture
   FixtureHelper(CreateAttrModelFixture, fixture)
 
-  // Exercise system
-  auto actual_attr_model = model->createValueAttrModel();
+      // Exercise system
+      auto actual_attr_model = model->createValueAttrModel();
 
   // Verify results
   ASSERT_EQ(fixture.attr_model, actual_attr_model);
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_be_able_to_get_link_type_item_provider) { // NOLINT
+       should_be_able_to_get_link_type_item_provider) {  // NOLINT
   // Setup fixture
   auto link_type_item_provider =
       xtestutils::genDummyPointer<ITreeItemProvider>();
@@ -123,7 +121,7 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_be_able_to_get_current_proto_link_type) { // NOLINT
+       should_be_able_to_get_current_proto_link_type) {  // NOLINT
   // Setup fixture
   auto expect_proto_link_type = xtestutils::genDummyPointer<fto::LinkType>();
   EXPECT_CALL(*link_type_copy, prototype())
@@ -160,8 +158,7 @@ class CreateAttrSetModelFixture : public TestFixture {
  public:
   std::shared_ptr<MockAttributeSetModel> attr_set_model;
 
-  using ValidateCompleteSlotType =
-      IAttributeSetModel::ValidateCompleteSlotType;
+  using ValidateCompleteSlotType = IAttributeSetModel::ValidateCompleteSlotType;
   SlotCatcher<ValidateCompleteSlotType> validateComplete;
 
  private:
@@ -175,8 +172,9 @@ class CreateAttrSetModelFixture : public TestFixture {
   }
 };
 
-TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_be_able_to_create_attribute_for_current_link_type_sub_attributes) { // NOLINT
+TEST_F(
+    KbNodeLinkAttributePopupEditorModelTest,
+    should_be_able_to_create_attribute_for_current_link_type_sub_attributes) {  // NOLINT
   // Setup fixture
   FixtureHelper(CreateAttrSetModelFixture, fixture);
 
@@ -196,16 +194,16 @@ MOCK_METHOD1(ValidateComplete, void(bool result));
 
 BEGIN_BIND_SIGNAL(IKbNodeLinkAttributePopupEditorModel)
 
-BIND_SIGNAL2(LinkTypeChanged,
-             void, std::shared_ptr<IAttributeSetModel>, new_attr_set_model,
-             IAttributeSetModel*, old_attr_set_model);
+BIND_SIGNAL2(LinkTypeChanged, void, std::shared_ptr<IAttributeSetModel>,
+             new_attr_set_model, IAttributeSetModel*, old_attr_set_model);
 BIND_SIGNAL1(ValidateComplete, void, bool, result);
 
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_make_a_copy_when_set_proto_link_type_and_fire_link_type_changed_event) { // NOLINT
+TEST_F(
+    KbNodeLinkAttributePopupEditorModelTest,
+    should_make_a_copy_when_set_proto_link_type_and_fire_link_type_changed_event) {  // NOLINT
   // Setup fixture
   std::shared_ptr<IAttributeSetModel> old_attr_set_model;
   {
@@ -241,7 +239,7 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_be_able_to_report_validate_complete_status) { // NOLINT
+       should_be_able_to_report_validate_complete_status) {  // NOLINT
   // Setup fixture
   FixtureHelper(CreateAttrModelFixture, create_attr_model_fixture);
   model->createValueAttrModel();
@@ -254,15 +252,12 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
   bool attr_set_model_valid = true;
 
   auto attr_model = create_attr_model_fixture.attr_model;
-  EXPECT_CALL(*attr_model, isValid()).
-      WillRepeatedly(Invoke(
-                  [&attr_model_valid]() {
-                    return attr_model_valid;
-                  }));
+  EXPECT_CALL(*attr_model, isValid())
+      .WillRepeatedly(
+          Invoke([&attr_model_valid]() { return attr_model_valid; }));
 
-  auto & attrModelValidateComplete =
-      create_attr_model_fixture.validateComplete;
-  auto & attrSetModelValidateComplete =
+  auto& attrModelValidateComplete = create_attr_model_fixture.validateComplete;
+  auto& attrSetModelValidateComplete =
       create_attr_set_model_fixture.validateComplete;
 
   auto mock_listener = MockListener::attachTo(model.get());
@@ -272,35 +267,36 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
     InSequence seq;
 
     attr_model_valid = true;
-    (void)attr_model_valid;  // make scan-build happy
+    (void)attr_model_valid;        // make scan-build happy
     attr_set_model_valid = false;  // changed
     EXPECT_CALL(*mock_listener, ValidateComplete(false));
     attrSetModelValidateComplete(attr_set_model_valid);
 
     attr_model_valid = false;  // changed
     attr_set_model_valid = false;
-    (void)attr_model_valid;  // make scan-build happy
+    (void)attr_model_valid;      // make scan-build happy
     (void)attr_set_model_valid;  // make scan-build happy
     EXPECT_CALL(*mock_listener, ValidateComplete(false));
     attrModelValidateComplete();
 
     attr_model_valid = false;
-    (void)attr_model_valid;  // make scan-build happy
+    (void)attr_model_valid;       // make scan-build happy
     attr_set_model_valid = true;  // changed
     EXPECT_CALL(*mock_listener, ValidateComplete(false));
     attrSetModelValidateComplete(attr_set_model_valid);
 
     attr_model_valid = true;  // changed
     attr_set_model_valid = true;
-    (void)attr_model_valid;  // make scan-build happy
+    (void)attr_model_valid;      // make scan-build happy
     (void)attr_set_model_valid;  // make scan-build happy
     EXPECT_CALL(*mock_listener, ValidateComplete(true));
     attrModelValidateComplete();
   }
 }
 
-TEST_F(KbNodeLinkAttributePopupEditorModelTest,
-       should_sync_local_value_attr_and_link_type_copy_to_link_attr_when_edit_finished) { // NOLINT
+TEST_F(
+    KbNodeLinkAttributePopupEditorModelTest,
+    should_sync_local_value_attr_and_link_type_copy_to_link_attr_when_edit_finished) {  // NOLINT
   // Setup fixture
   EXPECT_CALL(link_attr, valueAttr()).WillOnce(Return(&value_attr));
   EXPECT_CALL(link_attr, linkType()).WillOnce(Return(&link_type));

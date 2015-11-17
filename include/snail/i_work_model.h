@@ -35,8 +35,7 @@ class IWorkModel : public pfmvp::IPfModel {
   virtual bool set_name(const utils::U8String& new_name) = 0;
 
   //
-  virtual std::shared_ptr<IAttributeSetModel>
-  createAttributeSetModel() = 0;
+  virtual std::shared_ptr<IAttributeSetModel> createAttributeSetModel() = 0;
 };
 
 }  // namespace snailcore

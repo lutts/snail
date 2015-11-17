@@ -13,28 +13,24 @@
 namespace snailcore {
 
 namespace {
-class KbNodeIterator :
-      public ITreeItemProvider::IChildItemIterator {
+class KbNodeIterator : public ITreeItemProvider::IChildItemIterator {
  public:
   KbNodeIterator() = default;
   explicit KbNodeIterator(const std::vector<IKbNode*>& kbnodes)
-      : kbnodes_(kbnodes) { }
+      : kbnodes_(kbnodes) {}
   virtual ~KbNodeIterator() = default;
 
-  bool hasNext() const {
-    return cur_idx_ < kbnodes_.size();
-  }
+  bool hasNext() const { return cur_idx_ < kbnodes_.size(); }
 
   ITreeItem* next() {
-    if (!hasNext())
-      return nullptr;
+    if (!hasNext()) return nullptr;
 
     return kbnodes_[cur_idx_++];
   }
 
  private:
   std::vector<IKbNode*> kbnodes_;
-  size_t cur_idx_ { 0 };
+  size_t cur_idx_{0};
 };
 
 }  // namespace
@@ -42,8 +38,10 @@ class KbNodeIterator :
 class KbNodeItemProviderSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(KbNodeItemProvider, BeginFilter);
+
  public:
   SNAIL_SIGSLOT_PIMPL(KbNodeItemProvider, FinishFilter);
+
  public:
   SNAIL_SIGSLOT_PIMPL(KbNodeItemProvider, ItemAdded);
 };
@@ -54,9 +52,9 @@ SNAIL_SIGSLOT_DELEGATE2(KbNodeItemProvider, ItemAdded);
 
 KbNodeItemProvider::KbNodeItemProvider(IKbNode* root_kbnode,
                                        fto::KbNodeManager* node_manager)
-    : signal_helper_(utils::make_unique<KbNodeItemProviderSignalHelper>())
-    , node_manager_(node_manager)
-    , root_kbnode_(root_kbnode) { }
+    : signal_helper_(utils::make_unique<KbNodeItemProviderSignalHelper>()),
+      node_manager_(node_manager),
+      root_kbnode_(root_kbnode) {}
 
 KbNodeItemProvider::~KbNodeItemProvider() = default;
 
@@ -67,17 +65,13 @@ utils::U8String KbNodeItemProvider::name() const {
     return "";
 }
 
-ITreeItem* KbNodeItemProvider::getRootItem() const {
-  return root_kbnode_;
-}
+ITreeItem* KbNodeItemProvider::getRootItem() const { return root_kbnode_; }
 
 void KbNodeItemProvider::setFilterPattern(
     const utils::U8String& filter_pattern) {
-  if (root_kbnode_ == nullptr)
-    return;
+  if (root_kbnode_ == nullptr) return;
 
-  if (filter_pattern_ == filter_pattern)
-    return;
+  if (filter_pattern_ == filter_pattern) return;
 
   signal_helper_->emitBeginFilter();
   if (filter_pattern != "")
@@ -91,9 +85,7 @@ utils::U8String KbNodeItemProvider::getFilterPattern() const {
   return filter_pattern_;
 }
 
-bool KbNodeItemProvider::isFilterMode() const {
-  return filter_pattern_ != "";
-}
+bool KbNodeItemProvider::isFilterMode() const { return filter_pattern_ != ""; }
 
 std::unique_ptr<ITreeItemProvider::IChildItemIterator>
 KbNodeItemProvider::childItems(ITreeItem* parent_item) const {
@@ -104,8 +96,7 @@ KbNodeItemProvider::childItems(ITreeItem* parent_item) const {
     else
       return utils::make_unique<KbNodeIterator>();
   } else {
-    if (parent_node == nullptr)
-      parent_node = root_kbnode_;
+    if (parent_node == nullptr) parent_node = root_kbnode_;
     return utils::make_unique<KbNodeIterator>(
         node_manager_->childItems(parent_node));
   }
@@ -114,8 +105,7 @@ KbNodeItemProvider::childItems(ITreeItem* parent_item) const {
 void KbNodeItemProvider::itemAdded(const ITreeItem* new_item,
                                    const ITreeItem* new_item_parent) {
   auto effect_item_parent = new_item_parent;
-  if (new_item_parent == root_kbnode_)
-    effect_item_parent = nullptr;
+  if (new_item_parent == root_kbnode_) effect_item_parent = nullptr;
 
   signal_helper_->emitItemAdded(new_item, effect_item_parent);
 }

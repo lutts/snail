@@ -23,10 +23,10 @@
 #include "snail/mock_simple_kbnode_adder_model.h"
 #include "qtui/ui/mock_simple_kbnode_adder_view.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 class KbNodeAttributeEditPresenterTest : public ::testing::Test {
  protected:
@@ -46,8 +46,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
 
     xtestutils::RandomString kbnode_name;
 
-    R_EXPECT_CALL(*model, getKbNodeName())
-        .WillOnce(Return(kbnode_name.ustr()));
+    R_EXPECT_CALL(*model, getKbNodeName()).WillOnce(Return(kbnode_name.ustr()));
     R_EXPECT_CALL(*view, setKbNodeName(kbnode_name.qstr()));
 
     EXPECT_CALL(*model, getKbNodeProvider())
@@ -75,9 +74,8 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
         .WillOnce(SaveArg<0>(&userClickAddKbNode));
 
     // Excercise system
-    presenter =
-        std::make_shared<KbNodeAttributeEditPresenter>(
-            model, view, kbnode_qmodel);
+    presenter = std::make_shared<KbNodeAttributeEditPresenter>(model, view,
+                                                               kbnode_qmodel);
     presenter->set_triad_manager(&triad_manager);
     presenter->initialize();
 
@@ -152,13 +150,13 @@ KbNodeAttributeEditPresenterTest::expectationOnAddKbNode() {
   };
 }
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_call_add_kbnode_when_user_clicked_add_kbnode_fake_row) { // NOLINT
+TEST_F(
+    KbNodeAttributeEditPresenterTest,
+    should_call_add_kbnode_when_user_clicked_add_kbnode_fake_row) {  // NOLINT
   auto index = index_generator.index();
 
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, isAddMore(index))
-      .WillOnce(Return(true));
+  EXPECT_CALL(*kbnode_qmodel, isAddMore(index)).WillOnce(Return(true));
 
   auto verifier = expectationOnAddKbNode();
 
@@ -169,8 +167,9 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   verifier();
 }
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_set_kbnode_to_model_when_user_clicked_a_normal_kbnode_index) { // NOLINT
+TEST_F(
+    KbNodeAttributeEditPresenterTest,
+    should_set_kbnode_to_model_when_user_clicked_a_normal_kbnode_index) {  // NOLINT
   // Setup fixture
   auto index = index_generator.index();
   auto kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -178,12 +177,9 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   xtestutils::RandomString kbnode_name;
 
   // Expectations
-  EXPECT_CALL(*kbnode_qmodel, isAddMore(index))
-      .WillOnce(Return(false));
-  EXPECT_CALL(*kbnode_qmodel, indexToItem(index))
-      .WillOnce(Return(kbnode));
-  EXPECT_CALL(*model, getKbNodeName())
-      .WillOnce(Return(kbnode_name.ustr()));
+  EXPECT_CALL(*kbnode_qmodel, isAddMore(index)).WillOnce(Return(false));
+  EXPECT_CALL(*kbnode_qmodel, indexToItem(index)).WillOnce(Return(kbnode));
+  EXPECT_CALL(*model, getKbNodeName()).WillOnce(Return(kbnode_name.ustr()));
   {
     InSequence seq;
 
@@ -197,7 +193,7 @@ TEST_F(KbNodeAttributeEditPresenterTest,
 }
 
 TEST_F(KbNodeAttributeEditPresenterTest,
-       should_set_filter_pattern_to_kbnode_provider) { // NOLINT
+       should_set_filter_pattern_to_kbnode_provider) {  // NOLINT
   // Setup fixture
   xtestutils::RandomString pattern;
 
@@ -209,8 +205,9 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   filterPatternChanged(pattern.qstr());
 }
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_warn_multiple_match_to_the_user_when_set_kbnode_by_name_when_editing_finished) { // NOLINT
+TEST_F(
+    KbNodeAttributeEditPresenterTest,
+    should_warn_multiple_match_to_the_user_when_set_kbnode_by_name_when_editing_finished) {  // NOLINT
   // Setup fixture
   xtestutils::RandomString text;
 
@@ -223,8 +220,9 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   editingFinished(text.qstr());
 }
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_warn_not_match_to_the_user_when_set_kbnode_by_name_when_editing_finished) { // NOLINT
+TEST_F(
+    KbNodeAttributeEditPresenterTest,
+    should_warn_not_match_to_the_user_when_set_kbnode_by_name_when_editing_finished) {  // NOLINT
   // Setup fixture
   xtestutils::RandomString text;
 
@@ -237,8 +235,9 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   editingFinished(text.qstr());
 }
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_not_warn_the_user_when_successfully_setKbNodeByName_when_editing_finished) { // NOLINT
+TEST_F(
+    KbNodeAttributeEditPresenterTest,
+    should_not_warn_the_user_when_successfully_setKbNodeByName_when_editing_finished) {  // NOLINT
   // Setup fixture
   xtestutils::RandomString text;
 
@@ -253,8 +252,9 @@ TEST_F(KbNodeAttributeEditPresenterTest,
   editingFinished(text.qstr());
 }
 
-TEST_F(KbNodeAttributeEditPresenterTest,
-       should_call_addKbNode_in_provider_and_notify_qmodel_when_UserClickAddKbNode) { // NOLINT
+TEST_F(
+    KbNodeAttributeEditPresenterTest,
+    should_call_addKbNode_in_provider_and_notify_qmodel_when_UserClickAddKbNode) {  // NOLINT
   // Expectations
   auto verifier = expectationOnAddKbNode();
 

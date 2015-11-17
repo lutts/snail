@@ -15,8 +15,8 @@ namespace pfmvp {
 namespace tests {
 
 class PfTriadManagerOneModelMultiViewFactoryTest
-    : public PfTriadManagerTestBase
-    , public ::testing::Test {
+    : public PfTriadManagerTestBase,
+      public ::testing::Test {
  protected:
   PfTriadManagerOneModelMultiViewFactoryTest() {
     // const string saved_flag = GMOCK_FLAG(verbose);
@@ -25,14 +25,11 @@ class PfTriadManagerOneModelMultiViewFactoryTest
   virtual void SetUp() {
     initialize();
 
-    view_factory_t<MockXXXModel,
-                   MockXXXViewFactory> view_factory_wrapper1;
-    view_factory_t<MockXXXModel,
-                   MockXXXViewFactory2> view_factory_wrapper2;
+    view_factory_t<MockXXXModel, MockXXXViewFactory> view_factory_wrapper1;
+    view_factory_t<MockXXXModel, MockXXXViewFactory2> view_factory_wrapper2;
 
     auto& factory1 = view_factory_wrapper1.FTO_getFactory();
     auto& factory2 = view_factory_wrapper2.FTO_getFactory();
-
 
     model = std::make_shared<MockXXXModel>();
 
@@ -101,11 +98,9 @@ class PfTriadManagerOneModelMultiViewFactoryTest
 TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
        should_be_able_to_find_view_by_model_and_view_factory_id) {
   auto actual_factory1_views = triad_manager->findViewByModelAndViewFactory(
-      model.get(),
-      MockXXXViewFactory::viewFactoryId());
+      model.get(), MockXXXViewFactory::viewFactoryId());
   auto actual_factory2_views = triad_manager->findViewByModelAndViewFactory(
-      model.get(),
-      MockXXXViewFactory2::viewFactoryId());
+      model.get(), MockXXXViewFactory2::viewFactoryId());
 
   // Verify results
   std::sort(actual_factory1_views.begin(), actual_factory1_views.end());
@@ -115,8 +110,9 @@ TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
   ASSERT_EQ(expect_factory2_views, actual_factory2_views);
 }
 
-TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
-       should_build_in_PfCreateViewArgsMemento_stored_the_factory_id) { // NOLINT
+TEST_F(
+    PfTriadManagerOneModelMultiViewFactoryTest,
+    should_build_in_PfCreateViewArgsMemento_stored_the_factory_id) {  // NOLINT
   // Setup fixture
   PfCreateViewArgs args;
   args.set_view_factory_id(MockXXXViewFactory::viewFactoryId());
@@ -129,19 +125,18 @@ TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
 }
 
 void PfTriadManagerOneModelMultiViewFactoryTest::
-checkFindViewByModelWithMatcher(MatcherFunc matcher1, MatcherFunc matcher2) {
+    checkFindViewByModelWithMatcher(MatcherFunc matcher1,
+                                    MatcherFunc matcher2) {
   // create some jam triads
   TestXXX_MVP_Triad mvp_triad;
   CUSTOM_ASSERT(createTestXXXTriads(&mvp_triad));
 
   // Exercise system
   auto actual_factory1_views =
-      triad_manager->findViewByModel_if(
-          model.get(), matcher1);
+      triad_manager->findViewByModel_if(model.get(), matcher1);
 
   auto actual_factory2_views =
-      triad_manager->findViewByModel_if(
-          model.get(), matcher2);
+      triad_manager->findViewByModel_if(model.get(), matcher2);
 
   // Verify results
   std::sort(actual_factory1_views.begin(), actual_factory1_views.end());
@@ -151,11 +146,12 @@ checkFindViewByModelWithMatcher(MatcherFunc matcher1, MatcherFunc matcher2) {
   ASSERT_EQ(expect_factory2_views, actual_factory2_views);
 }
 
-TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
-       should_be_able_to_find_using_predicate_with_CreateViewArgsMemento) { // NOLINT
-  auto matcher =
-      [](const PfCreateViewArgsMemento& memento,
-         const IPfViewFactory::ViewFactoryIdType& view_factory_id) -> int {
+TEST_F(
+    PfTriadManagerOneModelMultiViewFactoryTest,
+    should_be_able_to_find_using_predicate_with_CreateViewArgsMemento) {  // NOLINT
+  auto matcher = [](
+      const PfCreateViewArgsMemento& memento,
+      const IPfViewFactory::ViewFactoryIdType& view_factory_id) -> int {
     if (memento.view_factory_id() == view_factory_id) {
       return IPfTriadManager::kMatchedContinue;
     } else {
@@ -170,7 +166,7 @@ TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
 }
 
 TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
-       test_that_PfCreateViewArgs_can_do_memento_equal_check) { // NOLINT
+       test_that_PfCreateViewArgs_can_do_memento_equal_check) {  // NOLINT
   // Setup fixture
   PfCreateViewArgs factory1_args;
   factory1_args.set_view_factory_id(MockXXXViewFactory::viewFactoryId());
@@ -188,13 +184,14 @@ TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
   };
 
   // Verify results
-  CUSTOM_ASSERT(checkFindViewByModelWithMatcher(
-      std::bind(matcher, _1, &factory1_args),
-      std::bind(matcher, _1, &factory2_args)));
+  CUSTOM_ASSERT(
+      checkFindViewByModelWithMatcher(std::bind(matcher, _1, &factory1_args),
+                                      std::bind(matcher, _1, &factory2_args)));
 }
 
-TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
-       should_triad_create_with_no_args_use_default_memento_when_use_predicate_find) { // NOLINT
+TEST_F(
+    PfTriadManagerOneModelMultiViewFactoryTest,
+    should_triad_create_with_no_args_use_default_memento_when_use_predicate_find) {  // NOLINT
   // Setup fixture
   auto no_args_model = std::make_shared<MockXXXModel>();
   auto no_args_view = std::make_shared<MockXXXView>();
@@ -219,7 +216,7 @@ TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
 }
 
 TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
-       should_findViewByModel_if_can_be_break_on_first_match) { // NOLINT
+       should_findViewByModel_if_can_be_break_on_first_match) {  // NOLINT
   // Fixture setup
   auto matcher = [](const PfCreateViewArgsMemento& memento,
                     const IPfViewFactory::ViewFactoryIdType& view_factory_id) {
@@ -234,10 +231,8 @@ TEST_F(PfTriadManagerOneModelMultiViewFactoryTest,
   ASSERT_GT(expect_factory1_views.size(), 1);
 
   // Exercise system
-  auto actual_factory1_views =
-      triad_manager->findViewByModel_if(
-          model.get(),
-          std::bind(matcher, _1, MockXXXViewFactory::viewFactoryId()));
+  auto actual_factory1_views = triad_manager->findViewByModel_if(
+      model.get(), std::bind(matcher, _1, MockXXXViewFactory::viewFactoryId()));
 
   // Verify results
   ASSERT_EQ(1, actual_factory1_views.size());

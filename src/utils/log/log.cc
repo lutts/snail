@@ -37,9 +37,9 @@ namespace keywords = boost::log::keywords;
 #ifndef BOOST_LOGGER_PER_COMPILE_UNIT
 
 typedef boost::log::sources::severity_channel_logger_mt<
-  LogSeverityLevel,     // the type of the severity level
-  std::string         // the type of the channel name
-  > my_logger_mt;
+    LogSeverityLevel,  // the type of the severity level
+    std::string        // the type of the channel name
+    > my_logger_mt;
 
 BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT(my_logger, my_logger_mt) {
   return my_logger_mt(boost::log::keywords::channel = "generic");
@@ -48,25 +48,22 @@ BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT(my_logger, my_logger_mt) {
 class LoggerClient::LoggerClientPrivate {
  public:
   LoggerClientPrivate(LogSeverityLevel sev, const std::string& channel_name)
-      : lrec(my_logger::get().open_record((keywords::channel = channel_name,
-                                           keywords::severity = sev))) {
+      : lrec(my_logger::get().open_record(
+            (keywords::channel = channel_name, keywords::severity = sev))) {
     static_assert(sizeof(*this) < MYLOGGER_PRIV_DATA_SIZE,
                   "LoggerClientPrivate's size is larger that reserved space, "
                   "please increase MYLOGGER_PRIV_DATE_SIZE");
 
-    if (!!lrec)
-      strm.attach_record(lrec);
+    if (!!lrec) strm.attach_record(lrec);
   }
-  ~LoggerClientPrivate() {
-  }
+  ~LoggerClientPrivate() {}
 
   logging::record lrec;
   logging::record_ostream strm;
 };
 
 LoggerClient::LoggerClient(const char* tag, LogSeverityLevel sev)
-    : priv(new(priv_data) LoggerClientPrivate(sev, tag)) {
-
+    : priv(new (priv_data) LoggerClientPrivate(sev, tag)) {
   static_assert(sizeof(LoggerClientPrivate) <= MYLOGGER_PRIV_DATA_SIZE,
                 "LoggerClientPrivate is large than expect");
 }
@@ -75,23 +72,25 @@ LoggerClient::~LoggerClient() {
   if (!!priv->lrec) {
     try {
       priv->strm.flush();
-    } catch (...) { }
+    } catch (...) {
+    }
 
     try {
       my_logger::get().push_record(boost::move(priv->lrec));
-    } catch (...) { }
+    } catch (...) {
+    }
 
     priv->~LoggerClientPrivate();
   }
 }
 
-#define BYPASS_TO_BOOST_LOG_STREAM(Type)                \
-  LoggerClient& LoggerClient::operator<< (Type value) { \
-    if (!!priv->lrec) {                                 \
-      priv->strm << value;                              \
-    }                                                   \
-                                                        \
-    return *this;                                       \
+#define BYPASS_TO_BOOST_LOG_STREAM(Type)               \
+  LoggerClient& LoggerClient::operator<<(Type value) { \
+    if (!!priv->lrec) {                                \
+      priv->strm << value;                             \
+    }                                                  \
+                                                       \
+    return *this;                                      \
   }
 
 BYPASS_TO_BOOST_LOG_STREAM(char)
@@ -99,11 +98,11 @@ BYPASS_TO_BOOST_LOG_STREAM(const char*)
 BYPASS_TO_BOOST_LOG_STREAM(bool)
 BYPASS_TO_BOOST_LOG_STREAM(signed char)
 BYPASS_TO_BOOST_LOG_STREAM(unsigned char)
-BYPASS_TO_BOOST_LOG_STREAM(short)  // NOLINT
+BYPASS_TO_BOOST_LOG_STREAM(short)           // NOLINT
 BYPASS_TO_BOOST_LOG_STREAM(unsigned short)  // NOLINT
 BYPASS_TO_BOOST_LOG_STREAM(int)
 BYPASS_TO_BOOST_LOG_STREAM(unsigned int)
-BYPASS_TO_BOOST_LOG_STREAM(long)  // NOLINT
+BYPASS_TO_BOOST_LOG_STREAM(long)           // NOLINT
 BYPASS_TO_BOOST_LOG_STREAM(unsigned long)  // NOLINT
 BYPASS_TO_BOOST_LOG_STREAM(float)
 BYPASS_TO_BOOST_LOG_STREAM(double)
@@ -111,19 +110,16 @@ BYPASS_TO_BOOST_LOG_STREAM(long double)
 BYPASS_TO_BOOST_LOG_STREAM(const void*)
 BYPASS_TO_BOOST_LOG_STREAM(std::string const&)
 
-LoggerClient& LoggerClient::operator<< (std::ios_base& (*pf)(std::ios_base&)) {
-  if (!!priv->lrec)
-    priv->strm << pf;
+LoggerClient& LoggerClient::operator<<(std::ios_base& (*pf)(std::ios_base&)) {
+  if (!!priv->lrec) priv->strm << pf;
   return *this;
 }
 
 #endif  // BOOST_LOGGER_PER_COMPILE_UNIT
 
-std::ostream& operator<< (std::ostream& strm, LogSeverityLevel level) {
+std::ostream& operator<<(std::ostream& strm, LogSeverityLevel level) {
   const int maxlevel = static_cast<int>(LogSeverityLevel::num_level);
-  static const char logChar[maxlevel] = {
-    'V', 'D', 'I', 'W', 'E', 'U'
-  };
+  static const char logChar[maxlevel] = {'V', 'D', 'I', 'W', 'E', 'U'};
 
   int ilevel = static_cast<int>(level);
 
@@ -148,12 +144,12 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(thread_id, "ThreadID",
 namespace {
 
 using console_sink_type =
-    boost::shared_ptr< sinks::synchronous_sink<sinks::text_ostream_backend> >;
+    boost::shared_ptr<sinks::synchronous_sink<sinks::text_ostream_backend> >;
 
 console_sink_type console_sink;
 
 using file_sink_type =
-    boost::shared_ptr< sinks::synchronous_sink< sinks::text_file_backend > >;
+    boost::shared_ptr<sinks::synchronous_sink<sinks::text_file_backend> >;
 
 file_sink_type debug_file_sink;
 file_sink_type user_file_sink;
@@ -161,19 +157,10 @@ file_sink_type user_file_sink;
 void addDebugSinks() {
   // Setup the common formatter for all sinks
   logging::formatter debug_fmt =
-      expr::stream
-      << expr::format_date_time< boost::posix_time::ptime >(
-          "TimeStamp", "%m-%d %H:%M:%S")
-      << " "
-      << process_id
-      << " "
-      << thread_id
-      << " "
-      << severity
-      << " "
-      << channel
-      << ": "
-      << expr::smessage;
+      expr::stream << expr::format_date_time<boost::posix_time::ptime>(
+                          "TimeStamp", "%m-%d %H:%M:%S") << " " << process_id
+                   << " " << thread_id << " " << severity << " " << channel
+                   << ": " << expr::smessage;
 
   console_sink = logging::add_console_log(std::clog);
   console_sink->set_formatter(debug_fmt);
@@ -183,24 +170,24 @@ void addDebugSinks() {
       keywords::file_name = "snail_debug_%m-%d_%H-%M-%S_%N.log",
       keywords::rotation_size = 1 * 1024 * 1024,
       keywords::max_size = 16 * 1024 * 1024,
-      keywords::open_mode=(std::ios::out |std::ios::app));
+      keywords::open_mode = (std::ios::out | std::ios::app));
 
   debug_file_sink->set_formatter(debug_fmt);
 }
 
 void addUserSinks() {
   logging::formatter user_fmt =
-      expr::stream
-      << expr::format_date_time< boost::posix_time::ptime >(
-          "TimeStamp", "%m-%d %H:%M:%S")
-      << ": " << expr::smessage;
+      expr::stream << expr::format_date_time<boost::posix_time::ptime>(
+                          "TimeStamp", "%m-%d %H:%M:%S") << ": "
+                   << expr::smessage;
 
   user_file_sink = logging::add_file_log(
       keywords::target = "logs/user_logs",
-      keywords::filter = expr::attr<LogSeverityLevel>("Severity") == LogSeverityLevel::user, // NOLINT
+      keywords::filter = expr::attr<LogSeverityLevel>("Severity") ==
+                         LogSeverityLevel::user,  // NOLINT
       keywords::file_name = "snail_user_%N.log",
       keywords::max_size = 3 * 1024 * 1024,
-      keywords::open_mode=(std::ios::out | std::ios::app));
+      keywords::open_mode = (std::ios::out | std::ios::app));
 
   user_file_sink->set_formatter(user_fmt);
 }
@@ -244,17 +231,11 @@ void setLogLevel(LogSeverityLevel level) {
 }
 
 // return the current log level
-LogSeverityLevel getLogLevel() {
-  return current_level;
-}
+LogSeverityLevel getLogLevel() { return current_level; }
 
-void enableLogging() {
-  logging::core::get()->set_logging_enabled(true);
-}
+void enableLogging() { logging::core::get()->set_logging_enabled(true); }
 
-void disableLogging() {
-  logging::core::get()->set_logging_enabled(false);
-}
+void disableLogging() { logging::core::get()->set_logging_enabled(false); }
 
 void enableLog() {
   enableLogging();
@@ -266,6 +247,4 @@ void disableLog() {
   loggingEnabled = false;
 }
 
-bool isLogEnabled() {
-  return loggingEnabled;
-}
+bool isLogEnabled() { return loggingEnabled; }

@@ -20,8 +20,7 @@ class WorkSignalHelper {
 
 SNAIL_SIGSLOT_DELEGATE(Work, NameChanged, signal_helper_);
 
-Work::Work()
-    : signal_helper_(utils::make_unique<WorkSignalHelper>()) { }
+Work::Work() : signal_helper_(utils::make_unique<WorkSignalHelper>()) {}
 
 Work::~Work() = default;
 
@@ -35,9 +34,7 @@ bool Work::set_name(const utils::U8String& new_name) {
   return false;
 }
 
-const utils::U8String& Work::name() const {
-  return name_;
-}
+const utils::U8String& Work::name() const { return name_; }
 
 void Work::setAttributeSuppliers(
     std::vector<std::unique_ptr<IAttributeSupplier> >&& attr_suppliers) {
@@ -46,7 +43,7 @@ void Work::setAttributeSuppliers(
 
 std::vector<IAttributeSupplier*> Work::attributeSuppliers() const {
   std::vector<IAttributeSupplier*> attr_suppliers;
-  for (auto & attr_supplier : attr_suppliers_)
+  for (auto& attr_supplier : attr_suppliers_)
     attr_suppliers.push_back(attr_supplier.get());
 
   return attr_suppliers;

@@ -32,11 +32,11 @@
 
 #define TEST_PROXY(RealClass) fto::RealClass##TestProxy
 
-#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)          \
-  fto::Cls& operator=(fto::Cls && rhs) {        \
-    Cls& data = static_cast<Cls&>(rhs);         \
-    this->swap(data);                           \
-    return *this;                               \
+#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)              \
+  fto::Cls& operator=(fto::Cls&& rhs) { /* NOLINT*/ \
+    Cls& data = static_cast<Cls&>(rhs);             \
+    this->swap(data);                               \
+    return *this;                                   \
   }
 
 #else  // DISABLE_TEST_CODE
@@ -48,6 +48,5 @@
 #define TEST_ONLY_MOVE_ASSIGNMENT(Cls)
 
 #endif
-
 
 #endif  // INCLUDE_CONFIG_H_

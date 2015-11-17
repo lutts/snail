@@ -12,14 +12,12 @@
 namespace utils {
 namespace tests {
 
-TEST(RelayCommandTest,
-     should_be_able_to_construct_with_display_text_and_callback_function_and_redo_will_call_this_function) { // NOLINT
+TEST(
+    RelayCommandTest,
+    should_be_able_to_construct_with_display_text_and_callback_function_and_redo_will_call_this_function) {  // NOLINT
   bool called = false;
   auto expect_display_text = xtestutils::genRandomString();
-  RelayCommand cmd { expect_display_text,
-        [&called]() {
-      called = true;
-    }};
+  RelayCommand cmd{expect_display_text, [&called]() { called = true; }};
 
   cmd.redo();
 
@@ -28,7 +26,7 @@ TEST(RelayCommandTest,
 }
 
 TEST(RelayCommandTest, should_be_change_display_text) {
-  RelayCommand cmd { xtestutils::genRandomString(), [](){}};
+  RelayCommand cmd{xtestutils::genRandomString(), []() {}};
 
   auto new_display_text =
       xtestutils::genRandomDifferentString(cmd.display_text());

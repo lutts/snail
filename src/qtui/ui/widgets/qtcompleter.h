@@ -25,7 +25,7 @@ class QtCompleter : public QObject {
 
  public:
   explicit QtCompleter(QObject* parent = nullptr);
-  explicit QtCompleter(QAbstractItemModel *model, QObject *parent = 0);
+  explicit QtCompleter(QAbstractItemModel* model, QObject* parent = 0);
   virtual ~QtCompleter();
 
   void setWidget(QWidget* widget);
@@ -46,16 +46,16 @@ class QtCompleter : public QObject {
 
  signals:
   void filterPatternChanged(const QString& filter_pattern);
-  void clicked(const QModelIndex &index);
-  void highlighted(const QModelIndex &index);
+  void clicked(const QModelIndex& index);
+  void highlighted(const QModelIndex& index);
 
  public slots:
   void setFilterPattern(const QString& filter_pattern);
   void complete(const QRect& rect = QRect());
 
  protected:
-  bool eventFilter(QObject *o, QEvent *e);
-  bool event(QEvent *e);
+  bool eventFilter(QObject* o, QEvent* e);
+  bool event(QEvent* e);
 
  private:
   QtCompleter(const QtCompleter& other) = delete;

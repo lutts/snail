@@ -14,16 +14,13 @@
 #include "snail/i_work_model.h"
 #include "qtui/ui/i_work_view.h"
 
-using WorkPresenterBase =
-    pfmvp::PfPresenterT<snailcore::IWorkModel,
-                        IWorkView>;
+using WorkPresenterBase = pfmvp::PfPresenterT<snailcore::IWorkModel, IWorkView>;
 
 class WorkPresenter : public WorkPresenterBase {
  public:
   WorkPresenter(std::shared_ptr<model_type> model,
                 std::shared_ptr<view_type> view)
-      : WorkPresenterBase(model, view) {
-  }
+      : WorkPresenterBase(model, view) {}
 
   void initialize() override;
 

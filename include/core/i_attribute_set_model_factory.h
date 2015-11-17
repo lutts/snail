@@ -19,8 +19,7 @@ class IAttributeSetModelFactory {
  public:
   virtual ~IAttributeSetModelFactory() = default;
 
-  virtual std::shared_ptr<IAttributeSetModel>
-  createAttributeSetModel(
+  virtual std::shared_ptr<IAttributeSetModel> createAttributeSetModel(
       const std::vector<IAttributeSupplier*>& attr_suppliers) = 0;
 };
 

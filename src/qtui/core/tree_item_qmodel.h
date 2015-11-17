@@ -18,21 +18,17 @@
 #include "snail/i_tree_item_provider.h"
 #include FTO_HEADER(qtui/core, tree_item_qmodel)
 
-class TreeItemQModel
-    : public FTO_NAMESPACE::TreeItemQModel
-    , public utils::ITrackable
-    , public std::enable_shared_from_this<TreeItemQModel> {
+class TreeItemQModel : public FTO_NAMESPACE::TreeItemQModel,
+                       public utils::ITrackable,
+                       public std::enable_shared_from_this<TreeItemQModel> {
  public:
-  TreeItemQModel()
-      : TreeItemQModel(utils::make_unique<TreeItemQModelImpl>()) { }
+  TreeItemQModel() : TreeItemQModel(utils::make_unique<TreeItemQModelImpl>()) {}
 
   explicit TreeItemQModel(std::unique_ptr<TreeItemQModelImpl>&& qmodel)
-      : qmodel_(std::move(qmodel)) { }
+      : qmodel_(std::move(qmodel)) {}
   virtual ~TreeItemQModel() = default;
 
-  QAbstractItemModel* qmodel() const {
-    return qmodel_.get();
-  }
+  QAbstractItemModel* qmodel() const { return qmodel_.get(); }
 
   // TreeItemQModel
   void setTreeItemProvider(ITreeItemProvider* item_provider) {
@@ -41,17 +37,11 @@ class TreeItemQModel
     if (!this->shared_from_this())
       ALOGW << "TreeItemQModel should be allocated with make_trackable";
 
-    item_provider->whenBeginFilter(
-        [this]() {
-          qmodel_->beginResetQModel();
-        },
-        this->shared_from_this());
+    item_provider->whenBeginFilter([this]() { qmodel_->beginResetQModel(); },
+                                   this->shared_from_this());
 
-    item_provider->whenFinishFilter(
-        [this]() {
-          qmodel_->endResetQModel();
-        },
-        this->shared_from_this());
+    item_provider->whenFinishFilter([this]() { qmodel_->endResetQModel(); },
+                                    this->shared_from_this());
 
     item_provider->whenItemAdded(
         [this](const ITreeItem* new_item, const ITreeItem* parent_item) {
@@ -82,12 +72,11 @@ class TreeItemQModel
   std::unique_ptr<TreeItemQModelImpl> qmodel_;
 };
 
-class TreeItemQModelWithClearAndAddMoreRow
-    : public TreeItemQModel {
+class TreeItemQModelWithClearAndAddMoreRow : public TreeItemQModel {
  public:
   TreeItemQModelWithClearAndAddMoreRow()
       : TreeItemQModel(
-            utils::make_unique<TreeItemQModelImplWithClearAndAddMoreRow>()) { }
+            utils::make_unique<TreeItemQModelImplWithClearAndAddMoreRow>()) {}
   ~TreeItemQModelWithClearAndAddMoreRow() = default;
 };
 
@@ -95,9 +84,8 @@ class TreeItemQModelWithProviderRoot : public TreeItemQModel {
  public:
   TreeItemQModelWithProviderRoot()
       : TreeItemQModel(
-            utils::make_unique<TreeItemQModelImplWithProviderRoot>()) { }
+            utils::make_unique<TreeItemQModelImplWithProviderRoot>()) {}
   ~TreeItemQModelWithProviderRoot() = default;
 };
-
 
 #endif  // SRC_QTUI_CORE_TREE_ITEM_QMODEL_H_

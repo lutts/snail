@@ -26,11 +26,9 @@ FTO_END_NAMESPACE
 
 class KbNodeItemProviderSignalHelper;
 
-class KbNodeItemProvider : public ITreeItemProvider
-                         , public utils::ITrackable {
+class KbNodeItemProvider : public ITreeItemProvider, public utils::ITrackable {
  public:
-  KbNodeItemProvider(IKbNode* root_kbnode,
-                 fto::KbNodeManager* node_manager);
+  KbNodeItemProvider(IKbNode* root_kbnode, fto::KbNodeManager* node_manager);
   virtual ~KbNodeItemProvider();
 
   utils::U8String name() const override;
@@ -40,11 +38,10 @@ class KbNodeItemProvider : public ITreeItemProvider
 
   ITreeItem* getRootItem() const;
 
-  std::unique_ptr<IChildItemIterator>
-  childItems(ITreeItem* parent_item) const override;
+  std::unique_ptr<IChildItemIterator> childItems(
+      ITreeItem* parent_item) const override;
 
-  void itemAdded(const ITreeItem* new_item,
-                 const ITreeItem* new_item_parent);
+  void itemAdded(const ITreeItem* new_item, const ITreeItem* new_item_parent);
 
  public:
   SNAIL_SIGSLOT_OVERRIDE(BeginFilter);
@@ -57,12 +54,11 @@ class KbNodeItemProvider : public ITreeItemProvider
   std::unique_ptr<KbNodeItemProviderSignalHelper> signal_helper_;
 
   fto::KbNodeManager* node_manager_;
-  IKbNode* root_kbnode_ { nullptr };
+  IKbNode* root_kbnode_{nullptr};
 
   utils::U8String filter_pattern_;
   std::vector<IKbNode*> matched_kbnodes_;
 };
-
 
 }  // namespace snailcore
 

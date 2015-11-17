@@ -39,13 +39,15 @@ class ModelViewMockGeneratorTest : public ::testing::Test {
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~ModelViewMockGeneratorTest() { }
-  virtual void SetUp() { }
+  virtual void SetUp() {}
   // virtual void TearDown() { }
 
   ModelViewMockGenerator<MockDummyModel, MockDummyView> mvmock_generator;
 };
 
-TEST_F(ModelViewMockGeneratorTest, should_be_able_to_generator_specificed_class_mock_model_and_views) { // NOLINT
+TEST_F(
+    ModelViewMockGeneratorTest,
+    should_be_able_to_generator_specificed_class_mock_model_and_views) {  // NOLINT
   // Exercise system
   auto mvpair = mvmock_generator.make_mvpair();
 
@@ -57,7 +59,8 @@ TEST_F(ModelViewMockGeneratorTest, should_be_able_to_generator_specificed_class_
   ASSERT_NE(nullptr, view);
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_be_able_to_return_std_shared_ptr_pointers) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_be_able_to_return_std_shared_ptr_pointers) {  // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();
   auto model = mvpair->model();
@@ -72,7 +75,8 @@ TEST_F(ModelViewMockGeneratorTest, should_be_able_to_return_std_shared_ptr_point
   ASSERT_EQ(view, shared_view.get());
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_be_able_to_return_as_std_pair) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_be_able_to_return_as_std_pair) {  // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();
   auto expect_model = mvpair->model();
@@ -84,7 +88,9 @@ TEST_F(ModelViewMockGeneratorTest, should_be_able_to_return_as_std_pair) { // NO
   ASSERT_EQ(expect_view, stdpair.second);
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_get_same_model_view_when_call_model_view_multiple_times) { // NOLINT
+TEST_F(
+    ModelViewMockGeneratorTest,
+    should_get_same_model_view_when_call_model_view_multiple_times) {  // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();
 
@@ -101,7 +107,8 @@ TEST_F(ModelViewMockGeneratorTest, should_get_same_model_view_when_call_model_vi
   ASSERT_EQ(expect_view, view2);
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_get_different_model_view_on_different_mvpair) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_get_different_model_view_on_different_mvpair) {  // NOLINT
   // Setup fixture
   auto mvpair1 = mvmock_generator.make_mvpair();
   auto mvpair2 = mvmock_generator.make_mvpair();
@@ -118,7 +125,8 @@ TEST_F(ModelViewMockGeneratorTest, should_get_different_model_view_on_different_
   ASSERT_NE(view1, view2);
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_destruct_model_view_when_reset_mvpair) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_destruct_model_view_when_reset_mvpair) {  // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();
   auto model = mvpair->model();
@@ -139,7 +147,8 @@ TEST_F(ModelViewMockGeneratorTest, should_destruct_model_view_when_reset_mvpair)
   check.Call("after reset");
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_get_different_model_view_after_reset_mvpair) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_get_different_model_view_after_reset_mvpair) {  // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();
   auto model = mvpair->model();
@@ -161,7 +170,8 @@ TEST_F(ModelViewMockGeneratorTest, should_get_different_model_view_after_reset_m
   EXPECT_NE(model, new_model);
 }
 
-TEST_F(ModelViewMockGeneratorTest, should_destruct_model_view_when_mvpair_deleted) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_destruct_model_view_when_mvpair_deleted) {  // NOLINT
   // Setup fixture
   auto mvpair = mvmock_generator.make_mvpair();
   auto model = mvpair->model();
@@ -183,11 +193,10 @@ class MockMVPair : public IModelViewPair {
   MOCK_METHOD0(destruct, void());
 };
 
-TEST_F(ModelViewMockGeneratorTest, should_destruct_all_mvpair_when_mvmock_generator_destruct) { // NOLINT
+TEST_F(ModelViewMockGeneratorTest,
+       should_destruct_all_mvpair_when_mvmock_generator_destruct) {  // NOLINT
   // Setup fixture
-  ModelViewMockGenerator<MockDummyModel,
-                         MockDummyView,
-                         MockMVPair> l_generator;
+  ModelViewMockGenerator<MockDummyModel, MockDummyView, MockMVPair> l_generator;
 
   auto mvpair1 = l_generator.make_mvpair();
   auto mvpair2 = l_generator.make_mvpair();

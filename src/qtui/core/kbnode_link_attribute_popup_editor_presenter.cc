@@ -14,27 +14,26 @@
 using snailcore::IAttributeSetModel;
 
 KbNodeLinkAttributePopupEditorPresenter::
-KbNodeLinkAttributePopupEditorPresenter(
-    std::shared_ptr<model_type> model,
-    std::shared_ptr<view_type> view,
-    std::shared_ptr<fto::TreeItemQModel> link_type_qmodel)
-    : KbNodeLinkAttributePopupEditorPresenterBase(model, view)
-    , link_type_qmodel_(link_type_qmodel) { }
+    KbNodeLinkAttributePopupEditorPresenter(
+        std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
+        std::shared_ptr<fto::TreeItemQModel> link_type_qmodel)
+    : KbNodeLinkAttributePopupEditorPresenterBase(model, view),
+      link_type_qmodel_(link_type_qmodel) {}
 
 KbNodeLinkAttributePopupEditorPresenter::
-~KbNodeLinkAttributePopupEditorPresenter() = default;
+    ~KbNodeLinkAttributePopupEditorPresenter() = default;
 
 void KbNodeLinkAttributePopupEditorPresenter::initialize() {
   createValueAttributeView();
   initLinkTypeDropDownList();
   createLinkAttributesView(model()->getCurrentLinkAttrSetModel());
 
-  view()->whenUserSelectLinkType(
-      [this](const QModelIndex& index) {
-        auto link_type = link_type_qmodel_->indexToItem(index);
-        model()->setProtoLinkType(link_type);
-      },
-      shared_from_this());
+  view()->whenUserSelectLinkType([this](const QModelIndex& index) {
+                                   auto link_type =
+                                       link_type_qmodel_->indexToItem(index);
+                                   model()->setProtoLinkType(link_type);
+                                 },
+                                 shared_from_this());
 
   model()->whenLinkTypeChanged(
       [this](std::shared_ptr<IAttributeSetModel> new_attr_set_model,
@@ -45,16 +44,11 @@ void KbNodeLinkAttributePopupEditorPresenter::initialize() {
       shared_from_this());
 
   model()->whenValidateComplete(
-      [this](bool result) {
-        view()->setDoneButtonEnabled(result);
-      },
+      [this](bool result) { view()->setDoneButtonEnabled(result); },
       shared_from_this());
 
-  view()->whenUserClickDone(
-      [this]() {
-        model()->editFinished();
-      },
-      shared_from_this());
+  view()->whenUserClickDone([this]() { model()->editFinished(); },
+                            shared_from_this());
 }
 
 void KbNodeLinkAttributePopupEditorPresenter::createValueAttributeView() {

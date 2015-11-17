@@ -26,17 +26,11 @@ class QtUiEngineTest : public QObject, public ::testing::Test {
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~QtUiEngineTest() { }
-  virtual void SetUp() {
-    uiEngine = utils::make_unique<QtUiEngine>();
-  }
-  virtual void TearDown() {
-    uiEngine->quit();
-  }
+  virtual void SetUp() { uiEngine = utils::make_unique<QtUiEngine>(); }
+  virtual void TearDown() { uiEngine->quit(); }
 
  public slots:
-  virtual void quitApp() {
-    uiEngine->quit();
-  }
+  virtual void quitApp() { uiEngine->quit(); }
 
  public:
   std::unique_ptr<QtUiEngine> uiEngine;
@@ -44,17 +38,14 @@ class QtUiEngineTest : public QObject, public ::testing::Test {
 
 #include "qt_uiengine_test.moc"
 
-class MockListener : public GenericMockListener<MockListener,
-                                                snailcore::IUiEngine> {
+class MockListener
+    : public GenericMockListener<MockListener, snailcore::IUiEngine> {
  public:
   MOCK_METHOD0(AboutToQuit, void());
 
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
                            snailcore::IUiEngine* uiEngine) {
-    uiEngine->whenAboutToQuit(
-        [this]() {
-          AboutToQuit();
-        }, trackObject);
+    uiEngine->whenAboutToQuit([this]() { AboutToQuit(); }, trackObject);
   }
 };
 
@@ -64,7 +55,8 @@ class MockListener : public GenericMockListener<MockListener,
 //
 // because of this bug, we put all tests in one TestCase
 //
-TEST_F(QtUiEngineTest, should_work_as_expected_large_testcase_because_qt_bug) { // NOLINT
+TEST_F(QtUiEngineTest,
+       should_work_as_expected_large_testcase_because_qt_bug) {  // NOLINT
   // Test1: can create widgets
   {
     QAction* action = new QAction(this);

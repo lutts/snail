@@ -20,9 +20,7 @@ class IModelViewPair {
 template <typename TModel, typename TView>
 class ModelViewPair : public IModelViewPair {
  public:
-  ~ModelViewPair() {
-    reset();
-  }
+  ~ModelViewPair() { reset(); }
 
   TModel* model() {
     createModelIfNotExist();
@@ -55,13 +53,11 @@ class ModelViewPair : public IModelViewPair {
 
  private:
   void createModelIfNotExist() {
-    if (!model_)
-      model_ = std::make_shared<TModel>();
+    if (!model_) model_ = std::make_shared<TModel>();
   }
 
   void createViewIfNotExist() {
-    if (!view_)
-      view_ = std::make_shared<TView>();
+    if (!view_) view_ = std::make_shared<TView>();
   }
 
   std::shared_ptr<TModel> model_;
@@ -69,7 +65,7 @@ class ModelViewPair : public IModelViewPair {
 };
 
 template <typename TModel, typename TView,
-          template<typename, typename> class Tmvpair = ModelViewPair>
+          template <typename, typename> class Tmvpair = ModelViewPair>
 class ModelViewMockGenerator {
  public:
   ModelViewMockGenerator() = default;

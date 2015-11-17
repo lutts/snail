@@ -22,5 +22,4 @@ class IAttributeSetView : public GenericViewBase {
   virtual void switchToDisplayMode() = 0;
 };
 
-
 #endif  // INCLUDE_QTUI_UI_I_ATTRIBUTE_SET_VIEW_H_

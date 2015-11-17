@@ -10,17 +10,15 @@ namespace pfmvp {
 
 SINGLETON_STATIC_INSTANCE(PfViewFactoryManager)
 
-void PfViewFactoryManager::addViewFactory(
-    const IPfModel::ModelIdType& model_id,
-    IPfViewFactory* view_factory) {
+void PfViewFactoryManager::addViewFactory(const IPfModel::ModelIdType& model_id,
+                                          IPfViewFactory* view_factory) {
   auto& factories = model_viewfactory_map_[model_id];
   auto vf_id = view_factory->getViewFactoryId();
   factories[vf_id] = view_factory;
 }
 
 void PfViewFactoryManager::removeViewFactory(
-    const IPfModel::ModelIdType& model_id,
-    IPfViewFactory* view_factory) {
+    const IPfModel::ModelIdType& model_id, IPfViewFactory* view_factory) {
   auto& factories = model_viewfactory_map_[model_id];
   auto vf_id = view_factory->getViewFactoryId();
   factories.erase(vf_id);

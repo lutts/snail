@@ -34,8 +34,8 @@ namespace utils {
 namespace text {
 namespace fto {
 
-#define NamedStringFormatter_METHODS                                    \
-  SNAIL_CONST_INTERFACE2(                                               \
+#define NamedStringFormatter_METHODS                                      \
+  SNAIL_CONST_INTERFACE2(                                                 \
       format, utils::U8String(const utils::U8String& named_format_string, \
                               const VariableResolver* variable_resolver));
 
@@ -47,9 +47,8 @@ class NamedStringFormatter {
   NamedStringFormatter_METHODS
 };
 
-#define NamedStringFormatterFactory_METHODS             \
-  SNAIL_CONST_INTERFACE0(createInstance,                \
-                         fto::NamedStringFormatter*());
+#define NamedStringFormatterFactory_METHODS \
+  SNAIL_CONST_INTERFACE0(createInstance, fto::NamedStringFormatter*());
 
 class NamedStringFormatterFactory {
  public:
@@ -70,7 +69,7 @@ namespace utils {
 namespace text {
 namespace fto {
 
-class NamedStringFormatter { };
+class NamedStringFormatter {};
 
 }  // namespace fto
 }  // namespace text
@@ -97,9 +96,7 @@ class NamedStringFormatterTestProxy {
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(NamedStringFormatter);
 
  public:
-  NamedStringFormatterTestProxy() {
-    createInstance();
-  }
+  NamedStringFormatterTestProxy() { createInstance(); }
 
   NamedStringFormatter_METHODS
 };

@@ -19,6 +19,7 @@ namespace snailcore {
 class KbNodeLinkAttributePopupEditorModelSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(KbNodeLinkAttributePopupEditorModel, LinkTypeChanged);
+
  public:
   SNAIL_SIGSLOT_PIMPL(KbNodeLinkAttributePopupEditorModel, ValidateComplete);
 };
@@ -27,19 +28,18 @@ SNAIL_SIGSLOT_DELEGATE2(KbNodeLinkAttributePopupEditorModel, LinkTypeChanged);
 SNAIL_SIGSLOT_DELEGATE2(KbNodeLinkAttributePopupEditorModel, ValidateComplete);
 
 KbNodeLinkAttributePopupEditorModel::KbNodeLinkAttributePopupEditorModel(
-    fto::KbNodeLinkAttribute* attr,
-    IAttributeModelFactory* attr_model_factory,
+    fto::KbNodeLinkAttribute* attr, IAttributeModelFactory* attr_model_factory,
     IAttributeSetModelFactory* attr_set_model_factory)
-    : signal_helper_(
-          utils::make_unique<KbNodeLinkAttributePopupEditorModelSignalHelper>())
-    , attr_(attr)
-    , value_attr_copy_(*attr_->valueAttr())
-    , link_type_copy_(*attr_->linkType())
-    , attr_model_factory_(attr_model_factory)
-    , attr_set_model_factory_(attr_set_model_factory) { }
+    : signal_helper_(utils::make_unique<
+          KbNodeLinkAttributePopupEditorModelSignalHelper>()),
+      attr_(attr),
+      value_attr_copy_(*attr_->valueAttr()),
+      link_type_copy_(*attr_->linkType()),
+      attr_model_factory_(attr_model_factory),
+      attr_set_model_factory_(attr_set_model_factory) {}
 
-KbNodeLinkAttributePopupEditorModel::
-~KbNodeLinkAttributePopupEditorModel() = default;
+KbNodeLinkAttributePopupEditorModel::~KbNodeLinkAttributePopupEditorModel() =
+    default;
 
 utils::U8String KbNodeLinkAttributePopupEditorModel::valueAttrName() const {
   return "";
@@ -51,11 +51,12 @@ KbNodeLinkAttributePopupEditorModel::createValueAttrModel() {
       attr_model_factory_->createAttributeModel(value_attr_copy_.self());
 
   auto attr_model_raw = attr_model.get();
-  attr_model->whenValidateComplete(
-      [this, attr_model_raw]() {
-        attr_model_valid_ = attr_model_raw->isValid();
-        validateComplete();
-      }, nullptr);
+  attr_model->whenValidateComplete([this, attr_model_raw]() {
+                                     attr_model_valid_ =
+                                         attr_model_raw->isValid();
+                                     validateComplete();
+                                   },
+                                   nullptr);
 
   return attr_model;
 }
@@ -65,8 +66,8 @@ KbNodeLinkAttributePopupEditorModel::getLinkTypeItemProvider() const {
   return attr_->supplier()->getLinkTypeItemProvider();
 }
 
-const ITreeItem*
-KbNodeLinkAttributePopupEditorModel::getCurrentProtoLinkType() const {
+const ITreeItem* KbNodeLinkAttributePopupEditorModel::getCurrentProtoLinkType()
+    const {
   return link_type_copy_.prototype();
 }
 
@@ -77,18 +78,18 @@ KbNodeLinkAttributePopupEditorModel::getCurrentLinkAttrSetModel() {
 
   curr_attr_set_model_ = attr_set_model.get();
 
-  attr_set_model->whenValidateComplete(
-      [this](bool result) {
-        attr_set_model_valid_ = result;
-        validateComplete();
-      }, nullptr);
+  attr_set_model->whenValidateComplete([this](bool result) {
+                                         attr_set_model_valid_ = result;
+                                         validateComplete();
+                                       },
+                                       nullptr);
 
   return attr_set_model;
 }
 
 void KbNodeLinkAttributePopupEditorModel::validateComplete() {
-  signal_helper_->emitValidateComplete(
-      attr_model_valid_ & attr_set_model_valid_);
+  signal_helper_->emitValidateComplete(attr_model_valid_ &
+                                       attr_set_model_valid_);
 }
 
 void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(

@@ -30,8 +30,8 @@ class AttributeSetModel : public IAttributeSetModel {
   std::vector<IAttributeSupplier*> getAttributeSuppliers() const override;
   void switchMode() override;
 
-  std::shared_ptr<IAttributeModel>
-  createAttributeModel(IAttribute* attr) override;
+  std::shared_ptr<IAttributeModel> createAttributeModel(
+      IAttribute* attr) override;
 
   void closeAttributeEditors(pfmvp::IPfTriadManager* triad_manager) override;
 
@@ -52,10 +52,9 @@ class AttributeSetModel : public IAttributeSetModel {
   std::vector<IAttributeSupplier*> attr_suppliers_;
   IAttributeModelFactory* attr_model_factory_;
 
-  bool edit_mode_ { false };
+  bool edit_mode_{false};
   std::vector<std::weak_ptr<IAttributeModel> > attr_models_;
 };
-
 
 }  // namespace snailcore
 

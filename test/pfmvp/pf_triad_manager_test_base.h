@@ -37,159 +37,151 @@ class MockPfViewFactory : public IPfViewFactory {
   DEF_VIEW_FACTORY_ID(MockPfViewFactory)
 
   MOCK_METHOD2(createView,
-               std::shared_ptr<PfPresenter>(
-                   std::shared_ptr<IPfModel> model,
-                   PfCreateViewArgs* args));
+               std::shared_ptr<PfPresenter>(std::shared_ptr<IPfModel> model,
+                                            PfCreateViewArgs* args));
 };
 
-#define DEFINE_TEST_CLASSES(name)                                       \
-  class Mock##name##Model : public IPfModel {                           \
-   public:                                                              \
-     virtual ~Mock##name##Model() { destruct(); }                         \
-     DEF_MODEL_ID(Mock##name##Model);                                   \
-                                                                        \
-     MOCK_METHOD0(onDestroy, void());                                   \
-     MOCK_METHOD0(destruct, void());                                    \
-                                                                        \
-     void set_triad_manager(IPfTriadManager* triad_manager) override {  \
-       triad_manager_ = triad_manager;                                  \
-     }                                                                  \
-                                                                        \
-     IPfTriadManager* triad_manager() { return triad_manager_; }        \
-   private:                                                             \
-     IPfTriadManager* triad_manager_ { nullptr };                         \
-  };                                                                    \
-                                                                        \
-  class ITest##name##View : public IPfView {                            \
-   public:                                                              \
-     virtual ~ITest##name##View() = default;                              \
-  };                                                                    \
-                                                                        \
-  class Mock##name##View : public ITest##name##View {                   \
-   public:                                                              \
-     virtual ~Mock##name##View() { destruct(); }                          \
-                                                                        \
-     MOCK_METHOD0(onDestroy, void());                                   \
-     MOCK_METHOD0(destruct, void());                                    \
-  };                                                                    \
-                                                                        \
-  class Mock##name##Presenter : public PfPresenterT<Mock##name##Model,  \
-                                                    ITest##name##View> { \
-   public:                                                              \
-     static std::shared_ptr<Mock##name##Presenter>                        \
-     create(std::shared_ptr<model_type> model,                          \
-            std::shared_ptr<view_type> view) {                          \
-       auto presenter = std::make_shared<Mock##name##Presenter>(model, view); \
-       return presenter;                                                \
-     }                                                                  \
-                                                                        \
-     Mock##name##Presenter(std::shared_ptr<model_type> model,           \
-                           std::shared_ptr<view_type> view)             \
-     : PfPresenterT<Mock##name##Model, ITest##name##View>(model, view) { \
-     }                                                                  \
-                                                                        \
-     ~Mock##name##Presenter() { destruct(); }                           \
-                                                                        \
-     void destroySelfTriad() { triad_manager()->removeTriadBy(model()); } \
-                                                                        \
-     MOCK_METHOD0(onDestroy, void());                                   \
-     MOCK_METHOD0(destruct, void());                                    \
-                                                                        \
-     bool initialized_ok { false };                                     \
-                                                                        \
-   private:                                                             \
-     Mock##name##Presenter(const Mock##name##Presenter&) = delete;        \
-     Mock##name##Presenter& operator=(const Mock##name##Presenter&) = delete; \
-                                                                        \
-     void initialize() override {                                       \
-       if (triad_manager()) {                                           \
-         /* check ourself is in triad manager when initialize() called */ \
-         auto model_exist = findModelByView(view());                    \
-         if (model_exist)                                               \
-           initialized_ok = true;                                       \
-       }                                                                \
-     }                                                                  \
-  };                                                                    \
-                                                                        \
-  class Mock##name##ViewFactory : public IPfViewFactory {               \
-   public:                                                              \
-     Mock##name##ViewFactory() = default;                                 \
-     virtual ~Mock##name##ViewFactory() = default;                      \
-                                                                        \
-     DEF_VIEW_FACTORY_ID(Mock##name##ViewFactory)                       \
-                                                                        \
-     std::shared_ptr<PfPresenter>                                       \
-     createView(std::shared_ptr<IPfModel> model,                        \
-                PfCreateViewArgs* args) override {                      \
-       V_UNUSED(args);                                                  \
-       auto my_model = std::dynamic_pointer_cast<Mock##name##Model>(model); \
-       if (my_model) {                                                  \
-         auto view = createTestView();                                  \
-         auto presenter = Mock##name##Presenter::create(my_model, view); \
-         last_presenter = presenter.get();                              \
-                                                                        \
-         return presenter;                                              \
-       }                                                                \
-                                                                        \
-       return nullptr;                                                  \
-     }                                                                  \
-                                                                        \
-     MOCK_CONST_METHOD0(createTestView,                                 \
-                        std::shared_ptr<ITest##name##View>());          \
-                                                                        \
-     Mock##name##Presenter* last_presenter;                             \
-                                                                        \
-   private:                                                             \
-     Mock##name##ViewFactory(const Mock##name##ViewFactory&) = delete;    \
-     Mock##name##ViewFactory& operator=(                                \
-         const Mock##name##ViewFactory&) = delete;                      \
-  };                                                                    \
-                                                                        \
-  class Mock##name##ViewFactory2 : public IPfViewFactory {              \
-   public:                                                              \
-     Mock##name##ViewFactory2() = default;                                \
-     virtual ~Mock##name##ViewFactory2() = default;                     \
-                                                                        \
-     DEF_VIEW_FACTORY_ID(Mock##name##ViewFactory2)                      \
-                                                                        \
-     std::shared_ptr<PfPresenter>                                       \
-     createView(std::shared_ptr<IPfModel> model,                        \
-                PfCreateViewArgs* args) override {                      \
-       V_UNUSED(args);                                                  \
-       auto my_model = std::dynamic_pointer_cast<Mock##name##Model>(model); \
-       if (my_model) {                                                  \
-         auto view = createTestView();                                  \
-         auto presenter = Mock##name##Presenter::create(my_model, view); \
-         last_presenter = presenter.get();                              \
-                                                                        \
-         return presenter;                                              \
-       }                                                                \
-                                                                        \
-       return nullptr;                                                  \
-     }                                                                  \
-                                                                        \
-     MOCK_CONST_METHOD0(createTestView,                                 \
-                        std::shared_ptr<ITest##name##View>());          \
-                                                                        \
-     Mock##name##Presenter* last_presenter;                             \
-                                                                        \
-   private:                                                             \
-     Mock##name##ViewFactory2(const Mock##name##ViewFactory2&) = delete;  \
-     Mock##name##ViewFactory2& operator=(                               \
-         const Mock##name##ViewFactory2&) = delete;                     \
+#define DEFINE_TEST_CLASSES(name)                                              \
+  class Mock##name##Model : public IPfModel {                                  \
+   public:                                                                     \
+    virtual ~Mock##name##Model() { destruct(); }                               \
+    DEF_MODEL_ID(Mock##name##Model);                                           \
+                                                                               \
+    MOCK_METHOD0(onDestroy, void());                                           \
+    MOCK_METHOD0(destruct, void());                                            \
+                                                                               \
+    void set_triad_manager(IPfTriadManager* triad_manager) override {          \
+      triad_manager_ = triad_manager;                                          \
+    }                                                                          \
+                                                                               \
+    IPfTriadManager* triad_manager() { return triad_manager_; }                \
+                                                                               \
+   private:                                                                    \
+    IPfTriadManager* triad_manager_{nullptr};                                  \
+  };                                                                           \
+                                                                               \
+  class ITest##name##View : public IPfView {                                   \
+   public:                                                                     \
+    virtual ~ITest##name##View() = default;                                    \
+  };                                                                           \
+                                                                               \
+  class Mock##name##View : public ITest##name##View {                          \
+   public:                                                                     \
+    virtual ~Mock##name##View() { destruct(); }                                \
+                                                                               \
+    MOCK_METHOD0(onDestroy, void());                                           \
+    MOCK_METHOD0(destruct, void());                                            \
+  };                                                                           \
+                                                                               \
+  class Mock##name##Presenter                                                  \
+      : public PfPresenterT<Mock##name##Model, ITest##name##View> {            \
+   public:                                                                     \
+    static std::shared_ptr<Mock##name##Presenter> create(                      \
+        std::shared_ptr<model_type> model, std::shared_ptr<view_type> view) {  \
+      auto presenter = std::make_shared<Mock##name##Presenter>(model, view);   \
+      return presenter;                                                        \
+    }                                                                          \
+                                                                               \
+    Mock##name##Presenter(std::shared_ptr<model_type> model,                   \
+                          std::shared_ptr<view_type> view)                     \
+        : PfPresenterT<Mock##name##Model, ITest##name##View>(model, view) {}   \
+                                                                               \
+    ~Mock##name##Presenter() { destruct(); }                                   \
+                                                                               \
+    void destroySelfTriad() { triad_manager()->removeTriadBy(model()); }       \
+                                                                               \
+    MOCK_METHOD0(onDestroy, void());                                           \
+    MOCK_METHOD0(destruct, void());                                            \
+                                                                               \
+    bool initialized_ok{false};                                                \
+                                                                               \
+   private:                                                                    \
+    Mock##name##Presenter(const Mock##name##Presenter&) = delete;              \
+    Mock##name##Presenter& operator=(const Mock##name##Presenter&) = delete;   \
+                                                                               \
+    void initialize() override {                                               \
+      if (triad_manager()) {                                                   \
+        /* check ourself is in triad manager when initialize() called */       \
+        auto model_exist = findModelByView(view());                            \
+        if (model_exist) initialized_ok = true;                                \
+      }                                                                        \
+    }                                                                          \
+  };                                                                           \
+                                                                               \
+  class Mock##name##ViewFactory : public IPfViewFactory {                      \
+   public:                                                                     \
+    Mock##name##ViewFactory() = default;                                       \
+    virtual ~Mock##name##ViewFactory() = default;                              \
+                                                                               \
+    DEF_VIEW_FACTORY_ID(Mock##name##ViewFactory)                               \
+                                                                               \
+    std::shared_ptr<PfPresenter> createView(std::shared_ptr<IPfModel> model,   \
+                                            PfCreateViewArgs* args) override { \
+      V_UNUSED(args);                                                          \
+      auto my_model = std::dynamic_pointer_cast<Mock##name##Model>(model);     \
+      if (my_model) {                                                          \
+        auto view = createTestView();                                          \
+        auto presenter = Mock##name##Presenter::create(my_model, view);        \
+        last_presenter = presenter.get();                                      \
+                                                                               \
+        return presenter;                                                      \
+      }                                                                        \
+                                                                               \
+      return nullptr;                                                          \
+    }                                                                          \
+                                                                               \
+    MOCK_CONST_METHOD0(createTestView, std::shared_ptr<ITest##name##View>());  \
+                                                                               \
+    Mock##name##Presenter* last_presenter;                                     \
+                                                                               \
+   private:                                                                    \
+    Mock##name##ViewFactory(const Mock##name##ViewFactory&) = delete;          \
+    Mock##name##ViewFactory& operator=(const Mock##name##ViewFactory&) =       \
+        delete;                                                                \
+  };                                                                           \
+                                                                               \
+  class Mock##name##ViewFactory2 : public IPfViewFactory {                     \
+   public:                                                                     \
+    Mock##name##ViewFactory2() = default;                                      \
+    virtual ~Mock##name##ViewFactory2() = default;                             \
+                                                                               \
+    DEF_VIEW_FACTORY_ID(Mock##name##ViewFactory2)                              \
+                                                                               \
+    std::shared_ptr<PfPresenter> createView(std::shared_ptr<IPfModel> model,   \
+                                            PfCreateViewArgs* args) override { \
+      V_UNUSED(args);                                                          \
+      auto my_model = std::dynamic_pointer_cast<Mock##name##Model>(model);     \
+      if (my_model) {                                                          \
+        auto view = createTestView();                                          \
+        auto presenter = Mock##name##Presenter::create(my_model, view);        \
+        last_presenter = presenter.get();                                      \
+                                                                               \
+        return presenter;                                                      \
+      }                                                                        \
+                                                                               \
+      return nullptr;                                                          \
+    }                                                                          \
+                                                                               \
+    MOCK_CONST_METHOD0(createTestView, std::shared_ptr<ITest##name##View>());  \
+                                                                               \
+    Mock##name##Presenter* last_presenter;                                     \
+                                                                               \
+   private:                                                                    \
+    Mock##name##ViewFactory2(const Mock##name##ViewFactory2&) = delete;        \
+    Mock##name##ViewFactory2& operator=(const Mock##name##ViewFactory2&) =     \
+        delete;                                                                \
   };
 
 DEFINE_TEST_CLASSES(XXX)
 DEFINE_TEST_CLASSES(YYY)
 
-class MockListener : public GenericMockListener<MockListener,
-                                                IPfTriadManager> {
+class MockListener : public GenericMockListener<MockListener, IPfTriadManager> {
  public:
   MockListener(IPfModel* model, IPfView* view,
                bool monitor_request_remove = true)
-      : model_(model)
-      , view_(view)
-      , monitor_request_remove_(monitor_request_remove) { }
+      : model_(model),
+        view_(view),
+        monitor_request_remove_(monitor_request_remove) {}
 
   MOCK_METHOD1(RequestRemoveModel, bool(IPfModel* model));
   MOCK_METHOD1(AboutToDestroyModel, void(IPfModel* model));
@@ -199,72 +191,55 @@ class MockListener : public GenericMockListener<MockListener,
                            IPfTriadManager* triad_manager) {
     if (model_) {
       if (monitor_request_remove_) {
-        requestRemoveModelBinded =
-            triad_manager->whenRequestRemoveModel(
-                model_,
-                [this](IPfModel* model) -> bool {
-                  return RequestRemoveModel(model);
-                },
-                trackObject);
+        requestRemoveModelBinded = triad_manager->whenRequestRemoveModel(
+            model_, [this](IPfModel* model) -> bool {
+              return RequestRemoveModel(model);
+            }, trackObject);
       }
 
-      aboutToDestroyModelBinded =
-          triad_manager->whenAboutToDestroyModel(
-              model_,
-              [this](IPfModel* model) {
-                AboutToDestroyModel(model);
-              },
-              trackObject);
+      aboutToDestroyModelBinded = triad_manager->whenAboutToDestroyModel(
+          model_, [this](IPfModel* model) { AboutToDestroyModel(model); },
+          trackObject);
     }
 
     if (view_) {
-      aboutToDestroyViewBinded =
-          triad_manager->whenAboutToDestroyView(
-              view_,
-              [this](IPfView* view) {
-                AboutToDestroyView(view);
-              },
-              trackObject);
+      aboutToDestroyViewBinded = triad_manager->whenAboutToDestroyView(
+          view_, [this](IPfView* view) { AboutToDestroyView(view); },
+          trackObject);
     }
   }
 
  public:
-  bool requestRemoveModelBinded { false };
-  bool aboutToDestroyModelBinded { false };
-  bool aboutToDestroyViewBinded { false };
+  bool requestRemoveModelBinded{false};
+  bool aboutToDestroyModelBinded{false};
+  bool aboutToDestroyViewBinded{false};
 
-  IPfModel* model_ { nullptr };
-  IPfView* view_ { nullptr };
+  IPfModel* model_{nullptr};
+  IPfView* view_{nullptr};
   bool monitor_request_remove_;
 };
 
-using TestXXX_MVP_Triad = std::tuple<MockXXXModel*,
-                                     MockXXXView*,
-                                     MockXXXPresenter*>;
+using TestXXX_MVP_Triad =
+    std::tuple<MockXXXModel*, MockXXXView*, MockXXXPresenter*>;
 
-using TestXXX_MVPL_Tuple = std::tuple<MockXXXModel*,
-                                      MockXXXView*,
-                                      MockXXXPresenter*,
-                                      std::shared_ptr<MockListener>>;
+using TestXXX_MVPL_Tuple =
+    std::tuple<MockXXXModel*, MockXXXView*, MockXXXPresenter*,
+               std::shared_ptr<MockListener>>;
 
-using TestYYY_MVP_Triad = std::tuple<MockYYYModel*,
-                                     MockYYYView*,
-                                     MockYYYPresenter*>;
+using TestYYY_MVP_Triad =
+    std::tuple<MockYYYModel*, MockYYYView*, MockYYYPresenter*>;
 
-using TestYYY_MVPL_Tuple = std::tuple<MockYYYModel*,
-                                      MockYYYView*,
-                                      MockYYYPresenter*,
-                                      std::shared_ptr<MockListener>>;
+using TestYYY_MVPL_Tuple =
+    std::tuple<MockYYYModel*, MockYYYView*, MockYYYPresenter*,
+               std::shared_ptr<MockListener>>;
 
 class PfTriadManagerTestBase {
  protected:
-  virtual ~PfTriadManagerTestBase() {
-    PfViewFactoryManager::resetInstance();
-  }
+  virtual ~PfTriadManagerTestBase() { PfViewFactoryManager::resetInstance(); }
 
   void initialize() {
-    triad_manager = utils::make_unique<PfTriadManager>(
-        PfViewFactoryManager::getInstance());
+    triad_manager =
+        utils::make_unique<PfTriadManager>(PfViewFactoryManager::getInstance());
 
     verifyTriadManagerInitialState();
   }
@@ -303,24 +278,20 @@ class PfTriadManagerTestBase {
   }
 
   template <typename VF, typename M, typename V, typename P>
-  void createTestTriad(std::shared_ptr<M> model,
-                       std::shared_ptr<V> view,
-                       P** presenter_ret,
-                       PfPresenter* parent = nullptr,
+  void createTestTriad(std::shared_ptr<M> model, std::shared_ptr<V> view,
+                       P** presenter_ret, PfPresenter* parent = nullptr,
                        bool auto_remove_child = true,
                        PfCreateViewArgs* args = nullptr);
 
   template <typename VF, typename MVPLTuple>
-  void createTestTriadAndListener(
-      MVPLTuple* tuple,
-      PfPresenter* parent = nullptr,
-      bool auto_remove_child = true,
-      PfCreateViewArgs* args = nullptr);
+  void createTestTriadAndListener(MVPLTuple* tuple,
+                                  PfPresenter* parent = nullptr,
+                                  bool auto_remove_child = true,
+                                  PfCreateViewArgs* args = nullptr);
 
   template <typename VF, typename TriadT>
-  void createTestTriads(
-      TriadT* mvp_triad_to_test,
-      std::vector<TriadT>* all_mvp_triad = nullptr);
+  void createTestTriads(TriadT* mvp_triad_to_test,
+                        std::vector<TriadT>* all_mvp_triad = nullptr);
 
   template <typename M, typename V, typename P>
   void verifyTriad(M* model, V* view, P* presenter);
@@ -340,26 +311,22 @@ class PfTriadManagerTestBase {
       std::vector<TestYYY_MVP_Triad>* all_mvp_triad = nullptr);
 
   template <typename TriadT>
-  void expectationsOnSingleTriadDestroy(
-      TriadT triad, MockListener* listener,
-      CheckPointType* checker = nullptr,
-      Sequence* seq = nullptr,
-      int times = 1);
+  void expectationsOnSingleTriadDestroy(TriadT triad, MockListener* listener,
+                                        CheckPointType* checker = nullptr,
+                                        Sequence* seq = nullptr, int times = 1);
   template <typename MVPLTuple>
-  void expectationsOnSingleTriadDestroy(
-      MVPLTuple* triad_and_listener,
-      CheckPointType* checker = nullptr,
-      Sequence* seq = nullptr,
-      int times = 1);
-  void expectationsOnTwoTriadDestroy(
-      TestXXX_MVP_Triad triad1, MockListener* listener1,
-      TestXXX_MVP_Triad triad2, MockListener* listener2,
-      CheckPointType* checker = nullptr,
-      Sequence* seq = nullptr,
-      int times = 1);
+  void expectationsOnSingleTriadDestroy(MVPLTuple* triad_and_listener,
+                                        CheckPointType* checker = nullptr,
+                                        Sequence* seq = nullptr, int times = 1);
+  void expectationsOnTwoTriadDestroy(TestXXX_MVP_Triad triad1,
+                                     MockListener* listener1,
+                                     TestXXX_MVP_Triad triad2,
+                                     MockListener* listener2,
+                                     CheckPointType* checker = nullptr,
+                                     Sequence* seq = nullptr, int times = 1);
 
-  void expectationsOnNotDestroyTriad(
-      TestXXX_MVP_Triad triad, MockListener* listener);
+  void expectationsOnNotDestroyTriad(TestXXX_MVP_Triad triad,
+                                     MockListener* listener);
 
   template <typename MVPLTuple>
   void expectationsOnNotDestroyTriad(MVPLTuple* triad_and_listener);
@@ -384,12 +351,8 @@ void PfTriadManagerTestBase::verifyTriad(M* model, V* view, P* presenter) {
 
 template <typename VF, typename M, typename V, typename P>
 void PfTriadManagerTestBase::createTestTriad(
-    std::shared_ptr<M> model,
-    std::shared_ptr<V> view,
-    P** presenter_ret,
-    PfPresenter* parent,
-    bool auto_remove_child,
-    PfCreateViewArgs* args) {
+    std::shared_ptr<M> model, std::shared_ptr<V> view, P** presenter_ret,
+    PfPresenter* parent, bool auto_remove_child, PfCreateViewArgs* args) {
   auto old_model_use_count = model.use_count();
   auto old_view_use_count = view.use_count();
 
@@ -397,24 +360,20 @@ void PfTriadManagerTestBase::createTestTriad(
     view_factory_t<M, VF> view_factory_wrapper;
     auto& view_factory = view_factory_wrapper.FTO_getFactory();
 
-    ON_CALL(view_factory, createTestView())
-        .WillByDefault(Return(view));
+    ON_CALL(view_factory, createTestView()).WillByDefault(Return(view));
 
-    if (args)
-      args->set_view_factory_id(view_factory.getViewFactoryId());
+    if (args) args->set_view_factory_id(view_factory.getViewFactoryId());
 
     std::shared_ptr<IPfView> actual_view;
-    actual_view = triad_manager->createViewFor(model, parent,
-                                               auto_remove_child,
-                                               args);
+    actual_view =
+        triad_manager->createViewFor(model, parent, auto_remove_child, args);
     ASSERT_EQ(view, actual_view);
 
     // for convenience, we will store the triad manager in presenter
     auto presenter = view_factory.last_presenter;
     verifyTriad(model.get(), view.get(), presenter);
 
-    if (presenter_ret)
-      *presenter_ret = presenter;
+    if (presenter_ret) *presenter_ret = presenter;
   }
 
   ASSERT_EQ(old_model_use_count + 1, model.use_count());
@@ -422,31 +381,27 @@ void PfTriadManagerTestBase::createTestTriad(
 }
 
 void PfTriadManagerTestBase::createTestXXXTriad(
-    std::shared_ptr<MockXXXModel> model,
-    std::shared_ptr<MockXXXView> view,
+    std::shared_ptr<MockXXXModel> model, std::shared_ptr<MockXXXView> view,
     MockXXXPresenter** presenter) {
   createTestTriad<MockXXXViewFactory>(model, view, presenter);
 }
 
 void PfTriadManagerTestBase::createTestYYYTriad(
-    std::shared_ptr<MockYYYModel> model,
-    std::shared_ptr<MockYYYView> view,
+    std::shared_ptr<MockYYYModel> model, std::shared_ptr<MockYYYView> view,
     MockYYYPresenter** presenter) {
   createTestTriad<MockYYYViewFactory>(model, view, presenter);
 }
 
 template <typename VF, typename MVPLTuple>
 void PfTriadManagerTestBase::createTestTriadAndListener(
-    MVPLTuple* tuple,
-    PfPresenter* parent,
-    bool auto_remove_child,
+    MVPLTuple* tuple, PfPresenter* parent, bool auto_remove_child,
     PfCreateViewArgs* args) {
   using MT = typename std::remove_pointer<
-    typename std::tuple_element<0, MVPLTuple>::type>::type;
+      typename std::tuple_element<0, MVPLTuple>::type>::type;
   using VT = typename std::remove_pointer<
-    typename std::tuple_element<1, MVPLTuple>::type>::type;
+      typename std::tuple_element<1, MVPLTuple>::type>::type;
   using PT = typename std::remove_pointer<
-    typename std::tuple_element<2, MVPLTuple>::type>::type;
+      typename std::tuple_element<2, MVPLTuple>::type>::type;
 
   auto model = std::make_shared<MT>();
   auto view = std::make_shared<VT>();
@@ -454,24 +409,21 @@ void PfTriadManagerTestBase::createTestTriadAndListener(
 
   createTestTriad<VF>(model, view, &presenter, parent, auto_remove_child, args);
 
-  auto listener = MockListener::attachTo(triad_manager.get(),
-                                         model.get(),
-                                         view.get(),
-                                         false);
+  auto listener = MockListener::attachTo(triad_manager.get(), model.get(),
+                                         view.get(), false);
 
   *tuple = std::make_tuple(model.get(), view.get(), presenter, listener);
 }
 
 template <typename VF, typename TriadT>
 void PfTriadManagerTestBase::createTestTriads(
-    TriadT* mvp_triad_to_test,
-    std::vector<TriadT>* all_mvp_triad) {
+    TriadT* mvp_triad_to_test, std::vector<TriadT>* all_mvp_triad) {
   using MT = typename std::remove_pointer<
-    typename std::tuple_element<0, TriadT>::type>::type;
+      typename std::tuple_element<0, TriadT>::type>::type;
   using VT = typename std::remove_pointer<
-    typename std::tuple_element<1, TriadT>::type>::type;
+      typename std::tuple_element<1, TriadT>::type>::type;
   using PT = typename std::remove_pointer<
-    typename std::tuple_element<2, TriadT>::type>::type;
+      typename std::tuple_element<2, TriadT>::type>::type;
 
   std::vector<TriadT> all;
 
@@ -491,8 +443,7 @@ void PfTriadManagerTestBase::createTestTriads(
   }
 
   *mvp_triad_to_test = all[triad_to_test];
-  if (all_mvp_triad)
-    *all_mvp_triad = all;
+  if (all_mvp_triad) *all_mvp_triad = all;
 }
 
 void PfTriadManagerTestBase::createTestXXXTriads(
@@ -509,19 +460,15 @@ void PfTriadManagerTestBase::createTestYYYTriads(
 
 template <typename TriadT>
 void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
-    TriadT triad, MockListener* listener,
-    CheckPointType* checker,
-    Sequence* seq,
-    int times) {
+    TriadT triad, MockListener* listener, CheckPointType* checker,
+    Sequence* seq, int times) {
   auto model = std::get<0>(triad);
   auto view = std::get<1>(triad);
   auto presenter = std::get<2>(triad);
 
-  if (model)
-    ASSERT_EQ(model, listener->model_);
+  if (model) ASSERT_EQ(model, listener->model_);
 
-  if (view)
-    ASSERT_EQ(view, listener->view_);
+  if (view) ASSERT_EQ(view, listener->view_);
 
   std::unique_ptr<Sequence> lSeq;
   if (seq == nullptr) {
@@ -544,70 +491,48 @@ void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
   }
 
   if (presenter) {
-    EXPECT_CALL(*presenter, onDestroy())
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*presenter, onDestroy()).Times(times).InSequence(*seq);
   }
 
   if (view) {
-    EXPECT_CALL(*view, onDestroy())
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*view, onDestroy()).Times(times).InSequence(*seq);
   }
 
   if (model) {
-    EXPECT_CALL(*model, onDestroy())
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*model, onDestroy()).Times(times).InSequence(*seq);
   }
 
   if (presenter) {
-    EXPECT_CALL(*presenter, destruct())
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*presenter, destruct()).Times(times).InSequence(*seq);
   }
 
   if (view) {
-    EXPECT_CALL(*view, destruct())
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*view, destruct()).Times(times).InSequence(*seq);
   }
 
   if (model) {
-    EXPECT_CALL(*model, destruct())
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*model, destruct()).Times(times).InSequence(*seq);
   }
 
   if (checker) {
-    EXPECT_CALL(*checker, Call("barrier"))
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*checker, Call("barrier")).Times(times).InSequence(*seq);
   }
 }
 
 template <typename MVPLTuple>
 void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
-    MVPLTuple* triad_and_listener,
-    CheckPointType* checker,
-    Sequence* seq,
+    MVPLTuple* triad_and_listener, CheckPointType* checker, Sequence* seq,
     int times) {
   auto triad = std::make_tuple(std::get<0>(*triad_and_listener),
                                std::get<1>(*triad_and_listener),
                                std::get<2>(*triad_and_listener));
   auto listener = std::get<3>(*triad_and_listener);
-  expectationsOnSingleTriadDestroy(triad,
-                                   listener.get(),
-                                   checker,
-                                   seq,
-                                   times);
+  expectationsOnSingleTriadDestroy(triad, listener.get(), checker, seq, times);
 }
 
 void PfTriadManagerTestBase::expectationsOnTwoTriadDestroy(
-    TestXXX_MVP_Triad triad1, MockListener* listener1,
-    TestXXX_MVP_Triad triad2, MockListener* listener2,
-    CheckPointType* checker,
-    Sequence* seq,
+    TestXXX_MVP_Triad triad1, MockListener* listener1, TestXXX_MVP_Triad triad2,
+    MockListener* listener2, CheckPointType* checker, Sequence* seq,
     int times) {
   auto model1 = std::get<0>(triad1);
   auto view1 = std::get<1>(triad1);
@@ -624,14 +549,10 @@ void PfTriadManagerTestBase::expectationsOnTwoTriadDestroy(
   }
 
   if (model1 != model2) {
-    expectationsOnSingleTriadDestroy(triad1, listener1,
-                                     nullptr /* checker */,
-                                     seq,
-                                     times);
-    expectationsOnSingleTriadDestroy(triad2, listener2,
-                                     nullptr /* checker */,
-                                     seq,
-                                     times);
+    expectationsOnSingleTriadDestroy(triad1, listener1, nullptr /* checker */,
+                                     seq, times);
+    expectationsOnSingleTriadDestroy(triad2, listener2, nullptr /* checker */,
+                                     seq, times);
   } else {
     auto model = model1;
 
@@ -645,9 +566,7 @@ void PfTriadManagerTestBase::expectationsOnTwoTriadDestroy(
             .InSequence(*seq);
       }
 
-      EXPECT_CALL(*view2, destruct())
-          .Times(times)
-          .InSequence(*seq);
+      EXPECT_CALL(*view2, destruct()).Times(times).InSequence(*seq);
     }
 
     if (view1 && listener1) {
@@ -670,41 +589,30 @@ void PfTriadManagerTestBase::expectationsOnTwoTriadDestroy(
     }
 
     if (view1) {
-      EXPECT_CALL(*view1, destruct())
-          .Times(times)
-          .InSequence(*seq);
+      EXPECT_CALL(*view1, destruct()).Times(times).InSequence(*seq);
     }
 
     if (model) {
-      EXPECT_CALL(*model, destruct())
-          .Times(times)
-          .InSequence(*seq);
+      EXPECT_CALL(*model, destruct()).Times(times).InSequence(*seq);
     }
   }
 
   if (checker) {
-    EXPECT_CALL(*checker, Call("barrier"))
-        .Times(times)
-        .InSequence(*seq);
+    EXPECT_CALL(*checker, Call("barrier")).Times(times).InSequence(*seq);
   }
 }
 
 void PfTriadManagerTestBase::expectationsOnNotDestroyTriad(
     TestXXX_MVP_Triad triad, MockListener* listener) {
-  expectationsOnSingleTriadDestroy(
-      triad, listener,
-      nullptr /* checker */,
-      nullptr /* seq */,
-      0 /* times */);
+  expectationsOnSingleTriadDestroy(triad, listener, nullptr /* checker */,
+                                   nullptr /* seq */, 0 /* times */);
 }
 
 template <typename MVPLTuple>
 void PfTriadManagerTestBase::expectationsOnNotDestroyTriad(
     MVPLTuple* triad_and_listener) {
-  expectationsOnSingleTriadDestroy(triad_and_listener,
-                                   nullptr /* checker */,
-                                   nullptr /* seq */,
-                                   0 /* times */);
+  expectationsOnSingleTriadDestroy(triad_and_listener, nullptr /* checker */,
+                                   nullptr /* seq */, 0 /* times */);
 }
 
 }  // namespace tests

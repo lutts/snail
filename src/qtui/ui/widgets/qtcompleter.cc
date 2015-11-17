@@ -21,21 +21,20 @@
 
 namespace {
 
-template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args) {
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args &&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
 class QCompleterItemDelegate : public QItemDelegate {
  public:
   explicit QCompleterItemDelegate(QAbstractItemView *view)
-      : QItemDelegate(view), view(view) { }
-  void paint(QPainter *p, const QStyleOptionViewItem& opt,
-             const QModelIndex& idx) const {
+      : QItemDelegate(view), view(view) {}
+  void paint(QPainter *p, const QStyleOptionViewItem &opt,
+             const QModelIndex &idx) const {
     QStyleOptionViewItem optCopy = opt;
     optCopy.showDecorationSelected = true;
-    if (view->currentIndex() == idx)
-      optCopy.state |= QStyle::State_HasFocus;
+    if (view->currentIndex() == idx) optCopy.state |= QStyle::State_HasFocus;
     QItemDelegate::paint(p, optCopy, idx);
   }
 
@@ -49,42 +48,41 @@ class QtCompleterImpl : public QObject {
   Q_OBJECT
 
  public:
-  QtCompleterImpl() : widget(0) { }
+  QtCompleterImpl() : widget(0) {}
   virtual ~QtCompleterImpl() { delete popup; }
 
   void setCurrentIndex(QModelIndex index, bool select = true);
-  void showPopup(const QRect& rect);
+  void showPopup(const QRect &rect);
   QString itemText(const QModelIndex &index) const;
 
  public slots:
-  void hightlighted(const QItemSelection& selection);
-  void clicked(const QModelIndex& index);
+  void hightlighted(const QItemSelection &selection);
+  void clicked(const QModelIndex &index);
   void autoResizePopup(const QModelIndex &parent, int first, int last);
 
  public:
   QPointer<QWidget> widget;
-  QAbstractItemModel* model { nullptr };
-  QAbstractItemView* popup { nullptr };
+  QAbstractItemModel *model{nullptr};
+  QAbstractItemView *popup{nullptr};
 
   bool eatFocusOut;
   QRect popupRect;
 
   QString filter_pattern_;
   // TODO(lutts): should be able to set the expect column by the client
-  int column { 0 };
-  int maxVisibleItems { 10 };
-  bool wrap { true };
+  int column{0};
+  int maxVisibleItems{10};
+  bool wrap{true};
 
-  QtCompleter* q;
+  QtCompleter *q;
 
  private:
-  QtCompleterImpl(const QtCompleterImpl& other) = delete;
-  QtCompleterImpl& operator=(const QtCompleterImpl& other) = delete;
+  QtCompleterImpl(const QtCompleterImpl &other) = delete;
+  QtCompleterImpl &operator=(const QtCompleterImpl &other) = delete;
 };
 
 void QtCompleterImpl::setCurrentIndex(QModelIndex index, bool select) {
-  if (!q->popup())
-    return;
+  if (!q->popup()) return;
   if (!select) {
     popup->selectionModel()->setCurrentIndex(index,
                                              QItemSelectionModel::NoUpdate);
@@ -102,43 +100,39 @@ void QtCompleterImpl::setCurrentIndex(QModelIndex index, bool select) {
     popup->scrollTo(index, QAbstractItemView::PositionAtTop);
 }
 
-void QtCompleterImpl::hightlighted(const QItemSelection& selection) {
+void QtCompleterImpl::hightlighted(const QItemSelection &selection) {
   QModelIndex index;
-  if (!selection.indexes().isEmpty())
-    index = selection.indexes().first();
+  if (!selection.indexes().isEmpty()) index = selection.indexes().first();
 
   emit q->highlighted(index);
 }
 
-void QtCompleterImpl::clicked(const QModelIndex& index) {
-  if ((index.flags() & Qt::ItemIsEnabled)
-      && (index.flags() & Qt::ItemIsSelectable)) {
+void QtCompleterImpl::clicked(const QModelIndex &index) {
+  if ((index.flags() & Qt::ItemIsEnabled) &&
+      (index.flags() & Qt::ItemIsSelectable)) {
     emit q->clicked(index);
   }
 }
 
 QString QtCompleterImpl::itemText(const QModelIndex &index) const {
-  return index.isValid()
-      ? model->data(index, Qt::DisplayRole).toString()
-      : QString();
+  return index.isValid() ? model->data(index, Qt::DisplayRole).toString()
+                         : QString();
 }
 
-void QtCompleterImpl::autoResizePopup(
-    const QModelIndex &parent, int first, int last) {
+void QtCompleterImpl::autoResizePopup(const QModelIndex &parent, int first,
+                                      int last) {
   (void)parent;
   (void)first;
   (void)last;
 
-  if (!popup)
-    return;
+  if (!popup) return;
 
-  if (popup && !popup->isVisible())
-    return;
+  if (popup && !popup->isVisible()) return;
 
   showPopup(popupRect);
 }
 
-void QtCompleterImpl::showPopup(const QRect& rect) {
+void QtCompleterImpl::showPopup(const QRect &rect) {
   const QRect screen = QApplication::desktop()->availableGeometry(widget);
   Qt::LayoutDirection dir = widget->layoutDirection();
   QPoint pos;
@@ -150,7 +144,7 @@ void QtCompleterImpl::showPopup(const QRect& rect) {
   } else {
     visibleItems = qMin(maxVisibleItems, popup->model()->rowCount());
   }
-  int h = (popup->sizeHintForRow(0) * visibleItems  + 3) + 3;
+  int h = (popup->sizeHintForRow(0) * visibleItems + 3) + 3;
   QScrollBar *hsb = popup->horizontalScrollBar();
   if (hsb && hsb->isVisible())
     h += popup->horizontalScrollBar()->sizeHint().height();
@@ -158,20 +152,18 @@ void QtCompleterImpl::showPopup(const QRect& rect) {
   if (rect.isValid()) {
     rh = rect.height();
     w = rect.width();
-    pos = widget->mapToGlobal(
-        dir == Qt::RightToLeft ? rect.bottomRight() : rect.bottomLeft());
+    pos = widget->mapToGlobal(dir == Qt::RightToLeft ? rect.bottomRight()
+                                                     : rect.bottomLeft());
   } else {
     rh = widget->height();
     pos = widget->mapToGlobal(QPoint(0, widget->height() - 2));
     w = widget->width();
   }
 
-  if (w > screen.width())
-    w = screen.width();
+  if (w > screen.width()) w = screen.width();
   if ((pos.x() + w) > (screen.x() + screen.width()))
     pos.setX(screen.x() + screen.width() - w);
-  if (pos.x() < screen.x())
-    pos.setX(screen.x());
+  if (pos.x() < screen.x()) pos.setX(screen.x());
 
   // top is space above the widget or rect
   int top = pos.y() - rh - screen.top() + 2;
@@ -189,33 +181,28 @@ void QtCompleterImpl::showPopup(const QRect& rect) {
 
   popup->setGeometry(pos.x(), pos.y(), w, h);
 
-  if (!popup->isVisible())
-    popup->show();
+  if (!popup->isVisible()) popup->show();
 }
 
-QtCompleter::QtCompleter(QObject* parent)
-    : QObject(parent)
-    , d(make_unique<QtCompleterImpl>()) {
+QtCompleter::QtCompleter(QObject *parent)
+    : QObject(parent), d(make_unique<QtCompleterImpl>()) {
   d->q = this;
 }
 
 QtCompleter::QtCompleter(QAbstractItemModel *model, QObject *parent)
-    : QObject(parent)
-    , d(make_unique<QtCompleterImpl>()) {
+    : QObject(parent), d(make_unique<QtCompleterImpl>()) {
   d->q = this;
   setModel(model);
 }
 
 QtCompleter::~QtCompleter() = default;
 
-void QtCompleter::setWidget(QWidget* widget) {
-  if (d->widget)
-    d->widget->removeEventFilter(this);
+void QtCompleter::setWidget(QWidget *widget) {
+  if (d->widget) d->widget->removeEventFilter(this);
 
   d->widget = widget;
 
-  if (d->widget)
-    d->widget->installEventFilter(this);
+  if (d->widget) d->widget->installEventFilter(this);
 
   if (d->popup) {
     d->popup->hide();
@@ -223,30 +210,24 @@ void QtCompleter::setWidget(QWidget* widget) {
   }
 }
 
-QWidget* QtCompleter::widget() const {
-  return d->widget;
-}
+QWidget *QtCompleter::widget() const { return d->widget; }
 
-void QtCompleter::setModel(QAbstractItemModel* model) {
-  QAbstractItemModel* old_model = d->model;
+void QtCompleter::setModel(QAbstractItemModel *model) {
+  QAbstractItemModel *old_model = d->model;
 
-  if (old_model && old_model->QObject::parent() == this)
-    delete old_model;
+  if (old_model && old_model->QObject::parent() == this) delete old_model;
 
   d->model = model;
 
-  if (d->popup)
-    setPopup(d->popup);
+  if (d->popup) setPopup(d->popup);
 
-  connect(model, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-          d.get(), SLOT(autoResizePopup(const QModelIndex &, int, int)));
+  connect(model, SIGNAL(rowsInserted(const QModelIndex &, int, int)), d.get(),
+          SLOT(autoResizePopup(const QModelIndex &, int, int)));
 }
 
-QAbstractItemModel* QtCompleter::model() const {
-  return d->model;
-}
+QAbstractItemModel *QtCompleter::model() const { return d->model; }
 
-QAbstractItemView* QtCompleter::popup() const {
+QAbstractItemView *QtCompleter::popup() const {
 #ifndef QT_NO_LISTVIEW
   if (!d->popup) {
     QListView *listView = new QListView;
@@ -255,7 +236,7 @@ QAbstractItemView* QtCompleter::popup() const {
     listView->setSelectionBehavior(QAbstractItemView::SelectRows);
     listView->setSelectionMode(QAbstractItemView::SingleSelection);
     listView->setModelColumn(d->column);
-    QtCompleter *that = const_cast<QtCompleter*>(this);
+    QtCompleter *that = const_cast<QtCompleter *>(this);
     that->setPopup(listView);
   }
 #endif  // QT_NO_LISTVIEW
@@ -263,33 +244,28 @@ QAbstractItemView* QtCompleter::popup() const {
   return d->popup;
 }
 
-void QtCompleter::setPopup(QAbstractItemView* popup) {
+void QtCompleter::setPopup(QAbstractItemView *popup) {
   if (d->popup) {
     if (d->popup->selectionModel())
       disconnect(d->popup->selectionModel(), 0, d.get(), 0);
     disconnect(d->popup, 0, d.get(), 0);
   }
 
-  if (d->popup != popup)
-    delete d->popup;
+  if (d->popup != popup) delete d->popup;
 
   d->popup = nullptr;
 
-  if (!popup)
-    return;
+  if (!popup) return;
 
-  if (popup->model() != d->model)
-    popup->setModel(d->model);
+  if (popup->model() != d->model) popup->setModel(d->model);
 
   popup->hide();
 
   Qt::FocusPolicy origPolicy = Qt::NoFocus;
-  if (d->widget)
-    origPolicy = d->widget->focusPolicy();
+  if (d->widget) origPolicy = d->widget->focusPolicy();
   popup->setParent(0, Qt::Popup);
   popup->setFocusPolicy(Qt::NoFocus);
-  if (d->widget)
-    d->widget->setFocusPolicy(origPolicy);
+  if (d->widget) d->widget->setFocusPolicy(origPolicy);
 
   popup->setFocusProxy(d->widget);
   popup->installEventFilter(this);
@@ -304,8 +280,8 @@ void QtCompleter::setPopup(QAbstractItemView* popup) {
   }
 #endif
 
-  QObject::connect(popup, SIGNAL(clicked(QModelIndex)),
-                   d.get(), SLOT(clicked(QModelIndex)));
+  QObject::connect(popup, SIGNAL(clicked(QModelIndex)), d.get(),
+                   SLOT(clicked(QModelIndex)));
 
   if (popup->selectionModel()) {
     QObject::connect(popup->selectionModel(),
@@ -313,36 +289,30 @@ void QtCompleter::setPopup(QAbstractItemView* popup) {
                      d.get(), SLOT(hightlighted(QItemSelection)));
   }
 
-  QObject::connect(this, SIGNAL(clicked(QModelIndex)),
-                   popup, SLOT(hide()));
+  QObject::connect(this, SIGNAL(clicked(QModelIndex)), popup, SLOT(hide()));
 
   d->popup = popup;
 }
 
-int QtCompleter::maxVisibleItems() const {
-  return d->maxVisibleItems;
-}
+int QtCompleter::maxVisibleItems() const { return d->maxVisibleItems; }
 
 void QtCompleter::setMaxVisibleItems(int maxItems) {
   d->maxVisibleItems = maxItems;
 }
 
-void QtCompleter::setFilterPattern(const QString& filter_pattern) {
+void QtCompleter::setFilterPattern(const QString &filter_pattern) {
   d->filter_pattern_ = filter_pattern;
   emit filterPatternChanged(filter_pattern);
 }
 
-QString QtCompleter::filterPattern() const {
-  return d->filter_pattern_;
-}
+QString QtCompleter::filterPattern() const { return d->filter_pattern_; }
 
-void QtCompleter::complete(const QRect& rect) {
+void QtCompleter::complete(const QRect &rect) {
   // QModelIndex idx = d->model->currentIndex(false);
   Q_ASSERT(d->widget != 0);
 
   if (!d->model || d->model->rowCount(QModelIndex()) == 0) {
-    if (d->popup)
-      d->popup->hide();  // no suggestion, hide
+    if (d->popup) d->popup->hide();  // no suggestion, hide
     return;
   }
 
@@ -352,19 +322,15 @@ void QtCompleter::complete(const QRect& rect) {
   d->popupRect = rect;
 }
 
-void QtCompleter::hidePopup() const {
-  d->popup->hide();
-}
+void QtCompleter::hidePopup() const { d->popup->hide(); }
 
 // TODO(lutts): keypad navigation related code is removed
 bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
   if (d->eatFocusOut && o == d->widget && e->type() == QEvent::FocusOut) {
-    if (d->popup && d->popup->isVisible())
-      return true;
+    if (d->popup && d->popup->isVisible()) return true;
   }
 
-  if (o != d->popup)
-    return QObject::eventFilter(o, e);
+  if (o != d->popup) return QObject::eventFilter(o, e);
 
   switch (e->type()) {
     case QEvent::KeyPress: {
@@ -374,11 +340,10 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
       // TODO(lutts): should we normalize curIndex to d->column?
       QModelIndex normalized;
       if (curIndex.isValid() && curIndex.column() != d->column) {
-        normalized = d->model->index(curIndex.row(), d->column,
-                                     curIndex.parent());
+        normalized =
+            d->model->index(curIndex.row(), d->column, curIndex.parent());
       }
-      if (normalized.isValid())
-        curIndex = normalized;
+      if (normalized.isValid()) curIndex = normalized;
 
       QModelIndexList selList = d->popup->selectionModel()->selectedIndexes();
 
@@ -390,12 +355,12 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
 
       const int key = ke->key();
       // select the current item
-      if ((key == Qt::Key_Up || key == Qt::Key_Down) &&
-          selList.isEmpty() && curIndex.isValid()) {
-        if ((curIndex.flags() & Qt::ItemIsEnabled)
-            && (curIndex.flags() & Qt::ItemIsSelectable)) {
-        d->setCurrentIndex(curIndex);
-        return true;
+      if ((key == Qt::Key_Up || key == Qt::Key_Down) && selList.isEmpty() &&
+          curIndex.isValid()) {
+        if ((curIndex.flags() & Qt::ItemIsEnabled) &&
+            (curIndex.flags() & Qt::ItemIsSelectable)) {
+          d->setCurrentIndex(curIndex);
+          return true;
         }
       }
 
@@ -405,8 +370,7 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
       switch (key) {
         case Qt::Key_End:
         case Qt::Key_Home:
-          if (ke->modifiers() & Qt::ControlModifier)
-            return false;
+          if (ke->modifiers() & Qt::ControlModifier) return false;
           break;
 
         case Qt::Key_Up:
@@ -439,8 +403,8 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
           }
           return false;
 
-          // NOTE: Key_Right and Key_Left may be used by widget(e.g. QLineEdit),
-          // so we can not filter these keys here
+        // NOTE: Key_Right and Key_Left may be used by widget(e.g. QLineEdit),
+        // so we can not filter these keys here
 
         case Qt::Key_PageUp:
         case Qt::Key_PageDown:
@@ -458,8 +422,7 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
         if (d->widget && (!d->widget->hasFocus())) {
           d->popup->hide();
         }
-        if (e->isAccepted())
-          return true;
+        if (e->isAccepted()) return true;
       }
 
       // default implementation for keys not handled by the widget when popup
@@ -469,13 +432,11 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
         case Qt::Key_Enter:
         case Qt::Key_Tab:
           d->popup->hide();
-          if (curIndex.isValid())
-            d->clicked(curIndex);
+          if (curIndex.isValid()) d->clicked(curIndex);
           break;
 
         case Qt::Key_F4:
-          if (ke->modifiers() & Qt::AltModifier)
-            d->popup->hide();
+          if (ke->modifiers() & Qt::AltModifier) d->popup->hide();
           break;
 
         case Qt::Key_Backtab:
@@ -521,8 +482,6 @@ bool QtCompleter::eventFilter(QObject *o, QEvent *e) {
   return false;
 }
 
-bool QtCompleter::event(QEvent* ev) {
-  return QObject::event(ev);
-}
+bool QtCompleter::event(QEvent *ev) { return QObject::event(ev); }
 
 #include "qtcompleter.moc"

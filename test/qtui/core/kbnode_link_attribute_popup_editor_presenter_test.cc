@@ -21,10 +21,10 @@
 #include "snail/mock_attribute_set_model.h"
 #include "qtui/ui/mock_attribute_set_view.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
  protected:
@@ -168,15 +168,14 @@ void KbNodeLinkAttributePopupEditorPresenterTest::createLinkAttributesView(
   R_EXPECT_CALL(*model, getCurrentLinkAttrSetModel())
       .WillOnce(Return(attr_set_model));
   R_EXPECT_CALL(triad_manager, createViewFor(attr_set_pfmodel, _, _, _))
-      .WillOnce(DoAll(
-          SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
-              &create_attr_set_view_args),
-          Return(attr_set_view)));
+      .WillOnce(DoAll(SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
+                          &create_attr_set_view_args),
+                      Return(attr_set_view)));
   R_EXPECT_CALL(*view, setLinkAttributeSetView(attr_set_view.get()));
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
-       should_be_able_to_set_user_select_link_type_to_model) { // NOLINT
+       should_be_able_to_set_user_select_link_type_to_model) {  // NOLINT
   // Setup fixture
   auto link_type = xtestutils::genDummyPointer<ITreeItem>();
   auto index = index_generator.index();
@@ -191,7 +190,7 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
-       should_re_create_link_attr_set_view_when_link_type_changed) { // NOLINT
+       should_re_create_link_attr_set_view_when_link_type_changed) {  // NOLINT
   // Setup fixture
   auto new_attr_set_model = std::make_shared<MockAttributeSetModel>();
   std::shared_ptr<IPfModel> new_attr_set_pfmodel = new_attr_set_model;
@@ -203,10 +202,9 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
   EXPECT_CALL(triad_manager, removeTriadBy(old_attr_set_model));
 
   EXPECT_CALL(triad_manager, createViewFor(new_attr_set_pfmodel, _, _, _))
-      .WillOnce(DoAll(
-          SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
-              &create_attr_set_view_args),
-          Return(new_attr_set_view)));
+      .WillOnce(DoAll(SaveArgPointee<MockPfTriadManager::kCreateViewArgsIdx>(
+                          &create_attr_set_view_args),
+                      Return(new_attr_set_view)));
   EXPECT_CALL(*view, setLinkAttributeSetView(new_attr_set_view.get()));
 
   // Exercise system
@@ -217,7 +215,7 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
-       should_set_validate_result_to_view) { // NOLINT
+       should_set_validate_result_to_view) {  // NOLINT
   // Setup fixture
   auto result = xtestutils::randomBool();
 
@@ -229,7 +227,7 @@ TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
 }
 
 TEST_F(KbNodeLinkAttributePopupEditorPresenterTest,
-       should_tell_model_when_user_click_done) { // NOLINT
+       should_tell_model_when_user_click_done) {  // NOLINT
   // Expectations
   EXPECT_CALL(*model, editFinished());
 

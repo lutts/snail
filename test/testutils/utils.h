@@ -13,12 +13,11 @@
 
 #include "utils/u8string.h"
 
-#define CUSTOM_ASSERT(...)                      \
-  do {                                          \
-    SCOPED_TRACE("");                           \
-    __VA_ARGS__;                                \
-    if (::testing::Test::HasFatalFailure())     \
-      return;                                   \
+#define CUSTOM_ASSERT(...)                          \
+  do {                                              \
+    SCOPED_TRACE("");                               \
+    __VA_ARGS__;                                    \
+    if (::testing::Test::HasFatalFailure()) return; \
   } while (0)
 
 namespace xtestutils {
@@ -50,6 +49,5 @@ T* genDifferentDummyPointer(T* ref_ptr) {
 }
 
 }  // namespace xtestutils
-
 
 #endif  // TEST_TESTUTILS_UTILS_H_

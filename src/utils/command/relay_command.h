@@ -19,24 +19,17 @@ class RelayCommand : public Command {
  public:
   using CallbackFunctor = std::function<void()>;
 
-  RelayCommand(const utils::U8String& display_text,
-               CallbackFunctor callback)
-      : display_text_(display_text)
-      , callback_(callback) { }
+  RelayCommand(const utils::U8String& display_text, CallbackFunctor callback)
+      : display_text_(display_text), callback_(callback) {}
   virtual ~RelayCommand() = default;
-
 
   void set_display_text(const utils::U8String& new_text) {
     display_text_ = new_text;
   }
 
-  utils::U8String display_text() const override {
-    return display_text_;
-  }
+  utils::U8String display_text() const override { return display_text_; }
 
-  void redo() override {
-    callback_();
-  }
+  void redo() override { callback_(); }
 
  private:
   utils::U8String display_text_;

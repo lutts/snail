@@ -15,17 +15,11 @@ namespace xtestutils {
 
 class RandomString {
  public:
-  RandomString()
-      : ustr_(genRandomString())
-      , qstr_(U8StringToQString(ustr_)) { }
+  RandomString() : ustr_(genRandomString()), qstr_(U8StringToQString(ustr_)) {}
 
-  const utils::U8String& ustr() const {
-    return ustr_;
-  }
+  const utils::U8String& ustr() const { return ustr_; }
 
-  const QString& qstr() const {
-    return qstr_;
-  }
+  const QString& qstr() const { return qstr_; }
 
  private:
   utils::U8String ustr_;

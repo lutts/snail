@@ -29,8 +29,8 @@ class WorkSpaceModelTest : public ::testing::Test {
   }
   // ~WorkSpaceModelTest() { }
   virtual void SetUp() {
-    workspace_model = utils::make_unique<WorkSpaceModel>(
-        &work_model_factory, &work_factory);
+    workspace_model =
+        utils::make_unique<WorkSpaceModel>(&work_model_factory, &work_factory);
   }
   // virtual void TearDown() { }
 
@@ -47,8 +47,7 @@ class WorkSpaceModelTest : public ::testing::Test {
   // endregion
 };
 
-class MockListener : public GenericMockListener<MockListener,
-                                                IWorkSpaceModel> {
+class MockListener : public GenericMockListener<MockListener, IWorkSpaceModel> {
  public:
   MOCK_METHOD1(WorkModelAdded, void(std::shared_ptr<IWorkModel> work_model));
   MOCK_METHOD1(ActiveWorkModelChanged, void(IWorkModel* work_model));
@@ -62,11 +61,9 @@ class MockListener : public GenericMockListener<MockListener,
         },
         trackObject);
 
-    workspace_model->whenActiveWorkModelChanged(
-        [this](IWorkModel* work_model) {
-          ActiveWorkModelChanged(work_model);
-        },
-        trackObject);
+    workspace_model->whenActiveWorkModelChanged([this](IWorkModel* work_model) {
+      ActiveWorkModelChanged(work_model);
+    }, trackObject);
 
     workspace_model->whenWorkModelActivelyRemoved(
         [this](IWorkModel* work_model) {
@@ -76,15 +73,14 @@ class MockListener : public GenericMockListener<MockListener,
   }
 };
 
-TEST_F(WorkSpaceModelTest, should_be_able_to_create_work) { // NOLINT
+TEST_F(WorkSpaceModelTest, should_be_able_to_create_work) {  // NOLINT
   // Setup fixture
   auto work = xtestutils::genDummyPointer<fto::Work>();
   auto work_model = std::make_shared<MockWorkModel>();
   auto work_name = xtestutils::genRandomString();
 
   // Expectations
-  EXPECT_CALL(work_factory, createWork(work_name))
-      .WillOnce(Return(work));
+  EXPECT_CALL(work_factory, createWork(work_name)).WillOnce(Return(work));
   EXPECT_CALL(work_model_factory, createWorkModel())
       .WillOnce(Return(work_model));
   EXPECT_CALL(*work_model, set_work(work));

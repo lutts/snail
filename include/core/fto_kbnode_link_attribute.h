@@ -38,24 +38,24 @@ FTO_END_NAMESPACE
 namespace snailcore {
 namespace fto {
 
-#define KbNodeLinkAttributeSupplier_METHODS                             \
-  SNAIL_CONST_INTERFACE0(getLinkTypeItemProvider, ITreeItemProvider*()); \
+#define KbNodeLinkAttributeSupplier_METHODS                                \
+  SNAIL_CONST_INTERFACE0(getLinkTypeItemProvider, ITreeItemProvider*());   \
   SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const fto::LinkType*()); \
-  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());                    \
+  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());                       \
   SNAIL_CONST_INTERFACE0(clone, fto::KbNodeLinkAttributeSupplier*());
 
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
   KbNodeLinkAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) { }
+      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeLinkAttributeSupplier() = default;
 
   KbNodeLinkAttributeSupplier_METHODS
 };
 
-#define KbNodeLinkAttribute_METHODS                                     \
+#define KbNodeLinkAttribute_METHODS                                      \
   SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeLinkAttributeSupplier*()); \
-  SNAIL_INTERFACE0(valueAttr, fto::KbNodeAttribute*());                 \
+  SNAIL_INTERFACE0(valueAttr, fto::KbNodeAttribute*());                  \
   SNAIL_INTERFACE0(linkType, fto::LinkType*());
 
 class KbNodeLinkAttribute : public IAttribute {
@@ -78,17 +78,16 @@ namespace fto {
 class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
  public:
   KbNodeLinkAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) { }
-  virtual ~KbNodeLinkAttributeSupplier() = default;;
+      : GenericAttributeSupplier(name, max_attrs) {}
+  virtual ~KbNodeLinkAttributeSupplier() = default;
 };
 
-class KbNodeLinkAttribute : public IAttribute { };
+class KbNodeLinkAttribute : public IAttribute {};
 
 }  // namespace fto
 }  // namespace snailcore
 
 #endif  // DISABLE_TEST_CODE
 // endregion: Interface
-
 
 #endif  // INCLUDE_CORE_FTO_KBNODE_LINK_ATTRIBUTE_H_

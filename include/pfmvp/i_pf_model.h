@@ -21,20 +21,18 @@ class IPfModel {
   virtual ~IPfModel() = default;
 
   virtual const ModelIdType& getModelId() const = 0;
-  virtual void onDestroy() { }
+  virtual void onDestroy() {}
   virtual void set_triad_manager(IPfTriadManager* triad_manager) {
     (void)triad_manager;
   }
 };
 
-#define DEF_MODEL_ID(id)                                        \
-  const ModelIdType& getModelId() const override {              \
-    return modelId();                                           \
-  }                                                             \
-                                                                \
-  static const ModelIdType& modelId() {                         \
-    static const ModelIdType model_id { #id };                  \
-    return model_id;                                            \
+#define DEF_MODEL_ID(id)                                               \
+  const ModelIdType& getModelId() const override { return modelId(); } \
+                                                                       \
+  static const ModelIdType& modelId() {                                \
+    static const ModelIdType model_id{#id};                            \
+    return model_id;                                                   \
   }
 
 /*!
@@ -64,14 +62,14 @@ class IPfModelVisitor {
 class AcyclicVisitableModel : public IPfModel {
  public:
   virtual void accept(IPfModelVisitor& visitor) = 0;  // NOLINT
-  /*
-   * typical implementation:
-   *
-   *  try {
-   *    auto& real_visitor = dynamic_cast<XXXVisitor>(visitor);
-   *    real_visitor.visit(this);
-   *  } catch (std::bad_cast&) { }
-   */
+                                                      /*
+                                                       * typical implementation:
+                                                       *
+                                                       *  try {
+                                                       *    auto& real_visitor = dynamic_cast<XXXVisitor>(visitor);
+                                                       *    real_visitor.visit(this);
+                                                       *  } catch (std::bad_cast&) { }
+                                                       */
 };
 
 }  // namespace pfmvp

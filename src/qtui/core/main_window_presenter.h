@@ -18,15 +18,13 @@
 #include "qtui/ui/i_workspace_view.h"
 
 using MainWindowPresenterBase =
-    pfmvp::PfPresenterT<snailcore::IMainWindowModel,
-                            IMainWindowView>;
+    pfmvp::PfPresenterT<snailcore::IMainWindowModel, IMainWindowView>;
 
 class MainWindowPresenter : public MainWindowPresenterBase {
  public:
   MainWindowPresenter(std::shared_ptr<model_type> model,
                       std::shared_ptr<view_type> view)
-      : MainWindowPresenterBase(model, view) {
-  }
+      : MainWindowPresenterBase(model, view) {}
 
   void initialize() override {
     // assert(this == shared_from_this().get());
@@ -36,21 +34,19 @@ class MainWindowPresenter : public MainWindowPresenterBase {
     auto workspace_view = createRawViewFor<IWorkSpaceView>(workspace_model);
     view()->setWorkSpaceView(workspace_view);
 
-    model()->whenWindowTitleChanged(
-        [this](const utils::U8String& newTitle) {
-          view()->setWindowTitle2(newTitle);
-        }, shared_from_this());
+    model()->whenWindowTitleChanged([this](const utils::U8String& newTitle) {
+                                      view()->setWindowTitle2(newTitle);
+                                    },
+                                    shared_from_this());
 
-    view()->whenUserClickAddWork(
-        [this](const utils::U8String& work_name) {
-          model()->createWork(work_name);
-        },
-        shared_from_this());
+    view()->whenUserClickAddWork([this](const utils::U8String& work_name) {
+                                   model()->createWork(work_name);
+                                 },
+                                 shared_from_this());
 
     view()->whenRequestClose(
-        [this]() -> bool {
-          return model()->requestClose();
-        }, shared_from_this());
+        [this]() -> bool { return model()->requestClose(); },
+        shared_from_this());
   }
 
  private:

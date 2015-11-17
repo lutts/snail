@@ -15,15 +15,13 @@
 #include "qtui/ui/i_simple_kbnode_adder_view.h"
 #include "qtui/core/fto_tree_item_qmodel.h"
 
-using SimpleKbNodeAdderPresenterBase =
-    pfmvp::PfPresenterT<snailcore::ISimpleKbNodeAdderModel,
-                        ISimpleKbNodeAdderView>;
+using SimpleKbNodeAdderPresenterBase = pfmvp::PfPresenterT<
+    snailcore::ISimpleKbNodeAdderModel, ISimpleKbNodeAdderView>;
 
 class SimpleKbNodeAdderPresenter : public SimpleKbNodeAdderPresenterBase {
  public:
   SimpleKbNodeAdderPresenter(
-      std::shared_ptr<model_type> model,
-      std::shared_ptr<view_type> view,
+      std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
       std::shared_ptr<fto::TreeItemQModel> kbnode_qmodel);
   ~SimpleKbNodeAdderPresenter();
 

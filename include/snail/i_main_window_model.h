@@ -19,7 +19,7 @@ class IWorkSpaceModel;
 
 class IMainWindowModel : public pfmvp::IPfModel {
  public:
-  virtual ~IMainWindowModel() { }
+  virtual ~IMainWindowModel() {}
 
   DEF_MODEL_ID(MainWindowModel);
 

@@ -22,23 +22,21 @@ namespace pfmvp {
 class TriadInfo {
  public:
   TriadInfo() = default;
-  TriadInfo(std::shared_ptr<PfPresenter> presenter,
-            TriadInfo* parent,
+  TriadInfo(std::shared_ptr<PfPresenter> presenter, TriadInfo* parent,
             bool auto_remove_child,
             std::shared_ptr<PfCreateViewArgsMemento> creation_args_memento)
-      : presenter_{presenter}
-      , parent_{parent}
-      , auto_remove_child_{auto_remove_child}
-      , creation_args_memento_{creation_args_memento} {
+      : presenter_{presenter},
+        parent_{parent},
+        auto_remove_child_{auto_remove_child},
+        creation_args_memento_{creation_args_memento} {
     if (parent_) {
       parent->add_child_triad(this);
     }
-      }
+  }
 
   ~TriadInfo() {
     ALOGI << "delete triad " << model()->getModelId();
-    if (parent_)
-      parent_->remove_child_triad(this);
+    if (parent_) parent_->remove_child_triad(this);
 
     for (auto child : children_) {
       child->parent_ = nullptr;
@@ -59,17 +57,11 @@ class TriadInfo {
   bool auto_remove_child() const { return auto_remove_child_; }
   TriadInfo* parent() const { return parent_; }
 
-  void add_child_triad(TriadInfo* triad) {
-    children_.push_front(triad);
-  }
+  void add_child_triad(TriadInfo* triad) { children_.push_front(triad); }
 
-  void remove_child_triad(TriadInfo* triad) {
-    children_.remove(triad);
-  }
+  void remove_child_triad(TriadInfo* triad) { children_.remove(triad); }
 
-  bool hasChildren() const {
-    return !children_.empty();
-  }
+  bool hasChildren() const { return !children_.empty(); }
 
   void markForDelete() {
     waiting_delete_ = true;
@@ -77,8 +69,7 @@ class TriadInfo {
           << ", has child: " << !children_.empty()
           << ", auto_remove_child: " << auto_remove_child_;
 
-    if (!auto_remove_child_)
-      return;
+    if (!auto_remove_child_) return;
 
     for (auto child : children_) {
       child->markForDelete();
@@ -87,30 +78,26 @@ class TriadInfo {
 
   bool is_waiting_delete() const { return waiting_delete_; }
 
-  bool isRoot() const {
-    return (parent_ == nullptr);
-  }
+  bool isRoot() const { return (parent_ == nullptr); }
 
-  operator bool() const {
-    return presenter_.operator bool();
-  }
+  operator bool() const { return presenter_.operator bool(); }
 
  private:
   SNAIL_DISABLE_COPY(TriadInfo);
 
   std::shared_ptr<PfPresenter> presenter_;
-  TriadInfo* parent_ { nullptr };
-  bool auto_remove_child_ { true };
+  TriadInfo* parent_{nullptr};
+  bool auto_remove_child_{true};
   std::shared_ptr<PfCreateViewArgsMemento> creation_args_memento_;
 
   std::forward_list<TriadInfo*> children_;
-  bool waiting_delete_ { false };
+  bool waiting_delete_{false};
 };
 
 class PfTriadManagerImpl {
  public:
   explicit PfTriadManagerImpl(const IPfViewFactoryManager& view_factory_mgr)
-      : view_factory_mgr_(view_factory_mgr) { }
+      : view_factory_mgr_(view_factory_mgr) {}
   virtual ~PfTriadManagerImpl() {
     if (!triad_list_.empty()) {
       ALOGW << "****** triad list not empty when destroy triad manager ******";
@@ -128,28 +115,26 @@ class PfTriadManagerImpl {
     }
   }
 
-  PfTriadManager::RequestRemoveModelSignalType&
-  RequestRemoveModelSignalOf(IPfModel* model) {
+  PfTriadManager::RequestRemoveModelSignalType& RequestRemoveModelSignalOf(
+      IPfModel* model) {
     return model_remove_sig_map_[model];
   }
 
-  PfTriadManager::AboutToDestroyModelSignalType&
-  AboutToDestroyModelSignalOf(IPfModel* model) {
+  PfTriadManager::AboutToDestroyModelSignalType& AboutToDestroyModelSignalOf(
+      IPfModel* model) {
     return model_destroy_sig_map_[model];
   }
 
-  PfTriadManager::AboutToDestroyViewSignalType&
-  AboutToDestroyViewSignalOf(IPfView* view) {
+  PfTriadManager::AboutToDestroyViewSignalType& AboutToDestroyViewSignalOf(
+      IPfView* view) {
     return view_destroy_sig_map_[view];
   }
 
-  std::shared_ptr<IPfView>
-  createViewFor(
-      std::shared_ptr<IPfModel> model,
-      PfPresenter* parent,
-      bool auto_remove_child,
-      PfCreateViewArgs* args,
-      IPfTriadManager* triad_manager);
+  std::shared_ptr<IPfView> createViewFor(std::shared_ptr<IPfModel> model,
+                                         PfPresenter* parent,
+                                         bool auto_remove_child,
+                                         PfCreateViewArgs* args,
+                                         IPfTriadManager* triad_manager);
 
   void removeTriads(const std::forward_list<TriadInfo*>& triads);
 
@@ -164,8 +149,7 @@ class PfTriadManagerImpl {
       const IPfViewFactory::ViewFactoryIdType& view_factory_id) const;
 
   std::vector<IPfView*> findViewByModel_if(
-      IPfModel* model,
-      IPfTriadManager::MementoPredicate pred) const;
+      IPfModel* model, IPfTriadManager::MementoPredicate pred) const;
 
   bool isModelExist(IPfModel* model) const;
   bool isViewExist(IPfView* view) const;
@@ -184,30 +168,26 @@ class PfTriadManagerImpl {
   std::unordered_map<IPfModel*, int> model_view_count;
 
   std::unordered_map<IPfModel*, PfTriadManager::RequestRemoveModelSignalType>
-  model_remove_sig_map_;
+      model_remove_sig_map_;
 
   std::unordered_map<IPfModel*, PfTriadManager::AboutToDestroyModelSignalType>
-  model_destroy_sig_map_;
+      model_destroy_sig_map_;
 
   std::unordered_map<IPfView*, PfTriadManager::AboutToDestroyViewSignalType>
-  view_destroy_sig_map_;
+      view_destroy_sig_map_;
 
   friend class PfTriadManager;
 };
 
 PfTriadManager::PfTriadManager(const IPfViewFactoryManager& view_factory_mgr)
-    : impl(utils::make_unique<PfTriadManagerImpl>(view_factory_mgr)) {
-}
+    : impl(utils::make_unique<PfTriadManagerImpl>(view_factory_mgr)) {}
 
 PfTriadManager::~PfTriadManager() = default;
 
 // NOTE: createViewXXX maybe recursively called
-std::shared_ptr<IPfView>
-PfTriadManagerImpl::createViewFor(
-    std::shared_ptr<IPfModel> model,
-    PfPresenter* parent,
-    bool auto_remove_child,
-    PfCreateViewArgs* args,
+std::shared_ptr<IPfView> PfTriadManagerImpl::createViewFor(
+    std::shared_ptr<IPfModel> model, PfPresenter* parent,
+    bool auto_remove_child, PfCreateViewArgs* args,
     IPfTriadManager* triad_manager) {
   PfCreateViewArgs defaultArgs;
 
@@ -231,17 +211,15 @@ PfTriadManagerImpl::createViewFor(
     }
   }
 
-  IPfViewFactory* view_factory =
-      view_factory_mgr_.getViewFactory(model->getModelId(),
-                                       args->view_factory_id());
+  IPfViewFactory* view_factory = view_factory_mgr_.getViewFactory(
+      model->getModelId(), args->view_factory_id());
   if (!view_factory) {
-    ALOGW << "view factory '" << args->view_factory_id()
-          << "' for model " << model->getModelId() << " not found!";
+    ALOGW << "view factory '" << args->view_factory_id() << "' for model "
+          << model->getModelId() << " not found!";
   }
 
   if (model && view_factory) {
-    ALOGI << "create view for model " << model->getModelId()
-          << ", parent is "
+    ALOGI << "create view for model " << model->getModelId() << ", parent is "
           << (parent_triad ? parent_triad->model()->getModelId() : "(none)");
 
     auto presenter = view_factory->createView(model, orig_args);
@@ -256,14 +234,10 @@ PfTriadManagerImpl::createViewFor(
       // before their parents, and MainWindow is the first created
       // and last destroyed
       std::unique_ptr<PfCreateViewArgsMemento> memento;
-      if (orig_args)
-        memento = orig_args->getMemento();
+      if (orig_args) memento = orig_args->getMemento();
 
-      triad_list_.push_front(
-          utils::make_unique<TriadInfo>(presenter,
-                                        parent_triad,
-                                        auto_remove_child,
-                                        std::move(memento)));
+      triad_list_.push_front(utils::make_unique<TriadInfo>(
+          presenter, parent_triad, auto_remove_child, std::move(memento)));
       ++model_view_count[presenter->getModel().get()];
 
       // initialize may create sub-triads, so we need to
@@ -278,23 +252,18 @@ PfTriadManagerImpl::createViewFor(
 }
 
 bool PfTriadManagerImpl::isModelExist(IPfModel* model) const {
-  auto iter = std::find_if(
-      triad_list_.begin(),
-      triad_list_.end(),
-      [model](const TriadListItemType& triad) {
-        return model == triad->model();
-      });
+  auto iter = std::find_if(triad_list_.begin(), triad_list_.end(),
+                           [model](const TriadListItemType& triad) {
+    return model == triad->model();
+  });
 
   return (iter != triad_list_.end());
 }
 
 bool PfTriadManagerImpl::isViewExist(IPfView* view) const {
   auto iter = std::find_if(
-      triad_list_.begin(),
-      triad_list_.end(),
-      [view](const TriadListItemType& triad) {
-        return view == triad->view();
-      });
+      triad_list_.begin(), triad_list_.end(),
+      [view](const TriadListItemType& triad) { return view == triad->view(); });
 
   return (iter != triad_list_.end());
 }
@@ -350,23 +319,21 @@ void PfTriadManagerImpl::removeTriads(
 
   // 2. move the marked triads to a temorary list
   std::forward_list<TriadListItemType> triads_to_delete;
-  triad_list_.remove_if(
-      [&triads_to_delete](TriadListItemType& triad){
-        if (triad->is_waiting_delete()) {
-          triads_to_delete.push_front(std::move(triad));
-          return true;
-        }
+  triad_list_.remove_if([&triads_to_delete](TriadListItemType& triad) {
+    if (triad->is_waiting_delete()) {
+      triads_to_delete.push_front(std::move(triad));
+      return true;
+    }
 
-        return false;
-      });
+    return false;
+  });
 
   // 3. delete them
   triads_to_delete.reverse();
-  triads_to_delete.remove_if(
-      [this](const TriadListItemType& triad) {
-        doAboutToDestroyTriad(triad->presenter());
-        return true;
-      });
+  triads_to_delete.remove_if([this](const TriadListItemType& triad) {
+    doAboutToDestroyTriad(triad->presenter());
+    return true;
+  });
 }
 
 void PfTriadManagerImpl::removeTriadBy(IPfModel* model) {
@@ -397,12 +364,9 @@ void PfTriadManagerImpl::removeTriadBy(IPfView* view) {
 
 // TODO(lutts): what if the view's model has multiple views?
 bool PfTriadManagerImpl::requestRemoveTriadByView(IPfView* view) {
-  auto iter = std::find_if(
-      triad_list_.begin(),
-      triad_list_.end(),
-      [view](const TriadListItemType& triad) -> bool {
-        return triad->view() == view;
-      });
+  auto iter = std::find_if(triad_list_.begin(), triad_list_.end(),
+                           [view](const TriadListItemType& triad)
+                               -> bool { return triad->view() == view; });
 
   if (iter != triad_list_.end()) {
     auto& triad = *iter;
@@ -422,8 +386,8 @@ bool PfTriadManagerImpl::requestRemoveTriadByView(IPfView* view) {
   }
 }
 
-std::vector<IPfView*>
-PfTriadManagerImpl::findViewByModel(IPfModel* model) const {
+std::vector<IPfView*> PfTriadManagerImpl::findViewByModel(
+    IPfModel* model) const {
   std::vector<IPfView*> matched_views;
 
   for (auto& triad : triad_list_) {
@@ -436,12 +400,9 @@ PfTriadManagerImpl::findViewByModel(IPfModel* model) const {
 }
 
 IPfModel* PfTriadManagerImpl::findModelByView(IPfView* view) const {
-  auto iter = std::find_if(
-      triad_list_.begin(),
-      triad_list_.end(),
-      [view](const TriadListItemType& triad) -> bool {
-        return triad->view() == view;
-      });
+  auto iter = std::find_if(triad_list_.begin(), triad_list_.end(),
+                           [view](const TriadListItemType& triad)
+                               -> bool { return triad->view() == view; });
 
   if (iter != triad_list_.end()) {
     auto& triad = *iter;
@@ -467,8 +428,7 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModelAndViewFactory(
 }
 
 std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
-    IPfModel* model,
-    IPfTriadManager::MementoPredicate pred) const {
+    IPfModel* model, IPfTriadManager::MementoPredicate pred) const {
   std::vector<IPfView*> matched_views;
 
   PfCreateViewArgsMemento default_memento;
@@ -496,49 +456,45 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
 }
 
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL(THISCLASS, sigName, ObjType, ExistChecker) \
-  bool THISCLASS::when##sigName(                                        \
-      ObjType* obj,                                                     \
-      sigName##SlotType handler,                                        \
-      std::shared_ptr<utils::ITrackable> trackObject) {                 \
-    if (obj == nullptr) {                                               \
-      return false;                                                     \
-    }                                                                   \
-                                                                        \
-    if (!impl->ExistChecker(obj)) {                                     \
-      return false;                                                     \
-    }                                                                   \
-                                                                        \
-    auto& sig = impl->sigName##SignalOf(obj);                           \
-    SignalConnectionHelper<sigName##SignalType>::connectSignal(sig,     \
-                                                               handler, \
-                                                               trackObject); \
-    return true;                                                        \
-  }                                                                     \
-  void THISCLASS::cleanup##sigName(ObjType* obj) {                      \
-    if (obj == nullptr) {                                               \
-      return;                                                           \
-    }                                                                   \
-                                                                        \
-    if (!impl->ExistChecker(obj)) {                                     \
-      return;                                                           \
-    }                                                                   \
-                                                                        \
-    auto & sig = impl->sigName##SignalOf(obj);                          \
-    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sig);    \
+  bool THISCLASS::when##sigName(                                              \
+      ObjType* obj, sigName##SlotType handler,                                \
+      std::shared_ptr<utils::ITrackable> trackObject) {                       \
+    if (obj == nullptr) {                                                     \
+      return false;                                                           \
+    }                                                                         \
+                                                                              \
+    if (!impl->ExistChecker(obj)) {                                           \
+      return false;                                                           \
+    }                                                                         \
+                                                                              \
+    auto& sig = impl->sigName##SignalOf(obj);                                 \
+    SignalConnectionHelper<sigName##SignalType>::connectSignal(sig, handler,  \
+                                                               trackObject);  \
+    return true;                                                              \
+  }                                                                           \
+  void THISCLASS::cleanup##sigName(ObjType* obj) {                            \
+    if (obj == nullptr) {                                                     \
+      return;                                                                 \
+    }                                                                         \
+                                                                              \
+    if (!impl->ExistChecker(obj)) {                                           \
+      return;                                                                 \
+    }                                                                         \
+                                                                              \
+    auto& sig = impl->sigName##SignalOf(obj);                                 \
+    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sig);          \
   }
 
-SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
-                           RequestRemoveModel, IPfModel, isModelExist);
-SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
-                           AboutToDestroyModel, IPfModel, isModelExist);
-SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager,
-                           AboutToDestroyView, IPfView, isViewExist);
+SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager, RequestRemoveModel, IPfModel,
+                           isModelExist);
+SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager, AboutToDestroyModel, IPfModel,
+                           isModelExist);
+SNAIL_PFTRIAD_SIGSLOT_IMPL(PfTriadManager, AboutToDestroyView, IPfView,
+                           isViewExist);
 
-std::shared_ptr<IPfView>
-PfTriadManager::createViewFor(std::shared_ptr<IPfModel> model,
-                              PfPresenter* parent,
-                              bool auto_remove_child,
-                              PfCreateViewArgs* args) {
+std::shared_ptr<IPfView> PfTriadManager::createViewFor(
+    std::shared_ptr<IPfModel> model, PfPresenter* parent,
+    bool auto_remove_child, PfCreateViewArgs* args) {
   return impl->createViewFor(model, parent, auto_remove_child, args, this);
 }
 
@@ -546,9 +502,7 @@ void PfTriadManager::removeTriadBy(IPfModel* model) {
   impl->removeTriadBy(model);
 }
 
-void PfTriadManager::removeTriadBy(IPfView* view) {
-  impl->removeTriadBy(view);
-}
+void PfTriadManager::removeTriadBy(IPfView* view) { impl->removeTriadBy(view); }
 
 bool PfTriadManager::requestRemoveTriadByView(IPfView* view) {
   return impl->requestRemoveTriadByView(view);
@@ -569,8 +523,7 @@ std::vector<IPfView*> PfTriadManager::findViewByModelAndViewFactory(
 }
 
 std::vector<IPfView*> PfTriadManager::findViewByModel_if(
-    IPfModel* model,
-    MementoPredicate pred) const {
+    IPfModel* model, MementoPredicate pred) const {
   return impl->findViewByModel_if(model, pred);
 }
 

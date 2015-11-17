@@ -41,5 +41,4 @@ class SimpleKbNodeAdderView : public ISimpleKbNodeAdderView {
   friend class SimpleKbNodeAdderViewImpl;
 };
 
-
 #endif  // SRC_QTUI_UI_SIMPLE_KBNODE_ADDER_VIEW_H_

@@ -7,8 +7,8 @@
 #include <boost/signals2.hpp>
 #include <boost/version.hpp>
 
-#include <iostream>  // std::cout
-#include <memory>    // std::shared_ptr
+#include <iostream>    // std::cout
+#include <memory>      // std::shared_ptr
 #include <functional>  // std::function
 
 class TrackObject {
@@ -30,6 +30,7 @@ class TrackObject {
     std::cout << "custom new for size " << sz << std::endl;
     return ::operator new(sz);
   }
+
  private:
   char data[50];
 };
@@ -41,16 +42,13 @@ class SignalEmitter {
   SignalEmitter() = default;
   virtual ~SignalEmitter() = default;
 
-  boost::signals2::connection
-  registerHandler(std::function<void()> func,
-                  std::shared_ptr<TrackObject> trackobj) {
+  boost::signals2::connection registerHandler(
+      std::function<void()> func, std::shared_ptr<TrackObject> trackobj) {
     SignalType::slot_type handler(func);
     return signal_.connect(handler.track_foreign(trackobj));
   }
 
-  void trigger()  {
-    signal_();
-  }
+  void trigger() { signal_(); }
 
  private:
   SignalType signal_;
@@ -60,10 +58,11 @@ template <class T>
 struct custom_allocator {
   typedef T value_type;
   custom_allocator() noexcept {}
-  template <class U> custom_allocator(const custom_allocator<U>&) noexcept {}
+  template <class U>
+  custom_allocator(const custom_allocator<U>&) noexcept {}
   T* allocate(std::size_t n) {
-    std::cout << "allocate " << n
-              << " objects, object size is " << sizeof(T) << std::endl;
+    std::cout << "allocate " << n << " objects, object size is " << sizeof(T)
+              << std::endl;
     return static_cast<T*>(::operator new(n * sizeof(T)));
   }
   void deallocate(T* p, std::size_t n) {
@@ -73,10 +72,9 @@ struct custom_allocator {
 };
 
 int main() {
-  std::cout << "Boost "
-            << BOOST_VERSION / 100000 << '.'
-            << BOOST_VERSION / 100 % 1000 << '.'
-            << BOOST_VERSION % 100 << std::endl;
+  std::cout << "Boost " << BOOST_VERSION / 100000 << '.'
+            << BOOST_VERSION / 100 % 1000 << '.' << BOOST_VERSION % 100
+            << std::endl;
 
   std::cout << "---TestCase1: check wp will hold the memory---" << std::endl;
 
@@ -89,13 +87,11 @@ int main() {
       wp4 = p4;
     }
     std::cout << "---TestCase1: expect to free the memory before this line, "
-              << "but wp prevents it from being freed ---"
-              << std::endl;
+              << "but wp prevents it from being freed ---" << std::endl;
   }
   std::cout
       << "---TestCase1: the memory is only freed when weak_ptr is out of scope"
-      << ", before this line ---"
-      << std::endl;
+      << ", before this line ---" << std::endl;
 
   std::cout
       << "---TestCase2: check signal2 will prevent memory from being freed---"
@@ -107,12 +103,9 @@ int main() {
       auto trackobj = std::allocate_shared<TrackObject>(alloc);
 
       conn = signal_emiiter.registerHandler(
-          []() {
-            std::cout << "signal triggered" << std::endl;
-          }, trackobj);
+          []() { std::cout << "signal triggered" << std::endl; }, trackobj);
       std::cout << "---TestCase2: after registerHandler: conn.connected: "
-                << conn.connected()
-                << std::endl;
+                << conn.connected() << std::endl;
       signal_emiiter.trigger();
     }
     std::cout << "---TestCase2: should free trackobj here, but not---\n";
@@ -122,7 +115,8 @@ int main() {
         << std::endl;
     conn.disconnect();
     std::cout << "--TestCase2: so, conn.disconnect() does nothing, "
-        "the memory is still not freed" << std::endl;
+                 "the memory is still not freed"
+              << std::endl;
     signal_emiiter.trigger();
     std::cout
         << "---TestCase2: only re-trigger will free memory before this line ---"
@@ -136,13 +130,12 @@ int main() {
       std::shared_ptr<TrackObject> trackobj(new TrackObject());
 
       signal_emiiter.registerHandler(
-          [](){
-            std::cout << "signal triggered" << std::endl;
-          }, trackobj);
+          []() { std::cout << "signal triggered" << std::endl; }, trackobj);
       signal_emiiter.trigger();
     }
     std::cout << "---TestCase3: without use make_shared, memory will be "
-        "freed before this line---" << std::endl;
+                 "freed before this line---"
+              << std::endl;
     signal_emiiter.trigger();
     std::cout << "---TestCase3: re-trigger do nothing ---" << std::endl;
   }

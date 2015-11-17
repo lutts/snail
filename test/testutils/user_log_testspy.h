@@ -18,8 +18,8 @@ class UserLogTestSpy : public LogTestSpy {
   UserLogTestSpy();
   virtual ~UserLogTestSpy();
 
-  static const std::vector<Message>
-  createSingleMsgVector(const utils::U8String& msg) {
+  static const std::vector<Message> createSingleMsgVector(
+      const utils::U8String& msg) {
     std::vector<Message> msgs;
     msgs.emplace_back(LogSeverityLevel::user, msg);
     return msgs;
@@ -31,6 +31,5 @@ class UserLogTestSpy : public LogTestSpy {
 
   void beforeEnableLogHook() override;
 };
-
 
 #endif  // TEST_TESTUTILS_USER_LOG_TESTSPY_H_

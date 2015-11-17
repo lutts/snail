@@ -13,11 +13,9 @@ namespace utils {
 
 constexpr int CommandProcessor::UNDO_UNLIMITED;
 
-CommandProcessor::CommandProcessor() { }
+CommandProcessor::CommandProcessor() {}
 
-CommandProcessor::~CommandProcessor() {
-  clear();
-}
+CommandProcessor::~CommandProcessor() { clear(); }
 
 void CommandProcessor::do_cmd(Command *cmd) {
   cmd->redo();
@@ -44,9 +42,7 @@ void CommandProcessor::do_cmd(Command *cmd) {
   notifyRedoChanged(old_canRedo);
 }
 
-bool CommandProcessor::canRedo() const {
-  return !undo_stack.empty();
-}
+bool CommandProcessor::canRedo() const { return !undo_stack.empty(); }
 
 void CommandProcessor::redo() {
   if (canRedo()) {
@@ -62,9 +58,7 @@ void CommandProcessor::redo() {
   }
 }
 
-bool CommandProcessor::canUndo() const {
-  return !done_stack.empty();
-}
+bool CommandProcessor::canUndo() const { return !done_stack.empty(); }
 
 void CommandProcessor::undo() {
   if (canUndo()) {
@@ -124,9 +118,7 @@ void CommandProcessor::set_undo_limit(int limit) {
   }
 }
 
-int CommandProcessor::undo_limit() const {
-  return undo_limit_;
-}
+int CommandProcessor::undo_limit() const { return undo_limit_; }
 
 void CommandProcessor::notifyRedoChanged(bool old_canRedo) {
   bool new_canRedo = canRedo();

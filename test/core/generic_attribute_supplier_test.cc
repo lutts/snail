@@ -16,7 +16,7 @@ namespace tests {
 class MockGenericAttributeSupplier : public GenericAttributeSupplier {
  public:
   MockGenericAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) { }
+      : GenericAttributeSupplier(name, max_attrs) {}
 
   MOCK_METHOD0(createAttribute, IAttribute*());
   MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
@@ -52,12 +52,12 @@ class GenericAttributeSupplierTest : public ::testing::Test {
 };
 
 TEST_F(GenericAttributeSupplierTest,
-       should_name_be_the_name_passing_to_constructor) { // NOLINT
+       should_name_be_the_name_passing_to_constructor) {  // NOLINT
   ASSERT_EQ(expect_name, supplier->name());
 }
 
 TEST_F(GenericAttributeSupplierTest,
-       should_max_attrs_be_the_max_attrs_passing_to_constructor) { // NOLINT
+       should_max_attrs_be_the_max_attrs_passing_to_constructor) {  // NOLINT
   ASSERT_EQ(expect_max_attrs, supplier->max_attrs());
 }
 
@@ -72,9 +72,8 @@ BIND_SIGNAL1(AttributeChanged, void, IAttribute*, attr);
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-
 TEST_F(GenericAttributeSupplierTest,
-       should_call_attributeChanged_emit_AttributeChanged_signal) { // NOLINT
+       should_call_attributeChanged_emit_AttributeChanged_signal) {  // NOLINT
   // Setup fixture
   auto attr = xtestutils::genDummyPointer<IAttribute>();
 
@@ -86,8 +85,9 @@ TEST_F(GenericAttributeSupplierTest,
   supplier->attributeChanged(attr);
 }
 
-TEST_F(GenericAttributeSupplierTest,
-       should_be_able_to_add_attribute_and_call_createAttribute_of_sub_classes) { // NOLINT
+TEST_F(
+    GenericAttributeSupplierTest,
+    should_be_able_to_add_attribute_and_call_createAttribute_of_sub_classes) {  // NOLINT
   // Setup fixture
   auto expect_attr1 = new NullAttribute();
   auto expect_attr2 = new NullAttribute();
@@ -122,13 +122,13 @@ TEST_F(GenericAttributeSupplierTest,
   ASSERT_EQ(expect_attr_vec, actual_attr_vec);
 }
 
-TEST_F(GenericAttributeSupplierTest,
-       should_not_add_attribute_and_not_call_createAttribute_of_sub_class_when_attrcount_eq_max_attrs) { // NOLINT
+TEST_F(
+    GenericAttributeSupplierTest,
+    should_not_add_attribute_and_not_call_createAttribute_of_sub_class_when_attrcount_eq_max_attrs) {  // NOLINT
   // Setup fixture
   const int max_attrs = 2;
   MockGenericAttributeSupplier full_test_supplier{"", max_attrs};
-  for (int i = 0; i < max_attrs; ++i)
-    full_test_supplier.addAttribute();
+  for (int i = 0; i < max_attrs; ++i) full_test_supplier.addAttribute();
 
   ASSERT_EQ(max_attrs, full_test_supplier.attr_count());
 
@@ -143,7 +143,7 @@ TEST_F(GenericAttributeSupplierTest,
 }
 
 TEST_F(GenericAttributeSupplierTest,
-       should_be_able_to_remove_and_destruct_existing_attr) { // NOLINT
+       should_be_able_to_remove_and_destruct_existing_attr) {  // NOLINT
   // Setup fixture
   auto expect_attr1 = new NullAttribute();
   auto expect_attr2 = new MockAttribute();
@@ -178,7 +178,7 @@ TEST_F(GenericAttributeSupplierTest,
 }
 
 TEST_F(GenericAttributeSupplierTest,
-       should_destroy_attributes_when_supplier_destroy) { // NOLINT
+       should_destroy_attributes_when_supplier_destroy) {  // NOLINT
   // Setup fixture
   auto expect_attr1 = new MockAttribute();
   auto expect_attr2 = new MockAttribute();

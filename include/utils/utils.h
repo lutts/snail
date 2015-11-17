@@ -19,31 +19,23 @@ namespace utils {
 // Wrapper class allowing enumerations to be used in range-based for loops
 // =======================================================================
 
-template<typename T,
-         T first = (T) 0,
-         T last = T::count>
+template <typename T, T first = (T)0, T last = T::count>
 struct enum_class_range {
   struct iter : public std::iterator<std::input_iterator_tag, T> {
    public:
-    explicit iter(T v) : v_(v) { }
-    constexpr T operator* () const {
-      return v_;
-    }
-    constexpr bool operator!= (iter other) const {
-      return v_ != other.v_;
-    }
-    void operator++ () {
-      v_ = (T) ((typename std::underlying_type<T>::type)(v_) + 1);
+    explicit iter(T v) : v_(v) {}
+    constexpr T operator*() const { return v_; }
+    constexpr bool operator!=(iter other) const { return v_ != other.v_; }
+    void operator++() {
+      v_ = (T)((typename std::underlying_type<T>::type)(v_) + 1);
     }
 
    private:
     T v_;
   };
 
-  static constexpr iter begin()
-  { return iter{first}; }
-  static constexpr iter end()
-  { return iter{last}; }
+  static constexpr iter begin() { return iter{first}; }
+  static constexpr iter end() { return iter{last}; }
 };
 
 // like equal_range pair, but can be used with C++11 ranged-for
@@ -64,13 +56,13 @@ struct enum_class_range {
 template <typename IterType>
 class range {
  public:
-  range(IterType begin, IterType end)
-      : begin_(begin), end_(end) { }
+  range(IterType begin, IterType end) : begin_(begin), end_(end) {}
 
   IterType begin() const { return begin_; }
   IterType end() const { return end_; }
-  typename std::iterator_traits<IterType>::difference_type
-  distance() const { return std::distance(begin_, end_); }
+  typename std::iterator_traits<IterType>::difference_type distance() const {
+    return std::distance(begin_, end_);
+  }
 
  private:
   IterType begin_;

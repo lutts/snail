@@ -22,7 +22,8 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
   COMMON_ATTRIBUTE_MOCKS
 
   SNAIL_CONST_INTERFACE0(clone, fto::KbNodeAttribute*());
-  fto::KbNodeAttribute& operator=(fto::KbNodeAttribute && rhs) override {
+  fto::KbNodeAttribute& operator=(
+      fto::KbNodeAttribute&& rhs) override {  // NOLINT
     moveFrom(rhs);
     return *this;
   }
@@ -34,8 +35,8 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
 class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
  public:
   MockKbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : fto::KbNodeAttributeSupplier(name, max_attrs) { }
-  MockKbNodeAttributeSupplier() : MockKbNodeAttributeSupplier { "", 0} { }
+      : fto::KbNodeAttributeSupplier(name, max_attrs) {}
+  MockKbNodeAttributeSupplier() : MockKbNodeAttributeSupplier{"", 0} {}
   // IAttributeSupplier mocks
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));

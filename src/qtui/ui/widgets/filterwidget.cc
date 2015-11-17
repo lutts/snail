@@ -13,14 +13,13 @@
 #include "src/qtui/ui/widgets/filterwidget.h"
 #include "src/qtui/ui/widgets/qtcompleter.h"
 
-FilterWidget::FilterWidget(QWidget* parent)
-    : QLineEdit(parent) {
+FilterWidget::FilterWidget(QWidget* parent) : QLineEdit(parent) {
   setClearButtonEnabled(true);
-  connect(this, SIGNAL(textEdited(const QString &)),
-          this, SLOT(on_textEdited(const QString &)));
+  connect(this, SIGNAL(textEdited(const QString&)), this,
+          SLOT(on_textEdited(const QString&)));
 
   const QIcon icon = QIcon(QPixmap(QStringLiteral(":/images/find.png")));
-  QToolButton *optionsButton = new QToolButton;
+  QToolButton* optionsButton = new QToolButton;
 #ifndef QT_NO_CURSOR
   optionsButton->setCursor(Qt::ArrowCursor);
 #endif
@@ -28,53 +27,45 @@ FilterWidget::FilterWidget(QWidget* parent)
   optionsButton->setStyleSheet(QStringLiteral("* { border: none; }"));
   optionsButton->setIcon(icon);
 
-  QWidgetAction *optionsAction = new QWidgetAction(this);
+  QWidgetAction* optionsAction = new QWidgetAction(this);
   optionsAction->setDefaultWidget(optionsButton);
   addAction(optionsAction, QLineEdit::LeadingPosition);
 
-  connect(optionsButton, SIGNAL(clicked()),
-          this, SLOT(complete()));
+  connect(optionsButton, SIGNAL(clicked()), this, SLOT(complete()));
 }
 
 void FilterWidget::setQtCompleter(QtCompleter* completer) {
-  if (completer == completer_)
-    return;
+  if (completer == completer_) return;
 
   if (completer_) {
     completer_->setWidget(nullptr);
-    if (completer_->parent() == this)
-      delete completer_;
+    if (completer_->parent() == this) delete completer_;
   }
 
   completer_ = completer;
 
-  if (!completer_)
-    return;
+  if (!completer_) return;
 
-  if (completer_->widget() == nullptr)
-    completer_->setWidget(this);
+  if (completer_->widget() == nullptr) completer_->setWidget(this);
 }
 
-QtCompleter* FilterWidget::qtcompleter() {
-  return completer_;
-}
+QtCompleter* FilterWidget::qtcompleter() { return completer_; }
 
-void FilterWidget::focusInEvent(QFocusEvent *e) {
+void FilterWidget::focusInEvent(QFocusEvent* e) {
   QLineEdit::focusInEvent(e);
 
-  if (completer_ &&
-      ((e->reason() == Qt::MouseFocusReason) ||
-       (e->reason() == Qt::TabFocusReason))) {
+  if (completer_ && ((e->reason() == Qt::MouseFocusReason) ||
+                     (e->reason() == Qt::TabFocusReason))) {
     completer_->setWidget(this);
     complete();
   }
 }
 
-void FilterWidget::focusOutEvent(QFocusEvent *e) {
+void FilterWidget::focusOutEvent(QFocusEvent* e) {
   QLineEdit::focusOutEvent(e);
 }
 
-void FilterWidget::mouseReleaseEvent(QMouseEvent * e) {
+void FilterWidget::mouseReleaseEvent(QMouseEvent* e) {
   QLineEdit::mouseReleaseEvent(e);
   mayShowCompleterOnEmptyContent();
 }
@@ -96,21 +87,15 @@ void FilterWidget::mayShowCompleterOnEmptyContent() {
 void FilterWidget::slot_show_completer_popup() {
   // apparently, complete() works only in event handler
   QApplication::postEvent(
-      this,
-      new QEvent(static_cast<QEvent::Type>(kShowCompletionEvent)));
+      this, new QEvent(static_cast<QEvent::Type>(kShowCompletionEvent)));
 }
 
-void FilterWidget::on_textEdited(const QString& text) {
-  complete(text);
-}
+void FilterWidget::on_textEdited(const QString& text) { complete(text); }
 
-void FilterWidget::complete() {
-  complete(text());
-}
+void FilterWidget::complete() { complete(text()); }
 
 void FilterWidget::complete(const QString& filter_pattern) {
-  if (!completer_ || isReadOnly() || echoMode() != QLineEdit::Normal)
-    return;
+  if (!completer_ || isReadOnly() || echoMode() != QLineEdit::Normal) return;
 
   completer_->setFilterPattern(filter_pattern);
   completer_->complete();

@@ -26,11 +26,11 @@ namespace fto {
 
 #ifndef DISABLE_TEST_CODE
 
-#define LinkType_METHODS                        \
-  SNAIL_CONST_INTERFACE0(attributeSuppliers,    \
-                         std::vector<IAttributeSupplier*>());   \
-  SNAIL_CONST_INTERFACE0(prototype, const fto::LinkType*());    \
-  SNAIL_CONST_INTERFACE0(toString, utils::U8String());          \
+#define LinkType_METHODS                                      \
+  SNAIL_CONST_INTERFACE0(attributeSuppliers,                  \
+                         std::vector<IAttributeSupplier*>()); \
+  SNAIL_CONST_INTERFACE0(prototype, const fto::LinkType*());  \
+  SNAIL_CONST_INTERFACE0(toString, utils::U8String());        \
   SNAIL_INTERFACE0(clear, void());
 
 class LinkType : public ITreeItem {
@@ -47,7 +47,7 @@ class LinkType : public ITreeItem {
 
 #else  // DISABLE_TEST_CODE
 
-class LinkType : public ITreeItem { };
+class LinkType : public ITreeItem {};
 
 #endif  // DISABLE_TEST_CODE
 
@@ -67,19 +67,14 @@ class LinkTypeTestProxy {
   TEST_PROXY_ENABLE_COPY(LinkType);
 
  public:
-  utils::U8String name() const {
-    return self_->name();
-  }
+  utils::U8String name() const { return self_->name(); }
 
-  bool isGroupOnly() const {
-    return self_->isGroupOnly();
-  }
+  bool isGroupOnly() const { return self_->isGroupOnly(); }
 
   SNAIL_SIGSLOT_PROXY(LinkType, LinkUpdated);
 
   LinkType_METHODS
 };
-
 
 }  // namespace fto
 }  // namespace snailcore

@@ -17,8 +17,8 @@ class ISimpleKbNodeAdderModelFactory {
  public:
   virtual ~ISimpleKbNodeAdderModelFactory() = default;
 
-  virtual std::shared_ptr<ISimpleKbNodeAdderModel>
-  createSimpleKbNodeAdderModel(ITreeItemProvider* provider) const = 0;
+  virtual std::shared_ptr<ISimpleKbNodeAdderModel> createSimpleKbNodeAdderModel(
+      ITreeItemProvider* provider) const = 0;
 };
 
 }  // namespace snailcore

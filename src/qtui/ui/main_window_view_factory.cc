@@ -9,7 +9,7 @@
 #include "src/qtui/ui/main_window.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 using namespace snailcore;  // NOLINT
 
 class MainWindowViewFactory : public PfViewFactoryT<IMainWindowModel> {
@@ -19,9 +19,9 @@ class MainWindowViewFactory : public PfViewFactoryT<IMainWindowModel> {
 
   DEF_VIEW_FACTORY_ID(MainWindowViewFactory)
 
-  std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<IMainWindowModel> model,
-                PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createViewFor(
+      std::shared_ptr<IMainWindowModel> model,
+      PfCreateViewArgs* args) override {
     V_UNUSED(args);
     auto view = std::make_shared<MainWindow>();
     return std::make_shared<MainWindowPresenter>(model, view);
@@ -33,4 +33,4 @@ class MainWindowViewFactory : public PfViewFactoryT<IMainWindowModel> {
 };
 
 static view_factory_t<IMainWindowModel, MainWindowViewFactory>
-g_main_window_view_factory;
+    g_main_window_view_factory;

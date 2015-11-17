@@ -9,7 +9,7 @@
 #include "src/qtui/ui/workspace_view.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 using namespace snailcore;  // NOLINT
 
 class WorkSpaceViewFactory : public PfViewFactoryT<IWorkSpaceModel> {
@@ -19,9 +19,8 @@ class WorkSpaceViewFactory : public PfViewFactoryT<IWorkSpaceModel> {
 
   DEF_VIEW_FACTORY_ID(WorkSpaceViewFactory)
 
-  std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<IWorkSpaceModel> model,
-                PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createViewFor(
+      std::shared_ptr<IWorkSpaceModel> model, PfCreateViewArgs* args) override {
     V_UNUSED(args);
     auto view = std::make_shared<WorkSpaceView>();
     return std::make_shared<WorkSpacePresenter>(model, view);
@@ -33,4 +32,4 @@ class WorkSpaceViewFactory : public PfViewFactoryT<IWorkSpaceModel> {
 };
 
 static view_factory_t<IWorkSpaceModel, WorkSpaceViewFactory>
-g_WorkSpace_view_factory;
+    g_WorkSpace_view_factory;

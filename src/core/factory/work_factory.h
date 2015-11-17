@@ -28,7 +28,6 @@ class WorkFactory : public IWorkFactory {
   KbNodeManager* kbnode_manager_;
 };
 
-
 }  // namespace snailcore
 
 #endif  // SRC_CORE_FACTORY_WORK_FACTORY_H_

@@ -16,7 +16,7 @@ namespace snailcore {
 class KbNode : public IKbNode {
  public:
   KbNode(KbNodeIdType id, const utils::U8String& name, bool is_category = false)
-      : id_(id), name_(name), is_category_(is_category) { }
+      : id_(id), name_(name), is_category_(is_category) {}
   virtual ~KbNode() = default;
 
   KbNodeIdType id() const override { return id_; }
@@ -28,9 +28,8 @@ class KbNode : public IKbNode {
 
   KbNodeIdType id_;
   utils::U8String name_;
-  bool is_category_ { false };
+  bool is_category_{false};
 };
-
 
 }  // namespace snailcore
 

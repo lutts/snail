@@ -32,8 +32,8 @@ class IAttributeSetModel : public pfmvp::IPfModel {
   virtual bool isEditMode() const = 0;
   virtual std::vector<IAttributeSupplier*> getAttributeSuppliers() const = 0;
   virtual void switchMode() = 0;
-  virtual
-  std::shared_ptr<IAttributeModel> createAttributeModel(IAttribute* attr) = 0;
+  virtual std::shared_ptr<IAttributeModel> createAttributeModel(
+      IAttribute* attr) = 0;
   virtual void closeAttributeEditors(pfmvp::IPfTriadManager* triad_manager) = 0;
 };
 

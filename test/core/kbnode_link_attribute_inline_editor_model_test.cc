@@ -42,11 +42,10 @@ class KbNodeLinkAttributeInlineEditorModelTest : public ::testing::Test {
 };
 
 TEST_F(KbNodeLinkAttributeInlineEditorModelTest,
-       should_valueText_be_attr_value_text) { // NOLINT
+       should_valueText_be_attr_value_text) {  // NOLINT
   // Setup fixture
   auto expect_text = xtestutils::genRandomString();
-  EXPECT_CALL(kbnode_link_attr, valueText())
-      .WillOnce(Return(expect_text));
+  EXPECT_CALL(kbnode_link_attr, valueText()).WillOnce(Return(expect_text));
 
   // Exercise system
   auto actual_text = model->valueText();
@@ -56,7 +55,7 @@ TEST_F(KbNodeLinkAttributeInlineEditorModelTest,
 }
 
 TEST_F(KbNodeLinkAttributeInlineEditorModelTest,
-       should_be_able_to_create_popup_editor_model) { // NOLINT
+       should_be_able_to_create_popup_editor_model) {  // NOLINT
   // Setup fixture
   auto expect_model =
       std::make_shared<MockKbNodeLinkAttributePopupEditorModel>();

@@ -32,7 +32,7 @@ class QtUiEngine : public QObject, public snailcore::IUiEngine {
   void aboutToQuitApp();
 
  private:
-  int dummy_argc { 0 };
+  int dummy_argc{0};
   std::unique_ptr<QApplication> qtApplication;
 
  private:

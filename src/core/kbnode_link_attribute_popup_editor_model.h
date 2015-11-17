@@ -52,7 +52,7 @@ class KbNodeLinkAttributePopupEditorModel
   void validateComplete();
 
   std::unique_ptr<KbNodeLinkAttributePopupEditorModelSignalHelper>
-  signal_helper_;
+      signal_helper_;
 
   fto::KbNodeLinkAttribute* attr_;
   TEST_PROXY(KbNodeAttribute) value_attr_copy_;
@@ -62,10 +62,9 @@ class KbNodeLinkAttributePopupEditorModel
   IAttributeSetModelFactory* attr_set_model_factory_;
 
   IAttributeSetModel* curr_attr_set_model_;
-  bool attr_model_valid_ { true };
-  bool attr_set_model_valid_ { true };
+  bool attr_model_valid_{true};
+  bool attr_set_model_valid_{true};
 };
-
 
 }  // namespace snailcore
 

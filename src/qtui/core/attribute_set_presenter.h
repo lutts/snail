@@ -16,8 +16,7 @@
 #include "qtui/ui/i_attribute_set_view.h"
 
 using AttributeSetPresenterBase =
-    pfmvp::PfPresenterT<snailcore::IAttributeSetModel,
-                        IAttributeSetView>;
+    pfmvp::PfPresenterT<snailcore::IAttributeSetModel, IAttributeSetView>;
 
 FTO_BEGIN_NAMESPACE
 class AttributeSetLayout;
@@ -26,8 +25,7 @@ FTO_END_NAMESPACE
 class AttributeSetPresenter : public AttributeSetPresenterBase {
  public:
   AttributeSetPresenter(
-      std::shared_ptr<model_type> model,
-      std::shared_ptr<view_type> view,
+      std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
       std::shared_ptr<fto::AttributeSetLayout> attr_set_layout);
   virtual ~AttributeSetPresenter();
 

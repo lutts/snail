@@ -34,7 +34,7 @@ class SimpleKbNodeAdderViewImpl : public QDialog {
 
   QTreeView* tree_view_;
   QLineEdit* kbnode_name_editor_;
-  QPushButton *add_button;
+  QPushButton* add_button;
 
   SimpleKbNodeAdderView* q_ptr;
   friend class SimpleKbNodeAdderView;
@@ -42,8 +42,7 @@ class SimpleKbNodeAdderViewImpl : public QDialog {
 
 #include "simple_kbnode_adder_view.moc"
 
-SimpleKbNodeAdderViewImpl::SimpleKbNodeAdderViewImpl()
-    : QDialog(nullptr) {
+SimpleKbNodeAdderViewImpl::SimpleKbNodeAdderViewImpl() : QDialog(nullptr) {
   auto layout_ = new QFormLayout(this);
 
   tree_view_ = new QTreeView(this);
@@ -52,34 +51,29 @@ SimpleKbNodeAdderViewImpl::SimpleKbNodeAdderViewImpl()
 
   kbnode_name_editor_ = new QLineEdit(this);
   connect(kbnode_name_editor_, &QLineEdit::textEdited,
-          [this](const QString &text) {
-            q_ptr->NewKbNodeNameChanged(text);
-          });
+          [this](const QString& text) { q_ptr->NewKbNodeNameChanged(text); });
   layout_->addRow(tr("Node Name: "), kbnode_name_editor_);
 
   auto category_checkbox = new QCheckBox(this);
-  connect(category_checkbox, &QCheckBox::stateChanged,
-          [this](int state) {
-            q_ptr->UserToggleCategoryCheckbox(state == Qt::Checked);
-          });
+  connect(category_checkbox, &QCheckBox::stateChanged, [this](int state) {
+    q_ptr->UserToggleCategoryCheckbox(state == Qt::Checked);
+  });
   layout_->addRow(tr("Category: "), category_checkbox);
 
   // v_layout->addStretch();
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(this);
   buttonBox->setObjectName(QStringLiteral("buttonBox"));
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->setStandardButtons(
-      QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  buttonBox->setStandardButtons(QDialogButtonBox::Cancel |
+                                QDialogButtonBox::Ok);
   buttonBox->setCenterButtons(true);
   add_button = buttonBox->button(QDialogButtonBox::Ok);
   add_button->setText(tr("Add"));
   add_button->setEnabled(true);
 
   QObject::connect(buttonBox, &QDialogButtonBox::accepted,
-                   [this]() {
-                     q_ptr->UserClickAddButton();
-                   });
+                   [this]() { q_ptr->UserClickAddButton(); });
   QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -107,15 +101,13 @@ void SimpleKbNodeAdderView::setNewKbNodeName(const QString& name) {
 }
 
 void SimpleKbNodeAdderView::setKbNodeTreeQModel(QAbstractItemModel* model) {
-  if (!model)
-    return;
+  if (!model) return;
 
   impl->tree_view_->setModel(model);
   impl->tree_view_->expandToDepth(0);
   QObject::connect(
-      impl->tree_view_->selectionModel(),
-      &QItemSelectionModel::currentChanged,
-      [this](const QModelIndex & current, const QModelIndex & previous) {
+      impl->tree_view_->selectionModel(), &QItemSelectionModel::currentChanged,
+      [this](const QModelIndex& current, const QModelIndex& previous) {
         (void)previous;
         UserSelectIndex(current);
       });

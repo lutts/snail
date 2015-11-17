@@ -33,11 +33,11 @@ void PrintTo(const MockCommand& command, ::std::ostream* os) {
 
 class DummyCommand : public Command {
  public:
-  DummyCommand() { }
-  ~DummyCommand() { }
+  DummyCommand() {}
+  ~DummyCommand() {}
 
-  void redo() override { }
-  void undo() override { }
+  void redo() override {}
+  void undo() override {}
 };
 
 }  // namespace tests

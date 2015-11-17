@@ -30,8 +30,8 @@ class KbNodeLinkAttributeInlineEditorModel
 
   utils::U8String valueText() const override;
 
-  std::shared_ptr<IKbNodeLinkAttributePopupEditorModel>
-  createPopupEditorModel() override;
+  std::shared_ptr<IKbNodeLinkAttributePopupEditorModel> createPopupEditorModel()
+      override;
 
  private:
   SNAIL_DISABLE_COPY(KbNodeLinkAttributeInlineEditorModel);
@@ -39,7 +39,6 @@ class KbNodeLinkAttributeInlineEditorModel
   fto::KbNodeLinkAttribute* attr_;
   IKbNodeLinkAttributePopupEditorModelFactory* popup_editor_factory_;
 };
-
 
 }  // namespace snailcore
 

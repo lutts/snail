@@ -35,8 +35,7 @@ class Work : public FTO_NAMESPACE::Work {
       std::vector<std::unique_ptr<IAttributeSupplier> >&& attr_suppliers);
 
  public:
-  SNAIL_SIGSLOT_NONVIRTUAL(NameChanged,
-                           void(const utils::U8String& new_name));
+  SNAIL_SIGSLOT_NONVIRTUAL(NameChanged, void(const utils::U8String& new_name));
 
  private:
   std::unique_ptr<WorkSignalHelper> signal_helper_;
@@ -48,7 +47,6 @@ class Work : public FTO_NAMESPACE::Work {
   utils::U8String name_;
   std::vector<std::unique_ptr<IAttributeSupplier> > attr_suppliers_;
 };
-
 
 }  // namespace snailcore
 

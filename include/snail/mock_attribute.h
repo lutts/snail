@@ -10,12 +10,12 @@
 
 #include "snail/i_attribute.h"
 
-#define COMMON_ATTRIBUTE_MOCKS                                  \
-  MOCK_CONST_METHOD0(displayName, utils::U8String());           \
-  MOCK_CONST_METHOD0(valueText, utils::U8String());             \
-  MOCK_CONST_METHOD0(isEmpty, bool());                          \
-  MOCK_METHOD0(clear, void());                                  \
-  MOCK_METHOD1(accept, void(IAttributeVisitor* visitor));
+#define COMMON_ATTRIBUTE_MOCKS                        \
+  MOCK_CONST_METHOD0(displayName, utils::U8String()); \
+  MOCK_CONST_METHOD0(valueText, utils::U8String());   \
+  MOCK_CONST_METHOD0(isEmpty, bool());                \
+  MOCK_METHOD0(clear, void());                        \
+  MOCK_METHOD1(accept, void(IAttributeVisitor * visitor));
 
 namespace snailcore {
 namespace tests {
@@ -33,19 +33,13 @@ class MockAttribute : public IAttribute {
 
 class NullAttribute : public IAttribute {
  public:
-  utils::U8String displayName() const override {
-    return "";
-  }
+  utils::U8String displayName() const override { return ""; }
 
-  utils::U8String valueText() const override {
-    return "";
-  }
+  utils::U8String valueText() const override { return ""; }
 
-  bool isEmpty() const override {
-    return true;
-  }
+  bool isEmpty() const override { return true; }
 
-  void clear() override { }
+  void clear() override {}
 
   void accept(IAttributeVisitor* visitor) override { (void)visitor; }
 };

@@ -13,35 +13,24 @@ using snailcore::IAttribute;
 using snailcore::IAttributeSupplier;
 
 AttributeSetPresenter::AttributeSetPresenter(
-    std::shared_ptr<model_type> model,
-    std::shared_ptr<view_type> view,
+    std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
     std::shared_ptr<fto::AttributeSetLayout> attr_set_layout)
-    : AttributeSetPresenterBase(model, view)
-    , attr_set_layout_(std::move(attr_set_layout)) {
-}
+    : AttributeSetPresenterBase(model, view),
+      attr_set_layout_(std::move(attr_set_layout)) {}
 
 AttributeSetPresenter::~AttributeSetPresenter() = default;
 
 void AttributeSetPresenter::initialize() {
   resetAttrSuppliers(model()->isEditMode());
 
-  view()->whenUserSwitchMode(
-      [this]() {
-        model()->switchMode();
-      },
-      shared_from_this());
+  view()->whenUserSwitchMode([this]() { model()->switchMode(); },
+                             shared_from_this());
 
-  model()->whenSwitchToEditMode(
-      [this]() {
-        resetAttrSuppliers(true);
-      },
-      shared_from_this());
+  model()->whenSwitchToEditMode([this]() { resetAttrSuppliers(true); },
+                                shared_from_this());
 
-  model()->whenSwitchToDisplayMode(
-      [this]() {
-        resetAttrSuppliers(false);
-      },
-      shared_from_this());
+  model()->whenSwitchToDisplayMode([this]() { resetAttrSuppliers(false); },
+                                   shared_from_this());
 
   attr_set_layout_->whenCreateAttrEditor(
       [this](IAttribute* attr) {
@@ -51,9 +40,7 @@ void AttributeSetPresenter::initialize() {
       shared_from_this());
 
   attr_set_layout_->whenCloseAttributeEditors(
-      [this]() {
-        model()->closeAttributeEditors(triad_manager());
-      },
+      [this]() { model()->closeAttributeEditors(triad_manager()); },
       shared_from_this());
 
   model()->whenValidateComplete(
@@ -64,8 +51,8 @@ void AttributeSetPresenter::initialize() {
 }
 
 void AttributeSetPresenter::resetAttrSuppliers(bool edit_mode) {
-  attr_set_layout_->setAttributeSuppliers(
-      model()->getAttributeSuppliers(), edit_mode);
+  attr_set_layout_->setAttributeSuppliers(model()->getAttributeSuppliers(),
+                                          edit_mode);
   if (edit_mode)
     view()->switchToEditMode();
   else

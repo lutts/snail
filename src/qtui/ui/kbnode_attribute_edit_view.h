@@ -18,8 +18,8 @@
 class FilterWidget;
 class QLabel;
 
-class KbNodeAttributeEditView : public IKbNodeAttributeEditView
-                              , public QWidget {
+class KbNodeAttributeEditView : public IKbNodeAttributeEditView,
+                                public QWidget {
  public:
   KbNodeAttributeEditView();
   virtual ~KbNodeAttributeEditView();
@@ -43,6 +43,5 @@ class KbNodeAttributeEditView : public IKbNodeAttributeEditView
   FilterWidget* filter_widget_;
   QLabel* err_msg_label_;
 };
-
 
 #endif  // SRC_QTUI_UI_KBNODE_ATTRIBUTE_EDIT_VIEW_H_

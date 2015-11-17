@@ -31,5 +31,4 @@ class ISimpleKbNodeAdderView : public GenericViewBase {
   virtual void setNameValidateResult(bool result) = 0;
 };
 
-
 #endif  // INCLUDE_QTUI_UI_I_SIMPLE_KBNODE_ADDER_VIEW_H_

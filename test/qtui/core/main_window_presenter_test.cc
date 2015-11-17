@@ -21,10 +21,10 @@
 #include "qtui/ui/mock_workspace_view.h"
 
 using utils::U8String;
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 class MainWindowPresenterTest : public ::testing::Test {
  protected:
@@ -41,8 +41,7 @@ class MainWindowPresenterTest : public ::testing::Test {
 
     // init window title
     utils::U8String dummyTitle = xtestutils::genRandomString();
-    R_EXPECT_CALL(*model, windowTitle())
-        .WillOnce(ReturnRef(dummyTitle));
+    R_EXPECT_CALL(*model, windowTitle()).WillOnce(ReturnRef(dummyTitle));
     R_EXPECT_CALL(*view, setWindowTitle2(dummyTitle));
 
     // build central widget
@@ -97,7 +96,8 @@ class MainWindowPresenterTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(MainWindowPresenterTest, should_update_window_title_when_model_title_changed) { // NOLINT
+TEST_F(MainWindowPresenterTest,
+       should_update_window_title_when_model_title_changed) {  // NOLINT
   // expectations
   utils::U8String newTitle = xtestutils::genRandomString();
   EXPECT_CALL(*view, setWindowTitle2(newTitle));
@@ -106,11 +106,11 @@ TEST_F(MainWindowPresenterTest, should_update_window_title_when_model_title_chan
   windowTitleChanged(newTitle);
 }
 
-TEST_F(MainWindowPresenterTest, should_request_close_when_use_close_window) { // NOLINT
+TEST_F(MainWindowPresenterTest,
+       should_request_close_when_use_close_window) {  // NOLINT
   // expectations
   auto tester = [this](bool expect_result) {
-    EXPECT_CALL(*model, requestClose())
-    .WillOnce(Return(expect_result));
+    EXPECT_CALL(*model, requestClose()).WillOnce(Return(expect_result));
 
     // Exercise system
     ASSERT_EQ(expect_result, userCloseWindow());
@@ -121,7 +121,8 @@ TEST_F(MainWindowPresenterTest, should_request_close_when_use_close_window) { //
   tester(false);
 }
 
-TEST_F(MainWindowPresenterTest, should_createWork_when_UserClickAddWork) { // NOLINT
+TEST_F(MainWindowPresenterTest,
+       should_createWork_when_UserClickAddWork) {  // NOLINT
   // Setup fixture
   auto work_name = xtestutils::genRandomString();
 

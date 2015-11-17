@@ -24,8 +24,7 @@ namespace tests {
 class MockKbNodeLinkAttributeSupplier
     : public fto::KbNodeLinkAttributeSupplier {
  public:
-  MockKbNodeLinkAttributeSupplier()
-      : KbNodeLinkAttributeSupplier("", 0) { }
+  MockKbNodeLinkAttributeSupplier() : KbNodeLinkAttributeSupplier("", 0) {}
 
   // IAttributeSupplier mocks
   MOCK_METHOD1(attributeChanged, void(IAttribute* attr));

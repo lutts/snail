@@ -34,19 +34,15 @@ class AttributeSetLayoutImpl : QObject {
     kValueColumn = AttributeSetLayout::kValueColumn,
   };
 
-  AttributeSetLayoutImpl()
-      : layout_(new QGridLayout()) {
+  AttributeSetLayoutImpl() : layout_(new QGridLayout()) {
     layout_->setHorizontalSpacing(8);
 
-    connect(layout_, &QObject::destroyed,
-            [this]() {
-              layout_ = nullptr;
-            });
+    connect(layout_, &QObject::destroyed, [this]() { layout_ = nullptr; });
 
     connect(&deprecated_layout_item_cleanup_timer_, SIGNAL(timeout()),
             &timer_mapper_, SLOT(map()));
-    connect(&timer_mapper_, SIGNAL(mapped(int)),
-            this, SLOT(cleanupDeprecatedLayoutItems(int)));
+    connect(&timer_mapper_, SIGNAL(mapped(int)), this,
+            SLOT(cleanupDeprecatedLayoutItems(int)));
 
     deprecated_layout_item_cleanup_timer_.setSingleShot(true);
   }
@@ -87,7 +83,7 @@ class AttributeSetLayoutImpl : QObject {
  private:
   SNAIL_DISABLE_COPY(AttributeSetLayoutImpl);
 
-  AttributeSetLayout* q_ptr { nullptr };
+  AttributeSetLayout* q_ptr{nullptr};
   friend class AttributeSetLayout;
 };
 
@@ -161,7 +157,7 @@ void printLayout(QGridLayout* layout) {
 }
 #endif
 
-void insertRow(QGridLayout *layout, int row) {
+void insertRow(QGridLayout* layout, int row) {
   std::map<QLayoutItem*, QRect> item_to_pos;
 
   for (int idx = 0; idx < layout->count(); ++idx) {
@@ -175,9 +171,10 @@ void insertRow(QGridLayout *layout, int row) {
     }
   }
 
-  while (layout->takeAt(0) != 0) { }
+  while (layout->takeAt(0) != 0) {
+  }
 
-  for (auto & map_item : item_to_pos) {
+  for (auto& map_item : item_to_pos) {
     const QRect& r = map_item.second;
     layout->addItem(map_item.first, r.x(), r.y(), r.width(), r.height());
   }
@@ -186,7 +183,7 @@ void insertRow(QGridLayout *layout, int row) {
 void removeLayoutItem(QLayoutItem* item);
 
 void clearLayout(QLayout* layout) {
-  QLayoutItem *item;
+  QLayoutItem* item;
   while ((item = layout->takeAt(0)) != 0) {
     removeLayoutItem(item);
   }
@@ -205,7 +202,7 @@ void removeLayoutItem(QLayoutItem* item) {
   delete item;
 }
 
-void removeRow(QGridLayout *layout, int row) {
+void removeRow(QGridLayout* layout, int row) {
   std::map<QLayoutItem*, QRect> item_to_pos;
   std::vector<QLayoutItem*> to_be_removed_items;
 
@@ -222,29 +219,27 @@ void removeRow(QGridLayout *layout, int row) {
     }
   }
 
-  while (layout->takeAt(0) != 0) { }
+  while (layout->takeAt(0) != 0) {
+  }
 
-  for (auto & map_item : item_to_pos) {
+  for (auto& map_item : item_to_pos) {
     const QRect& r = map_item.second;
     layout->addItem(map_item.first, r.x(), r.y(), r.width(), r.height());
   }
 
-  for (auto & item : to_be_removed_items) {
+  for (auto& item : to_be_removed_items) {
     removeLayoutItem(item);
   }
 }
 
 }  // namespace
 
-void AttributeSetLayoutImpl::addAttribute(
-    IAttributeSupplier* supplier) {
-  if (supplier_to_row_map_.find(supplier) == supplier_to_row_map_.end())
-    return;
+void AttributeSetLayoutImpl::addAttribute(IAttributeSupplier* supplier) {
+  if (supplier_to_row_map_.find(supplier) == supplier_to_row_map_.end()) return;
 
   int row = supplier_to_row_map_[supplier];
   auto new_attr = supplier->addAttribute();
-  if (!new_attr)
-    return;
+  if (!new_attr) return;
 
   insertRow(layout_, row);
   addAttrRow_editMode(row, new_attr);
@@ -285,16 +280,17 @@ void AttributeSetLayoutImpl::addAttrRow_editMode(int row, IAttribute* attr) {
 QLabel* AttributeSetLayoutImpl::nameLabelOfAttr(IAttribute* attr) {
   try {
     return attr_to_label_map_.at(attr);
-  } catch (...) { }
+  } catch (...) {
+  }
   return nullptr;
 }
 
 void AttributeSetLayoutImpl::doEditModeLayout(
     const std::vector<snailcore::IAttributeSupplier*>& attr_suppliers) {
   int row = 0;
-  for (auto & supplier : attr_suppliers) {
+  for (auto& supplier : attr_suppliers) {
     auto attrs = supplier->attributes();
-    for (auto & attr : attrs) {
+    for (auto& attr : attrs) {
       addAttrRow_editMode(row, attr);
       ++row;
     }
@@ -303,8 +299,7 @@ void AttributeSetLayoutImpl::doEditModeLayout(
       supplier->whenAttributeChanged(
           [this](IAttribute* attr) {
             QLabel* label = nameLabelOfAttr(attr);
-            if (label)
-              label->setText(U8StringToQString(attr->displayName()));
+            if (label) label->setText(U8StringToQString(attr->displayName()));
           },
           q_ptr->getSharedPtr());
     }
@@ -314,14 +309,12 @@ void AttributeSetLayoutImpl::doEditModeLayout(
       auto add_attr_action_label = new QSint::ActionLabel();
       add_attr_action_label->setText(
           QStringLiteral("Add %1").arg(supplier_name));
-      layout_->addWidget(add_attr_action_label,
-                         row, 0, 1, 2, Qt::AlignHCenter | Qt::AlignVCenter);
+      layout_->addWidget(add_attr_action_label, row, 0, 1, 2,
+                         Qt::AlignHCenter | Qt::AlignVCenter);
 
       supplier_to_row_map_[supplier] = row;
       connect(add_attr_action_label, &QSint::ActionLabel::clicked,
-              [this, supplier]() {
-                addAttribute(supplier);
-              });
+              [this, supplier]() { addAttribute(supplier); });
       ++row;
       curr_widgets_.push_front(add_attr_action_label);
     }
@@ -331,16 +324,15 @@ void AttributeSetLayoutImpl::doEditModeLayout(
 void AttributeSetLayoutImpl::doDisplayModeLayout(
     const std::vector<snailcore::IAttributeSupplier*>& attr_suppliers) {
   int row = 0;
-  for (auto & supplier : attr_suppliers) {
+  for (auto& supplier : attr_suppliers) {
     auto attrs = supplier->attributes();
     std::sort(begin(attrs), end(attrs),
-              [](const IAttribute* a, const IAttribute* b) -> bool {
-                return a->displayName() < b->displayName();
-              });
+              [](const IAttribute* a, const IAttribute* b)
+                  -> bool { return a->displayName() < b->displayName(); });
 
     utils::U8String last_name;
 
-    for (auto & attr : attrs) {
+    for (auto& attr : attrs) {
       auto name = attr->displayName();
       if (name == last_name) {
         name = "";
@@ -366,7 +358,7 @@ void AttributeSetLayoutImpl::postRelayout(bool to_edit_mode) {
 }
 
 void AttributeSetLayoutImpl::cleanupDeprecatedLayoutItems(int to_edit_mode) {
-  for (auto & widget : deprecated_widgets_) {
+  for (auto& widget : deprecated_widgets_) {
     layout_->removeWidget(widget);
     widget->deleteLater();
   }
@@ -380,8 +372,7 @@ void AttributeSetLayoutImpl::cleanupDeprecatedLayoutItems(int to_edit_mode) {
 void AttributeSetLayoutImpl::setAttributeSuppliers(
     const std::vector<snailcore::IAttributeSupplier*>& attr_suppliers,
     bool edit_mode) {
-  if (!layout_)
-    return;
+  if (!layout_) return;
 
   preRelayout();
   if (edit_mode) {
@@ -392,22 +383,21 @@ void AttributeSetLayoutImpl::setAttributeSuppliers(
   postRelayout(edit_mode);
 }
 
-QLabel* AttributeSetLayoutImpl::addLabel(
-    const QString& text, int row, int column) {
+QLabel* AttributeSetLayoutImpl::addLabel(const QString& text, int row,
+                                         int column) {
   auto label = new QLabel(text);
-  label->setTextInteractionFlags(
-      Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+  label->setTextInteractionFlags(Qt::LinksAccessibleByMouse |
+                                 Qt::TextSelectableByMouse);
   layout_->addWidget(label, row, column);
   curr_widgets_.push_front(label);
 
   return label;
 }
 
-QLabel* AttributeSetLayoutImpl::addNameLabel(
-    const utils::U8String& text, int row) {
+QLabel* AttributeSetLayoutImpl::addNameLabel(const utils::U8String& text,
+                                             int row) {
   QString colon_text = U8StringToQString(text);
-  if (!colon_text.isEmpty())
-    colon_text += QStringLiteral(":");
+  if (!colon_text.isEmpty()) colon_text += QStringLiteral(":");
   return addLabel(colon_text, row, kNameColumn);
 }
 
@@ -424,6 +414,4 @@ void AttributeSetLayout::setAttributeSuppliers(
   impl->setAttributeSuppliers(attr_suppliers, edit_mode);
 }
 
-QGridLayout* AttributeSetLayout::layout() const {
-  return impl->layout_;
-}
+QGridLayout* AttributeSetLayout::layout() const { return impl->layout_; }

@@ -26,14 +26,14 @@ class RangeTest : public ::testing::Test {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  ~RangeTest() { }
-  virtual void SetUp() { }
-  virtual void TearDown() { }
+  ~RangeTest() {}
+  virtual void SetUp() {}
+  virtual void TearDown() {}
 };
 
-TEST_F(RangeTest, testNonConstRange) { // NOLINT
+TEST_F(RangeTest, testNonConstRange) {  // NOLINT
   // Setup fixture
-  std::vector<int> test_vec { 1, 2, 3, 4 };
+  std::vector<int> test_vec{1, 2, 3, 4};
 
   // Verify results
   int i = 0;
@@ -43,7 +43,7 @@ TEST_F(RangeTest, testNonConstRange) { // NOLINT
   }
 }
 
-TEST_F(RangeTest, testConstRange) { // NOLINT
+TEST_F(RangeTest, testConstRange) {  // NOLINT
   // Setup fixture
   struct TestItem {
     int dummy;
@@ -52,8 +52,8 @@ TEST_F(RangeTest, testConstRange) { // NOLINT
       return dummy == other.dummy;
     }
   };
-  std::vector<TestItem> test_vec {
-    TestItem{1}, TestItem{2}, TestItem{3}, TestItem{4} };
+  std::vector<TestItem> test_vec{TestItem{1}, TestItem{2}, TestItem{3},
+                                 TestItem{4}};
 
   // Verify results
   int i = 0;
@@ -63,19 +63,18 @@ TEST_F(RangeTest, testConstRange) { // NOLINT
   }
 }
 
-TEST_F(RangeTest, rangeSizeIsDistanceOfIterator) { // NOLINT
+TEST_F(RangeTest, rangeSizeIsDistanceOfIterator) {  // NOLINT
   // Setup fixture
-  std::vector<int> test_vec { 1, 2, 3, 4 };
+  std::vector<int> test_vec{1, 2, 3, 4};
 
   // Exercise system
   auto rng = make_range(test_vec.begin(), test_vec.end());
 
   // Verify results
-  ASSERT_EQ(std::distance(test_vec.begin(), test_vec.end()),
-            rng.distance());
+  ASSERT_EQ(std::distance(test_vec.begin(), test_vec.end()), rng.distance());
 }
 
-TEST_F(RangeTest, testEqualRange) { // NOLINT
+TEST_F(RangeTest, testEqualRange) {  // NOLINT
   // Setup fixture
   std::multimap<char, int> mymm;
 
@@ -93,8 +92,8 @@ TEST_F(RangeTest, testEqualRange) { // NOLINT
   // Verify results
   for (char ch = 'a'; ch <= 'd'; ++ch) {
     // build expectations
-    std::pair <std::multimap<char, int>::iterator,
-               std::multimap<char, int>::iterator> expect_range;
+    std::pair<std::multimap<char, int>::iterator,
+              std::multimap<char, int>::iterator> expect_range;
     expect_range = mymm.equal_range(ch);
     std::multimap<char, int>::iterator expect_start = expect_range.first;
     std::multimap<char, int>::iterator expect_end = expect_range.second;

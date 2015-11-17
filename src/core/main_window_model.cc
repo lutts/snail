@@ -18,6 +18,7 @@ namespace snailcore {
 class MainWindowModelSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(MainWindowModel, WindowTitleChanged);
+
  public:
   SNAIL_SIGSLOT_COMBINER_PIMPL(MainWindowModel, RequestClose,
                                and_slot_bool_result_combiner);
@@ -28,10 +29,9 @@ SNAIL_SIGSLOT_DELEGATE2(MainWindowModel, RequestClose);
 
 MainWindowModel::MainWindowModel(
     std::shared_ptr<IWorkSpaceModel> workspace_model)
-    : signal_helper_(utils::make_unique<MainWindowModelSignalHelper>())
-    , windowTitle_(_("Snail"))
-    , workspace_model_(workspace_model) {
-}
+    : signal_helper_(utils::make_unique<MainWindowModelSignalHelper>()),
+      windowTitle_(_("Snail")),
+      workspace_model_(workspace_model) {}
 
 MainWindowModel::~MainWindowModel() = default;
 

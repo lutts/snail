@@ -25,13 +25,11 @@ class WeakSingleton {
     return instance;
   }
 
-  static bool hasInstance() {
-    return getWeakInstance().expired();
-  }
+  static bool hasInstance() { return getWeakInstance().expired(); }
 
  protected:
-  WeakSingleton() { }
-  ~WeakSingleton() { }
+  WeakSingleton() {}
+  ~WeakSingleton() {}
 
  private:
   WeakSingleton(const WeakSingleton& other) = delete;

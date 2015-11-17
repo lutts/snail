@@ -21,7 +21,7 @@ namespace utils {
 
 class TestClass : public Singleton<TestClass> {
  public:
-  unsigned int magicData { MAGIC_DATA };
+  unsigned int magicData{MAGIC_DATA};
 };
 
 SINGLETON_STATIC_INSTANCE(TestClass)
@@ -34,31 +34,30 @@ class SingletonTest : public ::testing::Test {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
-  ~SingletonTest() { }
-  virtual void SetUp() { }
-  virtual void TearDown() {
-    TestClass::resetInstance();
-  }
+  ~SingletonTest() {}
+  virtual void SetUp() {}
+  virtual void TearDown() { TestClass::resetInstance(); }
 };
 
-TEST_F(SingletonTest, hasInstanceInitiallyFalse) { // NOLINT
+TEST_F(SingletonTest, hasInstanceInitiallyFalse) {  // NOLINT
   // Verify results
   ASSERT_FALSE(TestClass::hasInstance());
 }
 
-TEST_F(SingletonTest, hasInstanceShouldReturnTrueAfterGetInstance) { // NOLINT
+TEST_F(SingletonTest, hasInstanceShouldReturnTrueAfterGetInstance) {  // NOLINT
   TestClass::getInstance();
 
   // Verify results
   ASSERT_TRUE(TestClass::hasInstance());
 }
 
-TEST_F(SingletonTest, getInstanceShouldUsable) { // NOLINT
+TEST_F(SingletonTest, getInstanceShouldUsable) {  // NOLINT
   // Verify results
   ASSERT_EQ(MAGIC_DATA, TestClass::getInstance().magicData);
 }
 
-TEST_F(SingletonTest, hasInstanceShouldReturnFalseAfterResetInstance) { // NOLINT
+TEST_F(SingletonTest,
+       hasInstanceShouldReturnFalseAfterResetInstance) {  // NOLINT
   // Exercise system
   TestClass::resetInstance();
 

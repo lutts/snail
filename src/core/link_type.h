@@ -24,11 +24,10 @@ namespace snailcore {
 
 class LinkTypeSignalHelper;
 
-class LinkType : public FTO_NAMESPACE::LinkType
-               , public utils::text::VariableResolver {
+class LinkType : public FTO_NAMESPACE::LinkType,
+                 public utils::text::VariableResolver {
  public:
-  LinkType(const utils::U8String& name,
-           bool is_group_only);
+  LinkType(const utils::U8String& name, bool is_group_only);
   LinkType(LinkType&& rhs);
   LinkType(const LinkType& rhs);
   virtual ~LinkType();
@@ -54,9 +53,7 @@ class LinkType : public FTO_NAMESPACE::LinkType
 
   // Test proxy requirment
   LinkType* self() { return this; }
-  fto::LinkType* clone() const {
-    return new LinkType(*this);
-  }
+  fto::LinkType* clone() const { return new LinkType(*this); }
   TEST_ONLY_MOVE_ASSIGNMENT(LinkType);
 
  public:
@@ -70,9 +67,9 @@ class LinkType : public FTO_NAMESPACE::LinkType
 
   utils::U8String name_;
   bool is_group_only_;
-  const LinkType* prototype_ { nullptr };
+  const LinkType* prototype_{nullptr};
 
-  std::vector<std::unique_ptr<IAttributeSupplier> > attr_suppliers_;
+  std::vector<std::unique_ptr<IAttributeSupplier>> attr_suppliers_;
 
   utils::U8String link_phrase_;
   utils::text::TEST_PROXY(NamedStringFormatter) named_string_formatter_;

@@ -19,40 +19,27 @@
 namespace snailcore {
 namespace tests {
 
-class AttributeTestStub :public IAttribute {
+class AttributeTestStub : public IAttribute {
  public:
-  AttributeTestStub(const utils::U8String& name,
-                    const utils::U8String& value,
+  AttributeTestStub(const utils::U8String& name, const utils::U8String& value,
                     IAttributeSupplier* supplier)
-      : name_(name)
-      , value_(value)
-      , supplier_(supplier) { }
+      : name_(name), value_(value), supplier_(supplier) {}
   virtual ~AttributeTestStub() = default;
 
-  utils::U8String displayName() const override {
-    return name_;
-  }
+  utils::U8String displayName() const override { return name_; }
 
   void setDisplayName(const utils::U8String& name) {
     name_ = name;
     supplier_->attributeChanged(this);
   }
 
-  utils::U8String valueText() const override {
-    return value_;
-  }
+  utils::U8String valueText() const override { return value_; }
 
-  void setValueText(const utils::U8String& value) {
-    value_ = value;
-  }
+  void setValueText(const utils::U8String& value) { value_ = value; }
 
-  bool isEmpty() const override {
-    return value_.empty();
-  }
+  bool isEmpty() const override { return value_.empty(); }
 
-  void clear() override {
-    value_.clear();
-  }
+  void clear() override { value_.clear(); }
 
  private:
   SNAIL_DISABLE_COPY(AttributeTestStub);
@@ -68,25 +55,16 @@ class AttrSupplierTestStubSignalProxy;
 
 class AttrSupplierTestStub : public IAttributeSupplier {
  public:
-  AttrSupplierTestStub(const utils::U8String& name,
-                       int max_attrs);
+  AttrSupplierTestStub(const utils::U8String& name, int max_attrs);
   virtual ~AttrSupplierTestStub();
 
-  utils::U8String name() const override {
-    return name_;
-  }
+  utils::U8String name() const override { return name_; }
 
-  int max_attrs() const override {
-    return max_attrs_;
-  }
+  int max_attrs() const override { return max_attrs_; }
 
-  int attr_count() const override {
-    return attributes_.size();
-  }
+  int attr_count() const override { return attributes_.size(); }
 
-  std::vector<IAttribute*> attributes() const override {
-    return attributes_;
-  }
+  std::vector<IAttribute*> attributes() const override { return attributes_; }
 
   IAttribute* addAttribute() override {
     auto attr = addAttribute(name_, "");
@@ -95,9 +73,7 @@ class AttrSupplierTestStub : public IAttributeSupplier {
   }
 
   void removeAttribute(IAttribute* attr) override {
-    auto iter = std::find(begin(attributes_),
-                          end(attributes_),
-                          attr);
+    auto iter = std::find(begin(attributes_), end(attributes_), attr);
     if (iter != end(attributes_)) {
       attributes_.erase(iter);
       attributeRemoved(attr);
@@ -106,8 +82,7 @@ class AttrSupplierTestStub : public IAttributeSupplier {
 
   AttributeTestStub* addAttribute(const utils::U8String& attr_name,
                                   const utils::U8String& attr_value) {
-    if (attributes_.size() > static_cast<size_t>(max_attrs_))
-      return nullptr;
+    if (attributes_.size() > static_cast<size_t>(max_attrs_)) return nullptr;
 
     auto attr = new AttributeTestStub(attr_name, attr_value, this);
     attributes_.push_back(attr);
@@ -137,11 +112,9 @@ class AttrSupplierTestStub : public IAttributeSupplier {
 class MockAttrSupplierTestStub : public AttrSupplierTestStub {
  public:
   MockAttrSupplierTestStub()
-      : MockAttrSupplierTestStub { xtestutils::genRandomString(), std::rand() }
-  { }
-  MockAttrSupplierTestStub(const utils::U8String& name,
-                           int max_attrs)
-      : AttrSupplierTestStub(name, max_attrs) { }
+      : MockAttrSupplierTestStub{xtestutils::genRandomString(), std::rand()} {}
+  MockAttrSupplierTestStub(const utils::U8String& name, int max_attrs)
+      : AttrSupplierTestStub(name, max_attrs) {}
   virtual ~MockAttrSupplierTestStub() = default;
 
   MOCK_METHOD1(addAttributeCalled, ComplexReturnValue(IAttribute* new_attr));

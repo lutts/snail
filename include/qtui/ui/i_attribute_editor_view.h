@@ -16,5 +16,4 @@ class IAttributeEditorView : public GenericViewBase {
   virtual ~IAttributeEditorView() = default;
 };
 
-
 #endif  // INCLUDE_QTUI_UI_I_ATTRIBUTE_EDITOR_VIEW_H_

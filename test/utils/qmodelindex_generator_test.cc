@@ -16,7 +16,7 @@ class QModelIndexGeneratorTest : public ::testing::Test {
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~QModelIndexGeneratorTest() { }
-  virtual void SetUp() { }
+  virtual void SetUp() {}
   // virtual void TearDown() { }
 
   // region: test subject
@@ -25,7 +25,7 @@ class QModelIndexGeneratorTest : public ::testing::Test {
 };
 
 TEST_F(QModelIndexGeneratorTest,
-       should_generate_QModelIndex_with_specified_row_and_column) { // NOLINT
+       should_generate_QModelIndex_with_specified_row_and_column) {  // NOLINT
   // Setup fixture
   int expect_row = std::rand();
   int expect_column = std::rand();

@@ -12,20 +12,18 @@
 struct and_slot_bool_result_combiner {
   using result_type = bool;
 
-  template<typename InputIterator>
+  template <typename InputIterator>
   result_type operator()(InputIterator first, InputIterator last) const {
     // if no one interest in RequestClose event. return true
     if (first == last) return true;
 
     result_type and_result = *first++;
-    if (!and_result)
-      return and_result;
+    if (!and_result) return and_result;
 
     while (first != last) {
       and_result &= *first;
 
-      if (!and_result)
-        return and_result;
+      if (!and_result) return and_result;
 
       ++first;
     }

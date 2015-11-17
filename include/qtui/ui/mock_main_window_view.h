@@ -22,5 +22,4 @@ class MockMainWindowView : public IMainWindowView {
   MOCK_METHOD1(setWorkSpaceView, void(IWorkSpaceView* workspace_view));
 };
 
-
 #endif  // INCLUDE_QTUI_UI_MOCK_MAIN_WINDOW_VIEW_H_

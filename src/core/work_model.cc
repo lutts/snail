@@ -20,10 +20,9 @@ class WorkModelSignalHelper {
 
 SNAIL_SIGSLOT_DELEGATE2(WorkModel, NameChanged);
 
-WorkModel::WorkModel(
-    IAttributeSetModelFactory* attr_set_model_factory)
-    : signal_helper_(utils::make_unique<WorkModelSignalHelper>())
-    , attr_set_model_factory_{attr_set_model_factory} { }
+WorkModel::WorkModel(IAttributeSetModelFactory* attr_set_model_factory)
+    : signal_helper_(utils::make_unique<WorkModelSignalHelper>()),
+      attr_set_model_factory_{attr_set_model_factory} {}
 
 WorkModel::~WorkModel() {
   // TODO(lutts): delete work is not our responsibility,
@@ -34,23 +33,19 @@ WorkModel::~WorkModel() {
 void WorkModel::set_work(fto::Work* work) {
   work_ = work;
 
-  work_->whenNameChanged(
-      [this](const utils::U8String& new_name) {
-        signal_helper_->emitNameChanged(new_name);
-      },
-      shared_from_this());
+  work_->whenNameChanged([this](const utils::U8String& new_name) {
+                           signal_helper_->emitNameChanged(new_name);
+                         },
+                         shared_from_this());
 }
 
-utils::U8String WorkModel::name() const {
-  return work_->name();
-}
+utils::U8String WorkModel::name() const { return work_->name(); }
 
 bool WorkModel::set_name(const utils::U8String& new_name) {
   return work_->set_name(new_name);
 }
 
-std::shared_ptr<IAttributeSetModel>
-WorkModel::createAttributeSetModel() {
+std::shared_ptr<IAttributeSetModel> WorkModel::createAttributeSetModel() {
   return attr_set_model_factory_->createAttributeSetModel(
       work_->attributeSuppliers());
 }

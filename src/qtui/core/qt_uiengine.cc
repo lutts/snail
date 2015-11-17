@@ -12,18 +12,12 @@ QtUiEngine::QtUiEngine()
     : qtApplication(utils::make_unique<QApplication>(dummy_argc, nullptr)) {
   // Q_INIT_RESOURCE(images);
   qtApplication->setAttribute(Qt::AA_UseHighDpiPixmaps);
-  connect(qtApplication.get(), SIGNAL(aboutToQuit()),
-          this, SLOT(aboutToQuitApp()));
+  connect(qtApplication.get(), SIGNAL(aboutToQuit()), this,
+          SLOT(aboutToQuitApp()));
 }
 
-int QtUiEngine::run() {
-  return qtApplication->exec();
-}
+int QtUiEngine::run() { return qtApplication->exec(); }
 
-void QtUiEngine::quit() {
-  qtApplication->quit();
-}
+void QtUiEngine::quit() { qtApplication->quit(); }
 
-void QtUiEngine::aboutToQuitApp() {
-  AboutToQuit();
-}
+void QtUiEngine::aboutToQuitApp() { AboutToQuit(); }

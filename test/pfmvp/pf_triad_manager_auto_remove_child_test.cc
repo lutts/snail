@@ -16,8 +16,8 @@ using DestroyMethodFunc =
     std::function<void(IPfTriadManager*, TestXXX_MVPL_Tuple*)>;
 
 class PfTriadManagerAutoRemoveChildTest
-    : public PfTriadManagerTestBase
-    , public TestWithParam<DestroyMethodFunc> {
+    : public PfTriadManagerTestBase,
+      public TestWithParam<DestroyMethodFunc> {
  protected:
   PfTriadManagerAutoRemoveChildTest() {
     // const string saved_flag = GMOCK_FLAG(verbose);
@@ -30,43 +30,34 @@ class PfTriadManagerAutoRemoveChildTest
   }
 
   std::vector<TestXXX_MVPL_Tuple> createTestTriadHierachy(
-      bool root_enable_auto_remove_child = true,
-      bool use_parent = true);
+      bool root_enable_auto_remove_child = true, bool use_parent = true);
 
-  virtual void TearDown() {
-    cleanupLog();
-  }
+  virtual void TearDown() { cleanupLog(); }
 };
 
-static DestroyMethodFunc remove_by_model =
-    [](IPfTriadManager* triad_manager,
-       TestXXX_MVPL_Tuple* mvpl_tuple) {
+static DestroyMethodFunc remove_by_model = [](IPfTriadManager* triad_manager,
+                                              TestXXX_MVPL_Tuple* mvpl_tuple) {
   triad_manager->removeTriadBy(std::get<0>(*mvpl_tuple));
 };
 
-static DestroyMethodFunc remove_by_view =
-  [](IPfTriadManager* triad_manager,
-     TestXXX_MVPL_Tuple* mvpl_tuple) {
+static DestroyMethodFunc remove_by_view = [](IPfTriadManager* triad_manager,
+                                             TestXXX_MVPL_Tuple* mvpl_tuple) {
   triad_manager->removeTriadBy(std::get<1>(*mvpl_tuple));
 };
 
-static DestroyMethodFunc remove_by_request =
-    [](IPfTriadManager* triad_manager,
-       TestXXX_MVPL_Tuple* mvpl_tuple) {
+static DestroyMethodFunc remove_by_request = [](
+    IPfTriadManager* triad_manager, TestXXX_MVPL_Tuple* mvpl_tuple) {
   triad_manager->requestRemoveTriadByView(std::get<1>(*mvpl_tuple));
 };
 
-INSTANTIATE_TEST_CASE_P(
-    VariousTriadCreateDestroyMethod,
-    PfTriadManagerAutoRemoveChildTest,
-    ::testing::Values(remove_by_model,
-                      remove_by_view,
-                      remove_by_request));
+INSTANTIATE_TEST_CASE_P(VariousTriadCreateDestroyMethod,
+                        PfTriadManagerAutoRemoveChildTest,
+                        ::testing::Values(remove_by_model, remove_by_view,
+                                          remove_by_request));
 
 std::vector<TestXXX_MVPL_Tuple>
 PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
-    bool root_enable_auto_remove_child,
-    bool use_parent) {
+    bool root_enable_auto_remove_child, bool use_parent) {
   /*               __________
    *                |    1   | (root)           level0
    *                ----------
@@ -85,17 +76,16 @@ PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
   std::vector<TestXXX_MVPL_Tuple> triad_vec;
 
   TestXXX_MVPL_Tuple root_tuple;
-  createTestTriadAndListener<MockXXXViewFactory>(
-      &root_tuple, nullptr, root_enable_auto_remove_child);
+  createTestTriadAndListener<MockXXXViewFactory>(&root_tuple, nullptr,
+                                                 root_enable_auto_remove_child);
 
   triad_vec.push_back(root_tuple);
 
-#define ADD_TEST_TRIAD(level, order, parent)                    \
-  TestXXX_MVPL_Tuple level##_##order##_tuple;                   \
-      createTestTriadAndListener<MockXXXViewFactory>(           \
-          &level##_##order##_tuple,                             \
-          use_parent ? std::get<2>(parent) : nullptr);          \
-      triad_vec.push_back(level##_##order##_tuple)
+#define ADD_TEST_TRIAD(level, order, parent)                                 \
+  TestXXX_MVPL_Tuple level##_##order##_tuple;                                \
+  createTestTriadAndListener<MockXXXViewFactory>(                            \
+      &level##_##order##_tuple, use_parent ? std::get<2>(parent) : nullptr); \
+  triad_vec.push_back(level##_##order##_tuple)
 
   ADD_TEST_TRIAD(level1, order2, root_tuple);
   ADD_TEST_TRIAD(level1, order3, root_tuple);
@@ -109,8 +99,9 @@ PfTriadManagerAutoRemoveChildTest::createTestTriadHierachy(
   return triad_vec;
 }
 
-TEST_P(PfTriadManagerAutoRemoveChildTest,
-       should_be_able_to_destroy_child_triad_first_in_FILO_order_when_destroy_parent_triad) { // NOLINT
+TEST_P(
+    PfTriadManagerAutoRemoveChildTest,
+    should_be_able_to_destroy_child_triad_first_in_FILO_order_when_destroy_parent_triad) {  // NOLINT
   // Setup fixture
   auto remove_method = GetParam();
 
@@ -121,16 +112,11 @@ TEST_P(PfTriadManagerAutoRemoveChildTest,
   CheckPointType check;
   Sequence s1;
 
-  for (auto iter = triad_vec.rbegin();
-       iter != triad_vec.rend();
-       ++iter) {
+  for (auto iter = triad_vec.rbegin(); iter != triad_vec.rend(); ++iter) {
     auto& mvpl_tuple = *iter;
-    expectationsOnSingleTriadDestroy(&mvpl_tuple,
-                                     nullptr,
-                                     &s1);
+    expectationsOnSingleTriadDestroy(&mvpl_tuple, nullptr, &s1);
   }
-  EXPECT_CALL(check, Call("barrier"))
-      .InSequence(s1);
+  EXPECT_CALL(check, Call("barrier")).InSequence(s1);
 
   // Exercise system
   //  triad_manager->removeTriadBy(std::get<0>(root_tuple));
@@ -138,24 +124,21 @@ TEST_P(PfTriadManagerAutoRemoveChildTest,
   check.Call("barrier");
 }
 
-TEST_P(PfTriadManagerAutoRemoveChildTest,
-       should_not_destroy_chill_triad_if_parent_auto_remove_child_is_false) { // NOLINT
-  auto tester = [this](bool auto_remove_child,
-                       bool use_parent) {
+TEST_P(
+    PfTriadManagerAutoRemoveChildTest,
+    should_not_destroy_chill_triad_if_parent_auto_remove_child_is_false) {  // NOLINT
+  auto tester = [this](bool auto_remove_child, bool use_parent) {
     // Setup fixture
     auto remove_method = GetParam();
 
-    auto triad_vec = createTestTriadHierachy(auto_remove_child,
-                                             use_parent);
+    auto triad_vec = createTestTriadHierachy(auto_remove_child, use_parent);
     auto& root_tuple = triad_vec[0];
 
     // Expectations
     CheckPointType check;
     Sequence s1;
 
-    expectationsOnSingleTriadDestroy(&root_tuple,
-                                     &check,
-                                     &s1);
+    expectationsOnSingleTriadDestroy(&root_tuple, &check, &s1);
 
     // childs will not destroyed
     for (size_t idx = 1; idx < triad_vec.size(); ++idx) {
@@ -180,7 +163,7 @@ TEST_P(PfTriadManagerAutoRemoveChildTest,
 }
 
 TEST_F(PfTriadManagerAutoRemoveChildTest,
-       should_failed_to_create_triad_with_unmanaged_parent) { // NOLINT
+       should_failed_to_create_triad_with_unmanaged_parent) {  // NOLINT
   // Setup fixture
   MockXXXPresenter un_managed_presenter(nullptr, nullptr);
   auto model = std::make_shared<MockYYYModel>();
@@ -190,8 +173,9 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
             triad_manager->createViewFor(model, &un_managed_presenter));
 }
 
-TEST_F(PfTriadManagerAutoRemoveChildTest,
-       should_createViewFor_default_to_null_parent_and_true_auto_remove_child) { // NOLINT
+TEST_F(
+    PfTriadManagerAutoRemoveChildTest,
+    should_createViewFor_default_to_null_parent_and_true_auto_remove_child) {  // NOLINT
   // NOTE:
   //   * true auto_remove_child means child will be destroyed
   //     because parent is destroyed
@@ -203,8 +187,7 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
   MockXXXView* view3 = nullptr;
 
   {  // prepare scope
-    view_factory_t<MockXXXModel,
-                   MockXXXViewFactory> view_factory_wrapper;
+    view_factory_t<MockXXXModel, MockXXXViewFactory> view_factory_wrapper;
     auto& factory = view_factory_wrapper.FTO_getFactory();
 
     auto model = std::make_shared<MockXXXModel>();
@@ -262,7 +245,7 @@ TEST_F(PfTriadManagerAutoRemoveChildTest,
 }
 
 TEST_F(PfTriadManagerAutoRemoveChildTest,
-       should_be_able_to_remove_child_before_remove_parent) { // NOLINT
+       should_be_able_to_remove_child_before_remove_parent) {  // NOLINT
   // Setup fixture
   auto triad_vec = createTestTriadHierachy();
   auto& root_mvpl_tuple = triad_vec[0];

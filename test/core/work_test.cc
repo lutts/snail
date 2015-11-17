@@ -44,22 +44,19 @@ class WorkTest : public ::testing::Test {
   // endregion
 };
 
-class MockListener : public GenericMockListener<MockListener,
-                                                fto::Work> {
+class MockListener : public GenericMockListener<MockListener, fto::Work> {
  public:
   MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
 
   void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
                            fto::Work* work) {
-    work->whenNameChanged(
-        [this](const utils::U8String& new_name) {
-          NameChanged(new_name);
-        },
-        trackObject);
+    work->whenNameChanged([this](const utils::U8String& new_name) {
+      NameChanged(new_name);
+    }, trackObject);
   }
 };
 
-TEST_F(WorkTest, should_be_able_to_set_and_get_name) { // NOLINT
+TEST_F(WorkTest, should_be_able_to_set_and_get_name) {  // NOLINT
   // Setup fixture
   auto work_name = xtestutils::genRandomString();
 
@@ -72,7 +69,7 @@ TEST_F(WorkTest, should_be_able_to_set_and_get_name) { // NOLINT
   ASSERT_EQ(work_name, work->name());
 }
 
-TEST_F(WorkTest, should_fire_NameChanged_when_set_a_different_name) { // NOLINT
+TEST_F(WorkTest, should_fire_NameChanged_when_set_a_different_name) {  // NOLINT
   // Setup fixture
   auto new_name = xtestutils::genRandomDifferentString(work->name());
 
@@ -84,7 +81,7 @@ TEST_F(WorkTest, should_fire_NameChanged_when_set_a_different_name) { // NOLINT
   ASSERT_TRUE(work->set_name(new_name));
 }
 
-TEST_F(WorkTest, should_not_fire_NameChnaged_when_set_a_same_name) { // NOLINT
+TEST_F(WorkTest, should_not_fire_NameChnaged_when_set_a_same_name) {  // NOLINT
   // Expectations
   auto mockListener = MockListener::attachTo(work.get());
   EXPECT_CALL(*mockListener, NameChanged(_)).Times(0);
@@ -93,8 +90,7 @@ TEST_F(WorkTest, should_not_fire_NameChnaged_when_set_a_same_name) { // NOLINT
   ASSERT_FALSE(work->set_name(work->name()));
 }
 
-TEST_F(WorkTest,
-       should_be_able_to_set_and_get_attribute_suppliers) { // NOLINT
+TEST_F(WorkTest, should_be_able_to_set_and_get_attribute_suppliers) {  // NOLINT
   // Setup fixture
   using AttrSupplierUpVec = std::vector<std::unique_ptr<IAttributeSupplier> >;
   AttrSupplierUpVec expect_attr_suppliers_up_vec;
@@ -102,8 +98,8 @@ TEST_F(WorkTest,
 
   const int TEST_ATTR_SUPPLIERS_COUNT = 3;
   for (int i = 0; i < TEST_ATTR_SUPPLIERS_COUNT; ++i) {
-    std::unique_ptr<IAttributeSupplier> attr_supplier_up
-        = utils::make_unique<MockAttributeSupplier>();
+    std::unique_ptr<IAttributeSupplier> attr_supplier_up =
+        utils::make_unique<MockAttributeSupplier>();
     auto raw_attr_supplier = attr_supplier_up.get();
 
     expect_attr_suppliers_up_vec.push_back(std::move(attr_supplier_up));

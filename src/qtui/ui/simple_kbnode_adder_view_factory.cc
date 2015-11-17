@@ -13,7 +13,7 @@
 #include "pfmvp/pf_view_factory_manager.h"
 #include "src/qtui/core/tree_item_qmodel.h"
 
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 using namespace snailcore;  // NOLINT
 
 class SimpleKbNodeAdderViewFactory
@@ -24,14 +24,13 @@ class SimpleKbNodeAdderViewFactory
 
   DEF_VIEW_FACTORY_ID(SimpleKbNodeAdderViewFactory)
 
-  std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<ISimpleKbNodeAdderModel> model,
-                PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createViewFor(
+      std::shared_ptr<ISimpleKbNodeAdderModel> model,
+      PfCreateViewArgs* args) override {
     (void)args;
     auto view = std::make_shared<SimpleKbNodeAdderView>();
     return std::make_shared<SimpleKbNodeAdderPresenter>(
-        model, view,
-        utils::make_trackable<TreeItemQModelWithProviderRoot>());
+        model, view, utils::make_trackable<TreeItemQModelWithProviderRoot>());
   }
 
  private:
@@ -39,4 +38,4 @@ class SimpleKbNodeAdderViewFactory
 };
 
 static view_factory_t<ISimpleKbNodeAdderModel, SimpleKbNodeAdderViewFactory>
-g_kbnodeprovider_view_factory;
+    g_kbnodeprovider_view_factory;

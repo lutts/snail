@@ -29,34 +29,33 @@ class IPfViewFactory {
 
   virtual const ViewFactoryIdType& getViewFactoryId() const = 0;
 
-  virtual std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model, PfCreateViewArgs* args) = 0;
+  virtual std::shared_ptr<PfPresenter> createView(
+      std::shared_ptr<IPfModel> model, PfCreateViewArgs* args) = 0;
 };
 
 template <typename ModelType>
 class PfViewFactoryT : public IPfViewFactory {
  public:
-  std::shared_ptr<PfPresenter>
-  createView(std::shared_ptr<IPfModel> model, PfCreateViewArgs* args) final {
+  std::shared_ptr<PfPresenter> createView(std::shared_ptr<IPfModel> model,
+                                          PfCreateViewArgs* args) final {
     auto the_model = std::dynamic_pointer_cast<ModelType>(model);
-    if (!the_model)
-      return nullptr;
+    if (!the_model) return nullptr;
 
     return createViewFor(the_model, args);
   };
 
-  virtual std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<ModelType> model, PfCreateViewArgs* args) = 0;
+  virtual std::shared_ptr<PfPresenter> createViewFor(
+      std::shared_ptr<ModelType> model, PfCreateViewArgs* args) = 0;
 };
 
-#define DEF_VIEW_FACTORY_ID(id)                                 \
-  const ViewFactoryIdType& getViewFactoryId() const override {  \
-    return viewFactoryId();                                     \
-  }                                                             \
-                                                                \
-  static const ViewFactoryIdType& viewFactoryId() {             \
-    static const ViewFactoryIdType view_factory_id { #id };     \
-    return view_factory_id;                                     \
+#define DEF_VIEW_FACTORY_ID(id)                                \
+  const ViewFactoryIdType& getViewFactoryId() const override { \
+    return viewFactoryId();                                    \
+  }                                                            \
+                                                               \
+  static const ViewFactoryIdType& viewFactoryId() {            \
+    static const ViewFactoryIdType view_factory_id{#id};       \
+    return view_factory_id;                                    \
   }
 
 class IPfViewFactoryManager {
@@ -75,10 +74,10 @@ class IPfViewFactoryManager {
   virtual IPfViewFactory* getViewFactory(
       const IPfModel::ModelIdType& model_id,
       const IPfViewFactory::ViewFactoryIdType&
-      view_factory_id = INVALID_PF_VIEW_FACTORY_ID) const = 0;
+          view_factory_id = INVALID_PF_VIEW_FACTORY_ID) const = 0;
 
-  virtual std::vector<IPfViewFactory*>
-  getAllViewFactory(const IPfModel::ModelIdType& model_id) const = 0;
+  virtual std::vector<IPfViewFactory*> getAllViewFactory(
+      const IPfModel::ModelIdType& model_id) const = 0;
 };
 
 }  // namespace pfmvp

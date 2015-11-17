@@ -27,31 +27,27 @@ KbNodeAttributeEditView::KbNodeAttributeEditView() {
   completer->setPopup(drop_down_tree_view);
   filter_widget_->setQtCompleter(completer);
 
-  QObject::connect(completer, &QtCompleter::clicked,
-                   [this](const QModelIndex& index) {
-                     UserClickedIndex(index);
-                   });
+  QObject::connect(
+      completer, &QtCompleter::clicked,
+      [this](const QModelIndex& index) { UserClickedIndex(index); });
 
   QObject::connect(completer, &QtCompleter::filterPatternChanged,
                    [this](const QString& filter_pattern) {
-                     FilterPatternChanged(filter_pattern);
-                   });
+    FilterPatternChanged(filter_pattern);
+  });
 
   QObject::connect(filter_widget_, &QLineEdit::editingFinished,
-                   [this]() {
-                     EditingFinished(filter_widget_->text());
-                   });
+                   [this]() { EditingFinished(filter_widget_->text()); });
 
   vbox_layout->addWidget(filter_widget_);
 
   err_msg_label_ = new QLabel(this);
   err_msg_label_->hide();
 
-  connect(err_msg_label_, &QLabel::linkActivated,
-          [this](const QString &link) {
-            (void)link;
-            UserClickAddKbNode();
-          });
+  connect(err_msg_label_, &QLabel::linkActivated, [this](const QString& link) {
+    (void)link;
+    UserClickAddKbNode();
+  });
 
   vbox_layout->addWidget(err_msg_label_);
 
@@ -73,15 +69,18 @@ void KbNodeAttributeEditView::setKbNodeTreeQModel(
 void KbNodeAttributeEditView::warnMultipleMatch(const QString& provider_name) {
   (void)provider_name;
   err_msg_label_->setText(
-      tr("Entered value matched multiple candidate, \nplease select one from the drop down list.")); // NOLINT;
+      tr("Entered value matched multiple candidate, \nplease select one from "
+         "the drop down list."));  // NOLINT;
   err_msg_label_->show();
 }
 
 void KbNodeAttributeEditView::warnNotFound(const QString& provider_name) {
-  err_msg_label_->setText(tr("<html><head/><body><p>Entered value not found, you can <a href=\"#add_kbnode\"><span style=\" text-decoration: underline; color:#0000ff;\">add new %1 value</span></a></p></body></html>").arg(provider_name)); // NOLINT
+  err_msg_label_->setText(
+      tr("<html><head/><body><p>Entered value not found, you can <a "
+         "href=\"#add_kbnode\"><span style=\" text-decoration: underline; "
+         "color:#0000ff;\">add new %1 value</span></a></p></body></html>")
+          .arg(provider_name));  // NOLINT
   err_msg_label_->show();
 }
 
-void KbNodeAttributeEditView::clearWarningMessages() {
-  err_msg_label_->hide();
-}
+void KbNodeAttributeEditView::clearWarningMessages() { err_msg_label_->hide(); }

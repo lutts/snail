@@ -13,7 +13,7 @@
 #include "src/qtui/core/tree_item_qmodel.h"
 #include "pfmvp/pf_view_factory_manager.h"
 
-using namespace pfmvp;  // NOLINT
+using namespace pfmvp;      // NOLINT
 using namespace snailcore;  // NOLINT
 
 class KbNodeAttributeEditViewFactory
@@ -24,9 +24,9 @@ class KbNodeAttributeEditViewFactory
 
   DEF_VIEW_FACTORY_ID(KbNodeAttributeEditViewFactory)
 
-  std::shared_ptr<PfPresenter>
-  createViewFor(std::shared_ptr<IKbNodeAttributeModel> model,
-                PfCreateViewArgs* args) override {
+  std::shared_ptr<PfPresenter> createViewFor(
+      std::shared_ptr<IKbNodeAttributeModel> model,
+      PfCreateViewArgs* args) override {
     (void)args;
     auto view = std::make_shared<KbNodeAttributeEditView>();
     auto kbnode_tree_model =
@@ -40,4 +40,4 @@ class KbNodeAttributeEditViewFactory
 };
 
 static view_factory_t<IKbNodeAttributeModel, KbNodeAttributeEditViewFactory>
-g_kbnodeattributeedit_view_factory;
+    g_kbnodeattributeedit_view_factory;

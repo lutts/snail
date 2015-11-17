@@ -24,7 +24,7 @@ FTO_END_NAMESPACE
 class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  public:
   explicit SimpleKbNodeAdderModel(ITreeItemProvider* kbnode_provider,
-                               fto::KbNodeManager* kbnode_manager);
+                                  fto::KbNodeManager* kbnode_manager);
   virtual ~SimpleKbNodeAdderModel();
 
   utils::U8String name() const override;
@@ -40,11 +40,11 @@ class SimpleKbNodeAdderModel : public ISimpleKbNodeAdderModel {
  private:
   SNAIL_DISABLE_COPY(SimpleKbNodeAdderModel);
 
-  ITreeItemProvider* kbnode_provider_ { nullptr };
-  fto::KbNodeManager* kbnode_manager_ { nullptr };
-  IKbNode* new_kbnode_parent_ { nullptr };
-  utils::U8String new_name_ { "" };
-  bool is_category_ { false };
+  ITreeItemProvider* kbnode_provider_{nullptr};
+  fto::KbNodeManager* kbnode_manager_{nullptr};
+  IKbNode* new_kbnode_parent_{nullptr};
+  utils::U8String new_name_{""};
+  bool is_category_{false};
 };
 
 }  // namespace snailcore

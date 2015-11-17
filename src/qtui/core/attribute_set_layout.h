@@ -11,7 +11,9 @@
 #include <vector>
 
 #include "include/config.h"
+/* clang-format off */
 #include FTO_HEADER(qtui/core, attribute_set_layout)
+/* clang-format on */
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
 #include "utils/signal_slot_impl.h"
@@ -22,9 +24,9 @@ class QTimer;
 class AttributeSetLayoutImpl;
 
 class AttributeSetLayout
-    : public FTO_NAMESPACE::AttributeSetLayout
-    , public utils::ITrackable
-    , public std::enable_shared_from_this<AttributeSetLayout> {
+    : public FTO_NAMESPACE::AttributeSetLayout,
+      public utils::ITrackable,
+      public std::enable_shared_from_this<AttributeSetLayout> {
  public:
   enum {
     kNameColumn = 0,
@@ -42,7 +44,7 @@ class AttributeSetLayout
 
  public:
   SNAIL_SIGSLOT_IMPL(CreateAttrEditor,
-                      IAttributeEditorView*(snailcore::IAttribute* attr));
+                     IAttributeEditorView*(snailcore::IAttribute* attr));
   SNAIL_SIGSLOT_IMPL(CloseAttributeEditors, void());
 
  private:
@@ -55,6 +57,5 @@ class AttributeSetLayout
   std::unique_ptr<AttributeSetLayoutImpl> impl;
   friend class AttributeSetLayoutImpl;
 };
-
 
 #endif  // SRC_QTUI_CORE_ATTRIBUTE_SET_LAYOUT_H_

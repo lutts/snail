@@ -18,10 +18,10 @@
 #include "snail/mock_work_model.h"
 #include "qtui/ui/mock_work_view.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
-using namespace pfmvp;  // NOLINT
-using namespace pfmvp::tests;  // NOLINT
+using namespace pfmvp;             // NOLINT
+using namespace pfmvp::tests;      // NOLINT
 
 using AboutToDestroyModelSlot =
     SlotCatcher<IPfTriadManager::AboutToDestroyModelSlotType>;
@@ -92,14 +92,15 @@ class WorkSpacePresenterTest : public ::testing::Test {
 
   SlotCatcher<IWorkSpaceModel::WorkModelAddedSlotType> workModelAdded;
   SlotCatcher<IWorkSpaceModel::ActiveWorkModelChangedSlotType>
-  activeWorkModelChanged;
+      activeWorkModelChanged;
 
   SlotCatcher<IWorkSpaceModel::WorkModelActivelyRemovedSlotType>
-  workModelActivelyRemoved;
+      workModelActivelyRemoved;
   // endregion
 };
 
-TEST_F(WorkSpacePresenterTest, should_create_new_WorkModel_in_model_when_UserClickAddWork) { // NOLINT
+TEST_F(WorkSpacePresenterTest,
+       should_create_new_WorkModel_in_model_when_UserClickAddWork) {  // NOLINT
   // Setup fixture
   auto work_name = xtestutils::genRandomString();
 
@@ -155,12 +156,14 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
   }
 }
 
-TEST_F(WorkSpacePresenterTest,
-       should_create_WorkView_and_add_as_active_subview_to_WorkSpaceView_when_new_WorkModel_added) { // NOLINT
+TEST_F(
+    WorkSpacePresenterTest,
+    should_create_WorkView_and_add_as_active_subview_to_WorkSpaceView_when_new_WorkModel_added) {  // NOLINT
   CUSTOM_ASSERT(createWorkTriad());
 }
 
-TEST_F(WorkSpacePresenterTest, should_change_active_WorkView_when_active_WorkModel_changed) { // NOLINT
+TEST_F(WorkSpacePresenterTest,
+       should_change_active_WorkView_when_active_WorkModel_changed) {  // NOLINT
   // Setup fixture
   MockWorkModel wm;
   MockWorkView wv;
@@ -179,7 +182,8 @@ TEST_F(WorkSpacePresenterTest, should_change_active_WorkView_when_active_WorkMod
   activeWorkModelChanged(work_model);
 }
 
-TEST_F(WorkSpacePresenterTest, should_destroy_Work_triad_when_UserCloseWork) { // NOLINT
+TEST_F(WorkSpacePresenterTest,
+       should_destroy_Work_triad_when_UserCloseWork) {  // NOLINT
   // Setup fixture
   auto work_view = xtestutils::genDummyPointer<MockWorkView>();
 
@@ -190,8 +194,9 @@ TEST_F(WorkSpacePresenterTest, should_destroy_Work_triad_when_UserCloseWork) { /
   userCloseWork(work_view);
 }
 
-TEST_F(WorkSpacePresenterTest,
-       should_remove_WorkModel_from_model_when_triad_manager_notifies_WorkModel_is_AboutToDestroy) { // NOLINT
+TEST_F(
+    WorkSpacePresenterTest,
+    should_remove_WorkModel_from_model_when_triad_manager_notifies_WorkModel_is_AboutToDestroy) {  // NOLINT
   // Setup fixture
   CreateWorkTriadResult create_result;
   createWorkTriad(&create_result);
@@ -206,8 +211,9 @@ TEST_F(WorkSpacePresenterTest,
   (*aboutToDestroyModel)(work_model);
 }
 
-TEST_F(WorkSpacePresenterTest,
-       should_remove_WorkView_from_workspace_view_when_WorkView_is_AboutToDestroy) { // NOLINT
+TEST_F(
+    WorkSpacePresenterTest,
+    should_remove_WorkView_from_workspace_view_when_WorkView_is_AboutToDestroy) {  // NOLINT
   // Setup fixture
   CreateWorkTriadResult create_result;
   createWorkTriad(&create_result);
@@ -222,7 +228,9 @@ TEST_F(WorkSpacePresenterTest,
   (*aboutToDestroyView)(work_view);
 }
 
-TEST_F(WorkSpacePresenterTest, should_remove_Work_triad_when_model_actively_remove_WorkModel) { // NOLINT
+TEST_F(
+    WorkSpacePresenterTest,
+    should_remove_Work_triad_when_model_actively_remove_WorkModel) {  // NOLINT
   auto work_model = xtestutils::genDummyPointer<IWorkModel>();
 
   // Expectations
@@ -232,7 +240,8 @@ TEST_F(WorkSpacePresenterTest, should_remove_Work_triad_when_model_actively_remo
   workModelActivelyRemoved(work_model);
 }
 
-TEST_F(WorkSpacePresenterTest, should_update_work_tab_title_when_work_name_changed) { // NOLINT
+TEST_F(WorkSpacePresenterTest,
+       should_update_work_tab_title_when_work_name_changed) {  // NOLINT
   // Setup fixture
   CreateWorkTriadResult create_result;
   createWorkTriad(&create_result);

@@ -14,7 +14,7 @@
 #include "snail/mock_tree_item_provider.h"
 #include "snail/i_tree_item.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
 
 // test data structure
@@ -43,19 +43,13 @@ constexpr static int kAddMoreSpecialRow = 3;
 
 class TreeItemTestStub : public ITreeItem {
  public:
-  TreeItemTestStub(const utils::U8String& name,
-                   bool is_category)
-      : name_(name)
-      , is_category_(is_category) { }
+  TreeItemTestStub(const utils::U8String& name, bool is_category)
+      : name_(name), is_category_(is_category) {}
   virtual ~TreeItemTestStub() = default;
 
-  utils::U8String name() const override {
-    return name_;
-  }
+  utils::U8String name() const override { return name_; }
 
-  bool isGroupOnly() const override {
-    return is_category_;
-  }
+  bool isGroupOnly() const override { return is_category_; }
 
  private:
   SNAIL_DISABLE_COPY(TreeItemTestStub);
@@ -74,8 +68,7 @@ class ExpectRowData {
   std::vector<ExpectRowData>* subitems;
 
   bool isSpecialRow() const {
-    return (text == CLEAR_ROW_TEXT) ||
-        (text == ADD_MORE_ROW_TEXT);
+    return (text == CLEAR_ROW_TEXT) || (text == ADD_MORE_ROW_TEXT);
   }
 };
 
@@ -89,129 +82,115 @@ std::vector<ExpectRowData> provider_row_data_after_reset;
 ExpectRowData root_row_data_after_reset;
 
 void setupExpectRowDatas() {
-  level2_row_data = {
-    {
+  level2_row_data = {{
       .text = "Level2 Item1",
       .item_ptr = nullptr,
       .parent_item_ptr = nullptr,
       .isSelectable = true,
       .subitems = nullptr,
-    }
-  };
+  }};
 
-  level1_row_data = {
-    {
-      .text = "Level1 Item1",
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = &level2_row_data,
-    },
-    {
-      .text = "Level1 Item2",
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = false,
-      .subitems = nullptr,
-    }
-  };
+  level1_row_data = {{
+                         .text = "Level1 Item1",
+                         .item_ptr = nullptr,
+                         .parent_item_ptr = nullptr,
+                         .isSelectable = true,
+                         .subitems = &level2_row_data,
+                     },
+                     {
+                         .text = "Level1 Item2",
+                         .item_ptr = nullptr,
+                         .parent_item_ptr = nullptr,
+                         .isSelectable = false,
+                         .subitems = nullptr,
+                     }};
 
-  level0_row_data = {
-    {  // level1
-      .text = CLEAR_ROW_TEXT,
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = nullptr
-    },
-    {
-      .text = "Level0 Item1",
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = false,
-      .subitems = &level1_row_data,
-    },
-    {
-      .text = "Level0 Item2",
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = nullptr,
-    },
-    {
-      .text = ADD_MORE_ROW_TEXT,
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = nullptr,
-    }
-  };
+  level0_row_data = {{// level1
+                      .text = CLEAR_ROW_TEXT,
+                      .item_ptr = nullptr,
+                      .parent_item_ptr = nullptr,
+                      .isSelectable = true,
+                      .subitems = nullptr},
+                     {
+                         .text = "Level0 Item1",
+                         .item_ptr = nullptr,
+                         .parent_item_ptr = nullptr,
+                         .isSelectable = false,
+                         .subitems = &level1_row_data,
+                     },
+                     {
+                         .text = "Level0 Item2",
+                         .item_ptr = nullptr,
+                         .parent_item_ptr = nullptr,
+                         .isSelectable = true,
+                         .subitems = nullptr,
+                     },
+                     {
+                         .text = ADD_MORE_ROW_TEXT,
+                         .item_ptr = nullptr,
+                         .parent_item_ptr = nullptr,
+                         .isSelectable = true,
+                         .subitems = nullptr,
+                     }};
 
-  provider_row_data = {
-    {
+  provider_row_data = {{
       .text = PROVIDER_NAME,
       .item_ptr = nullptr,
       .parent_item_ptr = nullptr,
       .isSelectable = true,
       .subitems = &level0_row_data,
-    }
-  };
+  }};
 
   root_row_data = {
-    .text = "root idx",
-    .item_ptr = nullptr,
-    .parent_item_ptr = nullptr,
-    .isSelectable = false,
-    .subitems = &level0_row_data,
-  };
-
-  level0_row_data_after_reset = {
-    {  // level1
-      .text = CLEAR_ROW_TEXT,
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = nullptr
-    },
-    {
-      .text = "Level0 Item1 After Reset",
+      .text = "root idx",
       .item_ptr = nullptr,
       .parent_item_ptr = nullptr,
       .isSelectable = false,
-      .subitems = nullptr,
-    },
-    {
-      .text = "Level0 Item2 After Reset",
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = nullptr,
-    },
-    {
-      .text = ADD_MORE_ROW_TEXT,
-      .item_ptr = nullptr,
-      .parent_item_ptr = nullptr,
-      .isSelectable = true,
-      .subitems = nullptr,
-    }
+      .subitems = &level0_row_data,
   };
 
-  provider_row_data_after_reset = {
-    {
+  level0_row_data_after_reset = {{// level1
+                                  .text = CLEAR_ROW_TEXT,
+                                  .item_ptr = nullptr,
+                                  .parent_item_ptr = nullptr,
+                                  .isSelectable = true,
+                                  .subitems = nullptr},
+                                 {
+                                     .text = "Level0 Item1 After Reset",
+                                     .item_ptr = nullptr,
+                                     .parent_item_ptr = nullptr,
+                                     .isSelectable = false,
+                                     .subitems = nullptr,
+                                 },
+                                 {
+                                     .text = "Level0 Item2 After Reset",
+                                     .item_ptr = nullptr,
+                                     .parent_item_ptr = nullptr,
+                                     .isSelectable = true,
+                                     .subitems = nullptr,
+                                 },
+                                 {
+                                     .text = ADD_MORE_ROW_TEXT,
+                                     .item_ptr = nullptr,
+                                     .parent_item_ptr = nullptr,
+                                     .isSelectable = true,
+                                     .subitems = nullptr,
+                                 }};
+
+  provider_row_data_after_reset = {{
       .text = PROVIDER_NAME,
       .item_ptr = nullptr,
       .parent_item_ptr = nullptr,
       .isSelectable = true,
       .subitems = &level0_row_data_after_reset,
-    }
-  };
+  }};
 
   root_row_data_after_reset = {
-    .text = "root idx",
-    .item_ptr = nullptr,
-    .parent_item_ptr = nullptr,
-    .isSelectable = false,
-    .subitems = &level0_row_data_after_reset,
+      .text = "root idx",
+      .item_ptr = nullptr,
+      .parent_item_ptr = nullptr,
+      .isSelectable = false,
+      .subitems = &level0_row_data_after_reset,
   };
 }
 
@@ -240,21 +219,19 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
       if ((row_data_->subitems == &level0_row_data) ||
           (row_data_->subitems == &level0_row_data_after_reset)) {
         cur_idx_ = 1;  // skip empty row
-        --max_idx_;     // skip add more row
+        --max_idx_;    // skip add more row
       }
     }
     virtual ~ChildItemIteratorTestStub() = default;
 
     bool hasNext() const override {
-      if (cur_idx_ > max_idx_)
-        return false;
+      if (cur_idx_ > max_idx_) return false;
 
       return true;
     }
 
     ITreeItem* next() override {
-      if (!hasNext())
-        throw std::logic_error("no next item");
+      if (!hasNext()) throw std::logic_error("no next item");
 
       auto item = (*row_data_->subitems)[cur_idx_].item_ptr;
       ++cur_idx_;
@@ -266,24 +243,22 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
     SNAIL_DISABLE_COPY(ChildItemIteratorTestStub);
 
     ExpectRowData* row_data_;
-    mutable int cur_idx_ { 0 };
-    int max_idx_ { -1 };
+    mutable int cur_idx_{0};
+    int max_idx_{-1};
   };
 
-  TreeItemProviderTestStub() { }
-  virtual ~TreeItemProviderTestStub() { }
+  TreeItemProviderTestStub() {}
+  virtual ~TreeItemProviderTestStub() {}
 
-  utils::U8String name() const {
-    return PROVIDER_NAME;
-  }
+  utils::U8String name() const { return PROVIDER_NAME; }
 
-  std::unique_ptr<IChildItemIterator>
-  childItems(ITreeItem* parent_item) const override {
+  std::unique_ptr<IChildItemIterator> childItems(
+      ITreeItem* parent_item) const override {
     return utils::make_unique<ChildItemIteratorTestStub>(*this, parent_item);
   }
 
   void setItemOwnerRow(ITreeItem* item,
-                         std::vector<ExpectRowData>* row_data_vec) {
+                       std::vector<ExpectRowData>* row_data_vec) {
     item_to_row_data_vec_[item] = row_data_vec;
   }
 
@@ -315,15 +290,13 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
 
   void fillItemPtrInRowData(std::vector<ExpectRowData>* row_datas,
                             ITreeItem* parent_item = nullptr) {
-    for (auto & row_data : *row_datas) {
-      if (row_data.isSpecialRow())
-        continue;
+    for (auto& row_data : *row_datas) {
+      if (row_data.isSpecialRow()) continue;
 
       TreeItemTestStub* item = nullptr;
       if (row_data.text != PROVIDER_NAME) {
-        auto item_up =
-            utils::make_unique<TreeItemTestStub>(
-                row_data.text, !row_data.isSelectable);
+        auto item_up = utils::make_unique<TreeItemTestStub>(
+            row_data.text, !row_data.isSelectable);
         item = item_up.get();
         items_.push_back(std::move(item_up));
 
@@ -333,8 +306,7 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
         row_data.parent_item_ptr = parent_item;
       }
 
-      if (row_data.subitems)
-        fillItemPtrInRowData(row_data.subitems, item);
+      if (row_data.subitems) fillItemPtrInRowData(row_data.subitems, item);
     }
   }
 
@@ -348,13 +320,12 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
 
     try {
       auto row_data_vec = item_to_row_data_vec_.at(item);
-      for (auto & row_data : *row_data_vec) {
-        if (row_data.item_ptr == item)
-          return &row_data;
+      for (auto& row_data : *row_data_vec) {
+        if (row_data.item_ptr == item) return &row_data;
       }
     } catch (...) {
-      std::cout << "item: " << item->name()
-                << " row data not found" << std::endl;
+      std::cout << "item: " << item->name() << " row data not found"
+                << std::endl;
       /* re */ throw;
     }
 
@@ -363,7 +334,7 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
 
   std::vector<std::unique_ptr<ITreeItem>> items_;
   std::map<ITreeItem*, std::vector<ExpectRowData>*> item_to_row_data_vec_;
-  ExpectRowData* root_rdata_ { nullptr };
+  ExpectRowData* root_rdata_{nullptr};
 };
 
 class TreeItemQModelTestBase : public ::testing::Test {
@@ -391,9 +362,7 @@ class TreeItemQModelTestBase : public ::testing::Test {
     qmodel->setTreeItemProvider(&item_provider);
   }
 
-  void TearDown() override {
-    cleanupExpectRowDatas();
-  }
+  void TearDown() override { cleanupExpectRowDatas(); }
 
   virtual std::shared_ptr<TreeItemQModel> createQModel() {
     return std::make_shared<TreeItemQModel>();
@@ -405,8 +374,7 @@ class TreeItemQModelTestBase : public ::testing::Test {
   void checkRowData(const ExpectRowData& root_rdata = root_row_data);
   void checkRowData(const std::vector<ExpectRowData>& row_data,
                     const QModelIndex& parent_index);
-  void checkIndexData(const QModelIndex& index,
-                      const ExpectRowData& rdata);
+  void checkIndexData(const QModelIndex& index, const ExpectRowData& rdata);
 
   void should_provider_BeginFilter_emit_modelAboutToReset();
   void should_provider_FinishFilter_emit_modelReset();
@@ -427,9 +395,9 @@ class TreeItemQModelTestBase : public ::testing::Test {
   TreeItemProviderTestStub item_provider;
   QModelIndexGenerator index_generator;
 
-  bool always_selectable { false };
-  bool show_clear_row { false };
-  bool show_add_more_row { false };
+  bool always_selectable{false};
+  bool show_clear_row{false};
+  bool show_add_more_row{false};
   // endregion
 
   // region: test subject
@@ -437,16 +405,13 @@ class TreeItemQModelTestBase : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  using BeginFilterSlotType =
-                   ITreeItemProvider::BeginFilterSlotType;
+  using BeginFilterSlotType = ITreeItemProvider::BeginFilterSlotType;
   SlotCatcher<BeginFilterSlotType> providerBeginFilter;
 
-  using FinishFilterSlotType =
-                   ITreeItemProvider::FinishFilterSlotType;
+  using FinishFilterSlotType = ITreeItemProvider::FinishFilterSlotType;
   SlotCatcher<FinishFilterSlotType> providerFinishFilter;
 
-  using ItemAddedSlotType =
-                   ITreeItemProvider::ItemAddedSlotType;
+  using ItemAddedSlotType = ITreeItemProvider::ItemAddedSlotType;
   SlotCatcher<ItemAddedSlotType> itemAdded;
   // endregion
 };
@@ -465,11 +430,10 @@ bool TreeItemQModelTestBase::shouldRowVisible(const ExpectRowData& row_data) {
 }
 
 int TreeItemQModelTestBase::expectItemCount(const ExpectRowData& row_data) {
-  if (row_data.subitems == nullptr)
-    return 0;
+  if (row_data.subitems == nullptr) return 0;
 
   int count = 0;
-  for (auto & sub_rdata : *row_data.subitems) {
+  for (auto& sub_rdata : *row_data.subitems) {
     if (shouldRowVisible(sub_rdata)) {
       ++count;
     }
@@ -496,8 +460,7 @@ void TreeItemQModelTestBase::checkRowData(
   for (size_t idx = 0; idx < row_data.size(); ++idx) {
     auto& rdata = row_data[idx];
 
-    if (!shouldRowVisible(rdata))
-      continue;
+    if (!shouldRowVisible(rdata)) continue;
 
     QModelIndex index = qmodel->qmodel()->index(row, 0, parent_index);
     ASSERT_EQ(row, index.row());
@@ -510,13 +473,12 @@ void TreeItemQModelTestBase::checkRowData(
   }
 }
 
-std::ostream &operator<<(std::ostream &os, const QModelIndex& index) {
+std::ostream& operator<<(std::ostream& os, const QModelIndex& index) {
   os << "[(" << index.row() << "," << index.column() << ")";
 
   QModelIndex parent = index.parent();
 
-  if (!parent.isValid())
-    os << " in root";
+  if (!parent.isValid()) os << " in root";
 
   while (parent.isValid()) {
     os << " in (" << parent.row() << "," << parent.column() << ")";
@@ -529,8 +491,8 @@ std::ostream &operator<<(std::ostream &os, const QModelIndex& index) {
   return os;
 }
 
-void TreeItemQModelTestBase::checkIndexData(
-    const QModelIndex& index, const ExpectRowData& expect_data) {
+void TreeItemQModelTestBase::checkIndexData(const QModelIndex& index,
+                                            const ExpectRowData& expect_data) {
   auto q_display_text = index.data(Qt::DisplayRole).toString();
   auto actual_display_text = QStringToU8String(q_display_text);
   ASSERT_EQ(expect_data.text, actual_display_text)
@@ -544,9 +506,8 @@ void TreeItemQModelTestBase::checkIndexData(
       << " (text: " << expect_data.text << ")";
 
   int actual_col_count = qmodel->qmodel()->columnCount(index);
-  ASSERT_EQ(1, actual_col_count)
-      << "index: " << index << " col count not match"
-      << " (text: " << expect_data.text << ")";
+  ASSERT_EQ(1, actual_col_count) << "index: " << index << " col count not match"
+                                 << " (text: " << expect_data.text << ")";
 
   auto actual_item = qmodel->indexToItem(index);
   ASSERT_EQ(expect_data.item_ptr, actual_item)
@@ -555,9 +516,9 @@ void TreeItemQModelTestBase::checkIndexData(
 
   if (expect_data.item_ptr) {
     QModelIndex item_to_index = qmodel->itemToIndex(expect_data.item_ptr);
-    ASSERT_EQ(index, item_to_index)
-        << "index: " << index << " item index not match"
-        << " (text: " << expect_data.text << ")";
+    ASSERT_EQ(index, item_to_index) << "index: " << index
+                                    << " item index not match"
+                                    << " (text: " << expect_data.text << ")";
   }
 
   bool actual_isAddMore = qmodel->isAddMore(index);
@@ -567,8 +528,7 @@ void TreeItemQModelTestBase::checkIndexData(
       << " (text: " << expect_data.text << ")";
 
   bool expect_selectable = expect_data.isSelectable;
-  if (always_selectable)
-    expect_selectable = true;
+  if (always_selectable) expect_selectable = true;
 
   auto actual_selectable =
       qmodel->qmodel()->flags(index) & Qt::ItemIsSelectable;
@@ -583,7 +543,8 @@ void TreeItemQModelTestBase::checkIndexData(
       << " (text: " << expect_data.text << ")";
 }
 
-void TreeItemQModelTestBase::should_provider_BeginFilter_emit_modelAboutToReset() { // NOLINT
+void TreeItemQModelTestBase::
+    should_provider_BeginFilter_emit_modelAboutToReset() {  // NOLINT
   QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelAboutToBeReset()));
 
   // Exercise system
@@ -617,12 +578,11 @@ void TreeItemQModelTestBase::expandToLevel(int level) {
   expandToLevel(level, QModelIndex());
 }
 
-void TreeItemQModelTestBase::expandToLevel(
-    int level, const QModelIndex& parent_index) {
+void TreeItemQModelTestBase::expandToLevel(int level,
+                                           const QModelIndex& parent_index) {
   int row_count = qmodel->qmodel()->rowCount(parent_index);
 
-  if (level ==  0)
-    return;
+  if (level == 0) return;
 
   // expand children
   for (int row = 0; row < row_count; ++row) {
@@ -631,22 +591,22 @@ void TreeItemQModelTestBase::expandToLevel(
   }
 }
 
-void TreeItemQModelTestBase::addItemUnderLevel1Item1(ITreeItem** parent_item_ret) { // NOLINT
+void TreeItemQModelTestBase::addItemUnderLevel1Item1(
+    ITreeItem** parent_item_ret) {  // NOLINT
   auto new_item_name = xtestutils::genRandomString();
-  TreeItemTestStub new_item { new_item_name, false };
+  TreeItemTestStub new_item{new_item_name, false};
 
   // add under "Level1 Item1" @ index 0
   ASSERT_EQ(&level2_row_data, level1_row_data[0].subitems);
   ITreeItem* parent_item = level1_row_data[0].item_ptr;
-  if (parent_item_ret)
-    *parent_item_ret = parent_item;
+  if (parent_item_ret) *parent_item_ret = parent_item;
 
   ExpectRowData new_row_data = {
-    .text = new_item_name,
-    .item_ptr = &new_item,
-    .parent_item_ptr = parent_item,
-    .isSelectable = true,
-    .subitems = nullptr,
+      .text = new_item_name,
+      .item_ptr = &new_item,
+      .parent_item_ptr = parent_item,
+      .isSelectable = true,
+      .subitems = nullptr,
   };
 
   level2_row_data.push_back(new_row_data);
@@ -665,12 +625,11 @@ void TreeItemQModelTestBase::addItemUnderLevel1Item1(ITreeItem** parent_item_ret
 void TreeItemQModelTestBase::test_add_item_to_not_visible_parent_item() {
   // NOTE: initally all items are not pupulated
 
-  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
-                                 SIGNAL(rowsAboutToBeInserted(
-                                     const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
-                               SIGNAL(rowsInserted(
-                                   const QModelIndex&, int, int)));
+  QSignalSpy begin_insert_sigspy(
+      qmodel->qmodel(),
+      SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
+  QSignalSpy end_insert_sigspy(
+      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   CUSTOM_ASSERT(addItemUnderLevel1Item1());
 
@@ -679,7 +638,8 @@ void TreeItemQModelTestBase::test_add_item_to_not_visible_parent_item() {
   ASSERT_EQ(0, end_insert_sigspy.count());
 }
 
-void TreeItemQModelTestBase::test_add_item_to_visible_but_children_not_populated_item() { // NOLINT
+void TreeItemQModelTestBase::
+    test_add_item_to_visible_but_children_not_populated_item() {  // NOLINT
   // ensure "Level1 Item1" is visible, but children not populated
   expandToLevel(1);
 
@@ -687,15 +647,15 @@ void TreeItemQModelTestBase::test_add_item_to_visible_but_children_not_populated
   CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
-void TreeItemQModelTestBase::test_add_item_to_children_populated_parent_item() { // NOLINT
+void TreeItemQModelTestBase::
+    test_add_item_to_children_populated_parent_item() {  // NOLINT
   expandToLevel(2);
 
-  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
-                                 SIGNAL(rowsAboutToBeInserted(
-                                     const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
-                               SIGNAL(rowsInserted(
-                                   const QModelIndex&, int, int)));
+  QSignalSpy begin_insert_sigspy(
+      qmodel->qmodel(),
+      SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
+  QSignalSpy end_insert_sigspy(
+      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   // Exercise system
   ITreeItem* parent_item;
@@ -715,14 +675,14 @@ void TreeItemQModelTestBase::test_add_item_to_children_populated_parent_item() {
 
 void TreeItemQModelTestBase::addItemUnderRootItem() {
   auto new_item_name = xtestutils::genRandomString();
-  TreeItemTestStub new_item { new_item_name, false };
+  TreeItemTestStub new_item{new_item_name, false};
 
   ExpectRowData new_row_data = {
-    .text = new_item_name,
-    .item_ptr = &new_item,
-    .parent_item_ptr = nullptr,
-    .isSelectable = true,
-    .subitems = nullptr,
+      .text = new_item_name,
+      .item_ptr = &new_item,
+      .parent_item_ptr = nullptr,
+      .isSelectable = true,
+      .subitems = nullptr,
   };
 
   auto insert_pos = level0_row_data.end();
@@ -739,11 +699,9 @@ void TreeItemQModelTestBase::addItemUnderRootItem() {
 
   // Teardown fixture
   auto new_item_ptr = &new_item;
-  auto iter = std::find_if(level0_row_data.begin(),
-                           level0_row_data.end(),
+  auto iter = std::find_if(level0_row_data.begin(), level0_row_data.end(),
                            [new_item_ptr](const ExpectRowData& item) {
-                             if (item.item_ptr == new_item_ptr)
-                               return true;
+                             if (item.item_ptr == new_item_ptr) return true;
 
                              return false;
                            });
@@ -753,12 +711,11 @@ void TreeItemQModelTestBase::addItemUnderRootItem() {
 }
 
 void TreeItemQModelTestBase::test_add_item_to_unexpanded_root_item() {
-  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
-                                 SIGNAL(rowsAboutToBeInserted(
-                                     const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
-                               SIGNAL(rowsInserted(
-                                   const QModelIndex&, int, int)));
+  QSignalSpy begin_insert_sigspy(
+      qmodel->qmodel(),
+      SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
+  QSignalSpy end_insert_sigspy(
+      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   // Exercise system
   CUSTOM_ASSERT(addItemUnderRootItem());
@@ -773,20 +730,17 @@ void TreeItemQModelTestBase::test_add_item_to_expanded_root_item() {
   expandToLevel(0);
 
   int expect_insert_row = 0;
-  for (auto & row_data : level0_row_data) {
-    if (row_data.text == ADD_MORE_ROW_TEXT)
-      break;
+  for (auto& row_data : level0_row_data) {
+    if (row_data.text == ADD_MORE_ROW_TEXT) break;
 
-    if (shouldRowVisible(row_data))
-      ++expect_insert_row;
+    if (shouldRowVisible(row_data)) ++expect_insert_row;
   }
 
-  QSignalSpy begin_insert_sigspy(qmodel->qmodel(),
-                                 SIGNAL(rowsAboutToBeInserted(
-                                     const QModelIndex&, int, int)));
-  QSignalSpy end_insert_sigspy(qmodel->qmodel(),
-                               SIGNAL(rowsInserted(
-                                   const QModelIndex&, int, int)));
+  QSignalSpy begin_insert_sigspy(
+      qmodel->qmodel(),
+      SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
+  QSignalSpy end_insert_sigspy(
+      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   // Exercise system
   CUSTOM_ASSERT(addItemUnderRootItem());
@@ -805,48 +759,46 @@ void TreeItemQModelTestBase::test_add_item_to_expanded_root_item() {
   ASSERT_EQ(expect_insert_row, insert_row_last);
 }
 
-TEST_F(TreeItemQModelTestBase,
-       check_row_data) { // NOLINT
+TEST_F(TreeItemQModelTestBase, check_row_data) {  // NOLINT
   CUSTOM_ASSERT(checkRowData());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       should_provider_BeginFilter_emit_modelAboutToReset) { // NOLINT
+       should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
   CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       should_provider_FinishFilter_emit_modelReset) { // NOLINT
+       should_provider_FinishFilter_emit_modelReset) {  // NOLINT
   CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_not_visible_parent_item) { // NOLINT
+       test_add_item_to_not_visible_parent_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_visible_but_children_not_populated_item) { // NOLINT
+       test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_children_populated_parent_item) { // NOLINT
+       test_add_item_to_children_populated_parent_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_unexpanded_root_item) { // NOLINT
+       test_add_item_to_unexpanded_root_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
 }
 
-TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_expanded_root_item) { // NOLINT
+TEST_F(TreeItemQModelTestBase, test_add_item_to_expanded_root_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
 }
 
 TEST_F(TreeItemQModelTestBase,
-       should_null_item_to_index_got_invalid_root_idx) { // NOLINT
+       should_null_item_to_index_got_invalid_root_idx) {  // NOLINT
   QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
@@ -868,48 +820,47 @@ class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
   }
 };
 
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       check_row_data) { // NOLINT
+TEST_F(TreeItemQModelWithClearAndAddMoreRowTest, check_row_data) {  // NOLINT
   CUSTOM_ASSERT(checkRowData());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_provider_BeginFilter_emit_modelAboutToReset) { // NOLINT
+       should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
   CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_provider_FinishFilter_emit_modelReset) { // NOLINT
+       should_provider_FinishFilter_emit_modelReset) {  // NOLINT
   CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_not_visible_parent_item) { // NOLINT
+       test_add_item_to_not_visible_parent_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_visible_but_children_not_populated_item) { // NOLINT
+       test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_children_populated_parent_item) { // NOLINT
+       test_add_item_to_children_populated_parent_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_unexpanded_root_item) { // NOLINT
+       test_add_item_to_unexpanded_root_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_expanded_root_item) { // NOLINT
+       test_add_item_to_expanded_root_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
 }
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_null_item_to_index_got_invalid_root_idx) { // NOLINT
+       should_null_item_to_index_got_invalid_root_idx) {  // NOLINT
   QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
@@ -944,53 +895,51 @@ class TreeItemQModelWithProviderItemTest : public TreeItemQModelTestBase {
     return std::make_shared<TreeItemQModelWithProviderRoot>();
   }
 
-  int adjustLevel(int level) override {
-    return level + 1;
-  }
+  int adjustLevel(int level) override { return level + 1; }
 };
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       should_display_the_provider_name_as_a_visible_root_item) { // NOLINT
+       should_display_the_provider_name_as_a_visible_root_item) {  // NOLINT
   CUSTOM_ASSERT(checkRowData());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       should_provider_BeginFilter_emit_modelAboutToReset) { // NOLINT
+       should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
   CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       should_provider_FinishFilter_emit_modelReset) { // NOLINT
+       should_provider_FinishFilter_emit_modelReset) {  // NOLINT
   CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_not_visible_parent_item) { // NOLINT
+       test_add_item_to_not_visible_parent_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_visible_but_children_not_populated_item) { // NOLINT
+       test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_children_populated_parent_item) { // NOLINT
+       test_add_item_to_children_populated_parent_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_unexpanded_root_item) { // NOLINT
+       test_add_item_to_unexpanded_root_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_expanded_root_item) { // NOLINT
+       test_add_item_to_expanded_root_item) {  // NOLINT
   CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
 }
 
 TEST_F(TreeItemQModelWithProviderItemTest,
-       should_null_item_to_index_got_provider_item) { // NOLINT
+       should_null_item_to_index_got_provider_item) {  // NOLINT
   // Setup fixture
   auto expect_index = qmodel->qmodel()->index(0, 0, QModelIndex());
 

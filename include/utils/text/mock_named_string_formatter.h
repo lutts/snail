@@ -25,8 +25,8 @@ class MockNamedStringFormatter : public fto::NamedStringFormatter {
 };
 
 class MockNamedStringFormatterFactory
-    : public fto::NamedStringFormatterFactory
-    , public WeakSingleton<MockNamedStringFormatterFactory> {
+    : public fto::NamedStringFormatterFactory,
+      public WeakSingleton<MockNamedStringFormatterFactory> {
  public:
   MockNamedStringFormatterFactory() {
     fto::NamedStringFormatterTestProxy::setFactory(this);

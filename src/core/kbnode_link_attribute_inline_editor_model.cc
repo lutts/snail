@@ -13,11 +13,10 @@ namespace snailcore {
 KbNodeLinkAttributeInlineEditorModel::KbNodeLinkAttributeInlineEditorModel(
     fto::KbNodeLinkAttribute* attr,
     IKbNodeLinkAttributePopupEditorModelFactory* popup_editor_factory)
-    : attr_(attr)
-    , popup_editor_factory_(popup_editor_factory) { }
+    : attr_(attr), popup_editor_factory_(popup_editor_factory) {}
 
-KbNodeLinkAttributeInlineEditorModel::
-~KbNodeLinkAttributeInlineEditorModel() = default;
+KbNodeLinkAttributeInlineEditorModel::~KbNodeLinkAttributeInlineEditorModel() =
+    default;
 
 utils::U8String KbNodeLinkAttributeInlineEditorModel::valueText() const {
   return attr_->valueText();

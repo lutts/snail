@@ -30,5 +30,4 @@ class IWorkSpaceView : public GenericViewBase {
                                    const utils::U8String& new_title) = 0;
 };
 
-
 #endif  // INCLUDE_QTUI_UI_I_WORKSPACE_VIEW_H_

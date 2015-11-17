@@ -19,8 +19,8 @@ class IAttributeModelFactory {
  public:
   virtual ~IAttributeModelFactory() = default;
 
-  virtual std::shared_ptr<IAttributeModel>
-  createAttributeModel(IAttribute* attr) const = 0;
+  virtual std::shared_ptr<IAttributeModel> createAttributeModel(
+      IAttribute* attr) const = 0;
 };
 
 }  // namespace snailcore

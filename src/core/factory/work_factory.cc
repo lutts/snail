@@ -50,8 +50,8 @@ std::vector<IKbNode*> addTestKbNodes(fto::KbNodeManager* kbnode_manager) {
   return test_root_kbnodes;
 }
 
-std::vector<std::unique_ptr<IAttributeSupplier> >
-createAttrSuppliers(KbNodeManager* kbnode_manager) {
+std::vector<std::unique_ptr<IAttributeSupplier> > createAttrSuppliers(
+    KbNodeManager* kbnode_manager) {
   auto root_kbnodes = addTestKbNodes(kbnode_manager);
 
   std::vector<std::unique_ptr<IAttributeSupplier> > attr_suppliers;
@@ -59,15 +59,14 @@ createAttrSuppliers(KbNodeManager* kbnode_manager) {
   int max_attr = root_kbnodes.size();
   for (auto root_kbnode : root_kbnodes) {
     attr_suppliers.push_back(
-        utils::make_unique<KbNodeAttributeSupplier>(root_kbnode,
-                                                    max_attr--));
+        utils::make_unique<KbNodeAttributeSupplier>(root_kbnode, max_attr--));
   }
 
   return attr_suppliers;
 }
 
 WorkFactory::WorkFactory(KbNodeManager* kbnode_manager)
-    : kbnode_manager_{kbnode_manager} { }
+    : kbnode_manager_{kbnode_manager} {}
 
 fto::Work* WorkFactory::createWork(const utils::U8String& work_name) {
   auto work = new Work;

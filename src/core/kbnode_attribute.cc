@@ -13,17 +13,15 @@
 namespace snailcore {
 
 KbNodeAttribute::KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier)
-    : attr_supplier_(attr_supplier) { }
+    : attr_supplier_(attr_supplier) {}
 
 KbNodeAttribute::~KbNodeAttribute() = default;
 
 KbNodeAttribute::KbNodeAttribute(const KbNodeAttribute& rhs)
-    : attr_supplier_(rhs.attr_supplier_)
-    , kbnode_(rhs.kbnode_) { }
+    : attr_supplier_(rhs.attr_supplier_), kbnode_(rhs.kbnode_) {}
 
 KbNodeAttribute::KbNodeAttribute(KbNodeAttribute&& rhs)
-    : attr_supplier_(rhs.attr_supplier_)
-    , kbnode_(rhs.kbnode_) {
+    : attr_supplier_(rhs.attr_supplier_), kbnode_(rhs.kbnode_) {
   rhs.attr_supplier_ = nullptr;
   rhs.kbnode_ = nullptr;
 }
@@ -45,24 +43,18 @@ utils::U8String KbNodeAttribute::displayName() const {
 }
 
 utils::U8String KbNodeAttribute::valueText() const {
-  if (isEmpty())
-    return "";
+  if (isEmpty()) return "";
 
   return kbnode_->name();
 }
 
-bool KbNodeAttribute::isEmpty() const {
-  return kbnode_ == nullptr;
-}
+bool KbNodeAttribute::isEmpty() const { return kbnode_ == nullptr; }
 
-void KbNodeAttribute::clear() {
-  setKbNode(nullptr);
-}
+void KbNodeAttribute::clear() { setKbNode(nullptr); }
 
 void KbNodeAttribute::accept(IAttributeVisitor* visitor) {
   visitor->visit(this);
 }
-
 
 // IKbNodeAttribute
 fto::KbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
@@ -78,8 +70,8 @@ void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
 
 KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
                                                  int max_attrs)
-    : FTO_NAMESPACE::KbNodeAttributeSupplier(root_kbnode->name(), max_attrs)
-    , root_kbnode_(root_kbnode) { }
+    : FTO_NAMESPACE::KbNodeAttributeSupplier(root_kbnode->name(), max_attrs),
+      root_kbnode_(root_kbnode) {}
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;
 
@@ -87,9 +79,6 @@ IAttribute* KbNodeAttributeSupplier::createAttribute() {
   return new KbNodeAttribute(this);
 }
 
-IKbNode* KbNodeAttributeSupplier::getRootKbNode() const {
-  return root_kbnode_;
-}
-
+IKbNode* KbNodeAttributeSupplier::getRootKbNode() const { return root_kbnode_; }
 
 }  // namespace snailcore

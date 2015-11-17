@@ -21,11 +21,9 @@ using KbNodeLinkAttributeInlineEditorPresenterBase =
 class KbNodeLinkAttributeInlineEditorPresenter
     : public KbNodeLinkAttributeInlineEditorPresenterBase {
  public:
-  KbNodeLinkAttributeInlineEditorPresenter(
-      std::shared_ptr<model_type> model,
-      std::shared_ptr<view_type> view)
-      : KbNodeLinkAttributeInlineEditorPresenterBase(model, view) {
-  }
+  KbNodeLinkAttributeInlineEditorPresenter(std::shared_ptr<model_type> model,
+                                           std::shared_ptr<view_type> view)
+      : KbNodeLinkAttributeInlineEditorPresenterBase(model, view) {}
 
   void initialize() override;
 

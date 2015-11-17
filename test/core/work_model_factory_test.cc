@@ -6,7 +6,7 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-using namespace snailcore;  // NOLINT
+using namespace snailcore;         // NOLINT
 using namespace snailcore::tests;  // NOLINT
 
 class WorkModelFactoryTest : public ::testing::Test {
@@ -39,7 +39,7 @@ class WorkModelFactoryTest : public ::testing::Test {
   // endregion
 };
 
-TEST_F(WorkModelFactoryTest, should_construct_properly) { // NOLINT
+TEST_F(WorkModelFactoryTest, should_construct_properly) {  // NOLINT
   // See SetUp()
   SUCCEED();
 }

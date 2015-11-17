@@ -26,12 +26,12 @@ class KbNodeLinkAttributeSupplier
   KbNodeLinkAttributeSupplier(ITreeItemProvider* link_type_item_provider,
                               const fto::LinkType* default_proto_link_type,
                               IKbNode* root_kbnode, int max_attrs)
-      : FTO_NAMESPACE::KbNodeLinkAttributeSupplier("", max_attrs)
-      , link_type_item_provider_(link_type_item_provider)
-      , default_proto_link_type_(default_proto_link_type)
-      , root_kbnode_(root_kbnode) { }
+      : FTO_NAMESPACE::KbNodeLinkAttributeSupplier("", max_attrs),
+        link_type_item_provider_(link_type_item_provider),
+        default_proto_link_type_(default_proto_link_type),
+        root_kbnode_(root_kbnode) {}
 
-  virtual ~KbNodeLinkAttributeSupplier()  = default;
+  virtual ~KbNodeLinkAttributeSupplier() = default;
 
   ITreeItemProvider* getLinkTypeItemProvider() const {
     return link_type_item_provider_;
@@ -41,9 +41,7 @@ class KbNodeLinkAttributeSupplier
     return default_proto_link_type_;
   }
 
-  IKbNode* getRootKbNode() const {
-    return root_kbnode_;
-  }
+  IKbNode* getRootKbNode() const { return root_kbnode_; }
 
   fto::KbNodeLinkAttributeSupplier* clone() const {
     // // TODO(lutts): impl this method
@@ -64,7 +62,7 @@ class KbNodeLinkAttributeSupplier
 
 class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
  public:
-  KbNodeLinkAttribute(
+  explicit KbNodeLinkAttribute(
       fto::KbNodeLinkAttributeSupplier* link_attr_supplier);
   virtual ~KbNodeLinkAttribute();
 
@@ -90,7 +88,7 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
   TEST_PROXY(LinkType) link_type_;
 
   TEST_PROXY(KbNodeAttributeSupplier) value_attr_supplier_;
-  fto::KbNodeAttribute* value_attr_ { nullptr };
+  fto::KbNodeAttribute* value_attr_{nullptr};
 };
 
 }  // namespace snailcore

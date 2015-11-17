@@ -17,8 +17,10 @@ namespace snailcore {
 class WorkSpaceModelSignalHelper {
  public:
   SNAIL_SIGSLOT_PIMPL(WorkSpaceModel, WorkModelAdded);
+
  public:
   SNAIL_SIGSLOT_PIMPL(WorkSpaceModel, ActiveWorkModelChanged);
+
  public:
   SNAIL_SIGSLOT_PIMPL(WorkSpaceModel, WorkModelActivelyRemoved);
 };
@@ -29,9 +31,9 @@ SNAIL_SIGSLOT_DELEGATE2(WorkSpaceModel, WorkModelActivelyRemoved);
 
 WorkSpaceModel::WorkSpaceModel(IWorkModelFactory* work_model_factory,
                                IWorkFactory* work_factory)
-    : signal_helper_(utils::make_unique<WorkSpaceModelSignalHelper>())
-    , work_model_factory_(work_model_factory)
-    , work_factory_(work_factory) { }
+    : signal_helper_(utils::make_unique<WorkSpaceModelSignalHelper>()),
+      work_model_factory_(work_model_factory),
+      work_factory_(work_factory) {}
 
 WorkSpaceModel::~WorkSpaceModel() = default;
 
@@ -42,8 +44,6 @@ void WorkSpaceModel::createWork(const utils::U8String& work_name) {
   signal_helper_->emitWorkModelAdded(work_model);
 }
 
-void WorkSpaceModel::removeWorkModel(IWorkModel* model) {
-  (void)model;
-}
+void WorkSpaceModel::removeWorkModel(IWorkModel* model) { (void)model; }
 
 }  // namespace snailcore

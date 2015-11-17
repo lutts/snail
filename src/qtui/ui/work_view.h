@@ -29,8 +29,7 @@ class WorkView : public QWidget, public IWorkView {
 
   void setWorkName(const QString& work_name) override;
 
-  void setWorkAttrSetView(
-      IAttributeSetView* attr_set_view) override;
+  void setWorkAttrSetView(IAttributeSetView* attr_set_view) override;
 
  private slots:
   void toggleNameDescEditMode();
@@ -39,14 +38,14 @@ class WorkView : public QWidget, public IWorkView {
   WorkView(const WorkView& other) = delete;
   WorkView& operator=(const WorkView& other) = delete;
 
-  QSint::ActionPanel* action_panel_ { nullptr };
-  QSint::ActionGroup* name_desc_group_ { nullptr };
-  bool name_desc_group_editing_ { false };
+  QSint::ActionPanel* action_panel_{nullptr};
+  QSint::ActionGroup* name_desc_group_{nullptr};
+  bool name_desc_group_editing_{false};
 
-  QSint::ActionGroup* parts_group_ { nullptr };
-  QSint::ActionGroup* scores_group_ { nullptr };
-  QSint::ActionGroup* recordings_group_ { nullptr };
-  QSint::ActionGroup* related_work_group_ { nullptr };
+  QSint::ActionGroup* parts_group_{nullptr};
+  QSint::ActionGroup* scores_group_{nullptr};
+  QSint::ActionGroup* recordings_group_{nullptr};
+  QSint::ActionGroup* related_work_group_{nullptr};
 
  private:
   SNAIL_SIGSLOT_OVERRIDE_IMPL(UserSetWorkName);

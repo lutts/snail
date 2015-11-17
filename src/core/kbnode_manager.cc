@@ -27,8 +27,8 @@ class KbNodeManagerSignalHelper {
 };
 
 KbNodeManager::KbNodeManager()
-    : signal_helper_(utils::make_unique<KbNodeManagerSignalHelper>())
-    , dummy_root_(new KbNode(0, "", false)) { }
+    : signal_helper_(utils::make_unique<KbNodeManagerSignalHelper>()),
+      dummy_root_(new KbNode(0, "", false)) {}
 
 KbNodeManager::~KbNodeManager() {
   // NOTE: we do not need to delete the nodes, because KbNodeManager will be a
@@ -39,14 +39,14 @@ KbNodeManager::~KbNodeManager() {
 }
 
 void KbNodeManager::erase(IKbNode* parent) {
-  for (auto & kbnode : kbnode_to_subnodes_[parent]) {
+  for (auto& kbnode : kbnode_to_subnodes_[parent]) {
     erase(kbnode);
     delete kbnode;
   }
 }
 
-std::shared_ptr<ITreeItemProvider>
-KbNodeManager::createTreeItemProvider(IKbNode* root_kbnode) {
+std::shared_ptr<ITreeItemProvider> KbNodeManager::createTreeItemProvider(
+    IKbNode* root_kbnode) {
   auto item_provider =
       utils::make_trackable<KbNodeItemProvider>(root_kbnode, this);
   auto raw_item_provider = item_provider.get();
@@ -68,17 +68,15 @@ IKbNode* KbNodeManager::idToKbNode(KbNodeIdType kbnode_id) {
   return kbnode;
 }
 
-std::vector<IKbNode*>
-KbNodeManager::findKbNode(const utils::U8String& pattern,
-                          const IKbNode* parent_kbnode) {
+std::vector<IKbNode*> KbNodeManager::findKbNode(const utils::U8String& pattern,
+                                                const IKbNode* parent_kbnode) {
   std::vector<IKbNode*> matched_kbnodes;
 
-  if (!parent_kbnode)
-    parent_kbnode = dummy_root_;
+  if (!parent_kbnode) parent_kbnode = dummy_root_;
 
   auto iter = kbnode_to_subnodes_.find(parent_kbnode);
   if (iter != kbnode_to_subnodes_.end()) {
-    auto & subnodes = kbnode_to_subnodes_[parent_kbnode];
+    auto& subnodes = kbnode_to_subnodes_[parent_kbnode];
     for (auto kbnode : subnodes) {
       if (!kbnode->isGroupOnly() &&
           kbnode->name().find(pattern) != utils::U8String::npos) {
@@ -86,8 +84,7 @@ KbNodeManager::findKbNode(const utils::U8String& pattern,
       }
 
       auto matched_subnodes = findKbNode(pattern, kbnode);
-      matched_kbnodes.insert(matched_kbnodes.end(),
-                             matched_subnodes.begin(),
+      matched_kbnodes.insert(matched_kbnodes.end(), matched_subnodes.begin(),
                              matched_subnodes.end());
     }
   }
@@ -96,20 +93,16 @@ KbNodeManager::findKbNode(const utils::U8String& pattern,
 }
 
 std::vector<IKbNode*> KbNodeManager::childItems(const IKbNode* parent_node) {
-  if (!parent_node)
-    parent_node = dummy_root_;
+  if (!parent_node) parent_node = dummy_root_;
 
   return kbnode_to_subnodes_[parent_node];
 }
 
-KbNodeIdType KbNodeManager::nextId() {
-  return ++id;
-}
+KbNodeIdType KbNodeManager::nextId() { return ++id; }
 
-IKbNode* KbNodeManager::addKbNode(
-    const utils::U8String& name, const IKbNode* parent, bool is_category) {
-  if (!parent)
-    parent = dummy_root_;
+IKbNode* KbNodeManager::addKbNode(const utils::U8String& name,
+                                  const IKbNode* parent, bool is_category) {
+  if (!parent) parent = dummy_root_;
 
   auto kbnode = new KbNode(nextId(), name, is_category);
   if (kbnode) {
@@ -125,6 +118,5 @@ void KbNodeManager::incRef(IKbNode* kbnode) {
   (void)kbnode;
   // TODO(lutts): currently not implemented
 }
-
 
 }  // namespace snailcore

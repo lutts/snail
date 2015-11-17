@@ -18,16 +18,13 @@ namespace QSint {
 class ActionGroup;
 }  // namespace QSint
 
-class AttributeSetViewForWorkView : public IAttributeSetView
-                                  , public QObject {
+class AttributeSetViewForWorkView : public IAttributeSetView, public QObject {
  public:
   AttributeSetViewForWorkView();
   virtual ~AttributeSetViewForWorkView() = default;
 
   QWidget* getWidget() override;
-  QWidget* getAttributeSetContainer() {
-    return attr_set_container_;
-  }
+  QWidget* getAttributeSetContainer() { return attr_set_container_; }
 
   void switchToDisplayMode() override;
   void switchToEditMode() override;
@@ -41,6 +38,5 @@ class AttributeSetViewForWorkView : public IAttributeSetView
 
   SNAIL_SIGSLOT_OVERRIDE_IMPL(UserSwitchMode);
 };
-
 
 #endif  // SRC_QTUI_UI_ATTRIBUTE_SET_VIEW_H_

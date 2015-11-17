@@ -27,8 +27,7 @@ class KbNodeLinkAttributePopupEditorPresenter
     : public KbNodeLinkAttributePopupEditorPresenterBase {
  public:
   KbNodeLinkAttributePopupEditorPresenter(
-      std::shared_ptr<model_type> model,
-      std::shared_ptr<view_type> view,
+      std::shared_ptr<model_type> model, std::shared_ptr<view_type> view,
       std::shared_ptr<fto::TreeItemQModel> link_type_qmodel);
   virtual ~KbNodeLinkAttributePopupEditorPresenter();
 

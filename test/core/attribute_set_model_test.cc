@@ -70,16 +70,16 @@ BIND_SIGNAL1(ValidateComplete, void, bool, validate_result);
 END_BIND_SIGNAL()
 END_MOCK_LISTENER_DEF()
 
-
 void AttributeSetModelTest::setupAttributeSuppliers() {
   attr_suppliers_up = MockAttrSupplierTestStub::createAttributeSuppliers();
-  for (auto & supplier : attr_suppliers_up) {
+  for (auto& supplier : attr_suppliers_up) {
     attr_suppliers.push_back(supplier.get());
   }
 }
 
-TEST_F(AttributeSetModelTest,
-       should_be_able_to_get_the_suppliers_passed_when_construction) { // NOLINT
+TEST_F(
+    AttributeSetModelTest,
+    should_be_able_to_get_the_suppliers_passed_when_construction) {  // NOLINT
   // Exercise system
   auto actual_attr_suppliers = model->getAttributeSuppliers();
 
@@ -110,13 +110,11 @@ void AttributeSetModelTest::switchToEditMode() {
   Mock::VerifyAndClearExpectations(max_1_attr_0_supplier);
 }
 
-TEST_F(AttributeSetModelTest,
-       test_switch_to_edit_mode) { // NOLINT
+TEST_F(AttributeSetModelTest, test_switch_to_edit_mode) {  // NOLINT
   CUSTOM_ASSERT(switchToEditMode());
 }
 
-TEST_F(AttributeSetModelTest,
-       test_switch_to_display_mode) { // NOLINT
+TEST_F(AttributeSetModelTest, test_switch_to_display_mode) {  // NOLINT
   // Setup fixture
   switchToEditMode();
 
@@ -142,9 +140,8 @@ TEST_F(AttributeSetModelTest,
       attr_suppliers_up[max_gt_1_attr_eq_max_minus_2_idx].get();
   EXPECT_CALL(*max_gt_1_attr_eq_max_minus_2_supplier, addAttributeCalled(_))
       .WillOnce(Return(ComplexReturnValue(0)));
-  auto newly_added_attr_not_empty =
-      static_cast<AttributeTestStub*>(
-          max_gt_1_attr_eq_max_minus_2_supplier->addAttribute());
+  auto newly_added_attr_not_empty = static_cast<AttributeTestStub*>(
+      max_gt_1_attr_eq_max_minus_2_supplier->addAttribute());
   newly_added_attr_not_empty->setValueText(xtestutils::genRandomString());
 
   // manually clear an attribute
@@ -209,7 +206,7 @@ void AttributeSetModelTest::checkCreateAttributeModel(
 }
 
 TEST_F(AttributeSetModelTest,
-       should_be_able_to_create_AttributeModel_for_attr) { // NOLINT
+       should_be_able_to_create_AttributeModel_for_attr) {  // NOLINT
   auto attr_model = std::make_shared<MockAttributeModel>();
   SlotCatcher<IAttributeModel::ValidateCompleteSlotType> validateComplete;
 
@@ -244,26 +241,23 @@ class AttributeSetModelTest_AttrEditorTriadTests
 };
 
 TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
-       test_validate_complete) { // NOLINT
+       test_validate_complete) {  // NOLINT
   // Setup fixture
   bool attr_model1_valid = true;
   bool attr_model2_valid = true;
   bool attr_model3_valid = true;
 
   EXPECT_CALL(*attr_model1, isValid())
-      .WillRepeatedly(Invoke([&attr_model1_valid]{
-            return attr_model1_valid;
-          }));
+      .WillRepeatedly(
+          Invoke([&attr_model1_valid] { return attr_model1_valid; }));
 
   EXPECT_CALL(*attr_model2, isValid())
-      .WillRepeatedly(Invoke([&attr_model2_valid]{
-            return attr_model2_valid;
-          }));
+      .WillRepeatedly(
+          Invoke([&attr_model2_valid] { return attr_model2_valid; }));
 
   EXPECT_CALL(*attr_model3, isValid())
-      .WillRepeatedly(Invoke([&attr_model3_valid]{
-            return attr_model3_valid;
-          }));
+      .WillRepeatedly(
+          Invoke([&attr_model3_valid] { return attr_model3_valid; }));
 
   auto mock_listener = MockListener::attachTo(model.get());
 
@@ -307,7 +301,7 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
 }
 
 TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
-       should_not_emit_validate_complete_in_display_mode) { // NOLINT
+       should_not_emit_validate_complete_in_display_mode) {  // NOLINT
   // Setup fixture
   switchToDisplayMode();
 
@@ -322,7 +316,7 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
 }
 
 TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
-       should_be_able_to_close_attribute_editors) { // NOLINT
+       should_be_able_to_close_attribute_editors) {  // NOLINT
   // Setup fixture
   pfmvp::tests::MockPfTriadManager triad_manager;
 
@@ -360,7 +354,6 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
   validateComplete2();
   validateComplete3();
 }
-
 
 }  // namespace tests
 }  // namespace snailcore

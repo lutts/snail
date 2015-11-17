@@ -33,7 +33,7 @@ using ::testing::SaveArg;
 using ::testing::_;
 #endif
 
-using namespace testing;  // NOLINT
+using namespace testing;            // NOLINT
 using namespace testing::internal;  // NOLINT
 
 using CheckPointType = MockFunction<void(std::string check_point_name)>;
@@ -43,8 +43,8 @@ using CheckPointType = MockFunction<void(std::string check_point_name)>;
 // you want ensure the method is not called unless you set an expection on it
 class ComplexReturnValue {
  public:
-  explicit ComplexReturnValue(int dummy)
-      : dummy_{dummy} { }
+  explicit ComplexReturnValue(int dummy) : dummy_{dummy} {}
+
  private:
   int dummy_;
 };
@@ -56,8 +56,7 @@ class MockObjectRecorder {
 
   void addMockObj(void* mock_obj) {
     auto iter = std::find(mock_objs.begin(), mock_objs.end(), mock_obj);
-    if (iter != mock_objs.end())
-      return;
+    if (iter != mock_objs.end()) return;
 
     mock_objs.push_back(mock_obj);
   }
@@ -73,9 +72,7 @@ class MockObjectRecorder {
     return result;
   }
 
-  void clear() {
-    mock_objs.clear();
-  }
+  void clear() { mock_objs.clear(); }
 
  private:
   MockObjectRecorder(const MockObjectRecorder& other) = delete;
@@ -88,12 +85,12 @@ class MockObjectRecorder {
 #define VERIFY_RECORDED_MOCK_OBJECTS mock_obj_recorder.verify()
 #define CLEAR_RECORDED_MOCK_OBJECTS mock_obj_recorder.clear()
 
-#define R_EXPECT_CALL(obj, ...)                 \
-  mock_obj_recorder.addMockObj(&(obj));         \
+#define R_EXPECT_CALL(obj, ...)         \
+  mock_obj_recorder.addMockObj(&(obj)); \
   EXPECT_CALL(obj, __VA_ARGS__)
 
-#define R_ON_CALL(obj, ...)                     \
-  mock_obj_recorder.addMockObj(&(obj));         \
+#define R_ON_CALL(obj, ...)             \
+  mock_obj_recorder.addMockObj(&(obj)); \
   ON_CALL(obj, __VA_ARGS__)
 
 // #define OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
@@ -105,18 +102,26 @@ class MockObjectRecorder {
 
 #ifdef OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
 
-#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_BEGIN        \
-  static bool setup_mock_checked = false;               \
-  if (!setup_mock_checked) {                            \
-  setup_mock_checked = true;                            \
-  do { } while (0)
+#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_BEGIN \
+  static bool setup_mock_checked = false;        \
+  if (!setup_mock_checked) {                     \
+    setup_mock_checked = true;                   \
+    do {                                         \
+  } while (0)
 
-#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_END } do { } while (0)
+#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_END \
+  }                                            \
+  do {                                         \
+  } while (0)
 
 #else  // !OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
 
-#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_BEGIN do { } while (0)
-#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_END   do { } while (0)
+#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_BEGIN \
+  do {                                           \
+  } while (0)
+#define SINGLE_RUN_TEST_SETUP_EXPECTATIONS_END \
+  do {                                         \
+  } while (0)
 
 #endif  // OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
 
@@ -131,12 +136,9 @@ class MockObjectRecorder {
  */
 class TestFixture {
  public:
-  explicit TestFixture(const utils::U8String& name)
-      : name_(name) { }
+  explicit TestFixture(const utils::U8String& name) : name_(name) {}
 
-  virtual ~TestFixture() {
-    verify();
-  }
+  virtual ~TestFixture() { verify(); }
 
   /** setup fixture
    * the default setup() did not do any setup, but will call
@@ -149,8 +151,7 @@ class TestFixture {
   virtual void setup() {
     checkSetup();
 
-    if (abort_if_failure_)
-      doAbortIfFailure();
+    if (abort_if_failure_) doAbortIfFailure();
   }
 
   /** check if setup() did the right things
@@ -158,15 +159,12 @@ class TestFixture {
    * we need checkSetup() because HasFatalFailure() will return true only when
    * failure is raised in a subroutine before HasFatalFailure() call
    */
-  virtual void checkSetup() { }
+  virtual void checkSetup() {}
 
-  void abortIfFailure() {
-    abort_if_failure_ = true;
-  }
+  void abortIfFailure() { abort_if_failure_ = true; }
 
   void doAbortIfFailure() const {
-    if (::testing::Test::HasFatalFailure())
-      throw std::logic_error(name_);
+    if (::testing::Test::HasFatalFailure()) throw std::logic_error(name_);
   }
 
   void verify() {
@@ -179,7 +177,7 @@ class TestFixture {
   utils::U8String name_;
   MockObjectRecorder mock_obj_recorder;
 
-  bool abort_if_failure_ { false };
+  bool abort_if_failure_{false};
 
  private:
   SNAIL_DISABLE_COPY(TestFixture);
@@ -189,8 +187,8 @@ class TestFixture {
 #define LINE_NUMBER_STR(x) LINE_NUMBER_STR_(x)
 #define FIXTURE_LOCATION __FILE__ ":" LINE_NUMBER_STR(__LINE__)
 
-#define FixtureHelper(FixtureType, var)         \
-  FixtureType var { FIXTURE_LOCATION, this };   \
+#define FixtureHelper(FixtureType, var)    \
+  FixtureType var{FIXTURE_LOCATION, this}; \
   var.setup();
 
 #endif  // TEST_TESTUTILS_GMOCK_COMMON_H_

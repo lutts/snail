@@ -16,7 +16,7 @@ class Command;
 
 class ICommandProcessor {
  public:
-  virtual ~ICommandProcessor() { }
+  virtual ~ICommandProcessor() {}
 
   SNAIL_SIGSLOT_PURE_VIRTUAL(CanUndoChanged, void(bool canUndo));
   SNAIL_SIGSLOT_PURE_VIRTUAL(CanRedoChanged, void(bool canRedo));

@@ -12,12 +12,12 @@
 
 enum class LogSeverityLevel {
   verbose,
-    debug,
-    info,
-    warning,
-    error,
-    user,
-    num_level,
+  debug,
+  info,
+  warning,
+  error,
+  user,
+  num_level,
 };
 
 extern void initLog();
@@ -42,31 +42,25 @@ extern bool isLogEnabled();
 #define IF_ALOGE isLogLevelAllowed(LogSeverityLevel::error)
 #define IF_ALOGU isLogLevelAllowed(LogSeverityLevel::user)
 
-#define CONDITION(cond)     (__builtin_expect((cond) != 0, 0))
+#define CONDITION(cond) (__builtin_expect((cond) != 0, 0))
 
-#define ALOGV_IF(cond)                          \
-  if (CONDITION(cond))                          \
-    ALOGV
+#define ALOGV_IF(cond) \
+  if (CONDITION(cond)) ALOGV
 
-#define ALOGD_IF(cond)                          \
-  if (CONDITION(cond))                          \
-    ALOGD
+#define ALOGD_IF(cond) \
+  if (CONDITION(cond)) ALOGD
 
-#define ALOGI_IF(cond)                          \
-  if (CONDITION(cond))                          \
-    ALOGI
+#define ALOGI_IF(cond) \
+  if (CONDITION(cond)) ALOGI
 
-#define ALOGW_IF(cond)                          \
-  if (CONDITION(cond))                          \
-    ALOGW
+#define ALOGW_IF(cond) \
+  if (CONDITION(cond)) ALOGW
 
-#define ALOGE_IF(cond)                          \
-  if (CONDITION(cond))                          \
-    ALOGE
+#define ALOGE_IF(cond) \
+  if (CONDITION(cond)) ALOGE
 
-#define ALOGU_IF(cond)                          \
-  if (CONDITION(cond))                          \
-    ALOGU
+#define ALOGU_IF(cond) \
+  if (CONDITION(cond)) ALOGU
 
 /*
  * ===========================================================================
