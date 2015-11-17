@@ -4,6 +4,7 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+// NOLINT(build/header_guard)
 #undef SNAIL_INTERFACE0
 #undef SNAIL_INTERFACE1
 #undef SNAIL_INTERFACE2
