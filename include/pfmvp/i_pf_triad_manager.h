@@ -24,16 +24,17 @@ namespace pfmvp {
 #define SNAIL_PFTRIAD_SIGSLOT(sigName, ObjType, ...)           \
   using sigName##Signature = __VA_ARGS__;                      \
   using sigName##SlotType = std::function<sigName##Signature>; \
-  virtual bool when##sigName(                                  \
+  virtual SignalConnection when##sigName(                      \
       ObjType* obj, sigName##SlotType handler,                 \
       std::shared_ptr<utils::ITrackable> trackObject) = 0;     \
   virtual void cleanup##sigName(ObjType* obj) = 0;
 
-#define SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE_(sigName, ObjType)                  \
-  sigName##SignalType sigName;                                                 \
-                                                                               \
-  bool when##sigName(ObjType* obj, sigName##SlotType handler,                  \
-                     std::shared_ptr<utils::ITrackable> trackObject) override; \
+#define SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE_(sigName, ObjType)   \
+  sigName##SignalType sigName;                                  \
+                                                                \
+  SignalConnection when##sigName(                               \
+      ObjType* obj, sigName##SlotType handler,                  \
+      std::shared_ptr<utils::ITrackable> trackObject) override; \
   void cleanup##sigName(ObjType* obj) override;
 
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL_DECLARE(sigName, ObjType)               \

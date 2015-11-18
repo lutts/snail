@@ -9,6 +9,7 @@
 #define INCLUDE_UTILS_SIGNAL_SLOT_H_
 
 #include <boost/version.hpp>
+#include <boost/signals2/connection.hpp>
 
 #include <functional>           // std::function
 #include <memory>               // std::shared_ptr
@@ -17,37 +18,42 @@
 // NOTE: should ignore trackObject param only when you can ensure the subscriber
 // has a longer lifetime than the subject.
 
+using SignalConnection = boost::signals2::connection;
+
 #define SNAIL_SIGSLOT_PURE_VIRTUAL(sigName, ...)                     \
   using sigName##Signature = __VA_ARGS__;                            \
   using sigName##SlotType = std::function<sigName##Signature>;       \
-  virtual void when##sigName(                                        \
+  virtual SignalConnection when##sigName(                            \
       sigName##SlotType handler,                                     \
       std::shared_ptr<utils::ITrackable> trackObject = nullptr) = 0; \
   virtual void cleanup##sigName##Slots() = 0;
 
-#define SNAIL_MOCK_SLOT(sigName)                                             \
-  MOCK_METHOD2(when##sigName,                                                \
-               void(sigName##SlotType, std::shared_ptr<utils::ITrackable>)); \
+#define SNAIL_MOCK_SLOT(sigName)                                      \
+  MOCK_METHOD2(when##sigName,                                         \
+               SignalConnection(sigName##SlotType,                    \
+                                std::shared_ptr<utils::ITrackable>)); \
   MOCK_METHOD0(cleanup##sigName##Slots, void());
 
-#define SNAIL_SIGSLOT_PROXY(PrimaryType, sigName)                      \
-  void when##sigName(PrimaryType::sigName##SlotType handler,           \
-                     std::shared_ptr<utils::ITrackable> trackObject) { \
-    self_->when##sigName(handler, trackObject);                        \
-  }                                                                    \
+#define SNAIL_SIGSLOT_PROXY(PrimaryType, sigName)       \
+  SignalConnection when##sigName(                       \
+      PrimaryType::sigName##SlotType handler,           \
+      std::shared_ptr<utils::ITrackable> trackObject) { \
+    return self_->when##sigName(handler, trackObject);  \
+  }                                                     \
   void cleanup##sigName##Slots() { self_->cleanup##sigName##Slots(); }
 
 #define SNAIL_SIGSLOT_NONVIRTUAL(sigName, ...)                   \
   using sigName##Signature = __VA_ARGS__;                        \
   using sigName##SlotType = std::function<sigName##Signature>;   \
-  void when##sigName(                                            \
+  SignalConnection when##sigName(                                \
       sigName##SlotType handler,                                 \
       std::shared_ptr<utils::ITrackable> trackObject = nullptr); \
   void cleanup##sigName##Slots();
 
-#define SNAIL_SIGSLOT_OVERRIDE(sigName)                                        \
-  void when##sigName(sigName##SlotType handler,                                \
-                     std::shared_ptr<utils::ITrackable> trackObject) override; \
+#define SNAIL_SIGSLOT_OVERRIDE(sigName)                         \
+  SignalConnection when##sigName(                               \
+      sigName##SlotType handler,                                \
+      std::shared_ptr<utils::ITrackable> trackObject) override; \
   void cleanup##sigName##Slots() override;
 
 // as its name suggests, this macro is used For Test Only, this macro has
@@ -57,11 +63,12 @@
 #define SNAIL_SIGSLOT_FTO(sigName, ...)                           \
   using sigName##Signature = __VA_ARGS__;                         \
   using sigName##SlotType = std::function<sigName##Signature>;    \
-  virtual void when##sigName(                                     \
+  virtual SignalConnection when##sigName(                         \
       sigName##SlotType handler,                                  \
       std::shared_ptr<utils::ITrackable> trackObject = nullptr) { \
     (void) handler;                                               \
     (void) trackObject;                                           \
+    return SignalConnection();                                    \
   }                                                               \
   virtual void cleanup##sigName##Slots() {}
 

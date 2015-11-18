@@ -17,22 +17,23 @@
 template <typename SignalType>
 class SignalConnectionHelper {
  public:
-  static void connectSignal(SignalType& sig,  // NOLINT
-                            typename SignalType::slot_type subscriber,
-                            std::shared_ptr<utils::ITrackable> trackObject) {
+  static SignalConnection connectSignal(
+      SignalType& sig,  // NOLINT
+      typename SignalType::slot_type subscriber,
+      std::shared_ptr<utils::ITrackable> trackObject) {
     if (trackObject)
-      sig.connect(subscriber.track_foreign(trackObject));
+      return sig.connect(subscriber.track_foreign(trackObject));
     else
-      sig.connect(subscriber);
+      return sig.connect(subscriber);
   }
 
-  static void connectSignal(SignalType& sig,  // NOLINT
-                            typename SignalType::slot_type subscriber,
-                            std::shared_ptr<utils::ITrackable> trackObject,
-                            int max_connections) {
+  static SignalConnection connectSignal(
+      SignalType& sig,  // NOLINT
+      typename SignalType::slot_type subscriber,
+      std::shared_ptr<utils::ITrackable> trackObject, int max_connections) {
     // TODO(lutts): do we need lock?
-    if (sig.num_slots() >= max_connections) return;
-    connectSignal(sig, subscriber, trackObject);
+    if (sig.num_slots() >= max_connections) return SignalConnection();
+    return connectSignal(sig, subscriber, trackObject);
   }
 
   static void cleanupSignal(SignalType& sig) {  // NOLINT
@@ -45,30 +46,32 @@ class SignalConnectionHelper {
   ~SignalConnectionHelper() = delete;
 };
 
-#define SNAIL_SIGSLOT_IMPL_(sigName, ovrd)                                  \
-  void when##sigName(sigName##SlotType handler,                             \
-                     std::shared_ptr<utils::ITrackable> trackObject) ovrd { \
-    SignalConnectionHelper<sigName##SignalType>::connectSignal(             \
-        sigName, handler, trackObject);                                     \
-  }                                                                         \
-  void cleanup##sigName##Slots() ovrd {                                     \
-    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sigName);    \
-  }                                                                         \
-                                                                            \
- private:                                                                   \
+#define SNAIL_SIGSLOT_IMPL_(sigName, ovrd)                               \
+  SignalConnection when##sigName(                                        \
+      sigName##SlotType handler,                                         \
+      std::shared_ptr<utils::ITrackable> trackObject) ovrd {             \
+    return SignalConnectionHelper<sigName##SignalType>::connectSignal(   \
+        sigName, handler, trackObject);                                  \
+  }                                                                      \
+  void cleanup##sigName##Slots() ovrd {                                  \
+    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sigName); \
+  }                                                                      \
+                                                                         \
+ private:                                                                \
   sigName##SignalType sigName{};
 
-#define SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn_num, ovrd)           \
-  void when##sigName(sigName##SlotType handler,                             \
-                     std::shared_ptr<utils::ITrackable> trackObject) ovrd { \
-    SignalConnectionHelper<sigName##SignalType>::connectSignal(             \
-        sigName, handler, trackObject, max_conn_num);                       \
-  }                                                                         \
-  void cleanup##sigName##Slots() ovrd {                                     \
-    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sigName);    \
-  }                                                                         \
-                                                                            \
- private:                                                                   \
+#define SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn_num, ovrd)        \
+  SignalConnection when##sigName(                                        \
+      sigName##SlotType handler,                                         \
+      std::shared_ptr<utils::ITrackable> trackObject) ovrd {             \
+    return SignalConnectionHelper<sigName##SignalType>::connectSignal(   \
+        sigName, handler, trackObject, max_conn_num);                    \
+  }                                                                      \
+  void cleanup##sigName##Slots() ovrd {                                  \
+    SignalConnectionHelper<sigName##SignalType>::cleanupSignal(sigName); \
+  }                                                                      \
+                                                                         \
+ private:                                                                \
   sigName##SignalType sigName{};
 
 // non override impls (default)
@@ -163,10 +166,10 @@ class SignalConnectionHelper {
   SNAIL_SIGSLOT_IMPL_MAX_CONN_(sigName, max_conn, )
 
 #define SNAIL_SIGSLOT_DELEGATE(PrimaryType, sigName, sigProxy) \
-  void PrimaryType::when##sigName(                             \
+  SignalConnection PrimaryType::when##sigName(                 \
       sigName##SlotType handler,                               \
       std::shared_ptr<utils::ITrackable> trackObject) {        \
-    sigProxy->when##sigName(handler, trackObject);             \
+    return sigProxy->when##sigName(handler, trackObject);      \
   }                                                            \
   void PrimaryType::cleanup##sigName##Slots() {                \
     sigProxy->cleanup##sigName##Slots();                       \

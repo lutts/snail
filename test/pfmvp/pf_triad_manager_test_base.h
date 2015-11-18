@@ -191,21 +191,24 @@ class MockListener : public GenericMockListener<MockListener, IPfTriadManager> {
                            IPfTriadManager* triad_manager) {
     if (model_) {
       if (monitor_request_remove_) {
-        requestRemoveModelBinded = triad_manager->whenRequestRemoveModel(
+        auto conn = triad_manager->whenRequestRemoveModel(
             model_, [this](IPfModel* model) -> bool {
               return RequestRemoveModel(model);
             }, trackObject);
+        requestRemoveModelBinded = conn.connected();
       }
 
-      aboutToDestroyModelBinded = triad_manager->whenAboutToDestroyModel(
+      auto conn = triad_manager->whenAboutToDestroyModel(
           model_, [this](IPfModel* model) { AboutToDestroyModel(model); },
           trackObject);
+      aboutToDestroyModelBinded = conn.connected();
     }
 
     if (view_) {
-      aboutToDestroyViewBinded = triad_manager->whenAboutToDestroyView(
+      auto conn = triad_manager->whenAboutToDestroyView(
           view_, [this](IPfView* view) { AboutToDestroyView(view); },
           trackObject);
+      aboutToDestroyViewBinded = conn.connected();
     }
   }
 

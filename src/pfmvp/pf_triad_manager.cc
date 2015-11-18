@@ -254,8 +254,8 @@ std::shared_ptr<IPfView> PfTriadManagerImpl::createViewFor(
 bool PfTriadManagerImpl::isModelExist(IPfModel* model) const {
   auto iter = std::find_if(triad_list_.begin(), triad_list_.end(),
                            [model](const TriadListItemType& triad) {
-    return model == triad->model();
-  });
+                             return model == triad->model();
+                           });
 
   return (iter != triad_list_.end());
 }
@@ -365,8 +365,9 @@ void PfTriadManagerImpl::removeTriadBy(IPfView* view) {
 // TODO(lutts): what if the view's model has multiple views?
 bool PfTriadManagerImpl::requestRemoveTriadByView(IPfView* view) {
   auto iter = std::find_if(triad_list_.begin(), triad_list_.end(),
-                           [view](const TriadListItemType& triad)
-                               -> bool { return triad->view() == view; });
+                           [view](const TriadListItemType& triad) -> bool {
+                             return triad->view() == view;
+                           });
 
   if (iter != triad_list_.end()) {
     auto& triad = *iter;
@@ -401,8 +402,9 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModel(
 
 IPfModel* PfTriadManagerImpl::findModelByView(IPfView* view) const {
   auto iter = std::find_if(triad_list_.begin(), triad_list_.end(),
-                           [view](const TriadListItemType& triad)
-                               -> bool { return triad->view() == view; });
+                           [view](const TriadListItemType& triad) -> bool {
+                             return triad->view() == view;
+                           });
 
   if (iter != triad_list_.end()) {
     auto& triad = *iter;
@@ -456,21 +458,20 @@ std::vector<IPfView*> PfTriadManagerImpl::findViewByModel_if(
 }
 
 #define SNAIL_PFTRIAD_SIGSLOT_IMPL(THISCLASS, sigName, ObjType, ExistChecker) \
-  bool THISCLASS::when##sigName(                                              \
+  SignalConnection THISCLASS::when##sigName(                                  \
       ObjType* obj, sigName##SlotType handler,                                \
       std::shared_ptr<utils::ITrackable> trackObject) {                       \
     if (obj == nullptr) {                                                     \
-      return false;                                                           \
+      return SignalConnection();                                              \
     }                                                                         \
                                                                               \
     if (!impl->ExistChecker(obj)) {                                           \
-      return false;                                                           \
+      return SignalConnection();                                              \
     }                                                                         \
                                                                               \
     auto& sig = impl->sigName##SignalOf(obj);                                 \
-    SignalConnectionHelper<sigName##SignalType>::connectSignal(sig, handler,  \
-                                                               trackObject);  \
-    return true;                                                              \
+    return SignalConnectionHelper<sigName##SignalType>::connectSignal(        \
+        sig, handler, trackObject);                                           \
   }                                                                           \
   void THISCLASS::cleanup##sigName(ObjType* obj) {                            \
     if (obj == nullptr) {                                                     \
