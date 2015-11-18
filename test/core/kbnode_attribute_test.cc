@@ -148,7 +148,7 @@ class DummyKbNodeAttrFixture : public TestFixture {
   }
 
   void checkSetup() override {
-    SCOPED_TRACE(name_);
+    SCOPED_TRACE(fixtureName());
 
     ASSERT_EQ(supplier_, attr_.supplier());
     ASSERT_EQ(kbnode_, attr_.getKbNode());

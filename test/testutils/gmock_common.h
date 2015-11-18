@@ -140,6 +140,8 @@ class TestFixture {
 
   virtual ~TestFixture() { verify(); }
 
+  utils::U8String fixtureName() { return name_; }
+
   /** setup fixture
    * the default setup() did not do any setup, but will call
    * checkSetup(), if need abort when checkSetup() failed, you must call
@@ -174,13 +176,13 @@ class TestFixture {
   }
 
  protected:
-  utils::U8String name_;
-  MockObjectRecorder mock_obj_recorder;
-
-  bool abort_if_failure_{false};
+  MockObjectRecorder mock_obj_recorder{};
 
  private:
   SNAIL_DISABLE_COPY(TestFixture);
+
+  utils::U8String name_;
+  bool abort_if_failure_{false};
 };
 
 #define LINE_NUMBER_STR_(x) #x
