@@ -17,8 +17,7 @@
 #include "utils/text/variable_resolver.h"
 #include "snail/i_attribute_supplier.h"
 #include "utils/text/fto_named_string_formatter.h"
-
-#include FTO_HEADER(core, link_type)
+#include "core/fto_link_type.h"
 
 namespace snailcore {
 

@@ -16,8 +16,7 @@
 #include "utils/basic_utils.h"
 #include "utils/u8string.h"
 #include "core/kb_global.h"
-
-#include FTO_HEADER(core, kbnode_manager)
+#include "core/fto_kbnode_manager.h"
 
 namespace snailcore {
 

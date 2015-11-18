@@ -13,8 +13,7 @@
 #include "core/generic_attribute_supplier.h"
 #include "core/fto_link_type.h"
 #include "core/fto_kbnode_attribute.h"
-
-#include FTO_HEADER(core, kbnode_link_attribute)
+#include "core/fto_kbnode_link_attribute.h"
 
 namespace snailcore {
 

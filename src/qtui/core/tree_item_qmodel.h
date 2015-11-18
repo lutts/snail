@@ -16,7 +16,7 @@
 #include "utils/basic_utils.h"
 #include "utils/i_trackable.h"
 #include "snail/i_tree_item_provider.h"
-#include FTO_HEADER(qtui/core, tree_item_qmodel)
+#include "qtui/core/fto_tree_item_qmodel.h"
 
 class TreeItemQModel : public FTO_NAMESPACE::TreeItemQModel,
                        public utils::ITrackable,

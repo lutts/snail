@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "include/config.h"
-#include FTO_HEADER(core, work)
+#include "core/fto_work.h"
 #include "utils/u8string.h"
 #include "utils/signal_slot.h"
 

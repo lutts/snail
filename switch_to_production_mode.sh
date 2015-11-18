@@ -12,7 +12,10 @@ find $OURROOT \
   -name thirdparty -prune -o \
   -name test -prune -o \
   -type f \( -name '*.c' -o -name '*.cc' -o -name '*.cxx' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
-  -print | xargs sed -i -e 's/fto_//' -e 's/fto:://'
+  -print | while read file; do
+  filename=${file##*/}
+  sed -i -e "/$filename/!s/fto_//" -e 's/fto:://' $file
+done
 
 cd $OURROOT
 
