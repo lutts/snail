@@ -13,6 +13,52 @@
 
 #include "test/function_signature_extracter.h"
 
+/**
+ * Mock listeners should not be tracked in theory, because if mock listeners
+ * are destroyed, it means that we do not expect any signals anymore. this
+ * is not the same as StrictMock, StrictMock means when the mock is still
+ * existing, we do not want unexpected signals, but do not track mock listener
+ * means we do not want unexpected signals after the mock is destroyed
+ *
+ * Note that StrictMock is still prefered because it can tell which signal
+ * is unexpected emitted.
+ *
+ * we also provide detach calls to allow users detach the listener if they
+ * do not care whether signals will emited or not.
+ */
+
+template <typename SubjectType>
+class SimpleMockListener {
+ public:
+  class IListener {
+   public:
+    virtual ~IListener() = default;
+
+    virtual void attach() = 0;
+    virtual void detatch() = 0;
+  };
+
+  SimpleMockListener(SubjectType *subject) : subject_(subject) {}
+
+  void attach() {
+    for (auto &listener : listeners_) {
+      listener->attach();
+    }
+  }
+
+  void detatch() {
+    for (auto &listener : listeners_) {
+      listener->detatch();
+    }
+  }
+
+  SubjectType *getSubject() { return subject_; }
+
+ protected:
+  SubjectType *subject_;
+  std::vector<IListener *> listeners_;
+};
+
 #define SNAIL_MOCK_LISTENER_VARIABLE(Name) Name##Listener_
 #define SNAIL_MOCK_LISTENER_REGISTER(Name, THIS)             \
   listeners_.push_back(&SNAIL_MOCK_LISTENER_VARIABLE(Name)); \
@@ -162,37 +208,5 @@
       },                                                                       \
       nullptr);                                                                \
   SNAIL_MOCK_LISTENER_BODY_AFTER(ML, Method)
-
-template <typename SubjectType>
-class SimpleMockListener {
- public:
-  class IListener {
-   public:
-    virtual ~IListener() = default;
-
-    virtual void attach() = 0;
-    virtual void detatch() = 0;
-  };
-
-  SimpleMockListener(SubjectType *subject) : subject_(subject) {}
-
-  void attach() {
-    for (auto &listener : listeners_) {
-      listener->attach();
-    }
-  }
-
-  void detatch() {
-    for (auto &listener : listeners_) {
-      listener->detatch();
-    }
-  }
-
-  SubjectType *getSubject() { return subject_; }
-
- protected:
-  SubjectType *subject_;
-  std::vector<IListener *> listeners_;
-};
 
 #endif  // SIMPLE_MOCK_LISTENER_H_
