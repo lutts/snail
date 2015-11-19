@@ -7,11 +7,6 @@
 // [Desc]
 #include "test/testutils/gmock_common.h"
 
-#include "utils/basic_utils.h"  // make_unique, <memory>
-#include "test/testutils/utils.h"
-#include "test/testutils/generic_mock_listener.h"
-#include "test/testutils/slot_catcher.h"
-
 #include "src/core/work.h"
 
 #include "snail/mock_attribute_supplier.h"
@@ -44,16 +39,15 @@ class WorkTest : public ::testing::Test {
   // endregion
 };
 
-class MockListener : public GenericMockListener<MockListener, fto::Work> {
+class MockListener {
  public:
-  MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
-
-  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           fto::Work* work) {
+  MockListener(fto::Work* work) {
     work->whenNameChanged([this](const utils::U8String& new_name) {
       NameChanged(new_name);
-    }, trackObject);
+    }, nullptr);
   }
+
+  MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
 };
 
 TEST_F(WorkTest, should_be_able_to_set_and_get_name) {  // NOLINT
@@ -74,8 +68,9 @@ TEST_F(WorkTest, should_fire_NameChanged_when_set_a_different_name) {  // NOLINT
   auto new_name = xtestutils::genRandomDifferentString(work->name());
 
   // Expectations
-  auto mockListener = MockListener::attachTo(work.get());
-  EXPECT_CALL(*mockListener, NameChanged(new_name));
+  // auto mockListener = MockListener::attachTo(work.get());
+  MockListener mockListener(work.get());
+  EXPECT_CALL(mockListener, NameChanged(new_name));
 
   // Exercise system
   ASSERT_TRUE(work->set_name(new_name));
@@ -83,8 +78,9 @@ TEST_F(WorkTest, should_fire_NameChanged_when_set_a_different_name) {  // NOLINT
 
 TEST_F(WorkTest, should_not_fire_NameChnaged_when_set_a_same_name) {  // NOLINT
   // Expectations
-  auto mockListener = MockListener::attachTo(work.get());
-  EXPECT_CALL(*mockListener, NameChanged(_)).Times(0);
+  // auto mockListener = MockListener::attachTo(work.get());
+  MockListener mockListener(work.get());
+  EXPECT_CALL(mockListener, NameChanged(_)).Times(0);
 
   // Exercise system
   ASSERT_FALSE(work->set_name(work->name()));

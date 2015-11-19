@@ -93,16 +93,18 @@ TEST_F(KbNodeAttributeModelTest,
   ASSERT_EQ(expect_name, actual_name);
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IAttributeModel)
+class MockListener : public SimpleMockListener<IAttributeModel> {
+ public:
+  SNAIL_MOCK_LISTENER0(MockListener, ValidateComplete, void());
 
-MOCK_METHOD0(ValidateComplete, void());
+  MockListener(IAttributeModel* subject) : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(ValidateComplete, this);
 
-BEGIN_BIND_SIGNAL(IAttributeModel)
+    attach();
+  }
 
-BIND_SIGNAL0(ValidateComplete, void);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~MockListener() { detatch(); }
+};
 
 TEST_F(KbNodeAttributeModelTest, test_setKbNode) {  // NOLINT
   // Setup fixture
@@ -114,8 +116,8 @@ TEST_F(KbNodeAttributeModelTest, test_setKbNode) {  // NOLINT
   EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
   EXPECT_CALL(kbnode_manager, incRef(kbnode));
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete());
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete());
 
   // Exercise system
   model->setKbNode(kbnode);
@@ -140,8 +142,8 @@ TEST_F(KbNodeAttributeModelTest,
   // unfortunately, FailUninterestingCalls is private
   // Mock::FailUninterestingCalls(kbnode_provider.get());
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete());
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(expect_name);
@@ -166,8 +168,8 @@ TEST_F(KbNodeAttributeModelTest,
 
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete());
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(name);
@@ -196,8 +198,8 @@ TEST_F(KbNodeAttributeModelTest,
   EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
   EXPECT_CALL(kbnode_manager, incRef(kbnode));
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete());
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(name);
@@ -223,8 +225,8 @@ TEST_F(KbNodeAttributeModelTest,
 
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete());
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete());
 
   // Exercise system
   int actual_result = model->setKbNodeByName(name);

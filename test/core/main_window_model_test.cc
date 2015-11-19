@@ -12,7 +12,6 @@
 #include "utils/i18n.h"
 #include "test/testutils/utils.h"
 #include "test/testutils/slot_catcher.h"
-#include "test/testutils/generic_mock_listener.h"
 #include "src/core/main_window_model.h"
 
 #include "snail/mock_workspace_model.h"
@@ -42,21 +41,19 @@ class MainWindowModelTest : public ::testing::Test {
   utils::U8String expect_init_title{_("Snail")};
 };
 
-class MockListener
-    : public GenericMockListener<MockListener, IMainWindowModel> {
+class MockListener {
  public:
-  MOCK_METHOD1(WindowTitleChanged, void(const utils::U8String&));
-  MOCK_METHOD0(RequestClose, bool());
-
-  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           IMainWindowModel* model) {
+  MockListener(IMainWindowModel* model) {
     model->whenWindowTitleChanged([this](const utils::U8String& newTitle) {
       WindowTitleChanged(newTitle);
-    }, trackObject);
+    }, nullptr);
 
     model->whenRequestClose([this]() -> bool { return RequestClose(); },
-                            trackObject);
+                            nullptr);
   }
+
+  MOCK_METHOD1(WindowTitleChanged, void(const utils::U8String&));
+  MOCK_METHOD0(RequestClose, bool());
 };
 
 TEST_F(MainWindowModelTest,
@@ -78,8 +75,8 @@ TEST_F(
   // expectations
   utils::U8String expect_new_title =
       xtestutils::genRandomDifferentString(model->windowTitle());
-  auto mockListener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mockListener, WindowTitleChanged(expect_new_title));
+  MockListener mockListener(model.get());
+  EXPECT_CALL(mockListener, WindowTitleChanged(expect_new_title));
 
   // Exercise system
   model->setWindowTitle(expect_new_title);
@@ -89,7 +86,7 @@ TEST_F(MainWindowModelTest,
        should_not_fire_WindowTitleChanged_when_set_same_title) {  // NOLINT
   // expectations
   // should not call any method on strict mock
-  auto mockListener = MockListener::attachStrictTo(model.get());
+  StrictMock<MockListener> mockListener(model.get());
 
   // Exercise system
   model->setWindowTitle(model->windowTitle());
@@ -105,8 +102,8 @@ TEST_F(MainWindowModelTest,
        should_fire_RequestClose_when_requestClose_called) {  // NOLINT
   auto tester = [this](bool expect_result) {
     // expectations
-    auto mockListener = MockListener::attachTo(model.get());
-    EXPECT_CALL(*mockListener, RequestClose()).WillOnce(Return(expect_result));
+    MockListener mockListener(model.get());
+    EXPECT_CALL(mockListener, RequestClose()).WillOnce(Return(expect_result));
 
     // Exercise system
     ASSERT_EQ(expect_result, model->requestClose());
@@ -121,11 +118,11 @@ TEST_F(
     should_and_all_listener_response_when_fire_RequestClose_event) {  // NOLINT
   auto tester = [this](bool response1, bool response2, bool expect_result) {
     // expectations
-    auto mockListener1 = MockListener::attachTo(model.get());
-    EXPECT_CALL(*mockListener1, RequestClose()).WillOnce(Return(response1));
+    MockListener mockListener1(model.get());
+    EXPECT_CALL(mockListener1, RequestClose()).WillOnce(Return(response1));
 
-    auto mockListener2 = MockListener::attachTo(model.get());
-    EXPECT_CALL(*mockListener2, RequestClose())
+    MockListener mockListener2(model.get());
+    EXPECT_CALL(mockListener2, RequestClose())
         .Times(AtMost(1))
         .WillOnce(Return(response2));
 

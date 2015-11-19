@@ -73,18 +73,20 @@ TEST_F(KbNodeItemProviderTest,
   ASSERT_EQ(root_kbnode_name_, kbnode_provider_->name());
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, ITreeItemProvider)
+class MockListener : public SimpleMockListener<ITreeItemProvider> {
+ public:
+  SNAIL_MOCK_LISTENER0(MockListener, BeginFilter, void());
+  SNAIL_MOCK_LISTENER0(MockListener, FinishFilter, void());
 
-MOCK_METHOD0(BeginFilter, void());
-MOCK_METHOD0(FinishFilter, void());
+  MockListener(ITreeItemProvider* subject) : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(BeginFilter, this);
+    SNAIL_MOCK_LISTENER_REGISTER(FinishFilter, this);
 
-BEGIN_BIND_SIGNAL(ITreeItemProvider)
+    attach();
+  }
 
-BIND_SIGNAL0(BeginFilter, void);
-BIND_SIGNAL0(FinishFilter, void);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~MockListener() { detatch(); }
+};
 
 TEST_F(KbNodeItemProviderTest,
        test_setFilterPattern_with_non_empty_string) {  // NOLINT
@@ -101,14 +103,14 @@ TEST_F(KbNodeItemProviderTest,
   expect_kbnodes.push_back(xtestutils::genDummyPointer<IKbNode>());
 
   // Expectations
-  auto mock_listener = MockListener::attachTo(kbnode_provider_.get());
+  MockListener mock_listener(kbnode_provider_.get());
   {
     InSequence seq;
 
-    EXPECT_CALL(*mock_listener, BeginFilter());
+    EXPECT_CALL(mock_listener, BeginFilter());
     EXPECT_CALL(node_manager_, findKbNode(filter_pattern, &root_kbnode_))
         .WillOnce(Return(expect_kbnodes));
-    EXPECT_CALL(*mock_listener, FinishFilter());
+    EXPECT_CALL(mock_listener, FinishFilter());
   }
 
   // Exercise system
@@ -143,12 +145,12 @@ TEST_F(
   kbnode_provider_->setFilterPattern(xtestutils::genRandomString());
 
   // Expectations
-  auto mock_listener = MockListener::attachTo(kbnode_provider_.get());
+  MockListener mock_listener(kbnode_provider_.get());
   {
     InSequence seq;
 
-    EXPECT_CALL(*mock_listener, BeginFilter());
-    EXPECT_CALL(*mock_listener, FinishFilter());
+    EXPECT_CALL(mock_listener, BeginFilter());
+    EXPECT_CALL(mock_listener, FinishFilter());
   }
 
   EXPECT_CALL(node_manager_, findKbNode(_, _)).Times(0);

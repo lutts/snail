@@ -9,35 +9,25 @@
 
 #include "test/testutils/gmock_common.h"
 
-#include "test/testutils/generic_mock_listener.h"
+#include "test/testutils/simple_mock_listener.h"
 #include "src/utils/command/command_processor.h"
 #include "utils/mock_command.h"
 
 namespace utils {
 namespace tests {
 
-class MockListener
-    : public GenericMockListener<MockListener, ICommandProcessor> {
+class MockListener : public SimpleMockListener<ICommandProcessor> {
  public:
-  MOCK_METHOD1(CanUndoChanged, void(bool canUndo));
-  MOCK_METHOD1(CanRedoChanged, void(bool canRedo));
+  SNAIL_MOCK_LISTENER1(MockListener, CanUndoChanged, void(bool canUndo));
+  SNAIL_MOCK_LISTENER1(MockListener, CanRedoChanged, void(bool canRedo));
 
-  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           ICommandProcessor *commandProcessor) {
-    commandProcessor->whenCanUndoChanged(
-        [this](bool canUndo) { CanUndoChanged(canUndo); }, trackObject);
+ public:
+  MockListener(ICommandProcessor *commandProcessor)
+      : SimpleMockListener(commandProcessor) {
+    SNAIL_MOCK_LISTENER_REGISTER(CanUndoChanged, this);
+    SNAIL_MOCK_LISTENER_REGISTER(CanRedoChanged, this);
 
-    commandProcessor->whenCanRedoChanged(
-        [this](bool canRedo) { CanRedoChanged(canRedo); }, trackObject);
-  }
-
-  static std::shared_ptr<StrictMock<MockListener>>
-  attachStrictTo_ignoreCanRedoChanged(CommandProcessor *commandProcessor) {
-    auto listener = attachStrictTo(commandProcessor);
-
-    EXPECT_CALL(*listener, CanRedoChanged(_)).Times(AnyNumber());
-
-    return listener;
+    attach();
   }
 };
 
@@ -557,16 +547,16 @@ TEST_F(CommandProcessorTest, do_cmd_discards_undo_stack) {
 
 TEST_F(CommandProcessorTest, fire_canUndoChanged_true_when_do_first_cmd) {
   // Setup fixture
-  auto mockListener = MockListener::attachTo(commandProcessor);
+  MockListener mockListener{commandProcessor};
 
   // expectations
-  EXPECT_CALL(*mockListener, CanUndoChanged(true));
+  EXPECT_CALL(mockListener, CanUndoChanged(true));
 
   // Exercise system
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
   // Teardown fixture
-  // auto detached; nothing to do
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -575,7 +565,7 @@ TEST_F(CommandProcessorTest,
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
+  StrictMock<MockListener> mockListener{commandProcessor};
   // expect strict listener's methods will not be called
 
   // Exercise system
@@ -583,6 +573,7 @@ TEST_F(CommandProcessorTest,
   commandProcessor->do_cmd(new DummyCommand);
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -591,13 +582,14 @@ TEST_F(CommandProcessorTest,
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
   // expectations
-  auto mockListener =
-      MockListener::attachStrictTo_ignoreCanRedoChanged(commandProcessor);
+  StrictMock<MockListener> mockListener(commandProcessor);
+  EXPECT_CALL(mockListener, CanRedoChanged(false));
 
   // Exercise system
   commandProcessor->redo();
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -606,8 +598,8 @@ TEST_F(CommandProcessorTest,
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanUndoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanUndoChanged(false));
 
   // Exercise system
   commandProcessor->clear();
@@ -621,8 +613,8 @@ TEST_F(CommandProcessorTest,
   enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanUndoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanUndoChanged(false));
 
   // Exercise system
   commandProcessor->clear();
@@ -634,7 +626,7 @@ TEST_F(
     CommandProcessorTest,
     not_fire_canUndoChanged_when_undo_when_canUndo_canRedo_false) {  // NOLINT
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
+  StrictMock<MockListener> mockListener{commandProcessor};
 
   // Exercise system
   commandProcessor->undo();
@@ -648,13 +640,14 @@ TEST_F(CommandProcessorTest,
   enterCanUndoTrue_canRedoFalse_withOneCmd_plus_One();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanRedoChanged(true));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanRedoChanged(true));
 
   // Exercise system
   commandProcessor->undo();
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -663,14 +656,15 @@ TEST_F(CommandProcessorTest,
   enterCanUndoTrue_canRedoFalse_withOneCmd();
 
   // expectations
-  auto mockListener =
-      MockListener::attachStrictTo_ignoreCanRedoChanged(commandProcessor);
-  EXPECT_CALL(*mockListener, CanUndoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanUndoChanged(false));
+  EXPECT_CALL(mockListener, CanRedoChanged(true));
 
   // Exercise system
   commandProcessor->undo();
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -679,15 +673,16 @@ TEST_F(CommandProcessorTest,
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
+  StrictMock<MockListener> mockListener{commandProcessor};
   // NOTE: because listener are strict, we also tested the
   // not_fire_canRedoChanged_when_canRedo_already_true case
-  EXPECT_CALL(*mockListener, CanUndoChanged(false));
+  EXPECT_CALL(mockListener, CanUndoChanged(false));
 
   // Exercise system
   commandProcessor->undo();
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -696,8 +691,8 @@ TEST_F(CommandProcessorTest,
   enterCanRedoTrue_canUndoFalse_withOneCmd();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanRedoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanRedoChanged(false));
 
   // Exercise system
   commandProcessor->clear();
@@ -711,8 +706,8 @@ TEST_F(CommandProcessorTest,
   enterCanRedoTrue_canUndoFalse_withTwoCmds();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanRedoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanRedoChanged(false));
 
   // Exercise system
   commandProcessor->clear();
@@ -727,9 +722,9 @@ TEST_F(
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanUndoChanged(false));
-  EXPECT_CALL(*mockListener, CanRedoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanUndoChanged(false));
+  EXPECT_CALL(mockListener, CanRedoChanged(false));
 
   // Exercise system
   commandProcessor->clear();
@@ -744,13 +739,14 @@ TEST_F(
   enterCanRedoTrue_canUndoFalse_withTwoCmds();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanUndoChanged(true));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanUndoChanged(true));
 
   // Exercise system
   commandProcessor->redo();
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -759,13 +755,14 @@ TEST_F(CommandProcessorTest,
   enterCanUndoCanRedoBothTrueState_with_Two_Cmds();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanRedoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanRedoChanged(false));
 
   // Exercise system
   commandProcessor->do_cmd(new DummyCommand);
 
   // Teardown fixture
+  mockListener.detatch();
 }
 //////// listener test end ////////
 
@@ -938,14 +935,15 @@ TEST_F(
   commandProcessor->undo();
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanRedoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanRedoChanged(false));
 
   // Exercise system
   fillWithDummyCommands(1);
 
   // Teardown fixture
   resetUndoLimit();
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -1055,14 +1053,15 @@ TEST_F(
                                                        nullptr, nullptr);
 
   // expectations
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
-  EXPECT_CALL(*mockListener, CanUndoChanged(false));
+  StrictMock<MockListener> mockListener{commandProcessor};
+  EXPECT_CALL(mockListener, CanUndoChanged(false));
 
   // Exercise system
   commandProcessor->set_undo_limit(commandProcessor->undo_limit() - 1);
 
   // Teardown fixture
   resetUndoLimit();
+  mockListener.detatch();
 }
 
 std::vector<StrictMock<MockCommand> *>
@@ -1091,12 +1090,13 @@ TEST_F(CommandProcessorTest,
 
   // expectations
   // NOTE: expect that no methods on cmds will be called
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
+  StrictMock<MockListener> mockListener{commandProcessor};
 
   // Exercise system
   resetUndoLimit();
 
   // Teardown fixture
+  mockListener.detatch();
 }
 
 TEST_F(CommandProcessorTest,
@@ -1106,13 +1106,14 @@ TEST_F(CommandProcessorTest,
 
   // expectations
   // NOTE: expect that no methods on cmds will be called
-  auto mockListener = MockListener::attachStrictTo(commandProcessor);
+  StrictMock<MockListener> mockListener{commandProcessor};
 
   // Exercise system
   commandProcessor->set_undo_limit(commandProcessor->undo_limit() + 1);
 
   // Teardown fixture
   resetUndoLimit();
+  mockListener.detatch();
 }
 
 //////// undo limit test end ////////

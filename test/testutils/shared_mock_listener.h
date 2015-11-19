@@ -18,7 +18,7 @@
 using ::testing::StrictMock;
 
 template <typename ListenerType, typename SubjectType>
-class GenericMockListener : public utils::ITrackable {
+class SharedMockListener : public utils::ITrackable {
  public:
   template <typename MockType>
   static std::shared_ptr<MockType> attachTo_(SubjectType* subject) {
@@ -89,7 +89,7 @@ class GenericMockListener : public utils::ITrackable {
       trackObject)
 
 #define BEGIN_MOCK_LISTENER_DEF(ClassName, SubjectType) \
-  struct ClassName : public GenericMockListener<ClassName, SubjectType> {
+  struct ClassName : public SharedMockListener<ClassName, SubjectType> {
 // }
 
 // clang-format off

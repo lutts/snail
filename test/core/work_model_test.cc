@@ -6,11 +6,6 @@
 //
 // [Desc]
 #include "test/testutils/gmock_common.h"
-
-#include "utils/basic_utils.h"  // make_unique, <memory>
-#include "test/testutils/utils.h"
-#include "test/testutils/generic_mock_listener.h"
-#include "test/testutils/slot_catcher.h"
 #include "test/testutils/mock_object_generator.h"
 
 #include "src/core/work_model.h"
@@ -53,16 +48,15 @@ class WorkModelTest : public ::testing::Test {
   // endregion
 };
 
-class MockListener : public GenericMockListener<MockListener, IWorkModel> {
+class MockListener {
  public:
-  MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
-
-  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           IWorkModel* model) {
+  MockListener(IWorkModel* model) {
     model->whenNameChanged([this](const utils::U8String& new_name) {
       NameChanged(new_name);
-    }, trackObject);
+    }, nullptr);
   }
+
+  MOCK_METHOD1(NameChanged, void(const utils::U8String& new_name));
 };
 
 TEST_F(WorkModelTest, should_name_be_the_backing_work_name) {  // NOLINT
@@ -95,8 +89,8 @@ TEST_F(WorkModelTest,
        should_relay_NameChanged_signal_fired_by_backing_work) {  // NOLINT
   auto new_name = xtestutils::genRandomString();
   // Expectations
-  auto mockListener = MockListener::attachTo(work_model.get());
-  EXPECT_CALL(*mockListener, NameChanged(new_name));
+  MockListener mockListener(work_model.get());
+  EXPECT_CALL(mockListener, NameChanged(new_name));
 
   // Exercise system
   workNameChanged(new_name);

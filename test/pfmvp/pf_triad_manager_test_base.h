@@ -18,7 +18,7 @@
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/utils.h"
-#include "test/testutils/generic_mock_listener.h"
+#include "test/testutils/shared_mock_listener.h"
 #include "test/testutils/slot_catcher.h"
 
 #include "utils/i_trackable.h"
@@ -175,7 +175,7 @@ class MockPfViewFactory : public IPfViewFactory {
 DEFINE_TEST_CLASSES(XXX)
 DEFINE_TEST_CLASSES(YYY)
 
-class MockListener : public GenericMockListener<MockListener, IPfTriadManager> {
+class MockListener : public SharedMockListener<MockListener, IPfTriadManager> {
  public:
   MockListener(IPfModel* model, IPfView* view,
                bool monitor_request_remove = true)

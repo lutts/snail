@@ -220,9 +220,8 @@ TEST_F(KbNodeManagerTest,
   const ITreeItem* new_item2_parent = nullptr;
 
   // Expectations
-  auto item_provider_listener =
-      TreeItemProviderListener::attachTo(item_provider.get());
-  EXPECT_CALL(*item_provider_listener, ItemAdded(_, _))
+  TreeItemProviderListener item_provider_listener(item_provider.get());
+  EXPECT_CALL(item_provider_listener, ItemAdded(_, _))
       .WillOnce(DoAll(SaveArg<0>(&new_item1), SaveArg<1>(&new_item1_parent)))
       .WillOnce(DoAll(SaveArg<0>(&new_item2), SaveArg<1>(&new_item2_parent)));
 

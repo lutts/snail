@@ -18,7 +18,7 @@
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/utils.h"
-#include "test/testutils/generic_mock_listener.h"
+#include "test/testutils/simple_mock_listener.h"
 #include "test/testutils/slot_catcher.h"
 #include "test/testutils/mock_object_generator.h"
 #include "test/testutils/model_view_mock_generator.h"

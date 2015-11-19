@@ -55,20 +55,23 @@ class AttributeSetModelTest : public ::testing::Test {
   // endregion
 };
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IAttributeSetModel)
+class MockListener : public SimpleMockListener<IAttributeSetModel> {
+ public:
+  SNAIL_MOCK_LISTENER0(MockListener, SwitchToEditMode, void());
+  SNAIL_MOCK_LISTENER0(MockListener, SwitchToDisplayMode, void());
+  SNAIL_MOCK_LISTENER1(MockListener, ValidateComplete,
+                       void(bool validate_result));
 
-MOCK_METHOD0(SwitchToEditMode, void());
-MOCK_METHOD0(SwitchToDisplayMode, void());
-MOCK_METHOD1(ValidateComplete, void(bool validate_result));
+  MockListener(IAttributeSetModel* model) : SimpleMockListener(model) {
+    SNAIL_MOCK_LISTENER_REGISTER(SwitchToEditMode, this);
+    SNAIL_MOCK_LISTENER_REGISTER(SwitchToDisplayMode, this);
+    SNAIL_MOCK_LISTENER_REGISTER(ValidateComplete, this);
 
-BEGIN_BIND_SIGNAL(IAttributeSetModel)
+    attach();
+  }
 
-BIND_SIGNAL0(SwitchToEditMode, void);
-BIND_SIGNAL0(SwitchToDisplayMode, void);
-BIND_SIGNAL1(ValidateComplete, void, bool, validate_result);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~MockListener() { detatch(); }
+};
 
 void AttributeSetModelTest::setupAttributeSuppliers() {
   attr_suppliers_up = MockAttrSupplierTestStub::createAttributeSuppliers();
@@ -98,9 +101,9 @@ void AttributeSetModelTest::switchToEditMode() {
   EXPECT_CALL(*max_1_attr_0_supplier, addAttributeCalled(_))
       .WillOnce(Return(ComplexReturnValue(0)));
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, SwitchToEditMode());
-  EXPECT_CALL(*mock_listener, SwitchToDisplayMode()).Times(0);
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, SwitchToEditMode());
+  EXPECT_CALL(mock_listener, SwitchToDisplayMode()).Times(0);
 
   // Exercise system
   model->switchMode();
@@ -164,9 +167,9 @@ TEST_F(AttributeSetModelTest, test_switch_to_display_mode) {  // NOLINT
   EXPECT_CALL(*max_gt_1_attr_eq_max_supplier, attributeRemoved(cleared_attr))
       .WillOnce(Return(ComplexReturnValue(0)));
 
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, SwitchToDisplayMode());
-  EXPECT_CALL(*mock_listener, SwitchToEditMode()).Times(0);
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, SwitchToDisplayMode());
+  EXPECT_CALL(mock_listener, SwitchToEditMode()).Times(0);
 
   // Exercise system
   model->switchMode();
@@ -259,40 +262,40 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
       .WillRepeatedly(
           Invoke([&attr_model3_valid] { return attr_model3_valid; }));
 
-  auto mock_listener = MockListener::attachTo(model.get());
+  MockListener mock_listener(model.get());
 
   // should signal false when a attr_model report validate false
-  EXPECT_CALL(*mock_listener, ValidateComplete(false));
+  EXPECT_CALL(mock_listener, ValidateComplete(false));
 
   attr_model2_valid = false;
   (void)attr_model2_valid;  // make scan-build happy
   validateComplete2();
 
-  Mock::VerifyAndClearExpectations(mock_listener.get());
+  Mock::VerifyAndClearExpectations(&mock_listener);
 
   // still false when another attr_model report validate fals
-  EXPECT_CALL(*mock_listener, ValidateComplete(false));
+  EXPECT_CALL(mock_listener, ValidateComplete(false));
   attr_model3_valid = false;
   (void)attr_model3_valid;  // make scan-build happy
   validateComplete3();
 
-  Mock::VerifyAndClearExpectations(mock_listener.get());
+  Mock::VerifyAndClearExpectations(&mock_listener);
 
   // still false when only one of the two invalid attr_model reports valid
-  EXPECT_CALL(*mock_listener, ValidateComplete(false));
+  EXPECT_CALL(mock_listener, ValidateComplete(false));
   attr_model2_valid = true;
   (void)attr_model2_valid;  // make scan-build happy
   validateComplete2();
 
-  Mock::VerifyAndClearExpectations(mock_listener.get());
+  Mock::VerifyAndClearExpectations(&mock_listener);
 
   // should signal true when all attr_model becomes valid
-  EXPECT_CALL(*mock_listener, ValidateComplete(true));
+  EXPECT_CALL(mock_listener, ValidateComplete(true));
   attr_model3_valid = true;
   (void)attr_model3_valid;  // make scan-build happy
   validateComplete3();
 
-  Mock::VerifyAndClearExpectations(mock_listener.get());
+  Mock::VerifyAndClearExpectations(&mock_listener);
 
   // test delete attr model
   attr_model2.reset();
@@ -306,8 +309,8 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
   switchToDisplayMode();
 
   // Expectations
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(_)).Times(0);
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete(_)).Times(0);
 
   // Exercise system
   validateComplete1();
@@ -347,8 +350,8 @@ TEST_F(AttributeSetModelTest_AttrEditorTriadTests,
 
   // Verify result
   // after close editors, validate complete should do nothing
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener, ValidateComplete(_)).Times(0);
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener, ValidateComplete(_)).Times(0);
 
   validateComplete1();
   validateComplete2();

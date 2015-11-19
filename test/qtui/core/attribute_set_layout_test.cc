@@ -485,33 +485,34 @@ void AttributeSetLayoutTest::switchToDisplayMode() {
   CUSTOM_ASSERT(checkLayoutData(expect_on_display_mode, false));
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, fto::AttributeSetLayout)
+class MockListener : public SimpleMockListener<fto::AttributeSetLayout> {
+ public:
+  SNAIL_MOCK_LISTENER1(MockListener, CreateAttrEditor,
+                       IAttributeEditorView*(snailcore::IAttribute* attr));
+  SNAIL_MOCK_LISTENER0(MockListener, CloseAttributeEditors, void());
 
-MOCK_METHOD1(CreateAttrEditor,
-             IAttributeEditorView*(snailcore::IAttribute* attr));
-MOCK_METHOD0(CloseAttributeEditors, void());
+  MockListener(fto::AttributeSetLayout* subject) : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(CreateAttrEditor, this);
+    SNAIL_MOCK_LISTENER_REGISTER(CloseAttributeEditors, this);
 
-BEGIN_BIND_SIGNAL(fto::AttributeSetLayout)
+    attach();
+  }
 
-BIND_SIGNAL1(CreateAttrEditor, IAttributeEditorView*, snailcore::IAttribute*,
-             attr);
-BIND_SIGNAL0(CloseAttributeEditors, void);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~MockListener() { detatch(); }
+};
 
 void AttributeSetLayoutTest::switchToEditMode() {
   // Setup fixture
   setupAttributeEditorViews(&expect_on_edit_mode);
 
   // Expectations
-  auto mock_listener = MockListener::attachTo(attr_set_layout.get());
+  MockListener mock_listener(attr_set_layout.get());
   for (auto& map_item : attr_to_editor_view) {
-    EXPECT_CALL(*mock_listener, CreateAttrEditor(map_item.first))
+    EXPECT_CALL(mock_listener, CreateAttrEditor(map_item.first))
         .WillOnce(Return(map_item.second));
   }
 
-  EXPECT_CALL(*mock_listener, CloseAttributeEditors()).Times(0);
+  EXPECT_CALL(mock_listener, CloseAttributeEditors()).Times(0);
 
   // Excersise system
   attr_set_layout->setAttributeSuppliers(attr_suppliers, true);
@@ -526,8 +527,8 @@ TEST_F(AttributeSetLayoutTest, check_edit_mode_layout) {  // NOLINT
 }
 
 void AttributeSetLayoutTest::switchFromEditModeToDisplayMode() {
-  auto mock_listener = MockListener::attachTo(attr_set_layout.get());
-  EXPECT_CALL(*mock_listener, CloseAttributeEditors())
+  MockListener mock_listener(attr_set_layout.get());
+  EXPECT_CALL(mock_listener, CloseAttributeEditors())
       .WillOnce(Invoke([this]() { closeAttributeEditorViews(); }));
 
   // Exercise system
@@ -580,7 +581,7 @@ void AttributeSetLayoutTest::testAddAttribute(
   createAttrEditorViewFor(&expect_layout_data);
   auto first_editor_view = expect_layout_data.editor_view_;
 
-  auto mock_listener = MockListener::attachTo(attr_set_layout.get());
+  MockListener mock_listener(attr_set_layout.get());
 
   IAttributeEditorView* second_editor_view = nullptr;
   if (double_add) {
@@ -588,12 +589,12 @@ void AttributeSetLayoutTest::testAddAttribute(
     createAttrEditorViewFor(&expect_layout_data_2nd_add);
     second_editor_view = expect_layout_data_2nd_add.editor_view_;
 
-    EXPECT_CALL(*mock_listener, CreateAttrEditor(_))
+    EXPECT_CALL(mock_listener, CreateAttrEditor(_))
         .Times(2)
         .WillOnce(Return(first_editor_view))
         .WillOnce(Return(second_editor_view));
   } else {
-    EXPECT_CALL(*mock_listener, CreateAttrEditor(_))
+    EXPECT_CALL(mock_listener, CreateAttrEditor(_))
         .WillOnce(Return(first_editor_view));
   }
 

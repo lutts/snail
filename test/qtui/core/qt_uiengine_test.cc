@@ -12,9 +12,6 @@
 
 #include "test/testutils/gmock_common.h"
 
-#include "utils/basic_utils.h"  // make_unique, <memory>
-#include "test/testutils/slot_catcher.h"
-#include "test/testutils/generic_mock_listener.h"
 #include "src/qtui/core/qt_uiengine.h"
 
 class QtUiEngineTest : public QObject, public ::testing::Test {
@@ -38,15 +35,13 @@ class QtUiEngineTest : public QObject, public ::testing::Test {
 
 #include "qt_uiengine_test.moc"
 
-class MockListener
-    : public GenericMockListener<MockListener, snailcore::IUiEngine> {
+class MockListener {
  public:
-  MOCK_METHOD0(AboutToQuit, void());
-
-  void bindListenerMethods(std::shared_ptr<utils::ITrackable> trackObject,
-                           snailcore::IUiEngine* uiEngine) {
-    uiEngine->whenAboutToQuit([this]() { AboutToQuit(); }, trackObject);
+  MockListener(snailcore::IUiEngine* uiEngine) {
+    uiEngine->whenAboutToQuit([this]() { AboutToQuit(); }, nullptr);
   }
+
+  MOCK_METHOD0(AboutToQuit, void());
 };
 
 // QApplication can not new/delete twice,
@@ -65,8 +60,8 @@ TEST_F(QtUiEngineTest,
 
   // Test2:
   {
-    auto mockListener = MockListener::attachTo(uiEngine.get());
-    EXPECT_CALL(*mockListener, AboutToQuit());
+    MockListener mockListener(uiEngine.get());
+    EXPECT_CALL(mockListener, AboutToQuit());
 
     QTimer::singleShot(300, this, SLOT(quitApp()));
     uiEngine->run();

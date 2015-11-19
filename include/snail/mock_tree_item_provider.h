@@ -30,22 +30,25 @@ class MockTreeItemProvider : public ITreeItemProvider {
       childItems, std::unique_ptr<IChildItemIterator>(ITreeItem* parent_item));
 };
 
-BEGIN_MOCK_LISTENER_DEF(TreeItemProviderListener, ITreeItemProvider)
+class TreeItemProviderListener : public SimpleMockListener<ITreeItemProvider> {
+ public:
+  SNAIL_MOCK_LISTENER0(TreeItemProviderListener, BeginFilter, void());
+  SNAIL_MOCK_LISTENER0(TreeItemProviderListener, FinishFilter, void());
+  SNAIL_MOCK_LISTENER2(TreeItemProviderListener, ItemAdded,
+                       void(const ITreeItem* new_item,
+                            const ITreeItem* parent_item));
 
-MOCK_METHOD0(BeginFilter, void());
-MOCK_METHOD0(FinishFilter, void());
-MOCK_METHOD2(ItemAdded,
-             void(const ITreeItem* new_item, const ITreeItem* parent_item));
+  TreeItemProviderListener(ITreeItemProvider* subject)
+      : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(BeginFilter, this);
+    SNAIL_MOCK_LISTENER_REGISTER(FinishFilter, this);
+    SNAIL_MOCK_LISTENER_REGISTER(ItemAdded, this);
 
-BEGIN_BIND_SIGNAL(ITreeItemProvider)
+    attach();
+  }
 
-BIND_SIGNAL0(BeginFilter, void);
-BIND_SIGNAL0(FinishFilter, void);
-BIND_SIGNAL2(ItemAdded, void, const ITreeItem*, new_item, const ITreeItem*,
-             parent_item);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~TreeItemProviderListener() { detatch(); }
+};
 
 }  // namespace tests
 }  // namespace snailcore

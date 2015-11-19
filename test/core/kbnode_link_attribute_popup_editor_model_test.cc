@@ -185,21 +185,25 @@ TEST_F(
   ASSERT_EQ(fixture.attr_set_model, actual_attr_set_model);
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IKbNodeLinkAttributePopupEditorModel)
+class MockListener
+    : public SimpleMockListener<IKbNodeLinkAttributePopupEditorModel> {
+ public:
+  SNAIL_MOCK_LISTENER2(
+      MockListener, LinkTypeChanged,
+      void(std::shared_ptr<IAttributeSetModel> new_attr_set_model,
+           IAttributeSetModel* old_attr_set_model));
+  SNAIL_MOCK_LISTENER1(MockListener, ValidateComplete, void(bool result));
 
-MOCK_METHOD2(LinkTypeChanged,
-             void(std::shared_ptr<IAttributeSetModel> new_attr_set_model,
-                  IAttributeSetModel* old_attr_set_model));
-MOCK_METHOD1(ValidateComplete, void(bool result));
+  MockListener(IKbNodeLinkAttributePopupEditorModel* subject)
+      : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(LinkTypeChanged, this);
+    SNAIL_MOCK_LISTENER_REGISTER(ValidateComplete, this);
 
-BEGIN_BIND_SIGNAL(IKbNodeLinkAttributePopupEditorModel)
+    attach();
+  }
 
-BIND_SIGNAL2(LinkTypeChanged, void, std::shared_ptr<IAttributeSetModel>,
-             new_attr_set_model, IAttributeSetModel*, old_attr_set_model);
-BIND_SIGNAL1(ValidateComplete, void, bool, result);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~MockListener() { detatch(); }
+};
 
 TEST_F(
     KbNodeLinkAttributePopupEditorModelTest,
@@ -223,8 +227,8 @@ TEST_F(
       create_attr_model_fixture.attr_set_model;
 
   // Expectations
-  auto mock_listener = MockListener::attachTo(model.get());
-  EXPECT_CALL(*mock_listener,
+  MockListener mock_listener(model.get());
+  EXPECT_CALL(mock_listener,
               LinkTypeChanged(new_attr_set_model, old_attr_set_model.get()));
 
   // Exercise system
@@ -260,7 +264,7 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
   auto& attrSetModelValidateComplete =
       create_attr_set_model_fixture.validateComplete;
 
-  auto mock_listener = MockListener::attachTo(model.get());
+  MockListener mock_listener(model.get());
 
   // Verify results
   {  // NOTE: actually there's 8 different cases, but the following is enough
@@ -269,27 +273,27 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
     attr_model_valid = true;
     (void)attr_model_valid;        // make scan-build happy
     attr_set_model_valid = false;  // changed
-    EXPECT_CALL(*mock_listener, ValidateComplete(false));
+    EXPECT_CALL(mock_listener, ValidateComplete(false));
     attrSetModelValidateComplete(attr_set_model_valid);
 
     attr_model_valid = false;  // changed
     attr_set_model_valid = false;
     (void)attr_model_valid;      // make scan-build happy
     (void)attr_set_model_valid;  // make scan-build happy
-    EXPECT_CALL(*mock_listener, ValidateComplete(false));
+    EXPECT_CALL(mock_listener, ValidateComplete(false));
     attrModelValidateComplete();
 
     attr_model_valid = false;
     (void)attr_model_valid;       // make scan-build happy
     attr_set_model_valid = true;  // changed
-    EXPECT_CALL(*mock_listener, ValidateComplete(false));
+    EXPECT_CALL(mock_listener, ValidateComplete(false));
     attrSetModelValidateComplete(attr_set_model_valid);
 
     attr_model_valid = true;  // changed
     attr_set_model_valid = true;
     (void)attr_model_valid;      // make scan-build happy
     (void)attr_set_model_valid;  // make scan-build happy
-    EXPECT_CALL(*mock_listener, ValidateComplete(true));
+    EXPECT_CALL(mock_listener, ValidateComplete(true));
     attrModelValidateComplete();
   }
 }

@@ -8,7 +8,7 @@
 #include "test/testutils/gmock_common.h"
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
-#include "test/testutils/generic_mock_listener.h"
+#include "test/testutils/shared_mock_listener.h"
 #include "test/testutils/slot_catcher.h"
 
 #include "test/testutils/mock_object_generator.h"

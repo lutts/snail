@@ -61,16 +61,18 @@ TEST_F(GenericAttributeSupplierTest,
   ASSERT_EQ(expect_max_attrs, supplier->max_attrs());
 }
 
-BEGIN_MOCK_LISTENER_DEF(MockListener, IAttributeSupplier)
+class MockListener : public SimpleMockListener<IAttributeSupplier> {
+ public:
+  SNAIL_MOCK_LISTENER1(MockListener, AttributeChanged, void(IAttribute* attr));
 
-MOCK_METHOD1(AttributeChanged, void(IAttribute* attr));
+  MockListener(IAttributeSupplier* subject) : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(AttributeChanged, this);
 
-BEGIN_BIND_SIGNAL(IAttributeSupplier)
+    attach();
+  }
 
-BIND_SIGNAL1(AttributeChanged, void, IAttribute*, attr);
-
-END_BIND_SIGNAL()
-END_MOCK_LISTENER_DEF()
+  ~MockListener() { detatch(); }
+};
 
 TEST_F(GenericAttributeSupplierTest,
        should_call_attributeChanged_emit_AttributeChanged_signal) {  // NOLINT
@@ -78,8 +80,8 @@ TEST_F(GenericAttributeSupplierTest,
   auto attr = xtestutils::genDummyPointer<IAttribute>();
 
   // Expectations
-  auto mock_listener = MockListener::attachTo(supplier.get());
-  EXPECT_CALL(*mock_listener, AttributeChanged(attr));
+  MockListener mock_listener(supplier.get());
+  EXPECT_CALL(mock_listener, AttributeChanged(attr));
 
   // Exercise system
   supplier->attributeChanged(attr);
