@@ -52,6 +52,19 @@ class ComplexReturnValue {
 class MockObjectRecorder {
  public:
   MockObjectRecorder() = default;
+  // WARNING: use the following copy & move operation carefully
+  // copy is not allowed, but move is ok
+  MockObjectRecorder(MockObjectRecorder&& rhs)
+      : mock_objs(std::move(rhs.mock_objs)) {}
+  MockObjectRecorder& operator=(MockObjectRecorder&& rhs) {
+    swap(rhs);
+    return *this;
+  }
+  void swap(MockObjectRecorder& rhs) { std::swap(mock_objs, rhs.mock_objs); }
+  friend inline void swap(MockObjectRecorder& v1, MockObjectRecorder& v2) {
+    v1.swap(v2);
+  }
+
   ~MockObjectRecorder() = default;
 
   void addMockObj(void* mock_obj) {
@@ -136,24 +149,43 @@ class MockObjectRecorder {
  */
 class TestFixture {
  public:
-  explicit TestFixture(const utils::U8String& name) : name_(name) {}
+  explicit TestFixture(const utils::U8String& name) : fixture_name_(name) {}
+  // WARNING: use the following copy & move operation carefully
+  // mock object recorder are not copied
+  TestFixture(const TestFixture& rhs)
+      : fixture_name_(rhs.fixture_name_), mock_obj_recorder{} {}
+  TestFixture& operator=(const TestFixture& rhs) {
+    fixture_name_ = rhs.fixture_name_;
+    // mock_obj_recorder not changed
+    return *this;
+  }
+  TestFixture(TestFixture&& rhs)
+      : fixture_name_{std::move(rhs.fixture_name_)},
+        mock_obj_recorder{std::move(rhs.mock_obj_recorder)} {}
+  TestFixture& operator=(TestFixture&& rhs) {
+    swap(rhs);
+    return *this;
+  }
+
+  void swap(TestFixture& rhs) {
+    std::swap(fixture_name_, rhs.fixture_name_);
+    std::swap(mock_obj_recorder, rhs.mock_obj_recorder);
+  }
+
+  friend inline void swap(TestFixture& v1, TestFixture& v2) { v1.swap(v2); }
 
   virtual ~TestFixture() { verify(); }
 
-  utils::U8String fixtureName() { return name_; }
+  utils::U8String fixtureName() { return fixture_name_; }
 
   /** setup fixture
-   * the default setup() did not do any setup, but will call
-   * checkSetup(), if need abort when checkSetup() failed, you must call
-   * abortIfFailure() in checkSetup() or set abort_if_failure_ directly
    *
    * when override setup(), it is recommended to call TestFixture's setup()
    * at last
    */
   virtual void setup() {
     checkSetup();
-
-    if (abort_if_failure_) doAbortIfFailure();
+    abortIfFailure();
   }
 
   /** check if setup() did the right things
@@ -163,26 +195,22 @@ class TestFixture {
    */
   virtual void checkSetup() {}
 
-  void abortIfFailure() { abort_if_failure_ = true; }
-
-  void doAbortIfFailure() const {
-    if (::testing::Test::HasFatalFailure()) throw std::logic_error(name_);
+  void abortIfFailure() {
+    if (::testing::Test::HasFatalFailure())
+      throw std::logic_error(fixture_name_);
   }
 
   void verify() {
     if (!mock_obj_recorder.verify()) {
-      std::cerr << name_ << ": fixture verify failed." << std::endl;
+      std::cerr << fixture_name_ << ": fixture verify failed." << std::endl;
     }
   }
 
+ private:
+  utils::U8String fixture_name_;
+
  protected:
   MockObjectRecorder mock_obj_recorder{};
-
- private:
-  SNAIL_DISABLE_COPY(TestFixture);
-
-  utils::U8String name_;
-  bool abort_if_failure_{false};
 };
 
 #define LINE_NUMBER_STR_(x) #x

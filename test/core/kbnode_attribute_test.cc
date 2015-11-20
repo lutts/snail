@@ -152,8 +152,6 @@ class DummyKbNodeAttrFixture : public TestFixture {
 
     ASSERT_EQ(supplier_, attr_.supplier());
     ASSERT_EQ(kbnode_, attr_.getKbNode());
-
-    abortIfFailure();
   }
 
   fto::KbNodeAttributeSupplier* supplier_;
