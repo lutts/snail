@@ -11,6 +11,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include "utils/basic_utils.h"
 #include "test/function_signature_extracter.h"
 
 /**
@@ -41,15 +42,21 @@ class SimpleMockListener {
   SimpleMockListener(SubjectType *subject) : subject_(subject) {}
 
   void attach() {
+    if (attached_) return;
+
     for (auto &listener : listeners_) {
       listener->attach();
     }
+    attached_ = true;
   }
 
   void detatch() {
+    if (!attached_) return;
+
     for (auto &listener : listeners_) {
       listener->detatch();
     }
+    attached_ = false;
   }
 
   SubjectType *getSubject() { return subject_; }
@@ -57,6 +64,10 @@ class SimpleMockListener {
  protected:
   SubjectType *subject_;
   std::vector<IListener *> listeners_;
+  bool attached_{false};
+
+ private:
+  SNAIL_DISABLE_COPY(SimpleMockListener)
 };
 
 #define SNAIL_MOCK_LISTENER_VARIABLE(Name) Name##Listener_
