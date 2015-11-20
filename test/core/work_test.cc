@@ -41,7 +41,7 @@ class WorkTest : public ::testing::Test {
 
 class MockListener {
  public:
-  MockListener(fto::Work* work) {
+  explicit MockListener(fto::Work* work) {
     work->whenNameChanged([this](const utils::U8String& new_name) {
       NameChanged(new_name);
     }, nullptr);

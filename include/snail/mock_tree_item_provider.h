@@ -38,7 +38,7 @@ class TreeItemProviderListener : public SimpleMockListener<ITreeItemProvider> {
                        void(const ITreeItem* new_item,
                             const ITreeItem* parent_item));
 
-  TreeItemProviderListener(ITreeItemProvider* subject)
+  explicit TreeItemProviderListener(ITreeItemProvider* subject)
       : SimpleMockListener(subject) {
     SNAIL_MOCK_LISTENER_REGISTER(BeginFilter, this);
     SNAIL_MOCK_LISTENER_REGISTER(FinishFilter, this);

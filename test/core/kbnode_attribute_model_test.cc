@@ -97,7 +97,8 @@ class MockListener : public SimpleMockListener<IAttributeModel> {
  public:
   SNAIL_MOCK_LISTENER0(MockListener, ValidateComplete, void());
 
-  MockListener(IAttributeModel* subject) : SimpleMockListener(subject) {
+  explicit MockListener(IAttributeModel* subject)
+      : SimpleMockListener(subject) {
     SNAIL_MOCK_LISTENER_REGISTER(ValidateComplete, this);
 
     attach();

@@ -22,7 +22,7 @@ class MockListener : public SimpleMockListener<ICommandProcessor> {
   SNAIL_MOCK_LISTENER1(MockListener, CanRedoChanged, void(bool canRedo));
 
  public:
-  MockListener(ICommandProcessor *commandProcessor)
+  explicit MockListener(ICommandProcessor *commandProcessor)
       : SimpleMockListener(commandProcessor) {
     SNAIL_MOCK_LISTENER_REGISTER(CanUndoChanged, this);
     SNAIL_MOCK_LISTENER_REGISTER(CanRedoChanged, this);

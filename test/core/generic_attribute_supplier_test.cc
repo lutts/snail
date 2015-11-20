@@ -65,7 +65,8 @@ class MockListener : public SimpleMockListener<IAttributeSupplier> {
  public:
   SNAIL_MOCK_LISTENER1(MockListener, AttributeChanged, void(IAttribute* attr));
 
-  MockListener(IAttributeSupplier* subject) : SimpleMockListener(subject) {
+  explicit MockListener(IAttributeSupplier* subject)
+      : SimpleMockListener(subject) {
     SNAIL_MOCK_LISTENER_REGISTER(AttributeChanged, this);
 
     attach();

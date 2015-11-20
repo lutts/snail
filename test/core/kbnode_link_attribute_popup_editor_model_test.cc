@@ -194,7 +194,7 @@ class MockListener
            IAttributeSetModel* old_attr_set_model));
   SNAIL_MOCK_LISTENER1(MockListener, ValidateComplete, void(bool result));
 
-  MockListener(IKbNodeLinkAttributePopupEditorModel* subject)
+  explicit MockListener(IKbNodeLinkAttributePopupEditorModel* subject)
       : SimpleMockListener(subject) {
     SNAIL_MOCK_LISTENER_REGISTER(LinkTypeChanged, this);
     SNAIL_MOCK_LISTENER_REGISTER(ValidateComplete, this);

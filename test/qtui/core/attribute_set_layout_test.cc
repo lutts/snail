@@ -491,7 +491,8 @@ class MockListener : public SimpleMockListener<fto::AttributeSetLayout> {
                        IAttributeEditorView*(snailcore::IAttribute* attr));
   SNAIL_MOCK_LISTENER0(MockListener, CloseAttributeEditors, void());
 
-  MockListener(fto::AttributeSetLayout* subject) : SimpleMockListener(subject) {
+  explicit MockListener(fto::AttributeSetLayout* subject)
+      : SimpleMockListener(subject) {
     SNAIL_MOCK_LISTENER_REGISTER(CreateAttrEditor, this);
     SNAIL_MOCK_LISTENER_REGISTER(CloseAttributeEditors, this);
 

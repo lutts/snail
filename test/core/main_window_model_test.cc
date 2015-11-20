@@ -43,7 +43,7 @@ class MainWindowModelTest : public ::testing::Test {
 
 class MockListener {
  public:
-  MockListener(IMainWindowModel* model) {
+  explicit MockListener(IMainWindowModel* model) {
     model->whenWindowTitleChanged([this](const utils::U8String& newTitle) {
       WindowTitleChanged(newTitle);
     }, nullptr);

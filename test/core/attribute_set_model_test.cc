@@ -62,7 +62,7 @@ class MockListener : public SimpleMockListener<IAttributeSetModel> {
   SNAIL_MOCK_LISTENER1(MockListener, ValidateComplete,
                        void(bool validate_result));
 
-  MockListener(IAttributeSetModel* model) : SimpleMockListener(model) {
+  explicit MockListener(IAttributeSetModel* model) : SimpleMockListener(model) {
     SNAIL_MOCK_LISTENER_REGISTER(SwitchToEditMode, this);
     SNAIL_MOCK_LISTENER_REGISTER(SwitchToDisplayMode, this);
     SNAIL_MOCK_LISTENER_REGISTER(ValidateComplete, this);

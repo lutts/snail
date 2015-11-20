@@ -5,11 +5,13 @@
 //
 // [Desc]
 
-#ifndef SIMPLE_MOCK_LISTENER_H_
-#define SIMPLE_MOCK_LISTENER_H_
+#ifndef TEST_TESTUTILS_SIMPLE_MOCK_LISTENER_H_
+#define TEST_TESTUTILS_SIMPLE_MOCK_LISTENER_H_
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
+#include <vector>
 
 #include "utils/basic_utils.h"
 #include "test/function_signature_extracter.h"
@@ -27,7 +29,6 @@
  * we also provide detach calls to allow users detach the listener if they
  * do not care whether signals will emited or not.
  */
-
 template <typename SubjectType>
 class SimpleMockListener {
  public:
@@ -39,7 +40,7 @@ class SimpleMockListener {
     virtual void detatch() = 0;
   };
 
-  SimpleMockListener(SubjectType *subject) : subject_(subject) {}
+  explicit SimpleMockListener(SubjectType *subject) : subject_(subject) {}
 
   void attach() {
     if (attached_) return;
@@ -83,12 +84,13 @@ class SimpleMockListener {
     }                                             \
     void attach() override {                      \
     conn_ = mock_listener_->getSubject()->
+
 #define SNAIL_MOCK_LISTENER_BODY_AFTER(ML, Name)  \
   }                                               \
                                                   \
   void detatch() override { conn_.disconnect(); } \
                                                   \
- private:                                         \
+ private: /* NOLINT */                            \
   ML *mock_listener_;                             \
   SignalConnection conn_;                         \
   }                                               \
@@ -220,4 +222,4 @@ class SimpleMockListener {
       nullptr);                                                                \
   SNAIL_MOCK_LISTENER_BODY_AFTER(ML, Method)
 
-#endif  // SIMPLE_MOCK_LISTENER_H_
+#endif  // TEST_TESTUTILS_SIMPLE_MOCK_LISTENER_H_

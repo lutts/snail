@@ -78,7 +78,8 @@ class MockListener : public SimpleMockListener<ITreeItemProvider> {
   SNAIL_MOCK_LISTENER0(MockListener, BeginFilter, void());
   SNAIL_MOCK_LISTENER0(MockListener, FinishFilter, void());
 
-  MockListener(ITreeItemProvider* subject) : SimpleMockListener(subject) {
+  explicit MockListener(ITreeItemProvider* subject)
+      : SimpleMockListener(subject) {
     SNAIL_MOCK_LISTENER_REGISTER(BeginFilter, this);
     SNAIL_MOCK_LISTENER_REGISTER(FinishFilter, this);
 

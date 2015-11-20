@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef FIXTURE_FACTORY_H_
-#define FIXTURE_FACTORY_H_
+#ifndef TEST_TESTUTILS_FIXTURE_FACTORY_H_
+#define TEST_TESTUTILS_FIXTURE_FACTORY_H_
 
 template <typename F, typename T>
 class CopyConstructFixtureFactory;
@@ -120,4 +120,4 @@ class MoveAssignmentFixtureFactory : public FixtureFactory<F, T> {
   }
 };
 
-#endif  // FIXTURE_FACTORY_H_
+#endif  // TEST_TESTUTILS_FIXTURE_FACTORY_H_

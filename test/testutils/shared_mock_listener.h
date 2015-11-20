@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TEST_TESTUTILS_GENERIC_MOCK_LISTENER_H_
-#define TEST_TESTUTILS_GENERIC_MOCK_LISTENER_H_
+#ifndef TEST_TESTUTILS_SHARED_MOCK_LISTENER_H_
+#define TEST_TESTUTILS_SHARED_MOCK_LISTENER_H_
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -103,4 +103,4 @@ class SharedMockListener : public utils::ITrackable {
 
 #define END_BIND_SIGNAL() }
 
-#endif  // TEST_TESTUTILS_GENERIC_MOCK_LISTENER_H_
+#endif  // TEST_TESTUTILS_SHARED_MOCK_LISTENER_H_

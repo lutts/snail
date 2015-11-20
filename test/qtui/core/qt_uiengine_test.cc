@@ -37,7 +37,7 @@ class QtUiEngineTest : public QObject, public ::testing::Test {
 
 class MockListener {
  public:
-  MockListener(snailcore::IUiEngine* uiEngine) {
+  explicit MockListener(snailcore::IUiEngine* uiEngine) {
     uiEngine->whenAboutToQuit([this]() { AboutToQuit(); }, nullptr);
   }
 

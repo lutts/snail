@@ -15,6 +15,7 @@
 #include <iostream>  // NOLINT
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/utils.h"

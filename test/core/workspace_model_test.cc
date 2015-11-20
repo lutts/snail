@@ -43,7 +43,7 @@ class WorkSpaceModelTest : public ::testing::Test {
 
 class MockListener {
  public:
-  MockListener(IWorkSpaceModel* workspace_model) {
+  explicit MockListener(IWorkSpaceModel* workspace_model) {
     workspace_model->whenWorkModelAdded(
         [this](std::shared_ptr<IWorkModel> work_model) {
           WorkModelAdded(work_model);

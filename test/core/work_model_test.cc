@@ -50,7 +50,7 @@ class WorkModelTest : public ::testing::Test {
 
 class MockListener {
  public:
-  MockListener(IWorkModel* model) {
+  explicit MockListener(IWorkModel* model) {
     model->whenNameChanged([this](const utils::U8String& new_name) {
       NameChanged(new_name);
     }, nullptr);
