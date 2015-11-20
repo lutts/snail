@@ -33,7 +33,8 @@ LinkType::LinkType(const utils::U8String& name, bool is_group_only)
       is_group_only_{is_group_only},
       attr_suppliers_{},
       link_phrase_{},
-      named_string_formatter_{} {}
+      named_string_formatter_{},
+      connections_{} {}
 
 LinkType::LinkType(const LinkType& rhs)
     : signal_helper_{utils::make_unique<LinkTypeSignalHelper>()},
@@ -42,11 +43,14 @@ LinkType::LinkType(const LinkType& rhs)
       prototype_(rhs.getPrototype()),
       attr_suppliers_{},
       link_phrase_{rhs.link_phrase_},
-      named_string_formatter_{rhs.named_string_formatter_} {
+      named_string_formatter_{rhs.named_string_formatter_},
+      connections_{} {
   for (auto& supplier : rhs.attr_suppliers_) {
     std::unique_ptr<IAttributeSupplier> supplier_clone(supplier->clone());
     attr_suppliers_.push_back(std::move(supplier_clone));
   }
+
+  monitorAttributeSuppliers();
 }
 
 // signals are not move and copied
@@ -54,19 +58,28 @@ LinkType::LinkType(LinkType&& rhs)
     : signal_helper_{utils::make_unique<LinkTypeSignalHelper>()},
       name_(std::move(rhs.name_)),
       is_group_only_(std::move(rhs.is_group_only_)),
-      prototype_(rhs.getPrototype())  // copy
-      ,
+      prototype_(rhs.getPrototype()),  // copy
       attr_suppliers_(std::move(rhs.attr_suppliers_)),
       link_phrase_{std::move(rhs.link_phrase_)},
-      named_string_formatter_{std::move(rhs.named_string_formatter_)} {
+      named_string_formatter_{std::move(rhs.named_string_formatter_)},
+      connections_{} {
   rhs.is_group_only_ = false;
   rhs.prototype_ = nullptr;
+
+  monitorAttributeSuppliers();
+  rhs.resetConnections();
 }
 
-LinkType& LinkType::operator=(LinkType rhs) { return swap(rhs); }
+LinkType& LinkType::operator=(LinkType rhs) {
+  swap(rhs);
+
+  signal_helper_->emitLinkUpdated();
+
+  return *this;
+}
 
 // NOTE: signals not changed
-LinkType& LinkType::swap(LinkType& rhs) noexcept {
+void LinkType::swap(LinkType& rhs) noexcept {
   std::swap(name_, rhs.name_);
   std::swap(is_group_only_, rhs.is_group_only_);
   std::swap(prototype_, rhs.prototype_);
@@ -74,8 +87,11 @@ LinkType& LinkType::swap(LinkType& rhs) noexcept {
   std::swap(link_phrase_, rhs.link_phrase_);
   std::swap(named_string_formatter_, rhs.named_string_formatter_);
 
-  return *this;
+  resetConnections();
+  rhs.resetConnections();
 }
+
+void swap(LinkType& v1, LinkType& v2) { v1.swap(v2); }
 
 LinkType::~LinkType() = default;
 
@@ -89,6 +105,28 @@ bool LinkType::isGroupOnly() const { return is_group_only_; }
 void LinkType::setAttributeSuppliers(
     std::vector<std::unique_ptr<IAttributeSupplier>>&& attr_suppliers) {
   attr_suppliers_ = std::move(attr_suppliers);
+
+  monitorAttributeSuppliers();
+}
+
+void LinkType::monitorAttributeSuppliers() {
+  connections_.reserve(attr_suppliers_.size());
+  for (auto& supplier : attr_suppliers_) {
+    auto conn = supplier->whenAttributeChanged([this](IAttribute* attr) {
+      (void)attr;
+      signal_helper_->emitLinkUpdated();
+    }, nullptr);
+
+    connections_.push_back(conn);
+  }
+}
+
+void LinkType::resetConnections() {
+  for (auto& conn : connections_) {
+    conn.disconnect();
+  }
+
+  monitorAttributeSuppliers();
 }
 
 std::vector<IAttributeSupplier*> LinkType::attributeSuppliers() const {
@@ -109,6 +147,10 @@ const LinkType* LinkType::getPrototype() const {
 }
 
 const fto::LinkType* LinkType::prototype() const { return getPrototype(); }
+
+void LinkType::setLinkPhrase(const utils::U8String& link_phrase) {
+  link_phrase_ = link_phrase;
+}
 
 utils::U8String LinkType::toString() const {
   return named_string_formatter_.format(link_phrase_, this);
@@ -136,10 +178,6 @@ std::vector<utils::U8String> LinkType::lookup(const utils::U8String& var_name) {
   }
 
   return result;
-}
-
-void LinkType::setLinkPhrase(const utils::U8String& link_phrase) {
-  link_phrase_ = link_phrase;
 }
 
 }  // namespace snailcore

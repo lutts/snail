@@ -59,8 +59,12 @@ class LinkType : public FTO_NAMESPACE::LinkType,
   SNAIL_SIGSLOT_NONVIRTUAL(LinkUpdated, void());
 
  private:
-  LinkType& swap(LinkType& rhs) noexcept;
+  void swap(LinkType& rhs) noexcept;
   const LinkType* getPrototype() const;
+  void monitorAttributeSuppliers();
+  void resetConnections();
+
+  friend void swap(LinkType& v1, LinkType& v2);
 
   std::unique_ptr<LinkTypeSignalHelper> signal_helper_;
 
@@ -72,7 +76,11 @@ class LinkType : public FTO_NAMESPACE::LinkType,
 
   utils::U8String link_phrase_;
   utils::text::TEST_PROXY(NamedStringFormatter) named_string_formatter_;
+
+  std::vector<SignalConnection> connections_;
 };
+
+void swap(LinkType& v1, LinkType& v2);
 
 }  // namespace snailcore
 
