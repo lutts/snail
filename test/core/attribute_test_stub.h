@@ -112,7 +112,8 @@ class AttrSupplierTestStub : public IAttributeSupplier {
 class MockAttrSupplierTestStub : public AttrSupplierTestStub {
  public:
   MockAttrSupplierTestStub()
-      : MockAttrSupplierTestStub{xtestutils::genRandomString(), std::rand()} {}
+      : MockAttrSupplierTestStub{xtestutils::genRandomString(),
+                                 std::rand() % 5} {}
   MockAttrSupplierTestStub(const utils::U8String& name, int max_attrs)
       : AttrSupplierTestStub(name, max_attrs) {}
   virtual ~MockAttrSupplierTestStub() = default;
