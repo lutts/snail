@@ -25,7 +25,8 @@ class AttributeModelFactory::AttributeVisitor : public IAttributeVisitor {
   }
 
   void visit(fto::KbNodeLinkAttribute* attr) override {
-    // TODO(lutts): impl this method
+    // TODO(lutts): create KbNodeLinkAttribteInlineModel here
+    // TODO(lutts): how to create  Popup Model?
     (void)attr;
   }
 

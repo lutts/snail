@@ -26,7 +26,7 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
 
   IKbNode* getRootKbNode() const;
 
-  // TODO(lutts): impl this method
+  // TODO(lutts): KbNodeAttributeSupplier clone impl
   KbNodeAttributeSupplier* clone() const { return nullptr; }
 
  private:

@@ -43,12 +43,11 @@ class KbNodeLinkAttributeSupplier
   IKbNode* getRootKbNode() const { return root_kbnode_; }
 
   fto::KbNodeLinkAttributeSupplier* clone() const {
-    // // TODO(lutts): impl this method
+    // // TODO(lutts): KbNodeLinkAttributeSupplier clone impl
     return nullptr;
   }
 
  private:
-  // TODO(lutts): remove this to allow copy
   SNAIL_DISABLE_COPY(KbNodeLinkAttributeSupplier);
 
   // GenericAttributeSupplier impls
@@ -81,7 +80,6 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
   void initValueAttr();
   void emitAttributeChanged();
 
-  // TODO(lutts): remove this to allow copy
   SNAIL_DISABLE_COPY(KbNodeLinkAttribute);
 
   fto::KbNodeLinkAttributeSupplier* link_attr_supplier_;
