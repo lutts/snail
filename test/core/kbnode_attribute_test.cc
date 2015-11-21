@@ -36,7 +36,8 @@ class KbNodeAttributeTest : public ::testing::Test {
 
   // region: test subject
   std::unique_ptr<KbNodeAttribute> attr;
-  MockKbNodeAttributeSupplier attr_supplier;
+  utils::U8String attr_supplier_name_{xtestutils::genRandomString()};
+  MockKbNodeAttributeSupplier attr_supplier{attr_supplier_name_, 1};
 
   MockKbNode kbnode;
   utils::U8String kbnode_name;
@@ -63,17 +64,11 @@ TEST_F(KbNodeAttributeTest,
 
 TEST_F(KbNodeAttributeTest,
        should_attribute_display_name_be_supplier_name) {  // NOLINT
-  // Setup fixture
-  auto expect_name = xtestutils::genRandomString();
-
-  // Expectations
-  EXPECT_CALL(attr_supplier, name()).WillOnce(Return(expect_name));
-
   // Exercise system
   auto actual_name = attr->displayName();
 
   // Verify results
-  ASSERT_EQ(expect_name, actual_name);
+  ASSERT_EQ(attr_supplier_name_, actual_name);
 }
 
 void KbNodeAttributeTest::setupNonEmptyState() {
@@ -81,7 +76,8 @@ void KbNodeAttributeTest::setupNonEmptyState() {
   EXPECT_CALL(kbnode, name()).WillRepeatedly(Return(kbnode_name));
 
   // Expectations
-  EXPECT_CALL(attr_supplier, attributeChanged(attr.get()));
+  AttrSupplierListener attr_supplier_listener(&attr_supplier);
+  EXPECT_CALL(attr_supplier_listener, AttributeChanged(attr.get()));
 
   // Exercise system
   attr->setKbNode(&kbnode);
@@ -104,7 +100,8 @@ TEST_F(KbNodeAttributeTest,
   CUSTOM_ASSERT(setupNonEmptyState());
 
   // Expectations
-  EXPECT_CALL(attr_supplier, attributeChanged(attr.get()));
+  AttrSupplierListener attr_supplier_listener(&attr_supplier);
+  EXPECT_CALL(attr_supplier_listener, AttributeChanged(attr.get()));
 
   // Exercise system
   attr->setKbNode(nullptr);

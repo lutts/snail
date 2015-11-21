@@ -32,6 +32,21 @@ class MockAttributeSupplier : public IAttributeSupplier {
   MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 };
 
+class AttrSupplierListener : public SimpleMockListener<IAttributeSupplier> {
+ public:
+  SNAIL_MOCK_LISTENER1(AttrSupplierListener, AttributeChanged,
+                       void(IAttribute* attr));
+
+  explicit AttrSupplierListener(IAttributeSupplier* subject)
+      : SimpleMockListener(subject) {
+    SNAIL_MOCK_LISTENER_REGISTER(AttributeChanged, this);
+
+    attach();
+  }
+
+  ~AttrSupplierListener() { detatch(); }
+};
+
 }  // namespace tests
 }  // namespace snailcore
 

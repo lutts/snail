@@ -15,6 +15,10 @@ KbNodeLinkAttribute::KbNodeLinkAttribute(
       link_type_(*link_attr_supplier->getDefaultProtoLinkType()),
       value_attr_supplier_(link_attr_supplier->getRootKbNode(), 1) {
   link_type_.whenLinkUpdated([this]() { linkUpdated(); }, nullptr);
+  value_attr_supplier_.whenAttributeChanged([this](IAttribute* attr) {
+    (void)attr;
+    emitAttributeChanged();
+  }, nullptr);
 }
 
 KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
@@ -27,9 +31,11 @@ utils::U8String KbNodeLinkAttribute::displayName() const {
     return link_name;
 }
 
-void KbNodeLinkAttribute::linkUpdated() {
+void KbNodeLinkAttribute::emitAttributeChanged() {
   link_attr_supplier_->attributeChanged(this);
 }
+
+void KbNodeLinkAttribute::linkUpdated() { emitAttributeChanged(); }
 
 utils::U8String KbNodeLinkAttribute::valueText() const {
   auto that = const_cast<KbNodeLinkAttribute*>(this);

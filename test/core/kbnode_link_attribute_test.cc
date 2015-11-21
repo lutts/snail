@@ -43,9 +43,10 @@ class KbNodeLinkAttributeTest : public ::testing::Test {
     R_EXPECT_CALL(link_attr_supplier, getRootKbNode())
         .WillOnce(Return(root_kbnode));
 
-    kbnode_attr_supplier = new MockKbNodeAttributeSupplier("", 1);
-    R_EXPECT_CALL(kbnode_attr_supplier_factory, createInstance(root_kbnode, 1))
-        .WillOnce(Return(kbnode_attr_supplier));
+    value_attr_supplier =
+        new MockKbNodeAttributeSupplier(value_attr_supplier_name_, 1);
+    R_EXPECT_CALL(value_attr_supplier_factory, createInstance(root_kbnode, 1))
+        .WillOnce(Return(value_attr_supplier));
 
     link_attr = utils::make_unique<KbNodeLinkAttribute>(&link_attr_supplier);
 
@@ -56,8 +57,9 @@ class KbNodeLinkAttributeTest : public ::testing::Test {
   // region: objects test subject depends on
   MockLinkType* link_type;
 
-  MockKbNodeAttributeSupplier* kbnode_attr_supplier;
-  MockKbNodeAttributeSupplierFactory kbnode_attr_supplier_factory;
+  utils::U8String value_attr_supplier_name_{xtestutils::genRandomString()};
+  MockKbNodeAttributeSupplier* value_attr_supplier;
+  MockKbNodeAttributeSupplierFactory value_attr_supplier_factory;
   // endregion
 
   // region: test subject
@@ -87,15 +89,11 @@ TEST_F(
   // Setup fixture
   EXPECT_CALL(*link_type, toString()).WillOnce(Return(""));
 
-  auto value_supplier_name = xtestutils::genRandomString();
-  EXPECT_CALL(*kbnode_attr_supplier, name())
-      .WillOnce(Return(value_supplier_name));
-
   // Exercise system
   auto actual_name = link_attr->displayName();
 
   // Verify results
-  ASSERT_EQ(value_supplier_name, actual_name);
+  ASSERT_EQ(value_attr_supplier_name_, actual_name);
 }
 
 TEST_F(
@@ -115,7 +113,8 @@ TEST_F(
 TEST_F(KbNodeLinkAttributeTest,
        should_fire_attributeChanged_event_when_link_type_updated) {  // NOLINT
   // Expectations
-  EXPECT_CALL(link_attr_supplier, attributeChanged(link_attr.get()));
+  AttrSupplierListener link_attr_supplier_listener(&link_attr_supplier);
+  EXPECT_CALL(link_attr_supplier_listener, AttributeChanged(link_attr.get()));
 
   // Exercise system
   linkUpdated();
@@ -127,7 +126,7 @@ class ValueAttrFixture : public TestFixture {
                    KbNodeLinkAttributeTest* test_case)
       : TestFixture(name) {
     value_attr_ = new MockKbNodeAttribute();
-    R_EXPECT_CALL(*(test_case->kbnode_attr_supplier), createAttribute())
+    R_EXPECT_CALL(*(test_case->value_attr_supplier), createAttribute())
         .WillOnce(Return(value_attr_));
   }
 
@@ -187,6 +186,16 @@ TEST_F(KbNodeLinkAttributeTest,
 
   // Exercise system
   link_attr->clear();
+}
+
+TEST_F(KbNodeLinkAttributeTest,
+       should_fire_attributeChanged_when_value_attr_changed) {  // NOLINT
+  // Expectations
+  AttrSupplierListener link_attr_supplier_listener(&link_attr_supplier);
+  EXPECT_CALL(link_attr_supplier_listener, AttributeChanged(link_attr.get()));
+
+  // Exercise system
+  value_attr_supplier->attributeChanged(nullptr);
 }
 
 TEST(KbNodeLinkAttributeSupplierTest,

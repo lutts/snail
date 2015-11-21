@@ -55,14 +55,14 @@ class GenericAttributeSupplier : public IAttributeSupplier {
 
   void attributeChanged(IAttribute* attr) override { AttributeChanged(attr); }
 
+ public:
+  SNAIL_SIGSLOT_OVERRIDE_IMPL(AttributeChanged);
+
  private:
   virtual IAttribute* createAttribute() = 0;
 
  private:
   SNAIL_DISABLE_COPY(GenericAttributeSupplier);
-
- private:
-  SNAIL_SIGSLOT_OVERRIDE_IMPL(AttributeChanged);
 
  private:
   utils::U8String name_;

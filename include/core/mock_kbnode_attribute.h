@@ -10,6 +10,7 @@
 
 #include "core/fto_kbnode_attribute.h"
 #include "snail/mock_attribute.h"
+#include "snail/mock_attribute_supplier.h"
 
 #define INTERFACE_MOCK_PHASE
 #include "test/interface.h"
@@ -37,10 +38,6 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
   MockKbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
       : fto::KbNodeAttributeSupplier(name, max_attrs) {}
   MockKbNodeAttributeSupplier() : MockKbNodeAttributeSupplier{"", 0} {}
-  // IAttributeSupplier mocks
-  MOCK_CONST_METHOD0(name, utils::U8String());
-  MOCK_METHOD1(attributeChanged, void(IAttribute* attr));
-
   // GenericAttributeSupplier mocks
   MOCK_METHOD0(createAttribute, IAttribute*());
 

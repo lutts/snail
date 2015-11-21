@@ -126,6 +126,8 @@ class KbNodeAttributeSupplierTestProxy {
 
   std::vector<IAttribute*> attributes() const { return self_->attributes(); }
 
+  SNAIL_SIGSLOT_PROXY(KbNodeAttributeSupplier, AttributeChanged);
+
   KbNodeAttributeSupplier_METHODS
 };
 

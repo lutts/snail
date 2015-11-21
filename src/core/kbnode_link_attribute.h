@@ -79,6 +79,7 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
  private:
   void linkUpdated();
   void initValueAttr();
+  void emitAttributeChanged();
 
   // TODO(lutts): remove this to allow copy
   SNAIL_DISABLE_COPY(KbNodeLinkAttribute);
