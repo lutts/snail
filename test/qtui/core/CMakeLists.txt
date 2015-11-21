@@ -17,42 +17,31 @@ configure_file (
   "testconfig.h"
   )
 
-# set(UITEST_COMMON_LIBS Qt5::Widgets qtuicore qttestutils)
+set(TEST_COMMON_LIBS ${TEST_COMMON_LIBS} Qt5::Core)
 
 set(UNDER_TEST_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src/qtui/core)
 
 add_gmock_unit_test(qt_uiengine
   LIBS Qt5::Widgets)
 
-add_gmock_unit_test(main_window_presenter
-  LIBS Qt5::Core testutils)
-
-add_gmock_unit_test(workspace_presenter
-  LIBS Qt5::Core testutils)
-
+add_gmock_unit_test(main_window_presenter)
+add_gmock_unit_test(workspace_presenter)
 add_gmock_unit_test(work_presenter
-  LIBS Qt5::Core pfmvp ${Boost_LIBRARIES} testutils)
+  LIBS pfmvp ${Boost_LIBRARIES})
 
-add_gmock_unit_test(attribute_set_presenter
-  LIBS testutils)
+add_gmock_unit_test(attribute_set_presenter)
 
 add_gmock_unit_test(attribute_set_layout
   ${PROJECT_SOURCE_DIR}/test/core/attribute_test_stub.cc
-  LIBS testutils qttestutils Qt5::Widgets QSCore
+  LIBS qttestutils Qt5::Widgets QSCore
   NO_GMOCK_MAIN)
 
-add_gmock_unit_test(kbnode_attribute_edit_presenter
-  LIBS Qt5::Core testutils)
+add_gmock_unit_test(kbnode_attribute_edit_presenter)
 
 add_gmock_unit_test(tree_item_qmodel
   ${UNDER_TEST_SOURCE_DIR}/tree_item_qmodel_impl.cc
-  LIBS Qt5::Core testutils qttestutils)
+  LIBS qttestutils)
 
-add_gmock_unit_test(simple_kbnode_adder_presenter
-  LIBS Qt5::Core testutils)
-
-add_gmock_unit_test(kbnode_link_attribute_inline_editor_presenter
-  LIBS Qt5::Core testutils)
-
-add_gmock_unit_test(kbnode_link_attribute_popup_editor_presenter
-  LIBS Qt5::Core testutils)
+add_gmock_unit_test(simple_kbnode_adder_presenter)
+add_gmock_unit_test(kbnode_link_attribute_inline_editor_presenter)
+add_gmock_unit_test(kbnode_link_attribute_popup_editor_presenter)

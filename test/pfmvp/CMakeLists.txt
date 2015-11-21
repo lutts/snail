@@ -2,7 +2,7 @@ include(xTestUtil)
 
 INIT_QGTEST()
 
-set(COMMON_LIBS pfmvp testutils utils)
+set(COMMON_LIBS pfmvp utils)
 
 add_gmock_test(pf_triad_manager_test
   LIBS ${COMMON_LIBS})

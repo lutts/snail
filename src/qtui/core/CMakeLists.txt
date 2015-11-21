@@ -13,8 +13,8 @@ SET(qtuicore_SRCS
   kbnode_attribute_edit_presenter.cc
   tree_item_qmodel_impl.cc
   simple_kbnode_adder_presenter.cc
-#  kbnode_link_attribute_inline_editor_presenter.cc
-#  kbnode_link_attribute_popup_editor_presenter.cc
+  kbnode_link_attribute_inline_editor_presenter.cc
+  kbnode_link_attribute_popup_editor_presenter.cc
   )
 
 set(SUBDIRS)

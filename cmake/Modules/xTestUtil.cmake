@@ -51,9 +51,9 @@ function(add_qg_test testname)
   add_dependencies(${testname} moc_${testname}_target)
 
   if (${USE_GMOCK})
-    target_link_libraries(${testname} ${QGTEST_LIBS} ${GMOCK_LIBRARIES} Qt5::Test pthread)
+    target_link_libraries(${testname} ${QGTEST_LIBS} ${GMOCK_LIBRARIES} Qt5::Test pthread ${TEST_COMMON_LIBS})
   else(${USE_GMOCK})
-    target_link_libraries(${testname} ${QGTEST_LIBS} ${GTEST_LIBRARIES} Qt5::Test pthread)
+    target_link_libraries(${testname} ${QGTEST_LIBS} ${GTEST_LIBRARIES} Qt5::Test pthread ${TEST_COMMON_LIBS})
   endif(${USE_GMOCK})
 
   # message("${CMAKE_MEMORYCHECK_COMMAND}")
@@ -90,9 +90,9 @@ function(add_gmock_test target)
 
   add_executable(${target} ${QGTEST_SRCS})
   if (NOT ${QGTEST_NO_GMOCK_MAIN})
-    target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_BOTH_LIBRARIES} pthread)
+    target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_BOTH_LIBRARIES} pthread ${TEST_COMMON_LIBS})
   else(NOT ${QGTEST_NO_GMOCK_MAIN})
-    target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_LIBRARIES} pthread)
+    target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_LIBRARIES} pthread ${TEST_COMMON_LIBS})
   endif(NOT ${QGTEST_NO_GMOCK_MAIN})
 
   # message("${CMAKE_MEMORYCHECK_COMMAND}")
