@@ -67,8 +67,7 @@
   }                                                                          \
                                                                              \
   RealClass##TestProxy(RealClass##TestProxy&& rhs) { /* NOLINT */            \
-    std::swap(self_, rhs.self_);                                             \
-    std::swap(owned_, rhs.owned_);                                           \
+    swap(rhs);                                                               \
   }                                                                          \
                                                                              \
   RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) {         \
@@ -77,8 +76,7 @@
   }                                                                          \
                                                                              \
   RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) { /* NOLINT */ \
-    std::swap(self_, rhs.self_);                                             \
-    std::swap(owned_, rhs.owned_);                                           \
+    swap(rhs);                                                               \
     return *this;                                                            \
   }                                                                          \
                                                                              \
@@ -87,6 +85,16 @@
   RealClass##TestProxy& operator=(const RealClass& rhs) {                    \
     cloneObj(rhs);                                                           \
     return *this;                                                            \
+  }                                                                          \
+                                                                             \
+  void swap(RealClass##TestProxy& rhs) {                                     \
+    std::swap(self_, rhs.self_);                                             \
+    std::swap(owned_, rhs.owned_);                                           \
+  }                                                                          \
+                                                                             \
+  friend inline void swap(RealClass##TestProxy& v1,                          \
+                          RealClass##TestProxy& v2) {                        \
+    v1.swap(v2);                                                             \
   }                                                                          \
                                                                              \
   RealClass##TestProxy* clone() const {                                      \
