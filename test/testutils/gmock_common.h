@@ -23,6 +23,7 @@
 #include "test/testutils/slot_catcher.h"
 #include "test/testutils/mock_object_generator.h"
 #include "test/testutils/model_view_mock_generator.h"
+#include "test/testutils/fixture_factory.h"
 
 #if 0
 using ::testing::GMOCK_FLAG(verbose);

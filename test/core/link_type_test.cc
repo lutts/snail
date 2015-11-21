@@ -6,7 +6,6 @@
 //
 // [Desc]
 #include "test/testutils/gmock_common.h"
-#include "test/testutils/fixture_factory.h"
 
 #include "src/core/link_type.h"
 #include "test/core/attribute_test_stub.h"
