@@ -5,6 +5,7 @@
 //
 // [Desc]
 #include "src/core/kbnode_link_attribute.h"
+#include "src/core/generic_attribute_supplier.h"
 #include "core/i_attribute_visitor.h"
 
 namespace snailcore {
@@ -91,8 +92,53 @@ fto::KbNodeAttribute* KbNodeLinkAttribute::valueAttr() {
 
 fto::LinkType* KbNodeLinkAttribute::linkType() { return link_type_.self(); }
 
-IAttribute* KbNodeLinkAttributeSupplier::createAttribute() {
-  return new KbNodeLinkAttribute(this);
+//////////////// KbNodeLinkAttributeSupplier impls ////////////////
+
+class KbNodeLinkAttributeSupplierPrivate
+    : public GenericAttributeSupplier<KbNodeLinkAttributeSupplier,
+                                      KbNodeLinkAttribute> {
+ public:
+  KbNodeLinkAttributeSupplierPrivate(KbNodeLinkAttributeSupplier* q_ptr,
+                                     int max_attrs)
+      : GenericAttributeSupplier{q_ptr, "", max_attrs} {}
+
+ private:
+};
+
+KbNodeLinkAttributeSupplier::KbNodeLinkAttributeSupplier(
+    ITreeItemProvider* link_type_item_provider,
+    const fto::LinkType* default_proto_link_type, IKbNode* root_kbnode,
+    int max_attrs)
+    : impl_(utils::make_unique<KbNodeLinkAttributeSupplierPrivate>(this,
+                                                                   max_attrs)),
+      link_type_item_provider_(link_type_item_provider),
+      default_proto_link_type_(default_proto_link_type),
+      root_kbnode_(root_kbnode) {}
+
+KbNodeLinkAttributeSupplier::~KbNodeLinkAttributeSupplier() = default;
+
+SNAIL_SIGSLOT_DELEGATE(KbNodeLinkAttributeSupplier, AttributeChanged, impl_);
+
+utils::U8String KbNodeLinkAttributeSupplier::name() const {
+  return impl_->name();
+}
+int KbNodeLinkAttributeSupplier::attr_count() const {
+  return impl_->attr_count();
+}
+std::vector<IAttribute*> KbNodeLinkAttributeSupplier::attributes() const {
+  return impl_->attributes();
+}
+int KbNodeLinkAttributeSupplier::max_attrs() const {
+  return impl_->max_attrs();
+}
+IAttribute* KbNodeLinkAttributeSupplier::addAttribute() {
+  return impl_->addAttribute();
+}
+void KbNodeLinkAttributeSupplier::removeAttribute(IAttribute* attr) {
+  impl_->removeAttribute(attr);
+}
+void KbNodeLinkAttributeSupplier::attributeChanged(IAttribute* attr) {
+  impl_->attributeChanged(attr);
 }
 
 }  // namespace snailcore

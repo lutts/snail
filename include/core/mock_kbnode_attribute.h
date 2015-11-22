@@ -35,11 +35,13 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
 
 class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
  public:
+#if 0
   MockKbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
       : fto::KbNodeAttributeSupplier(name, max_attrs) {}
   MockKbNodeAttributeSupplier() : MockKbNodeAttributeSupplier{"", 0} {}
-  // GenericAttributeSupplier mocks
-  MOCK_METHOD0(createAttribute, IAttribute*());
+#endif
+
+  COMMON_ATTR_SUPPLIER_MOCKS;
 
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
 

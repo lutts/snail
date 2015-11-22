@@ -9,33 +9,46 @@
 #define SRC_CORE_KBNODE_ATTRIBUTE_H_
 
 #include <algorithm>
+#include <memory>
 
 #include "include/config.h"
 #include "utils/basic_utils.h"
-#include "core/generic_attribute_supplier.h"
 #include "core/fto_kbnode_attribute.h"
 
 namespace snailcore {
 
 class IKbNode;
 
+class KbNodeAttributeSupplierPrivate;
+
 class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
  public:
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   virtual ~KbNodeAttributeSupplier();
 
-  IKbNode* getRootKbNode() const;
+  utils::U8String name() const override;
+  int attr_count() const override;
+  std::vector<IAttribute*> attributes() const override;
+  int max_attrs() const override;
+
+  IAttribute* addAttribute() override;
+  void removeAttribute(IAttribute* attr) override;
+
+  void attributeChanged(IAttribute* attr) override;
 
   // TODO(lutts): KbNodeAttributeSupplier clone impl
-  KbNodeAttributeSupplier* clone() const { return nullptr; }
+  KbNodeAttributeSupplier* clone() const override { return nullptr; }
+
+  IKbNode* getRootKbNode() const;
+
+ public:
+  SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
 
  private:
-  // GenericAttributeSupplier impls
-  IAttribute* createAttribute() override;
-
   SNAIL_DISABLE_COPY(KbNodeAttributeSupplier);
 
-  IKbNode* root_kbnode_{nullptr};
+  std::unique_ptr<KbNodeAttributeSupplierPrivate> impl_;
+  friend class KbNodeAttributeSupplierPrivate;
 };
 
 class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {

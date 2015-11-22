@@ -14,7 +14,7 @@
 
 #include "include/config.h"
 #include "snail/i_attribute.h"
-#include "core/generic_attribute_supplier.h"
+#include "snail/i_attribute_supplier.h"
 
 namespace snailcore {
 class IKbNode;
@@ -35,10 +35,8 @@ namespace fto {
 #define KbNodeAttributeSupplier_METHODS \
   SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
 
-class KbNodeAttributeSupplier : public GenericAttributeSupplier {
+class KbNodeAttributeSupplier : public IAttributeSupplier {
  public:
-  KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeAttributeSupplier() = default;
 
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
@@ -82,10 +80,8 @@ class KbNodeAttribute : public IAttribute {
 namespace snailcore {
 namespace fto {
 
-class KbNodeAttributeSupplier : public GenericAttributeSupplier {
+class KbNodeAttributeSupplier : public IAttributeSupplier {
  public:
-  KbNodeAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeAttributeSupplier() = default;
 };
 

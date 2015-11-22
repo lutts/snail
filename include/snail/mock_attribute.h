@@ -18,10 +18,15 @@
   MOCK_METHOD1(accept, void(IAttributeVisitor * visitor));
 
 namespace snailcore {
+
+class IAttributeSupplier;
+
 namespace tests {
 
 class MockAttribute : public IAttribute {
  public:
+  MockAttribute() = default;
+  explicit MockAttribute(IAttributeSupplier* supplier) { (void)supplier; }
   ~MockAttribute() { destroy(); }
 
   COMMON_ATTRIBUTE_MOCKS

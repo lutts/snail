@@ -11,7 +11,8 @@
 // region: Mocks
 
 #include "core/fto_kbnode_link_attribute.h"
-#include "snail/mock_attribute.h"  // COMMON_ATTRIBUTE_MOCKS
+#include "snail/mock_attribute.h"           // COMMON_ATTRIBUTE_MOCKS
+#include "snail/mock_attribute_supplier.h"  // COMMON_ATTR_SUPPLIER_MOCKS
 #include "core/fto_kbnode_attribute.h"
 #include "core/fto_link_type.h"
 
@@ -24,10 +25,11 @@ namespace tests {
 class MockKbNodeLinkAttributeSupplier
     : public fto::KbNodeLinkAttributeSupplier {
  public:
-  MockKbNodeLinkAttributeSupplier() : KbNodeLinkAttributeSupplier("", 0) {}
+  // MockKbNodeLinkAttributeSupplier() : KbNodeLinkAttributeSupplier("", 0) {}
 
-  // GenericAttributeSupplier mocks
-  MOCK_METHOD0(createAttribute, IAttribute*());
+  COMMON_ATTR_SUPPLIER_MOCKS;
+
+  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeLinkAttributeSupplier*());
 
   KbNodeLinkAttributeSupplier_METHODS
 };

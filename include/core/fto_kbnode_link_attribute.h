@@ -12,7 +12,7 @@
 
 #include "include/config.h"
 #include "snail/i_attribute.h"
-#include "core/generic_attribute_supplier.h"
+#include "snail/i_attribute_supplier.h"
 
 namespace snailcore {
 
@@ -41,14 +41,13 @@ namespace fto {
 #define KbNodeLinkAttributeSupplier_METHODS                                \
   SNAIL_CONST_INTERFACE0(getLinkTypeItemProvider, ITreeItemProvider*());   \
   SNAIL_CONST_INTERFACE0(getDefaultProtoLinkType, const fto::LinkType*()); \
-  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());                       \
-  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeLinkAttributeSupplier*());
+  SNAIL_CONST_INTERFACE0(getRootKbNode, IKbNode*());
 
-class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
+class KbNodeLinkAttributeSupplier : public IAttributeSupplier {
  public:
-  KbNodeLinkAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeLinkAttributeSupplier() = default;
+
+  SNAIL_CONST_INTERFACE0(clone, fto::KbNodeLinkAttributeSupplier*());
 
   KbNodeLinkAttributeSupplier_METHODS
 };
@@ -75,10 +74,8 @@ class KbNodeLinkAttribute : public IAttribute {
 namespace snailcore {
 namespace fto {
 
-class KbNodeLinkAttributeSupplier : public GenericAttributeSupplier {
+class KbNodeLinkAttributeSupplier : public IAttributeSupplier {
  public:
-  KbNodeLinkAttributeSupplier(const utils::U8String& name, int max_attrs)
-      : GenericAttributeSupplier(name, max_attrs) {}
   virtual ~KbNodeLinkAttributeSupplier() = default;
 };
 

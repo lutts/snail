@@ -10,7 +10,6 @@
 
 #include "include/config.h"
 #include "utils/basic_utils.h"
-#include "core/generic_attribute_supplier.h"
 #include "core/fto_link_type.h"
 #include "core/fto_kbnode_attribute.h"
 #include "core/fto_kbnode_link_attribute.h"
@@ -18,20 +17,34 @@
 namespace snailcore {
 
 class IKbNode;
+class ITreeItemProvider;
+
+class KbNodeLinkAttributeSupplierPrivate;
 
 class KbNodeLinkAttributeSupplier
     : public FTO_NAMESPACE::KbNodeLinkAttributeSupplier {
  public:
   KbNodeLinkAttributeSupplier(ITreeItemProvider* link_type_item_provider,
                               const fto::LinkType* default_proto_link_type,
-                              IKbNode* root_kbnode, int max_attrs)
-      : FTO_NAMESPACE::KbNodeLinkAttributeSupplier("", max_attrs),
-        link_type_item_provider_(link_type_item_provider),
-        default_proto_link_type_(default_proto_link_type),
-        root_kbnode_(root_kbnode) {}
+                              IKbNode* root_kbnode, int max_attrs);
 
-  virtual ~KbNodeLinkAttributeSupplier() = default;
+  virtual ~KbNodeLinkAttributeSupplier();
 
+  // IAttributeSupplier impls
+  utils::U8String name() const override;
+  int attr_count() const override;
+  std::vector<IAttribute*> attributes() const override;
+  int max_attrs() const override;
+
+  IAttribute* addAttribute() override;
+  void removeAttribute(IAttribute* attr) override;
+
+  void attributeChanged(IAttribute* attr) override;
+
+  // TODO(lutts): KbNodeLinkAttributeSupplier clone impl
+  KbNodeLinkAttributeSupplier* clone() const override { return nullptr; }
+
+  // self impls
   ITreeItemProvider* getLinkTypeItemProvider() const {
     return link_type_item_provider_;
   }
@@ -42,16 +55,13 @@ class KbNodeLinkAttributeSupplier
 
   IKbNode* getRootKbNode() const { return root_kbnode_; }
 
-  fto::KbNodeLinkAttributeSupplier* clone() const {
-    // // TODO(lutts): KbNodeLinkAttributeSupplier clone impl
-    return nullptr;
-  }
+ public:
+  SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
 
  private:
   SNAIL_DISABLE_COPY(KbNodeLinkAttributeSupplier);
 
-  // GenericAttributeSupplier impls
-  IAttribute* createAttribute() override;
+  std::unique_ptr<KbNodeLinkAttributeSupplierPrivate> impl_;
 
   ITreeItemProvider* link_type_item_provider_;
   const fto::LinkType* default_proto_link_type_;

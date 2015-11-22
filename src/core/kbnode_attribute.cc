@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "src/core/kbnode_attribute.h"
+#include "src/core/generic_attribute_supplier.h"
 #include "core/i_kbnode.h"
 #include "core/i_attribute_visitor.h"
 
@@ -68,17 +69,47 @@ void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
 
 //////////////// KbNodeAttributeSupplier ////////////////
 
+class KbNodeAttributeSupplierPrivate
+    : public GenericAttributeSupplier<KbNodeAttributeSupplier,
+                                      KbNodeAttribute> {
+ public:
+  KbNodeAttributeSupplierPrivate(KbNodeAttributeSupplier* q_ptr,
+                                 IKbNode* root_kbnode, int max_attrs)
+      : GenericAttributeSupplier{q_ptr, root_kbnode->name(), max_attrs},
+        root_kbnode_{root_kbnode} {}
+
+  IKbNode* getRootKbNode() const { return root_kbnode_; }
+
+ private:
+  IKbNode* root_kbnode_;
+};
+
 KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
                                                  int max_attrs)
-    : FTO_NAMESPACE::KbNodeAttributeSupplier(root_kbnode->name(), max_attrs),
-      root_kbnode_(root_kbnode) {}
+    : impl_(utils::make_unique<KbNodeAttributeSupplierPrivate>(
+          this, root_kbnode, max_attrs)) {}
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;
 
-IAttribute* KbNodeAttributeSupplier::createAttribute() {
-  return new KbNodeAttribute(this);
-}
+SNAIL_SIGSLOT_DELEGATE(KbNodeAttributeSupplier, AttributeChanged, impl_);
 
-IKbNode* KbNodeAttributeSupplier::getRootKbNode() const { return root_kbnode_; }
+utils::U8String KbNodeAttributeSupplier::name() const { return impl_->name(); }
+int KbNodeAttributeSupplier::attr_count() const { return impl_->attr_count(); }
+std::vector<IAttribute*> KbNodeAttributeSupplier::attributes() const {
+  return impl_->attributes();
+}
+int KbNodeAttributeSupplier::max_attrs() const { return impl_->max_attrs(); }
+IAttribute* KbNodeAttributeSupplier::addAttribute() {
+  return impl_->addAttribute();
+}
+void KbNodeAttributeSupplier::removeAttribute(IAttribute* attr) {
+  impl_->removeAttribute(attr);
+}
+void KbNodeAttributeSupplier::attributeChanged(IAttribute* attr) {
+  impl_->attributeChanged(attr);
+}
+IKbNode* KbNodeAttributeSupplier::getRootKbNode() const {
+  return impl_->getRootKbNode();
+}
 
 }  // namespace snailcore
