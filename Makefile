@@ -53,7 +53,7 @@ index: FORCE
 Makefile:;
 
 %:: FORCE
-	scan-build make -C build $@
+	make -C build $@
 #	cp build/compile_commands.json ./
 
 FORCE:
