@@ -74,10 +74,7 @@ class KbNodeLinkAttribute : public IAttribute {
 namespace snailcore {
 namespace fto {
 
-class KbNodeLinkAttributeSupplier : public IAttributeSupplier {
- public:
-  virtual ~KbNodeLinkAttributeSupplier() = default;
-};
+class KbNodeLinkAttributeSupplier : public IAttributeSupplier {};
 
 class KbNodeLinkAttribute : public IAttribute {};
 

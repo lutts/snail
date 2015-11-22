@@ -80,10 +80,7 @@ class KbNodeAttribute : public IAttribute {
 namespace snailcore {
 namespace fto {
 
-class KbNodeAttributeSupplier : public IAttributeSupplier {
- public:
-  virtual ~KbNodeAttributeSupplier() = default;
-};
+class KbNodeAttributeSupplier : public IAttributeSupplier {};
 
 class KbNodeAttribute : public IAttribute {};
 
