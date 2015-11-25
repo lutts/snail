@@ -38,6 +38,27 @@ using ::testing::_;
 using namespace testing;            // NOLINT
 using namespace testing::internal;  // NOLINT
 
+class ErrorVerbosityTest : public ::testing::Test {
+ public:
+  ErrorVerbosityTest() {
+    // const string saved_flag = GMOCK_FLAG(verbose);
+    GMOCK_FLAG(verbose) = kErrorVerbosity;
+  }
+
+  virtual ~ErrorVerbosityTest() = default;
+};
+
+template <typename T>
+class ErrorVerbosityTestWithParam : public ::testing::TestWithParam<T> {
+ public:
+  ErrorVerbosityTestWithParam() {
+    // const string saved_flag = GMOCK_FLAG(verbose);
+    GMOCK_FLAG(verbose) = kErrorVerbosity;
+  }
+
+  virtual ~ErrorVerbosityTestWithParam() = default;
+};
+
 using CheckPointType = MockFunction<void(std::string check_point_name)>;
 
 // gmock will generate default return value for simple data types, such as int,
