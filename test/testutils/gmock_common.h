@@ -141,16 +141,30 @@ class MockObjectRecorder {
 #endif  // OPTIMIZE_SINGLE_RUN_SETUP_EXPECTATIONS
 
 /**
- * TestFixture is a small closure to setup environment for a test task.
+ * TestFixture is a small closure to setup environment for a test task/object.
  *
  * When to Use TestFixture?
  *   if you find yourself copy the same sequence of code from once test to
  * another, you have two choice:
  *   1. extract the sequence of code to SetUp, or if inappropriate
  *   2. extract the sequence of code to TestFixture
+ *
+ * TestFixture and Creation Method pattern
+ *   In his book xTest Test Patterns, Gerard Meszaros's examples are java
+ * examples, in C++, when you create a test object, and the test object depends
+ * on other helper test objects, you must store these helper test objects some-
+ * where, and you must remember to free these object when test finished. Java
+ * programs do not care these problems, because java object which has reference
+ * will not be freed, and when there's no reference, it will garbage collected.
+ *
+ *   C++ is not that lucky, most of time, Creation Method is not sufficient,
+ * what we need is an Creation Class, Creation class wrap the helper test
+ * objects in a closure, create them on demand, free them when those object are
+ * not needed.
  */
 class TestFixture {
  public:
+  TestFixture() : TestFixture{"GlobalFixture"} {}
   explicit TestFixture(const utils::U8String& name) : fixture_name_(name) {}
   // WARNING: use the following copy & move operation carefully
   // mock object recorder are not copied
