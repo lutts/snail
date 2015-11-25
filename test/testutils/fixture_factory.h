@@ -182,4 +182,20 @@ class MoveAssignmentFixtureFactory
   }
 };
 
+template <typename F, typename T>
+class GlobalFixtureLoader {
+ public:
+  GlobalFixtureLoader(T* test_case) {
+    const ::testing::TestInfo* const test_info =
+        ::testing::UnitTest::GetInstance()->current_test_info();
+    if (test_info->value_param()) {
+      auto fixture_factory = test_case->GetParam();
+      fixture_.reset(
+          fixture_factory->createFixture("GlobalFixture", test_case));
+    }
+  }
+
+  std::unique_ptr<F> fixture_;
+};
+
 #endif  // TEST_TESTUTILS_FIXTURE_FACTORY_H_
