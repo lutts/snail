@@ -241,8 +241,10 @@ class LinkTypeFixture : public TestFixture {
     link_type_state = rhs.link_type_state;
 
     R_EXPECT_CALL(mock_listener_, LinkUpdated());
-    link_type = rhs.link_type;
+    LinkType& ref = (link_type = rhs.link_type);
     // mock listener not copied
+
+    EXPECT_THAT(ref, Ref(link_type));
 
     return *this;
   }
@@ -253,8 +255,10 @@ class LinkTypeFixture : public TestFixture {
     link_type_state = std::move(rhs.link_type_state);
 
     R_EXPECT_CALL(mock_listener_, LinkUpdated());
-    link_type = std::move(rhs.link_type);
+    LinkType& ref = (link_type = std::move(rhs.link_type));
     // mock listener not moved
+
+    EXPECT_THAT(ref, Ref(link_type));
 
     return *this;
   }
