@@ -216,25 +216,11 @@ class TestFixture {
   utils::U8String fixtureName() { return fixture_name_; }
 
   /** setup fixture
-   *
-   * when override setup(), it is recommended to call TestFixture's setup()
-   * at last
    */
-  virtual void setup() {
+  void setup() {
+    doSetup();
     checkSetup();
     abortIfFailure();
-  }
-
-  /** check if setup() did the right things
-   *
-   * we need checkSetup() because HasFatalFailure() will return true only when
-   * failure is raised in a subroutine before HasFatalFailure() call
-   */
-  virtual void checkSetup() {}
-
-  void abortIfFailure() {
-    if (::testing::Test::HasFatalFailure())
-      throw std::logic_error(fixture_name_);
   }
 
   void verify() {
@@ -243,7 +229,21 @@ class TestFixture {
     }
   }
 
+ protected:
+  void abortIfFailure() {
+    if (::testing::Test::HasFatalFailure())
+      throw std::logic_error(fixture_name_);
+  }
+
  private:
+  virtual void doSetup() {}
+  /** check if setup() did the right things
+   *
+   * we need checkSetup() because HasFatalFailure() will return true only when
+   * failure is raised in a subroutine before HasFatalFailure() call
+   */
+  virtual void checkSetup() {}
+
   utils::U8String fixture_name_;
 
  protected:
@@ -257,5 +257,22 @@ class TestFixture {
 #define FixtureHelper(FixtureType, var)    \
   FixtureType var{FIXTURE_LOCATION, this}; \
   var.setup();
+
+template <typename F>
+class TestFixturePtr {
+ public:
+  template <typename... Args>
+  TestFixturePtr(Args&&... args)
+      : fixture_{std::forward<Args>(args)...} {
+    setup();
+  }
+
+  F* operator->() { return &fixture_; }
+
+ private:
+  void setup() { fixture_.setup(); }
+
+  F fixture_;
+};
 
 #endif  // TEST_TESTUTILS_GMOCK_COMMON_H_
