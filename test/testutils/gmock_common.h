@@ -260,10 +260,10 @@ class TestFixture {
   var.setup();
 
 template <typename F>
-class TestFixturePtr {
+class TestFixtureLoader {
  public:
   template <typename... Args>
-  TestFixturePtr(Args&&... args)
+  TestFixtureLoader(Args&&... args)
       : fixture_{std::forward<Args>(args)...} {
     setup();
   }
