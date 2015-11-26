@@ -298,23 +298,16 @@ class LinkTypeFixture : public TestFixture {
 
 using LinkTypeFixtureFactory = FixtureFactory<LinkTypeFixture, LinkTypeTest>;
 
-class LinkTypeTest : public ::testing::TestWithParam<LinkTypeFixtureFactory*> {
+class LinkTypeTest
+    : public ErrorVerbosityTestWithParam<LinkTypeFixtureFactory*> {
  public:
-  LinkTypeTest() {
-    // const string saved_flag = GMOCK_FLAG(verbose);
-    GMOCK_FLAG(verbose) = kErrorVerbosity;
-  }
+  LinkTypeTest()
+      : ErrorVerbosityTestWithParam{},
+        fixture_loader_{this},
+        fixture_{std::move(fixture_loader_.fixture_)},
+        link_type_{&fixture_->link_type} {}
   // ~LinkTypeTest() { }
-  void SetUp() override {
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-
-    if (test_info->value_param()) {
-      auto fixture_factory = GetParam();
-      fixture_.reset(fixture_factory->createFixture("", this));
-      link_type_ = &fixture_->link_type;
-    }
-  }
+  // void SetUp() override {}
   // void TearDown() override { }
 
   MockListener& mockListener() { return fixture_->mockListener(); }
@@ -333,11 +326,12 @@ class LinkTypeTest : public ::testing::TestWithParam<LinkTypeFixtureFactory*> {
   MockNamedStringFormatter* formatter() { return fixture_->formatter(); }
   utils::U8String linkPhrase() { return fixture_->linkPhrase(); }
 
+ private:
+  GlobalFixtureLoader<LinkTypeFixture, LinkTypeTest> fixture_loader_;
+  std::unique_ptr<LinkTypeFixture> fixture_;
+
  protected:
   LinkType* link_type_;
-
- private:
-  std::unique_ptr<LinkTypeFixture> fixture_;
 };
 
 INSTANTIATE_TEST_CASE_P(
