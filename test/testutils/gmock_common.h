@@ -218,9 +218,10 @@ class TestFixture {
   /** setup fixture
    */
   void setup() {
-    doSetup();
+    doCheckedSetup();
     checkSetup();
     abortIfFailure();
+    doUnCheckedSetup();
   }
 
   /** check if setup() did the right things
@@ -243,7 +244,8 @@ class TestFixture {
   }
 
  private:
-  virtual void doSetup() {}
+  virtual void doCheckedSetup() {}
+  virtual void doUnCheckedSetup() {}
 
   utils::U8String fixture_name_;
 
