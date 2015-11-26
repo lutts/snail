@@ -5,6 +5,9 @@
 //
 // [Desc]
 #include "src/core/kbnode_link_attribute.h"
+
+#include <vector>
+
 #include "src/core/generic_attribute_supplier.h"
 #include "core/i_attribute_visitor.h"
 

@@ -8,6 +8,8 @@
 #ifndef SRC_CORE_KBNODE_LINK_ATTRIBUTE_H_
 #define SRC_CORE_KBNODE_LINK_ATTRIBUTE_H_
 
+#include <vector>
+
 #include "include/config.h"
 #include "utils/basic_utils.h"
 #include "core/fto_link_type.h"

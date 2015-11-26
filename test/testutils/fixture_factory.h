@@ -185,7 +185,7 @@ class MoveAssignmentFixtureFactory
 template <typename F, typename T>
 class GlobalFixtureLoader {
  public:
-  GlobalFixtureLoader(T* test_case) {
+  explicit GlobalFixtureLoader(T* test_case) {
     const ::testing::TestInfo* const test_info =
         ::testing::UnitTest::GetInstance()->current_test_info();
     if (test_info->value_param()) {

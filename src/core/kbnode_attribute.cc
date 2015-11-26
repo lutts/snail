@@ -5,6 +5,7 @@
 //
 // [Desc]
 #include <algorithm>
+#include <vector>
 
 #include "src/core/kbnode_attribute.h"
 #include "src/core/generic_attribute_supplier.h"
