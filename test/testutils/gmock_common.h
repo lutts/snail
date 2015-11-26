@@ -223,6 +223,13 @@ class TestFixture {
     abortIfFailure();
   }
 
+  /** check if setup() did the right things
+   *
+   * we need checkSetup() because HasFatalFailure() will return true only when
+   * failure is raised in a subroutine before HasFatalFailure() call
+   */
+  virtual void checkSetup() {}
+
   void verify() {
     if (!mock_obj_recorder.verify()) {
       std::cerr << fixture_name_ << ": fixture verify failed." << std::endl;
@@ -237,12 +244,6 @@ class TestFixture {
 
  private:
   virtual void doSetup() {}
-  /** check if setup() did the right things
-   *
-   * we need checkSetup() because HasFatalFailure() will return true only when
-   * failure is raised in a subroutine before HasFatalFailure() call
-   */
-  virtual void checkSetup() {}
 
   utils::U8String fixture_name_;
 
