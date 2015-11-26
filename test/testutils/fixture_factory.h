@@ -195,6 +195,8 @@ class GlobalFixtureLoader {
     }
   }
 
+  F* operator->() { return fixture_.get(); }
+
   std::unique_ptr<F> fixture_;
 };
 
