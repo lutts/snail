@@ -16,6 +16,7 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
+#include <tuple>
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
 #include "test/testutils/utils.h"
@@ -214,14 +215,15 @@ class TestFixture {
   virtual ~TestFixture() { verify(); }
 
   utils::U8String fixtureName() { return fixture_name_; }
+  void setFixtureName(const utils::U8String& name) { fixture_name_ = name; }
 
   /** setup fixture
    */
   void setup() {
-    doCheckedSetup();
+    doEarlySetup();
     checkSetup();
     abortIfFailure();
-    doUnCheckedSetup();
+    doLateSetup();
   }
 
   /** check if setup() did the right things
@@ -244,13 +246,93 @@ class TestFixture {
   }
 
  private:
-  virtual void doCheckedSetup() {}
-  virtual void doUnCheckedSetup() {}
+  virtual void doEarlySetup() {}
+  virtual void doLateSetup() {}
 
   utils::U8String fixture_name_;
 
  protected:
   MockObjectRecorder mock_obj_recorder{};
+};
+
+template <typename... T>
+class TestFixtureWithSupporters : public TestFixture {
+ public:
+  struct TestFixtureSetupHelper {
+    template <typename F>
+    void operator()(F& f) {
+      f.setup();
+    }
+  };
+
+  struct TestFixtureVerifyHelper {
+    template <typename F>
+    void operator()(F& f) {
+      f.verify();
+    }
+  };
+
+  struct TestFixtureCheckSetupHelper {
+    template <typename F>
+    void operator()(F& f) {
+      f.checkSetup();
+    }
+  };
+
+  struct TestFixtureSetNameHelper {
+    utils::U8String name_;
+
+    template <typename F>
+    void operator()(F& f) {
+      f.setFixtureName(name_);
+    }
+  };
+
+  template <std::size_t>
+  struct TestFixtureWithSupportersPos_ {};
+
+  TestFixtureWithSupporters() : TestFixture{} {}
+  explicit TestFixtureWithSupporters(const utils::U8String& name)
+      : TestFixture{name} {}
+  TestFixtureWithSupporters(const TestFixtureWithSupporters& rhs)
+      : TestFixture{rhs}, supporters_{rhs.supporters_} {}
+  TestFixtureWithSupporters(TestFixtureWithSupporters&& rhs)
+      : TestFixture{std::move(rhs)}, supporters_{std::move(rhs.supporters_)} {}
+  TestFixtureWithSupporters& operator=(TestFixtureWithSupporters rhs) {
+    swap(rhs);
+    return *this;
+  }
+
+  void swap(TestFixtureWithSupporters& rhs) {
+    TestFixture::swap(rhs);
+    std::swap(supporters_, rhs.supporters_);
+  }
+
+  friend inline void swap(TestFixtureWithSupporters& v1,
+                          TestFixtureWithSupporters& v2) {
+    v1.swap(v2);
+  }
+
+  template <typename Func>
+  void forEachSupporter(Func f) {
+    forEachSupporter(TestFixtureWithSupportersPos_<sizeof...(T)>(), f);
+  }
+
+ protected:
+  using SupportersTuple = std::tuple<T...>;
+  SupportersTuple supporters_;
+
+ private:
+  template <typename Func, size_t Pos>
+  void forEachSupporter(TestFixtureWithSupportersPos_<Pos>, Func f) {
+    f(std::get<std::tuple_size<SupportersTuple>::value - Pos>(supporters_));
+    forEachSupporter(TestFixtureWithSupportersPos_<Pos - 1>(), f);
+  }
+
+  template <typename Func>
+  void forEachSupporter(TestFixtureWithSupportersPos_<1>, Func f) {
+    f(std::get<std::tuple_size<SupportersTuple>::value - 1>(supporters_));
+  }
 };
 
 #define LINE_NUMBER_STR_(x) #x
@@ -265,7 +347,7 @@ template <typename F>
 class TestFixtureLoader {
  public:
   template <typename... Args>
-  TestFixtureLoader(Args&&... args)
+  explicit TestFixtureLoader(Args&&... args)
       : fixture_{std::forward<Args>(args)...} {
     setup();
   }
