@@ -36,6 +36,8 @@ KbNodeAttribute& KbNodeAttribute::swap(KbNodeAttribute& rhs) {
   std::swap(attr_supplier_, rhs.attr_supplier_);
   std::swap(kbnode_, rhs.kbnode_);
 
+  attr_supplier_->attributeChanged(this);
+
   return *this;
 }
 
@@ -64,8 +66,10 @@ fto::KbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
 }
 
 void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
-  kbnode_ = kbnode;
-  attr_supplier_->attributeChanged(this);
+  if (kbnode_ != kbnode) {
+    kbnode_ = kbnode;
+    attr_supplier_->attributeChanged(this);
+  }
 }
 
 //////////////// KbNodeAttributeSupplier ////////////////

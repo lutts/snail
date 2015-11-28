@@ -16,187 +16,337 @@
 namespace snailcore {
 namespace tests {
 
-class KbNodeAttributeTest : public ::testing::Test {
+void assertAttrEmpty(const KbNodeAttribute& attr) {
+  ASSERT_TRUE(attr.isEmpty());
+  ASSERT_EQ("", attr.valueText());
+}
+
+class SupplierTestHelper {
  public:
-  KbNodeAttributeTest() {
-    // const string saved_flag = GMOCK_FLAG(verbose);
-    GMOCK_FLAG(verbose) = kErrorVerbosity;
+  SupplierTestHelper()
+      : attr_supplier_name_{xtestutils::genRandomString()},
+        supplier_{std::make_shared<MockKbNodeAttributeSupplier>()} {}
+
+  void doLateSetup() {
+    EXPECT_CALL(*supplier_, name()).WillRepeatedly(Return(attr_supplier_name_));
   }
-  // ~KbNodeAttributeTest() { }
-  virtual void SetUp() {
-    attr = utils::make_unique<KbNodeAttribute>(&attr_supplier);
-  }
-  // virtual void TearDown() { }
 
-  void checkEmptyState();
-  void setupNonEmptyState();
-
-  // region: objects test subject depends on
-  // endregion
-
-  // region: test subject
-  std::unique_ptr<KbNodeAttribute> attr;
-  MockKbNodeAttributeSupplier attr_supplier;
-
-  MockKbNode kbnode;
-  utils::U8String kbnode_name;
-  // endregion
-
-  // region: object depends on test subject
-  // endregion
+  utils::U8String attr_supplier_name_;
+  std::shared_ptr<MockKbNodeAttributeSupplier> supplier_;
 };
 
-void KbNodeAttributeTest::checkEmptyState() {
-  ASSERT_TRUE(attr->isEmpty());
-  ASSERT_EQ(nullptr, attr->getKbNode());
-  ASSERT_EQ("", attr->valueText());
-}
+class KbNodeHelper {
+ public:
+  void prepareKbNode() {
+    kbnode_ = std::make_shared<MockKbNode>();
 
-TEST_F(KbNodeAttributeTest, check_initial_state) {  // NOLINT
-  CUSTOM_ASSERT(checkEmptyState());
-}
+    kbnode_name_ = xtestutils::genRandomString();
+    EXPECT_CALL(*kbnode_, name()).WillRepeatedly(Return(kbnode_name_));
+  }
 
-TEST_F(KbNodeAttributeTest,
-       should_be_able_to_get_back_the_kbnode_supplier) {  // NOLINT
-  ASSERT_EQ(&attr_supplier, attr->supplier());
-}
+  void validateAttr(const KbNodeAttribute& attr) {
+    if (kbnode_) {
+      ASSERT_FALSE(attr.isEmpty());
+    } else {
+      ASSERT_TRUE(attr.isEmpty());
+    }
+    ASSERT_EQ(kbnode_name_, attr.valueText());
+  }
 
-TEST_F(KbNodeAttributeTest,
+  utils::U8String kbnode_name_;
+  std::shared_ptr<MockKbNode> kbnode_;
+};
+
+class KbNodeAttributeStateSet {
+ public:
+  SupplierTestHelper& supplierHelper() { return state_.get<0>(); }
+  KbNodeHelper& kbNodeHelper() { return state_.get<1>(); }
+
+ private:
+  TextFixtureStateSet<SupplierTestHelper, KbNodeHelper> state_;
+};
+
+class KbNodeAttributeFixture : public TestFixture {
+ public:
+  std::unique_ptr<KbNodeAttributeStateSet> state_;
+
+ public:
+  KbNodeAttributeFixture(std::unique_ptr<KbNodeAttributeStateSet> state)
+      : TestFixture{},
+        state_{std::move(state)},
+        attr_{state_->supplierHelper().supplier_.get()} {
+    attr_.setKbNode(state_->kbNodeHelper().kbnode_.get());
+  }
+
+  KbNodeAttributeFixture(const KbNodeAttributeFixture& rhs)
+      : TestFixture{rhs},
+        state_{new KbNodeAttributeStateSet{*rhs.state_}},
+        attr_{rhs.attr_} {}
+
+  KbNodeAttributeFixture(KbNodeAttributeFixture&& rhs)
+      : TestFixture{std::move(rhs)},
+        state_{new KbNodeAttributeStateSet{std::move(*rhs.state_)}},
+        attr_{std::move(rhs.attr_)} {}
+
+  KbNodeAttributeFixture& operator=(const KbNodeAttributeFixture& rhs) {
+    TestFixture::operator=(rhs);
+    *state_ = *rhs.state_;
+
+    R_EXPECT_CALL(*state_->supplierHelper().supplier_,
+                  attributeChanged(&attr_));
+    attr_ = rhs.attr_;
+
+    return *this;
+  }
+
+  KbNodeAttributeFixture& operator=(KbNodeAttributeFixture&& rhs) {
+    TestFixture::operator=(std::move(rhs));
+    *state_ = std::move(*rhs.state_);
+
+    R_EXPECT_CALL(*state_->supplierHelper().supplier_,
+                  attributeChanged(&attr_));
+    attr_ = std::move(rhs.attr_);
+
+    return *this;
+  }
+
+  void checkSetup() override {
+    verify();
+    validateAttr();
+    state_->supplierHelper().doLateSetup();
+  }
+
+  void validateAttr() { state_->kbNodeHelper().validateAttr(attr_); }
+
+  KbNodeAttribute attr_;
+};
+
+class EmptyKbNodeAttributeFixtureFactory {
+ public:
+  static KbNodeAttributeFixture* createFixture() {
+    auto state = utils::make_unique<KbNodeAttributeStateSet>();
+    auto fixture = new KbNodeAttributeFixture(std::move(state));
+    fixture->setup();
+    return fixture;
+  }
+};
+
+class NonEmptyKbNodeAttributeFixtureFactory {
+ public:
+  static KbNodeAttributeFixture* createFixture() {
+    auto state = utils::make_unique<KbNodeAttributeStateSet>();
+    state->kbNodeHelper().prepareKbNode();
+    auto fixture = new KbNodeAttributeFixture(std::move(state));
+    fixture->setup();
+    return fixture;
+  }
+};
+
+using FixtureHelperGenerator =
+    CopyMoveFixtureHelperGenerator<KbNodeAttributeFixture,
+                                   EmptyKbNodeAttributeFixtureFactory,
+                                   NonEmptyKbNodeAttributeFixtureFactory>;
+
+using EmptyCopyMoveFixtureHelper =
+    CopyMoveFixtureHelper<KbNodeAttributeFixture,
+                          EmptyKbNodeAttributeFixtureFactory>;
+
+class EmptyKbNodeAttributeTest
+    : public ErrorVerbosityTestWithParam<EmptyCopyMoveFixtureHelper*> {
+ private:
+  FixtureLoaderFromHelper<KbNodeAttributeFixture, EmptyKbNodeAttributeTest>
+      fixture_;
+
+ public:
+  EmptyKbNodeAttributeTest()
+      : ErrorVerbosityTestWithParam{},
+        fixture_{this},
+        attr_supplier_name_(
+            fixture_->state_->supplierHelper().attr_supplier_name_),
+        supplier_(*fixture_->state_->supplierHelper().supplier_.get()),
+        attr_{&fixture_->attr_} {}
+  // ~EmptyKbNodeAttributeTest() { }
+  // void SetUp() override {}
+  // void TearDown() override { }
+
+ protected:
+  utils::U8String& attr_supplier_name_;
+  MockKbNodeAttributeSupplier& supplier_;
+  KbNodeAttribute* attr_;
+};
+
+INSTANTIATE_TEST_CASE_P(
+    FixtureSetup, EmptyKbNodeAttributeTest,
+    ::testing::ValuesIn(FixtureHelperGenerator::fixtureHelpers<
+                        EmptyKbNodeAttributeFixtureFactory>(
+        TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
+        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST)));
+
+// common test
+TEST_P(
+    EmptyKbNodeAttributeTest,
+    should_be_able_to_get_back_the_supplier_passed_in_constructor) {  // NOLINT
+  ASSERT_EQ(&supplier_, attr_->supplier());
+}
+TEST_P(EmptyKbNodeAttributeTest,
        should_attribute_display_name_be_supplier_name) {  // NOLINT
-  utils::U8String attr_supplier_name = xtestutils::genRandomString();
-  EXPECT_CALL(attr_supplier, name()).WillOnce(Return(attr_supplier_name));
-
-  // Exercise system
-  auto actual_name = attr->displayName();
-
-  // Verify results
-  ASSERT_EQ(attr_supplier_name, actual_name);
+  ASSERT_EQ(attr_supplier_name_, attr_->displayName());
 }
 
-void KbNodeAttributeTest::setupNonEmptyState() {
-  kbnode_name = xtestutils::genRandomString();
-  EXPECT_CALL(kbnode, name()).WillRepeatedly(Return(kbnode_name));
-
-  // Expectations
-  EXPECT_CALL(attr_supplier, attributeChanged(attr.get()));
-
-  // Exercise system
-  attr->setKbNode(&kbnode);
-
-  // Verify results
-  ASSERT_FALSE(attr->isEmpty());
-  ASSERT_EQ(&kbnode, attr->getKbNode());
-  ASSERT_EQ(kbnode_name, attr->valueText());
-
-  Mock::VerifyAndClearExpectations(&attr_supplier);
-}
-
-TEST_F(KbNodeAttributeTest, check_state_after_set_an_valid_kbnode) {  // NOLINT
-  CUSTOM_ASSERT(setupNonEmptyState());
-}
-
-TEST_F(KbNodeAttributeTest,
-       check_state_after_set_kbnode_to_nullptr) {  // NOLINT
-  // Setup fixture
-  CUSTOM_ASSERT(setupNonEmptyState());
-
-  // Expectations
-  EXPECT_CALL(attr_supplier, attributeChanged(attr.get()));
-
-  // Exercise system
-  attr->setKbNode(nullptr);
-
-  // Verify results
-  CUSTOM_ASSERT(checkEmptyState());
-}
-
-TEST_F(KbNodeAttributeTest, should_clear_enter_empty_state) {  // NOLINT
-  // Expectations
-  CUSTOM_ASSERT(setupNonEmptyState());
-
-  // Exercise system
-  attr->clear();
-
-  // Verify results
-  CUSTOM_ASSERT(checkEmptyState());
-}
-
-TEST_F(KbNodeAttributeTest,
+TEST_P(EmptyKbNodeAttributeTest,
        should_attribute_visitor_visit_IKbNodeAttribute) {  // NOLINT
   // Setup fixture
   MockAttributeVisitor visitor;
 
   // Expectations
-  EXPECT_CALL(visitor, visit(attr.get()));
+  EXPECT_CALL(visitor, visit(attr_));
 
   // Exercise system
-  attr->accept(&visitor);
+  attr_->accept(&visitor);
 }
 
-class DummyKbNodeAttrFixture : public TestFixture {
+// empty ---> non empty
+TEST_P(
+    EmptyKbNodeAttributeTest,
+    should_become_not_empty_and_value_text_is_kbnode_name_when_set_a_valid_kbnode) {  // NOLINT
+  // Setup fixture
+  auto kbnode_name = xtestutils::genRandomString();
+  MockKbNode kbnode;
+  EXPECT_CALL(kbnode, name()).WillOnce(Return(kbnode_name));
+
+  // Exercise system
+  attr_->setKbNode(&kbnode);
+
+  // Verify results
+  ASSERT_FALSE(attr_->isEmpty());
+  ASSERT_EQ(kbnode_name, attr_->valueText());
+}
+
+TEST_P(EmptyKbNodeAttributeTest,
+       should_set_a_valid_kbnode_emit_attributeChanged) {  // NOLINT
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_));
+
+  // Exercise system
+  attr_->setKbNode(xtestutils::genDummyPointer<IKbNode>());
+}
+
+// empty ---> empty
+TEST_P(EmptyKbNodeAttributeTest,
+       should_set_null_kbnode_do_not_emit_attributeChanged) {  // NOLINT
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_)).Times(0);
+
+  std::cout << "curr kbnode = " << attr_->getKbNode() << std::endl;
+
+  // Exercise system
+  attr_->setKbNode(nullptr);
+}
+
+// empty ---> empty
+TEST_P(EmptyKbNodeAttributeTest,
+       should_not_emit_attributeChanged_when_clear) {  // NOLINT
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_)).Times(0);
+
+  // Exercise system
+  attr_->clear();
+}
+
+using NonEmptyCopyMoveFixtureHelper =
+    CopyMoveFixtureHelper<KbNodeAttributeFixture,
+                          NonEmptyKbNodeAttributeFixtureFactory>;
+
+class NonEmptyKbNodeAttributeTest
+    : public ErrorVerbosityTestWithParam<NonEmptyCopyMoveFixtureHelper*> {
+ private:
+  FixtureLoaderFromHelper<KbNodeAttributeFixture, NonEmptyKbNodeAttributeTest>
+      fixture_;
+
  public:
-  DummyKbNodeAttrFixture(const utils::U8String& name,
-                         KbNodeAttributeTest* test_case)
-      : TestFixture{name},
-        supplier_{&test_case->attr_supplier},
-        attr_{supplier_},
-        kbnode_{xtestutils::genDummyPointer<IKbNode>()} {
-    attr_.setKbNode(kbnode_);
-  }
+  NonEmptyKbNodeAttributeTest()
+      : ErrorVerbosityTestWithParam{},
+        fixture_{this},
+        supplier_(*fixture_->state_->supplierHelper().supplier_),
+        kbnode_name_(fixture_->state_->kbNodeHelper().kbnode_name_),
+        kbnode_(*fixture_->state_->kbNodeHelper().kbnode_),
+        attr_{&fixture_->attr_} {}
+  // ~NonEmptyKbNodeAttributeTest() { }
+  // void SetUp() override {}
+  // void TearDown() override { }
 
-  void checkSetup() override {
-    SCOPED_TRACE(fixtureName());
+  void validateAttr() { fixture_->validateAttr(); }
 
-    ASSERT_EQ(supplier_, attr_.supplier());
-    ASSERT_EQ(kbnode_, attr_.getKbNode());
-  }
-
-  fto::KbNodeAttributeSupplier* supplier_;
-  KbNodeAttribute attr_;
-  IKbNode* kbnode_{nullptr};
+  MockKbNodeAttributeSupplier& supplier_;
+  utils::U8String& kbnode_name_;
+  MockKbNode& kbnode_;
+  KbNodeAttribute* attr_;
 };
 
-TEST_F(KbNodeAttributeTest, test_copy_construct) {  // NOLINT
-  // Setup fixture
-  FixtureHelper(DummyKbNodeAttrFixture, fixture);
+INSTANTIATE_TEST_CASE_P(
+    FixtureSetup, NonEmptyKbNodeAttributeTest,
+    ::testing::ValuesIn(FixtureHelperGenerator::fixtureHelpers<
+                        NonEmptyKbNodeAttributeFixtureFactory>(
+        TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
+        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST)));
 
-  // Exercise system
-  KbNodeAttribute attr{fixture.attr_};
-
-  // Verify results
-
-  ASSERT_EQ(fixture.kbnode_, attr.getKbNode());
-  ASSERT_EQ(fixture.supplier_, attr.supplier());
+TEST_P(NonEmptyKbNodeAttributeTest,
+       should_attr_valueText_be_kbnode_name) {  // NOLINT
+  ASSERT_EQ(kbnode_name_, attr_->valueText());
 }
 
-TEST_F(KbNodeAttributeTest, test_move_construct) {  // NOLINT
-  // Setup fixture
-  FixtureHelper(DummyKbNodeAttrFixture, fixture);
+// non empty ---> empty
+TEST_P(NonEmptyKbNodeAttributeTest,
+       should_set_null_kbnode_becomes_empty) {  // NOLINT
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_));
 
   // Exercise system
-  KbNodeAttribute attr{std::move(fixture.attr_)};
+  attr_->setKbNode(nullptr);
 
   // Verify results
-  ASSERT_EQ(nullptr, fixture.attr_.getKbNode());
-  ASSERT_EQ(nullptr, fixture.attr_.supplier());
-  ASSERT_EQ(fixture.kbnode_, attr.getKbNode());
-  ASSERT_EQ(fixture.supplier_, attr.supplier());
+  assertAttrEmpty(*attr_);
 }
 
-TEST_F(KbNodeAttributeTest, test_unified_assignment) {  // NOLINT
+// non empty ---> non empty
+TEST_P(NonEmptyKbNodeAttributeTest,
+       should_set_another_kbnode_will_emit_attribute_changed) {  // NOLINT
   // Setup fixture
-  FixtureHelper(DummyKbNodeAttrFixture, fixture1);
-  FixtureHelper(DummyKbNodeAttrFixture, fixture2);
+  KbNodeHelper kbnode_helper;
+  kbnode_helper.prepareKbNode();
+
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_));
 
   // Exercise system
-  KbNodeAttribute& ref = (fixture2.attr_ = std::move(fixture1.attr_));
+  attr_->setKbNode(kbnode_helper.kbnode_.get());
+
+  // Verify result
+  kbnode_helper.validateAttr(*attr_);
+}
+
+TEST_P(NonEmptyKbNodeAttributeTest,
+       should_set_the_same_kbnode_will_not_emit_attributeChanged) {  // NOLINT
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_)).Times(0);
+
+  // Exercise system
+  attr_->setKbNode(&kbnode_);
+
+  // Verify result
+  validateAttr();
+}
+
+TEST_P(NonEmptyKbNodeAttributeTest,
+       should_clear_emit_attributeChanged_and_attr_becomes_empty) {  // NOLINT
+  // Expectations
+  EXPECT_CALL(supplier_, attributeChanged(attr_));
+
+  // Exercise system
+  attr_->clear();
 
   // Verify results
-  EXPECT_THAT(ref, Ref(fixture2.attr_));
-  ASSERT_EQ(nullptr, fixture1.attr_.getKbNode());
-  ASSERT_EQ(nullptr, fixture1.attr_.supplier());
-  ASSERT_EQ(fixture1.kbnode_, fixture2.attr_.getKbNode());
-  ASSERT_EQ(fixture1.supplier_, fixture2.attr_.supplier());
+  assertAttrEmpty(*attr_);
 }
 
 ////////////////////////////////////////////////
