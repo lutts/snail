@@ -24,7 +24,7 @@
 #include "test/testutils/slot_catcher.h"
 #include "test/testutils/mock_object_generator.h"
 #include "test/testutils/model_view_mock_generator.h"
-#include "test/testutils/fixture_factory.h"
+#include "test/testutils/copy_move_test_helper.h"
 
 #if 0
 using ::testing::GMOCK_FLAG(verbose);
@@ -256,8 +256,10 @@ class TestFixture {
 };
 
 template <typename... T>
-class TestFixtureWithSupporters : public TestFixture {
+class TextFixtureStateSet {
  public:
+  using StateSetTuple = std::tuple<T...>;
+
   struct TestFixtureSetupHelper {
     template <typename F>
     void operator()(F& f) {
@@ -289,50 +291,48 @@ class TestFixtureWithSupporters : public TestFixture {
   };
 
   template <std::size_t>
-  struct TestFixtureWithSupportersPos_ {};
+  struct TextFixtureStateSetPos_ {};
 
-  TestFixtureWithSupporters() : TestFixture{} {}
-  explicit TestFixtureWithSupporters(const utils::U8String& name)
-      : TestFixture{name} {}
-  TestFixtureWithSupporters(const TestFixtureWithSupporters& rhs)
-      : TestFixture{rhs}, supporters_{rhs.supporters_} {}
-  TestFixtureWithSupporters(TestFixtureWithSupporters&& rhs)
-      : TestFixture{std::move(rhs)}, supporters_{std::move(rhs.supporters_)} {}
-  TestFixtureWithSupporters& operator=(TestFixtureWithSupporters rhs) {
+  TextFixtureStateSet() = default;
+  TextFixtureStateSet(const TextFixtureStateSet& rhs)
+      : state_set_{rhs.state_set_} {}
+  TextFixtureStateSet(TextFixtureStateSet&& rhs)
+      : state_set_{std::move(rhs.state_set_)} {}
+  TextFixtureStateSet& operator=(TextFixtureStateSet rhs) {
     swap(rhs);
     return *this;
   }
 
-  void swap(TestFixtureWithSupporters& rhs) {
-    TestFixture::swap(rhs);
-    std::swap(supporters_, rhs.supporters_);
-  }
+  void swap(TextFixtureStateSet& rhs) { std::swap(state_set_, rhs.state_set_); }
 
-  friend inline void swap(TestFixtureWithSupporters& v1,
-                          TestFixtureWithSupporters& v2) {
+  friend inline void swap(TextFixtureStateSet& v1, TextFixtureStateSet& v2) {
     v1.swap(v2);
   }
 
-  template <typename Func>
-  void forEachSupporter(Func f) {
-    forEachSupporter(TestFixtureWithSupportersPos_<sizeof...(T)>(), f);
+  template <std::size_t I>
+  typename std::tuple_element<I, StateSetTuple>::type& get() {
+    return std::get<I>(state_set_);
   }
 
- protected:
-  using SupportersTuple = std::tuple<T...>;
-  SupportersTuple supporters_;
+  template <typename Func>
+  void forEachState(Func f) {
+    forEachState(TextFixtureStateSetPos_<sizeof...(T)>(), f);
+  }
 
  private:
   template <typename Func, size_t Pos>
-  void forEachSupporter(TestFixtureWithSupportersPos_<Pos>, Func f) {
-    f(std::get<std::tuple_size<SupportersTuple>::value - Pos>(supporters_));
-    forEachSupporter(TestFixtureWithSupportersPos_<Pos - 1>(), f);
+  void forEachState(TextFixtureStateSetPos_<Pos>, Func f) {
+    f(std::get<std::tuple_size<StateSetTuple>::value - Pos>(state_set_));
+    forEachState(TextFixtureStateSetPos_<Pos - 1>(), f);
   }
 
   template <typename Func>
-  void forEachSupporter(TestFixtureWithSupportersPos_<1>, Func f) {
-    f(std::get<std::tuple_size<SupportersTuple>::value - 1>(supporters_));
+  void forEachState(TextFixtureStateSetPos_<1>, Func f) {
+    f(std::get<std::tuple_size<StateSetTuple>::value - 1>(state_set_));
   }
+
+ private:
+  StateSetTuple state_set_;
 };
 
 #define LINE_NUMBER_STR_(x) #x

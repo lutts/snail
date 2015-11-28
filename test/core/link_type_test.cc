@@ -21,10 +21,9 @@ class LinkTypeTest;
 
 class FormatterFixture : public TestFixture {
  public:
-  FormatterFixture(const utils::U8String& name, LinkTypeTest* test_case)
-      : TestFixture(name),
+  FormatterFixture()
+      : TestFixture{},
         formatter_factory_(MockNamedStringFormatterFactory::getInstance()) {
-    (void)test_case;
     Mock::VerifyAndClearExpectations(formatter_factory_.get());
 
     formatter_ = new MockNamedStringFormatter();
@@ -70,9 +69,7 @@ void swap(FormatterFixture& v1, FormatterFixture& v2) { v1.swap(v2); }
 
 class AttrSupplierFixture : public TestFixture {
  public:
-  AttrSupplierFixture(const utils::U8String& name, LinkTypeTest* test_case)
-      : TestFixture{name} {
-    (void)test_case;
+  AttrSupplierFixture() : TestFixture{} {
     constexpr int TEST_ATTR_SUPPLIER_COUNT = 3;
 
     for (int i = 0; i < TEST_ATTR_SUPPLIER_COUNT; ++i) {
@@ -150,9 +147,9 @@ class MockListener : public SimpleMockListener<LinkType> {
 
 class LinkTypeState {
  public:
-  LinkTypeState(const utils::U8String& fixture_name, LinkTypeTest* test_case)
-      : formatter_fixture_{fixture_name, test_case},
-        attr_supplier_fixture_{fixture_name, test_case},
+  LinkTypeState()
+      : formatter_fixture_{},
+        attr_supplier_fixture_{},
         name_{xtestutils::genRandomString()},
         is_group_only_{xtestutils::randomBool()},
         link_phrase_{xtestutils::genRandomString()} {}
@@ -212,11 +209,13 @@ class LinkTypeState {
 
 class LinkTypeFixture : public TestFixture {
  public:
+  LinkTypeFixture() : LinkTypeFixture{"GlobalFixture", nullptr} {}
   LinkTypeFixture(const utils::U8String& fixture_name, LinkTypeTest* test_case)
       : TestFixture{fixture_name},
-        link_type_state{fixture_name, test_case},
+        link_type_state{},
         link_type{link_type_state.name_, link_type_state.is_group_only_},
         mock_listener_{&link_type} {
+    (void)test_case;
     link_type.setLinkPhrase(link_type_state.link_phrase_);
     link_type.setAttributeSuppliers(
         std::move(link_type_state.attr_supplier_fixture_.attr_suppliers_up_));
@@ -300,15 +299,26 @@ class LinkTypeFixture : public TestFixture {
   MockListener mock_listener_;
 };
 
-using LinkTypeFixtureFactory = FixtureFactory<LinkTypeFixture, LinkTypeTest>;
+class LinkTypeFixtureFactory {
+ public:
+  static LinkTypeFixture* createFixture() { return new LinkTypeFixture(); }
+};
+
+using FixtureHelperGenerator =
+    CopyMoveFixtureHelperGenerator<LinkTypeFixture, LinkTypeFixtureFactory>;
+
+using LinkTypeCopyMoveFixtureHelper =
+    CopyMoveFixtureHelper<LinkTypeFixture, LinkTypeFixtureFactory>;
 
 class LinkTypeTest
-    : public ErrorVerbosityTestWithParam<LinkTypeFixtureFactory*> {
+    : public ErrorVerbosityTestWithParam<LinkTypeCopyMoveFixtureHelper*> {
+ private:
+  FixtureLoaderFromHelper<LinkTypeFixture, LinkTypeTest> fixture_;
+
  public:
   LinkTypeTest()
       : ErrorVerbosityTestWithParam{},
-        fixture_loader_{this},
-        fixture_{std::move(fixture_loader_.fixture_)},
+        fixture_{this},
         link_type_{&fixture_->link_type} {}
   // ~LinkTypeTest() { }
   // void SetUp() override {}
@@ -330,21 +340,17 @@ class LinkTypeTest
   MockNamedStringFormatter* formatter() { return fixture_->formatter(); }
   utils::U8String linkPhrase() { return fixture_->linkPhrase(); }
 
- private:
-  GlobalFixtureLoader<LinkTypeFixture, LinkTypeTest> fixture_loader_;
-  std::unique_ptr<LinkTypeFixture> fixture_;
-
  protected:
   LinkType* link_type_;
 };
 
 INSTANTIATE_TEST_CASE_P(
     FixtureSetup, LinkTypeTest,
-    ::testing::Values(LinkTypeFixtureFactory::getInstance(),
-                      LinkTypeFixtureFactory::getCopyConstructFactory(),
-                      LinkTypeFixtureFactory::getCopyAssignmentFactory(),
-                      LinkTypeFixtureFactory::getMoveConstructFactory(),
-                      LinkTypeFixtureFactory::getMoveAssignmentFactory()));
+    ::testing::ValuesIn(
+        FixtureHelperGenerator::fixtureHelpers<LinkTypeFixtureFactory>(
+            TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
+            TEST_ENABLE_MOVE_CONSTRUCT_TEST |
+            TEST_ENABLE_MOVE_ASSIGNMENT_TEST)));
 
 TEST_P(LinkTypeTest,
        should_emit_LinkUpdated_signal_when_attributeChanged) {  // NOLINT
