@@ -262,21 +262,21 @@ class TextFixtureStateSet {
 
   struct TestFixtureSetupHelper {
     template <typename F>
-    void operator()(F& f) {
+    void operator()(F& f) {  // NOLINT
       f.setup();
     }
   };
 
   struct TestFixtureVerifyHelper {
     template <typename F>
-    void operator()(F& f) {
+    void operator()(F& f) {  // NOLINT
       f.verify();
     }
   };
 
   struct TestFixtureCheckSetupHelper {
     template <typename F>
-    void operator()(F& f) {
+    void operator()(F& f) {  // NOLINT
       f.checkSetup();
     }
   };
@@ -285,7 +285,7 @@ class TextFixtureStateSet {
     utils::U8String name_;
 
     template <typename F>
-    void operator()(F& f) {
+    void operator()(F& f) {  // NOLINT
       f.setFixtureName(name_);
     }
   };

@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef COPY_MOVE_HELPER_H_
-#define COPY_MOVE_HELPER_H_
+#ifndef TEST_TESTUTILS_COPY_MOVE_TEST_HELPER_H_
+#define TEST_TESTUTILS_COPY_MOVE_TEST_HELPER_H_
 
 /*
  * The Meaning of Copy
@@ -47,6 +47,7 @@
  */
 
 #include <memory>
+#include <vector>
 
 template <typename FixtureType, typename BaseFactory>
 class CopyMoveFixtureHelper {
@@ -228,4 +229,4 @@ class FixtureLoaderFromHelper {
   std::unique_ptr<F> fixture_;
 };
 
-#endif  // COPY_MOVE_HELPER_H_
+#endif  // TEST_TESTUTILS_COPY_MOVE_TEST_HELPER_H_

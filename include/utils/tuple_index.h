@@ -5,8 +5,10 @@
 //
 // [Desc]
 
-#ifndef TUPLE_INDEX_H_
-#define TUPLE_INDEX_H_
+#ifndef INCLUDE_UTILS_TUPLE_INDEX_H_
+#define INCLUDE_UTILS_TUPLE_INDEX_H_
+
+#include <tuple>
 
 template <class T, class Tuple>
 struct tuple_index;
@@ -22,4 +24,4 @@ struct tuple_index<T, std::tuple<U, Types...>> {
       1 + tuple_index<T, std::tuple<Types...>>::value;
 };
 
-#endif  // TUPLE_INDEX_H_
+#endif  // INCLUDE_UTILS_TUPLE_INDEX_H_

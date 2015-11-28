@@ -71,7 +71,8 @@ class KbNodeAttributeFixture : public TestFixture {
   std::unique_ptr<KbNodeAttributeStateSet> state_;
 
  public:
-  KbNodeAttributeFixture(std::unique_ptr<KbNodeAttributeStateSet> state)
+  explicit KbNodeAttributeFixture(
+      std::unique_ptr<KbNodeAttributeStateSet> state)
       : TestFixture{},
         state_{std::move(state)},
         attr_{state_->supplierHelper().supplier_.get()} {
