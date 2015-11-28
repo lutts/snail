@@ -255,40 +255,40 @@ class TestFixture {
   MockObjectRecorder mock_obj_recorder{};
 };
 
+struct TestFixtureSetupHelper {
+  template <typename F>
+  void operator()(F& f) {  // NOLINT
+    f.setup();
+  }
+};
+
+struct TestFixtureVerifyHelper {
+  template <typename F>
+  void operator()(F& f) {  // NOLINT
+    f.verify();
+  }
+};
+
+struct TestFixtureCheckSetupHelper {
+  template <typename F>
+  void operator()(F& f) {  // NOLINT
+    f.checkSetup();
+  }
+};
+
+struct TestFixtureSetNameHelper {
+  utils::U8String name_;
+
+  template <typename F>
+  void operator()(F& f) {  // NOLINT
+    f.setFixtureName(name_);
+  }
+};
+
 template <typename... T>
 class TextFixtureStateSet {
  public:
   using StateSetTuple = std::tuple<T...>;
-
-  struct TestFixtureSetupHelper {
-    template <typename F>
-    void operator()(F& f) {  // NOLINT
-      f.setup();
-    }
-  };
-
-  struct TestFixtureVerifyHelper {
-    template <typename F>
-    void operator()(F& f) {  // NOLINT
-      f.verify();
-    }
-  };
-
-  struct TestFixtureCheckSetupHelper {
-    template <typename F>
-    void operator()(F& f) {  // NOLINT
-      f.checkSetup();
-    }
-  };
-
-  struct TestFixtureSetNameHelper {
-    utils::U8String name_;
-
-    template <typename F>
-    void operator()(F& f) {  // NOLINT
-      f.setFixtureName(name_);
-    }
-  };
 
   template <std::size_t>
   struct TextFixtureStateSetPos_ {};
