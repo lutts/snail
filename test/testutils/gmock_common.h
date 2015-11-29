@@ -19,6 +19,7 @@
 #include <tuple>
 
 #include "utils/basic_utils.h"  // make_unique, <memory>
+#include "utils/tuple_utils.h"
 #include "test/testutils/utils.h"
 #include "test/testutils/simple_mock_listener.h"
 #include "test/testutils/slot_catcher.h"
@@ -290,9 +291,6 @@ class TextFixtureStateSet {
  public:
   using StateSetTuple = std::tuple<T...>;
 
-  template <std::size_t>
-  struct TextFixtureStateSetPos_ {};
-
   TextFixtureStateSet() = default;
   TextFixtureStateSet(const TextFixtureStateSet& rhs)
       : state_set_{rhs.state_set_} {}
@@ -316,19 +314,7 @@ class TextFixtureStateSet {
 
   template <typename Func>
   void forEachState(Func f) {
-    forEachState(TextFixtureStateSetPos_<sizeof...(T)>(), f);
-  }
-
- private:
-  template <typename Func, size_t Pos>
-  void forEachState(TextFixtureStateSetPos_<Pos>, Func f) {
-    f(std::get<std::tuple_size<StateSetTuple>::value - Pos>(state_set_));
-    forEachState(TextFixtureStateSetPos_<Pos - 1>(), f);
-  }
-
-  template <typename Func>
-  void forEachState(TextFixtureStateSetPos_<1>, Func f) {
-    f(std::get<std::tuple_size<StateSetTuple>::value - 1>(state_set_));
+    utils::tuple_for_each(state_set_, f);
   }
 
  private:
