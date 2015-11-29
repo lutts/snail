@@ -13,37 +13,56 @@
  *   * Equivalence
  *   * Independence
  *
- * Notes about Equivalence:
- *   * if the cloned object can pass all the tests, we think the cloned object
- *     is equal to the source object
- *       * NOTE: if your object has operator==, you must test it by yourself
+ * Notes about Equivalence Test:
+ *   * if the cloned object and source object pass the same test cases, we
+ * think the cloned object is equal to the source object
+ *     * NOTE: if your object has operator==, you must test it by yourself
  *
- * Notes about Independence:
+ * Notes about Independence Test:
  *   * after copy or move, the source fixture is destroyed, if the cloned object
  *     can act independently, we think it is independent with the source object.
  *   * It is hard to test whether after x=y, operations on x should not
  *     implicitly change the state of y
  *
  * Notes about object state after move operations
- *  1. move means we will not use the source object after move, so, if the
+ *  *. move means we will not use the source object after move, so, if the
  *     source object can be successfully destroyed, and there's no resource
  *     leak, we can be sure the move is ok, and so we do not need to explicitly
  *     test the moved source object after move operation
- *  2. if you want to use the source object after move, may be what you are
+ *  *. if you want to use the source object after move, may be what you are
  *     really need an copy operation
- *  3. if what you want is exchange the state of two object, may be what you are
+ *  *. if what you want is exchange the state of two object, may be what you are
  *     really need is swap operation
- *  3. currently we can only catch mock objects leak, because if a mock object
+ *  *. currently we can only catch mock objects leak, because if a mock object
  *     is not freed, gmock will give an error.
- *  4. dynamic allocated non-mock objects' leak should be used carefully,
+ *  *. dynamic allocated non-mock objects' leak should be used carefully,
  *     because we can NOT tell whether it's freed. A guideline is never new any-
  *     thing in logic code, `new`s should only be allowed in factories.
  *
- * Note on state choosen
- *   SUT may have many states which different in essence, so, which state do we
- * use to test copy/move semantics?
- *   The short answer is: choose a typical one
- *   The long answer is: if you have time and energy, test every state
+ * Notes about objects who has many states which different in essence:
+ *  * you may use "Testcase Class per Fixture" pattern
+ *  * we can support copy/move between all these states, but may be lead to many
+ * many tests, and if that makes the test slow, choose typical ones instead of
+ * all
+ *
+ * Notes about why we use an external factory to create fixture instead of new
+ * the fixture directly:
+ *  * if the class under test has many states, and you want to test copy/move
+ * between these states, you have two choice:
+ *    1. use different fixture to represents different states
+ *    2. use the same fixture, then use an external State object to represent
+ * all states
+ *
+ *    choice 1 is a bad choice, because we must implement copy/move methods for
+ * every other fixture in every fixture, so if we have 5 states, we will end
+ * up with 20 copy/move methods in every fixture, and it also violate Open-Close
+ * Principle, because if we want to add a new state, we must add copy/move
+ * methods in every other fixtures.
+ *
+ *   choice 2 is a good choice, the fixture and state can implement copy/move
+ * only once. but this choice is not free. we must pay for an extra factory
+ * class, and we must pay for an extra new operation of the state object. but
+ * these are cheap operations which are acceptable.
  */
 
 #include <memory>
