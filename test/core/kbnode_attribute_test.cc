@@ -176,12 +176,12 @@ class EmptyKbNodeAttributeTest
   KbNodeAttribute* attr_;
 };
 
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, EmptyKbNodeAttributeTest,
-    ::testing::ValuesIn(FixtureHelperGenerator::fixtureHelpers<
-                        EmptyKbNodeAttributeFixtureFactory>(
+auto empty_test_fixture_helpers =
+    FixtureHelperGenerator::fixtureHelpers<EmptyKbNodeAttributeFixtureFactory>(
         TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
-        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST)));
+        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST);
+INSTANTIATE_TEST_CASE_P(FixtureSetup, EmptyKbNodeAttributeTest,
+                        ::testing::ValuesIn(empty_test_fixture_helpers));
 
 // common test
 TEST_P(
@@ -238,8 +238,6 @@ TEST_P(EmptyKbNodeAttributeTest,
   // Expectations
   EXPECT_CALL(supplier_, attributeChanged(attr_)).Times(0);
 
-  std::cout << "curr kbnode = " << attr_->getKbNode() << std::endl;
-
   // Exercise system
   attr_->setKbNode(nullptr);
 }
@@ -284,12 +282,13 @@ class NonEmptyKbNodeAttributeTest
   KbNodeAttribute* attr_;
 };
 
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, NonEmptyKbNodeAttributeTest,
-    ::testing::ValuesIn(FixtureHelperGenerator::fixtureHelpers<
-                        NonEmptyKbNodeAttributeFixtureFactory>(
-        TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
-        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST)));
+auto non_empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
+    NonEmptyKbNodeAttributeFixtureFactory>(
+    TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
+    TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST);
+
+INSTANTIATE_TEST_CASE_P(FixtureSetup, NonEmptyKbNodeAttributeTest,
+                        ::testing::ValuesIn(non_empty_test_fixture_helpers));
 
 TEST_P(NonEmptyKbNodeAttributeTest,
        should_attr_valueText_be_kbnode_name) {  // NOLINT

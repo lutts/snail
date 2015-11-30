@@ -344,13 +344,12 @@ class LinkTypeTest
   LinkType* link_type_;
 };
 
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, LinkTypeTest,
-    ::testing::ValuesIn(
-        FixtureHelperGenerator::fixtureHelpers<LinkTypeFixtureFactory>(
-            TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
-            TEST_ENABLE_MOVE_CONSTRUCT_TEST |
-            TEST_ENABLE_MOVE_ASSIGNMENT_TEST)));
+auto link_type_test_fixture_helpers =
+    FixtureHelperGenerator::fixtureHelpers<LinkTypeFixtureFactory>(
+        TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
+        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST);
+INSTANTIATE_TEST_CASE_P(FixtureSetup, LinkTypeTest,
+                        ::testing::ValuesIn(link_type_test_fixture_helpers));
 
 TEST_P(LinkTypeTest,
        should_emit_LinkUpdated_signal_when_attributeChanged) {  // NOLINT
