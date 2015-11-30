@@ -35,8 +35,6 @@ using namespace snailcore::tests;  // NOLINT
 // 3. add to visible and chidren is populated item
 // 4. add to root item should add before ADD_MORE_ROW_TEXT row
 
-constexpr static int kEmptySpecialRow = 0;
-constexpr static int kAddMoreSpecialRow = 3;
 #define PROVIDER_NAME "Provider Name"
 #define CLEAR_ROW_TEXT "(clear)"
 #define ADD_MORE_ROW_TEXT "Add More..."
