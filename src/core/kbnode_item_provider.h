@@ -36,7 +36,7 @@ class KbNodeItemProvider : public ITreeItemProvider, public utils::ITrackable {
   utils::U8String getFilterPattern() const override;
   bool isFilterMode() const override;
 
-  ITreeItem* getRootItem() const;
+  ITreeItem* getRootItem() const override;
 
   std::unique_ptr<IChildItemIterator> childItems(
       ITreeItem* parent_item) const override;

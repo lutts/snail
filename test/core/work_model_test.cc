@@ -26,7 +26,8 @@ class WorkModelTest : public ::testing::Test {
   // ~WorkModelTest() { }
   virtual void SetUp() {
     EXPECT_CALL(work, whenNameChanged(_, _))
-        .WillOnce(SaveArg<0>(&workNameChanged));
+        .WillOnce(
+            DoAll(SaveArg<0>(&workNameChanged), Return(SignalConnection())));
 
     auto model = std::make_shared<WorkModel>(&attr_set_model_factory);
     model->set_work(&work);
@@ -62,8 +63,7 @@ class MockListener {
 TEST_F(WorkModelTest, should_name_be_the_backing_work_name) {  // NOLINT
   // Setup fixture
   auto work_name = xtestutils::genRandomString();
-
-  ON_CALL(work, name()).WillByDefault(ReturnRef(work_name));
+  EXPECT_CALL(work, name()).WillOnce(Return(work_name));
 
   // Verify results
   ASSERT_EQ(work_name, work_model->name());

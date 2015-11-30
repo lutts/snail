@@ -28,7 +28,7 @@ class Work : public FTO_NAMESPACE::Work {
   virtual ~Work();
 
   bool set_name(const utils::U8String& new_name);
-  const utils::U8String& name() const;
+  utils::U8String name() const;
   std::vector<IAttributeSupplier*> attributeSuppliers() const;
 
   void setAttributeSuppliers(

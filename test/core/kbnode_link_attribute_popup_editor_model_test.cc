@@ -84,7 +84,8 @@ class CreateAttrModelFixture : public TestFixture {
         .WillOnce(Return(attr_model));
 
     R_EXPECT_CALL(*attr_model, whenValidateComplete(_, _))
-        .WillOnce(SaveArg<0>(&validateComplete));
+        .WillOnce(
+            DoAll(SaveArg<0>(&validateComplete), Return(SignalConnection())));
   }
 
   std::shared_ptr<MockAttributeModel> attr_model;
@@ -152,7 +153,8 @@ class CreateAttrSetModelFixture : public TestFixture {
         .WillOnce(Return(attr_set_model));
 
     R_EXPECT_CALL(*attr_set_model, whenValidateComplete(_, _))
-        .WillOnce(SaveArg<0>(&validateComplete));
+        .WillOnce(
+            DoAll(SaveArg<0>(&validateComplete), Return(SignalConnection())));
   }
 
  public:

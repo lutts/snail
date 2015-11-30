@@ -59,7 +59,7 @@ class LinkAttrSupplierTestHelper : public TestFixture {
     R_EXPECT_CALL(defaultProtoLinkType(), clone()).WillOnce(Return(link_type_));
 
     R_EXPECT_CALL(*link_type_, whenLinkUpdated(_, _))
-        .WillOnce(SaveArg<0>(&linkUpdated_));
+        .WillOnce(DoAll(SaveArg<0>(&linkUpdated_), Return(SignalConnection())));
 
     // setup value attr
     auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
@@ -71,7 +71,8 @@ class LinkAttrSupplierTestHelper : public TestFixture {
         .WillOnce(Return(value_attr_supplier_));
 
     R_EXPECT_CALL(*value_attr_supplier_, whenAttributeChanged(_, _))
-        .WillOnce(SaveArg<0>(&valueAttrChanged_));
+        .WillOnce(
+            DoAll(SaveArg<0>(&valueAttrChanged_), Return(SignalConnection())));
   }
 
   LinkAttrSupplierTestHelper(const LinkAttrSupplierTestHelper& rhs)
@@ -83,10 +84,11 @@ class LinkAttrSupplierTestHelper : public TestFixture {
         .WillOnce(Return(value_attr_supplier_));
 
     R_EXPECT_CALL(*link_type_, whenLinkUpdated(_, _))
-        .WillOnce(SaveArg<0>(&linkUpdated_));
+        .WillOnce(DoAll(SaveArg<0>(&linkUpdated_), Return(SignalConnection())));
 
     R_EXPECT_CALL(*value_attr_supplier_, whenAttributeChanged(_, _))
-        .WillOnce(SaveArg<0>(&valueAttrChanged_));
+        .WillOnce(
+            DoAll(SaveArg<0>(&valueAttrChanged_), Return(SignalConnection())));
   }
 
   MockLinkType& linkType() { return *link_type_; }

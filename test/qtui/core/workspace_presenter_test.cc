@@ -42,19 +42,24 @@ class WorkSpacePresenterTest : public ::testing::Test {
     RECORD_USED_MOCK_OBJECTS_SETUP;
 
     R_EXPECT_CALL(*view, whenUserClickAddWork(_, _))
-        .WillOnce(SaveArg<0>(&userClickAddWork));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userClickAddWork), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenUserCloseWork(_, _))
-        .WillOnce(SaveArg<0>(&userCloseWork));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userCloseWork), Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenWorkModelAdded(_, _))
-        .WillOnce(SaveArg<0>(&workModelAdded));
+        .WillOnce(
+            DoAll(SaveArg<0>(&workModelAdded), Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenActiveWorkModelChanged(_, _))
-        .WillOnce(SaveArg<0>(&activeWorkModelChanged));
+        .WillOnce(DoAll(SaveArg<0>(&activeWorkModelChanged),
+                        Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenWorkModelActivelyRemoved(_, _))
-        .WillOnce(SaveArg<0>(&workModelActivelyRemoved));
+        .WillOnce(DoAll(SaveArg<0>(&workModelActivelyRemoved),
+                        Return(SignalConnection())));
 
     presenter = std::make_shared<WorkSpacePresenter>(model, view);
     presenter->set_triad_manager(&triad_manager);
@@ -132,13 +137,16 @@ void WorkSpacePresenterTest::createWorkTriad(CreateWorkTriadResult* result) {
   EXPECT_CALL(*view, setActiveWorkView(work_view.get()));
 
   EXPECT_CALL(triad_manager, whenAboutToDestroyModel(work_pfmodel.get(), _, _))
-      .WillOnce(SaveArg<1>(aboutToDestroyModel.get()));
+      .WillOnce(DoAll(SaveArg<1>(aboutToDestroyModel.get()),
+                      Return(SignalConnection())));
 
   EXPECT_CALL(triad_manager, whenAboutToDestroyView(work_view.get(), _, _))
-      .WillOnce(SaveArg<1>(aboutToDestroyView.get()));
+      .WillOnce(DoAll(SaveArg<1>(aboutToDestroyView.get()),
+                      Return(SignalConnection())));
 
   EXPECT_CALL(*work_model, whenNameChanged(_, _))
-      .WillOnce(SaveArg<0>(workNameChanged.get()));
+      .WillOnce(
+          DoAll(SaveArg<0>(workNameChanged.get()), Return(SignalConnection())));
 
   // Exercise system
   workModelAdded(work_model);

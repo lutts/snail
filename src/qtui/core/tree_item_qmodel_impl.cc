@@ -241,10 +241,10 @@ QVariant TreeItemQModelImpl::data(const QModelIndex& index, int role) const {
   auto item = indexToQtItem(index);
   if (!item || item->isRoot()) return QVariant();
 
-  return itemData(item, role);
+  return qtItemData(item, role);
 }
 
-QVariant TreeItemQModelImpl::itemData(QtTreeItem* item, int role) const {
+QVariant TreeItemQModelImpl::qtItemData(QtTreeItem* item, int role) const {
   switch (role) {
     case Qt::DisplayRole:
       return item->text();
@@ -379,14 +379,14 @@ TreeItemQModelImplWithClearAndAddMoreRow::
 TreeItemQModelImplWithClearAndAddMoreRow::
     ~TreeItemQModelImplWithClearAndAddMoreRow() = default;
 
-QVariant TreeItemQModelImplWithClearAndAddMoreRow::itemData(QtTreeItem* item,
+QVariant TreeItemQModelImplWithClearAndAddMoreRow::qtItemData(QtTreeItem* item,
                                                             int role) const {
   auto our_item = static_cast<QtTreeItemWithEmptyAddMore*>(item);
   if (our_item->isSpecial() && role == Qt::TextAlignmentRole) {
     return static_cast<int>(Qt::AlignCenter | Qt::AlignVCenter);
   }
 
-  return TreeItemQModelImpl::itemData(item, role);
+  return TreeItemQModelImpl::qtItemData(item, role);
 }
 
 std::unique_ptr<QtTreeItem>

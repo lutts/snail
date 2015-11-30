@@ -351,13 +351,15 @@ class TreeItemQModelTestBase : public ::testing::Test {
     item_provider.fillRowData(&root_row_data);
 
     EXPECT_CALL(item_provider, whenBeginFilter(_, _))
-        .WillOnce(SaveArg<0>(&providerBeginFilter));
+        .WillOnce(DoAll(SaveArg<0>(&providerBeginFilter),
+                        Return(SignalConnection())));
 
     EXPECT_CALL(item_provider, whenFinishFilter(_, _))
-        .WillOnce(SaveArg<0>(&providerFinishFilter));
+        .WillOnce(DoAll(SaveArg<0>(&providerFinishFilter),
+                        Return(SignalConnection())));
 
     EXPECT_CALL(item_provider, whenItemAdded(_, _))
-        .WillOnce(SaveArg<0>(&itemAdded));
+        .WillOnce(DoAll(SaveArg<0>(&itemAdded), Return(SignalConnection())));
 
     qmodel->setTreeItemProvider(&item_provider);
   }

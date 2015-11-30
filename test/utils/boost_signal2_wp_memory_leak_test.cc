@@ -32,7 +32,7 @@ class TrackObject {
   }
 
  private:
-  char data[50];
+  char data[50] __attribute__((unused));
 };
 
 class SignalEmitter {

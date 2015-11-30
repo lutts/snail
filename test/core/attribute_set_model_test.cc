@@ -199,7 +199,8 @@ void AttributeSetModelTest::checkCreateAttributeModel(
   EXPECT_CALL(attr_model_factory, createAttributeModel(attr))
       .WillOnce(Return(attr_model));
   EXPECT_CALL(*attr_model, whenValidateComplete(_, null_trackobj))
-      .WillOnce(SaveArg<0>(validateComplete));
+      .WillOnce(
+          DoAll(SaveArg<0>(validateComplete), Return(SignalConnection())));
 
   // Exercise system
   auto actual_attr_model = model->createAttributeModel(attr);

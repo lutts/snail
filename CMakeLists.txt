@@ -19,12 +19,11 @@ include(CommonUtils)
 
 # activate C++ 11
 add_definitions(-std=c++11 -g)
-add_definitions(-rdynamic)
 # add_definitions(-DDISABLE_TEST_CODE)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set(warnings "-Wall -Wextra -Werror -Wno-error=unused-variable")
+  set(warnings "-Wall -Wextra -Werror -Wno-error=unused-variable -Wno-error=unused-command-line-argument -Wno-inconsistent-missing-override")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(warnings "/W4 /WX /EHsc")
 endif()

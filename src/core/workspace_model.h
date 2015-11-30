@@ -24,7 +24,7 @@ class WorkSpaceModel : public IWorkSpaceModel {
   virtual ~WorkSpaceModel();
 
   void createWork(const utils::U8String& work_name) override;
-  void removeWorkModel(IWorkModel* model);
+  void removeWorkModel(IWorkModel* model) override;
 
  public:
   SNAIL_SIGSLOT_OVERRIDE(WorkModelAdded)

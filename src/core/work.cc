@@ -34,7 +34,7 @@ bool Work::set_name(const utils::U8String& new_name) {
   return false;
 }
 
-const utils::U8String& Work::name() const { return name_; }
+utils::U8String Work::name() const { return name_; }
 
 void Work::setAttributeSuppliers(
     std::vector<std::unique_ptr<IAttributeSupplier> >&& attr_suppliers) {

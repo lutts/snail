@@ -47,16 +47,20 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
     createLinkAttributesView(&mock_obj_recorder);
 
     R_EXPECT_CALL(*view, whenUserSelectLinkType(_, _))
-        .WillOnce(SaveArg<0>(&userSelectLinkType));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userSelectLinkType), Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenLinkTypeChanged(_, _))
-        .WillOnce(SaveArg<0>(&linkTypeChanged));
+        .WillOnce(
+            DoAll(SaveArg<0>(&linkTypeChanged), Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenValidateComplete(_, _))
-        .WillOnce(SaveArg<0>(&validateComplete));
+        .WillOnce(
+            DoAll(SaveArg<0>(&validateComplete), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenUserClickDone(_, _))
-        .WillOnce(SaveArg<0>(&userClickDone));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userClickDone), Return(SignalConnection())));
 
     // Excercise system
     presenter = std::make_shared<KbNodeLinkAttributePopupEditorPresenter>(

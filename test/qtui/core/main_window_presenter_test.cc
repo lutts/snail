@@ -56,13 +56,16 @@ class MainWindowPresenterTest : public ::testing::Test {
 
     // bind event handlers
     R_EXPECT_CALL(*model, whenWindowTitleChanged(_, _))
-        .WillOnce(SaveArg<0>(&windowTitleChanged));
+        .WillOnce(
+            DoAll(SaveArg<0>(&windowTitleChanged), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenUserClickAddWork(_, _))
-        .WillOnce(SaveArg<0>(&userClickAddWork));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userClickAddWork), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenRequestClose(_, _))
-        .WillOnce(SaveArg<0>(&userCloseWindow));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userCloseWindow), Return(SignalConnection())));
 
     presenter = std::make_shared<MainWindowPresenter>(model, view);
     presenter->set_triad_manager(&triad_manager);

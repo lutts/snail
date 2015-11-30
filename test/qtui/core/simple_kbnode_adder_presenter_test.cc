@@ -85,16 +85,20 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
     }
 
     R_EXPECT_CALL(*view, whenUserSelectIndex(_, _))
-        .WillOnce(SaveArg<0>(&userSelectIndex));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userSelectIndex), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenNewKbNodeNameChanged(_, _))
-        .WillOnce(SaveArg<0>(&newKbNodeNameChanged));
+        .WillOnce(DoAll(SaveArg<0>(&newKbNodeNameChanged),
+                        Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenUserToggleCategoryCheckbox(_, _))
-        .WillOnce(SaveArg<0>(&userToggleCategoryCheckbox));
+        .WillOnce(DoAll(SaveArg<0>(&userToggleCategoryCheckbox),
+                        Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenUserClickAddButton(_, _))
-        .WillOnce(SaveArg<0>(&userClickAddButton));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userClickAddButton), Return(SignalConnection())));
 
     // Excercise system
     presenter = std::make_shared<SimpleKbNodeAdderPresenter>(model, view,

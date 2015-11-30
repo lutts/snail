@@ -71,7 +71,7 @@ class ComplexReturnValue {
   explicit ComplexReturnValue(int dummy) : dummy_{dummy} {}
 
  private:
-  int dummy_;
+  int dummy_ __attribute__((unused));
 };
 
 class MockObjectRecorder {

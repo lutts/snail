@@ -46,7 +46,7 @@ class TriadManagerHelper {
   bool requestRemoveTriadByView(IPfView* view) {
     if (!triad_manager_) return false;
 
-    triad_manager_->requestRemoveTriadByView(view);
+    return triad_manager_->requestRemoveTriadByView(view);
   }
 
   std::vector<IPfView*> findViewByModel(IPfModel* model) const {

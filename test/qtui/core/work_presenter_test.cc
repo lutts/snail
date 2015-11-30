@@ -51,7 +51,8 @@ class WorkPresenterTest : public ::testing::Test {
     createAttributeSetView(&mock_obj_recorder);
 
     R_EXPECT_CALL(*view, whenUserSetWorkName(_, _))
-        .WillOnce(SaveArg<0>(&userSetWorkName));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userSetWorkName), Return(SignalConnection())));
 
     // Excercise system
     presenter = std::make_shared<WorkPresenter>(model, view);

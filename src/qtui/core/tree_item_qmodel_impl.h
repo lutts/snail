@@ -49,7 +49,7 @@ class TreeItemQModelImpl : public QAbstractItemModel {
   QModelIndex qtItemToIndex(QtTreeItem* item) const;
   QtTreeItem* indexToQtItem(const QModelIndex& index) const;
 
-  virtual QVariant itemData(QtTreeItem* item, int role) const;
+  virtual QVariant qtItemData(QtTreeItem* item, int role) const;
 
   virtual void clear();
   virtual std::unique_ptr<QtTreeItem> createRootItem() const;
@@ -65,7 +65,7 @@ class TreeItemQModelImplWithClearAndAddMoreRow : public TreeItemQModelImpl {
   TreeItemQModelImplWithClearAndAddMoreRow();
   ~TreeItemQModelImplWithClearAndAddMoreRow();
 
-  QVariant itemData(QtTreeItem* item, int role) const override;
+  QVariant qtItemData(QtTreeItem* item, int role) const override;
 
  private:
   bool isAddMore(const QModelIndex& index) const override;

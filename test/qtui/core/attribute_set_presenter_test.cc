@@ -58,22 +58,28 @@ class AttributeSetPresenterTest : public ::testing::Test {
     }
 
     R_EXPECT_CALL(*view, whenUserSwitchMode(_, _))
-        .WillOnce(SaveArg<0>(&userSwitchMode));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userSwitchMode), Return(SignalConnection())));
 
     R_EXPECT_CALL(*attr_set_layout, whenCreateAttrEditor(_, _))
-        .WillOnce(SaveArg<0>(&createAttrEditor));
+        .WillOnce(
+            DoAll(SaveArg<0>(&createAttrEditor), Return(SignalConnection())));
 
     R_EXPECT_CALL(*attr_set_layout, whenCloseAttributeEditors(_, _))
-        .WillOnce(SaveArg<0>(&closeAttributeEditors));
+        .WillOnce(DoAll(SaveArg<0>(&closeAttributeEditors),
+                        Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenSwitchToEditMode(_, _))
-        .WillOnce(SaveArg<0>(&switchToEditMode));
+        .WillOnce(
+            DoAll(SaveArg<0>(&switchToEditMode), Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenSwitchToDisplayMode(_, _))
-        .WillOnce(SaveArg<0>(&switchToDisplayMode));
+        .WillOnce(DoAll(SaveArg<0>(&switchToDisplayMode),
+                        Return(SignalConnection())));
 
     R_EXPECT_CALL(*model, whenValidateComplete(_, _))
-        .WillOnce(SaveArg<0>(&validateComplete));
+        .WillOnce(
+            DoAll(SaveArg<0>(&validateComplete), Return(SignalConnection())));
 
     // Excercise system
     presenter =

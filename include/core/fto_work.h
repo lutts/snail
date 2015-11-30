@@ -29,7 +29,7 @@ class Work {
                              void(const utils::U8String& new_name));
 
   virtual bool set_name(const utils::U8String& name) = 0;
-  virtual const utils::U8String& name() const = 0;
+  virtual utils::U8String name() const = 0;
 
   virtual std::vector<IAttributeSupplier*> attributeSuppliers() const = 0;
 };

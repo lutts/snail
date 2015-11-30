@@ -50,7 +50,8 @@ class KbNodeLinkAttributeInlineEditorPresenterTest : public ::testing::Test {
     FixtureHelper(UpdateValueTestFixture, fixture);
 
     R_EXPECT_CALL(*view, whenUserClickShowPopupEditor(_, _))
-        .WillOnce(SaveArg<0>(&userClickShowPopupEditor));
+        .WillOnce(DoAll(SaveArg<0>(&userClickShowPopupEditor),
+                        Return(SignalConnection())));
 
     // Excercise system
     presenter =

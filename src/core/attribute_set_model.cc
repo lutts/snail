@@ -84,7 +84,7 @@ std::shared_ptr<IAttributeModel> AttributeSetModel::createAttributeModel(
   auto attr_model = attr_model_factory_->createAttributeModel(attr);
   attr_models_.push_back(attr_model);
 
-  attr_model->whenValidateComplete([this]() { validateComplete(); });
+  attr_model->whenValidateComplete([this]() { validateComplete(); }, nullptr);
 
   return attr_model;
 }

@@ -62,16 +62,20 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
     }
 
     R_EXPECT_CALL(*view, whenUserClickedIndex(_, _))
-        .WillOnce(SaveArg<0>(&userClickedIndex));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userClickedIndex), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenFilterPatternChanged(_, _))
-        .WillOnce(SaveArg<0>(&filterPatternChanged));
+        .WillOnce(DoAll(SaveArg<0>(&filterPatternChanged),
+                        Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenEditingFinished(_, _))
-        .WillOnce(SaveArg<0>(&editingFinished));
+        .WillOnce(
+            DoAll(SaveArg<0>(&editingFinished), Return(SignalConnection())));
 
     R_EXPECT_CALL(*view, whenUserClickAddKbNode(_, _))
-        .WillOnce(SaveArg<0>(&userClickAddKbNode));
+        .WillOnce(
+            DoAll(SaveArg<0>(&userClickAddKbNode), Return(SignalConnection())));
 
     // Excercise system
     presenter = std::make_shared<KbNodeAttributeEditPresenter>(model, view,
