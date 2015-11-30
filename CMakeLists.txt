@@ -23,7 +23,10 @@ add_definitions(-std=c++11 -g)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set(warnings "-Wall -Wextra -Werror -Wno-error=unused-variable -Wno-error=unused-command-line-argument -Wno-inconsistent-missing-override")
+  set(warnings "-Wall -Wextra -Werror -Wno-error=unused-variable")
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(warnings "${warnings}  -Wno-error=unused-command-line-argument -Wno-inconsistent-missing-override")
+  endif()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(warnings "/W4 /WX /EHsc")
 endif()

@@ -9,7 +9,7 @@ add_subdirectory(testutils)
 
 set(TEST_COMMON_LIBS testutils)
 
-add_definitions(-rdynamic)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
 
 add_subdirectory(utils)
 add_subdirectory(pfmvp)
