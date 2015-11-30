@@ -13,7 +13,9 @@
 
 class TrackObject {
  public:
-  TrackObject() { std::cout << "construct TrackObject" << std::endl; }
+  TrackObject() {
+    std::cout << "construct TrackObject, data = " << data << std::endl;
+  }
   ~TrackObject() { std::cout << "destruct TrackObject" << std::endl; }
 
   static void* operator new(std::size_t sz) {
@@ -32,7 +34,7 @@ class TrackObject {
   }
 
  private:
-  char data[50] __attribute__((unused));
+  char data[50];
 };
 
 class SignalEmitter {

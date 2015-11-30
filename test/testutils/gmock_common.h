@@ -70,8 +70,11 @@ class ComplexReturnValue {
  public:
   explicit ComplexReturnValue(int dummy) : dummy_{dummy} {}
 
+  // make clang happy
+  int dummy() const { return dummy_; }
+
  private:
-  int dummy_ __attribute__((unused));
+  int dummy_;
 };
 
 class MockObjectRecorder {
