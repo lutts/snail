@@ -76,6 +76,8 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
       fto::KbNodeLinkAttributeSupplier* link_attr_supplier);
   virtual ~KbNodeLinkAttribute();
 
+  KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs);
+
   // IAttribute
   utils::U8String displayName() const override;
   utils::U8String valueText() const override;
@@ -88,11 +90,10 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
   fto::LinkType* linkType();
 
  private:
+  void connectSignals();
   void linkUpdated();
   void initValueAttr();
   void emitAttributeChanged();
-
-  SNAIL_DISABLE_COPY(KbNodeLinkAttribute);
 
   fto::KbNodeLinkAttributeSupplier* link_attr_supplier_;
   TEST_PROXY(LinkType) link_type_;

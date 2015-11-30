@@ -18,14 +18,25 @@ KbNodeLinkAttribute::KbNodeLinkAttribute(
     : link_attr_supplier_(link_attr_supplier),
       link_type_(*link_attr_supplier->getDefaultProtoLinkType()),
       value_attr_supplier_(link_attr_supplier->getRootKbNode(), 1) {
+  connectSignals();
+}
+
+KbNodeLinkAttribute::KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs)
+    : link_attr_supplier_{rhs.link_attr_supplier_},
+      link_type_{rhs.link_type_},
+      value_attr_supplier_{rhs.value_attr_supplier_} {
+  connectSignals();
+}
+
+KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
+
+void KbNodeLinkAttribute::connectSignals() {
   link_type_.whenLinkUpdated([this]() { linkUpdated(); }, nullptr);
   value_attr_supplier_.whenAttributeChanged([this](IAttribute* attr) {
     (void)attr;
     emitAttributeChanged();
   }, nullptr);
 }
-
-KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
 
 utils::U8String KbNodeLinkAttribute::displayName() const {
   auto link_name = link_type_.toString();
