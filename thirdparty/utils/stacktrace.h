@@ -90,4 +90,9 @@ static void segv_handler(int sig) {
 
 static void setup_segv_handler() { signal(SIGSEGV, segv_handler); }
 
+struct SegvRegister {
+ public:
+  SegvRegister() { setup_segv_handler(); }
+};
+
 #endif  // _STACKTRACE_H_
