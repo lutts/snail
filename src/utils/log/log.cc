@@ -132,7 +132,7 @@ std::ostream& operator<<(std::ostream& strm, LogSeverityLevel level) {
 }
 
 // Define the attribute keywords
-BOOST_LOG_ATTRIBUTE_KEYWORD(line_id, "LineID", unsigned int)
+// BOOST_LOG_ATTRIBUTE_KEYWORD(line_id, "LineID", unsigned int)
 BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", LogSeverityLevel)
 BOOST_LOG_ATTRIBUTE_KEYWORD(channel, "Channel", std::string)
 BOOST_LOG_ATTRIBUTE_KEYWORD(process_id, "ProcessID",
