@@ -67,6 +67,7 @@
 
 #include <memory>
 #include <vector>
+#include <type_traits>
 
 template <typename FixtureType, typename BaseFactory>
 class CopyMoveFixtureHelper {
@@ -144,28 +145,30 @@ class CopyMoveFixtureHelperGenerator {
  public:
   template <typename BaseFactory>
   static std::vector<CopyMoveFixtureHelper<FixtureType, BaseFactory>*>
-  fixtureHelpers(unsigned int enabled_tests = 0) {
+  fixtureHelpers(unsigned int enabled_tests = 0u) {
     std::vector<CopyMoveFixtureHelper<FixtureType, BaseFactory>*> helpers;
     helpers.reserve(1 + 1 + 1 + 2 * sizeof...(Factories));
 
     helpers.push_back(getBaseHelper<BaseFactory>());
 
     if (enabled_tests & TEST_ENABLE_COPY_CONSTRUCT_TEST) {
-      helpers.push_back(getCopyConstructHelper<BaseFactory>());
+      helpers.push_back(getCopyConstructHelper<FixtureType, BaseFactory>());
     }
 
     if (enabled_tests & TEST_ENABLE_COPY_ASSIGNMENT_TEST) {
-      auto copy_assign_helpers = getCopyAssignHelpers<BaseFactory>();
+      auto copy_assign_helpers =
+          getCopyAssignHelpers<FixtureType, BaseFactory>();
       helpers.insert(helpers.end(), copy_assign_helpers.begin(),
                      copy_assign_helpers.end());
     }
 
     if (enabled_tests & TEST_ENABLE_MOVE_CONSTRUCT_TEST) {
-      helpers.push_back(getMoveConstructHelper<BaseFactory>());
+      helpers.push_back(getMoveConstructHelper<FixtureType, BaseFactory>());
     }
 
     if (enabled_tests & TEST_ENABLE_MOVE_ASSIGNMENT_TEST) {
-      auto move_assign_helpers = getMoveAssignHelpers<BaseFactory>();
+      auto move_assign_helpers =
+          getMoveAssignHelpers<FixtureType, BaseFactory>();
       helpers.insert(helpers.end(), move_assign_helpers.begin(),
                      move_assign_helpers.end());
     }
@@ -179,32 +182,86 @@ class CopyMoveFixtureHelperGenerator {
     return &base_helper;
   }
 
-  template <typename BaseFactory>
-  static CopyMoveFixtureHelper<FixtureType, BaseFactory>*
+  // copy construct
+  template <typename F, typename BaseFactory>
+  static CopyMoveFixtureHelper<
+      typename std::enable_if<std::is_copy_constructible<F>::value, F>::type,
+      BaseFactory>*
   getCopyConstructHelper() {
-    static CopyConstructFixtureHelper<FixtureType, BaseFactory> copy_helper;
+    static CopyConstructFixtureHelper<F, BaseFactory> copy_helper;
     return &copy_helper;
   }
 
-  template <typename BaseFactory>
-  static CopyMoveFixtureHelper<FixtureType, BaseFactory>*
+  template <typename F, typename BaseFactory>
+  static CopyMoveFixtureHelper<
+      typename std::enable_if<!std::is_copy_constructible<F>::value, F>::type,
+      BaseFactory>*
+  getCopyConstructHelper() {
+    throw std::logic_error(
+        "copy construct test enabled, but fixture does not allow copy "
+        "construct");
+    return nullptr;
+  }
+
+  // move construct
+  template <typename F, typename BaseFactory>
+  static CopyMoveFixtureHelper<
+      typename std::enable_if<std::is_move_constructible<F>::value, F>::type,
+      BaseFactory>*
   getMoveConstructHelper() {
-    static MoveConstructFixtureHelper<FixtureType, BaseFactory> move_helper;
+    static MoveConstructFixtureHelper<F, BaseFactory> move_helper;
     return &move_helper;
   }
 
-  template <typename BaseFactory>
-  static std::vector<CopyMoveFixtureHelper<FixtureType, BaseFactory>*>
+  template <typename F, typename BaseFactory>
+  static CopyMoveFixtureHelper<
+      typename std::enable_if<!std::is_move_constructible<F>::value, F>::type,
+      BaseFactory>*
+  getMoveConstructHelper() {
+    throw std::logic_error(
+        "move construct test enabled, but fixture does not allow move "
+        "construct");
+    return nullptr;
+  }
+
+  // copy assign
+  template <typename F, typename BaseFactory>
+  static std::vector<CopyMoveFixtureHelper<
+      typename std::enable_if<std::is_copy_assignable<F>::value, F>::type,
+      BaseFactory>*>
   getCopyAssignHelpers() {
     return getCopyMoveAssignHelpers<CopyAssignmentFixtureHelper, BaseFactory,
                                     Factories...>();
   }
 
-  template <typename BaseFactory>
-  static std::vector<CopyMoveFixtureHelper<FixtureType, BaseFactory>*>
+  template <typename F, typename BaseFactory>
+  static std::vector<CopyMoveFixtureHelper<
+      typename std::enable_if<!std::is_copy_assignable<F>::value, F>::type,
+      BaseFactory>*>
+  getCopyAssignHelpers() {
+    throw std::logic_error(
+        "copy assign test enabled, but fixture does not allow copy assign");
+    return std::vector<CopyMoveFixtureHelper<F, BaseFactory>*>();
+  }
+
+  // move assign
+  template <typename F, typename BaseFactory>
+  static std::vector<CopyMoveFixtureHelper<
+      typename std::enable_if<std::is_move_assignable<F>::value, F>::type,
+      BaseFactory>*>
   getMoveAssignHelpers() {
     return getCopyMoveAssignHelpers<MoveAssignmentFixtureHelper, BaseFactory,
                                     Factories...>();
+  }
+
+  template <typename F, typename BaseFactory>
+  static std::vector<CopyMoveFixtureHelper<
+      typename std::enable_if<!std::is_move_assignable<F>::value, F>::type,
+      BaseFactory>*>
+  getMoveAssignHelpers() {
+    throw std::logic_error(
+        "move assign test enabled, but fixture does not allow move assign");
+    return std::vector<CopyMoveFixtureHelper<F, BaseFactory>*>();
   }
 
  private:
