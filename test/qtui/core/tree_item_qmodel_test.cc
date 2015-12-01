@@ -335,15 +335,59 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
   ExpectRowData* root_rdata_{nullptr};
 };
 
+// First, we define some factory functions for creating instances of
+// the implementations.
+
+template <typename T>
+std::shared_ptr<TreeItemQModel> createTreeItemQModel();
+
+template <>
+std::shared_ptr<TreeItemQModel> createTreeItemQModel<TreeItemQModel>() {
+  return std::make_shared<TreeItemQModel>();
+}
+
+template <>
+std::shared_ptr<TreeItemQModel>
+createTreeItemQModel<TreeItemQModelWithClearAndAddMoreRow>() {
+  return std::make_shared<TreeItemQModelWithClearAndAddMoreRow>();
+}
+
+template <>
+std::shared_ptr<TreeItemQModel>
+createTreeItemQModel<TreeItemQModelWithProviderRoot>() {
+  return std::make_shared<TreeItemQModelWithProviderRoot>();
+}
+
+template <typename T>
+class TreeItemQModelTestBase;
+
+template <typename T>
+void implSpecificSetup(TreeItemQModelTestBase<T>* test_case);
+
+template <typename T>
+void implSpecificTearDown(TreeItemQModelTestBase<T>* test_case);
+
+template <typename T>
+int adjustLevel(int level) {
+  return level;
+}
+
+template <>
+int adjustLevel<TreeItemQModelWithProviderRoot>(int level) {
+  return level + 1;
+}
+
+// Then we define a test fixture class template.
+template <typename T>
 class TreeItemQModelTestBase : public ::testing::Test {
- protected:
+ public:
   TreeItemQModelTestBase() {
     // const string saved_flag = GMOCK_FLAG(verbose);
     GMOCK_FLAG(verbose) = kErrorVerbosity;
   }
   // ~TreeItemQModelTestBase() { }
   void SetUp() override {
-    qmodel = createQModel();
+    qmodel = createTreeItemQModel<T>();
 
     setupExpectRowDatas();
     item_provider.fillRowData(&root_row_data);
@@ -360,12 +404,13 @@ class TreeItemQModelTestBase : public ::testing::Test {
         .WillOnce(DoAll(SaveArg<0>(&itemAdded), Return(SignalConnection())));
 
     qmodel->setTreeItemProvider(&item_provider);
+
+    implSpecificSetup<T>(this);
   }
 
-  void TearDown() override { cleanupExpectRowDatas(); }
-
-  virtual std::shared_ptr<TreeItemQModel> createQModel() {
-    return std::make_shared<TreeItemQModel>();
+  void TearDown() override {
+    implSpecificTearDown<T>(this);
+    cleanupExpectRowDatas();
   }
 
   bool shouldRowVisible(const ExpectRowData& row_data);
@@ -378,18 +423,12 @@ class TreeItemQModelTestBase : public ::testing::Test {
 
   void should_provider_BeginFilter_emit_modelAboutToReset();
   void should_provider_FinishFilter_emit_modelReset();
-
-  virtual int adjustLevel(int level) { return level; }
   void expandToLevel(int level);
   void expandToLevel(int level, const QModelIndex& parent_index);
   void addItemUnderLevel1Item1(ITreeItem** parent_item_ret = nullptr);
-  void test_add_item_to_not_visible_parent_item();
-  void test_add_item_to_visible_but_children_not_populated_item();
-  void test_add_item_to_children_populated_parent_item();
-
   void addItemUnderRootItem();
-  void test_add_item_to_unexpanded_root_item();
-  void test_add_item_to_expanded_root_item();
+
+  void test_add_item_to_not_visible_parent_item();
 
   // region: objects test subject depends on
   TreeItemProviderTestStub item_provider;
@@ -416,7 +455,61 @@ class TreeItemQModelTestBase : public ::testing::Test {
   // endregion
 };
 
-bool TreeItemQModelTestBase::shouldRowVisible(const ExpectRowData& row_data) {
+using testing::Types;
+
+typedef Types<TreeItemQModel, TreeItemQModelWithClearAndAddMoreRow,
+              TreeItemQModelWithProviderRoot> TreeItemQModelImplementations;
+
+TYPED_TEST_CASE(TreeItemQModelTestBase, TreeItemQModelImplementations);
+
+template <>
+void implSpecificSetup(TreeItemQModelTestBase<TreeItemQModel>* test_case) {
+  (void)test_case;
+}
+
+template <>
+void implSpecificSetup(
+    TreeItemQModelTestBase<TreeItemQModelWithClearAndAddMoreRow>* test_case) {
+  test_case->show_clear_row = true;
+  test_case->show_add_more_row = true;
+}
+
+template <>
+void implSpecificSetup(
+    TreeItemQModelTestBase<TreeItemQModelWithProviderRoot>* test_case) {
+  test_case->always_selectable = true;
+
+  test_case->show_clear_row = false;
+  test_case->show_add_more_row = false;
+
+  root_row_data.subitems = &provider_row_data;
+  root_row_data_after_reset.subitems = &provider_row_data_after_reset;
+
+  ASSERT_EQ(&level0_row_data, provider_row_data[0].subitems);
+}
+
+template <>
+void implSpecificTearDown(TreeItemQModelTestBase<TreeItemQModel>* test_case) {
+  (void)test_case;
+}
+
+template <>
+void implSpecificTearDown(
+    TreeItemQModelTestBase<TreeItemQModelWithClearAndAddMoreRow>* test_case) {
+  (void)test_case;
+}
+
+template <>
+void implSpecificTearDown(
+    TreeItemQModelTestBase<TreeItemQModelWithProviderRoot>* test_case) {
+  (void)test_case;
+  root_row_data.subitems = &level0_row_data;
+  root_row_data_after_reset.subitems = &level0_row_data_after_reset;
+}
+
+template <typename T>
+bool TreeItemQModelTestBase<T>::shouldRowVisible(
+    const ExpectRowData& row_data) {
   if (row_data.isSpecialRow()) {
     if (row_data.text == CLEAR_ROW_TEXT)
       return show_clear_row;
@@ -429,7 +522,8 @@ bool TreeItemQModelTestBase::shouldRowVisible(const ExpectRowData& row_data) {
   }
 }
 
-int TreeItemQModelTestBase::expectItemCount(const ExpectRowData& row_data) {
+template <typename T>
+int TreeItemQModelTestBase<T>::expectItemCount(const ExpectRowData& row_data) {
   if (row_data.subitems == nullptr) return 0;
 
   int count = 0;
@@ -442,7 +536,8 @@ int TreeItemQModelTestBase::expectItemCount(const ExpectRowData& row_data) {
   return count;
 }
 
-void TreeItemQModelTestBase::checkRowData(const ExpectRowData& root_rdata) {
+template <typename T>
+void TreeItemQModelTestBase<T>::checkRowData(const ExpectRowData& root_rdata) {
   ASSERT_EQ(expectItemCount(root_rdata),
             qmodel->qmodel()->rowCount(QModelIndex()));
   ASSERT_EQ(1, qmodel->qmodel()->columnCount(QModelIndex()));
@@ -453,7 +548,8 @@ void TreeItemQModelTestBase::checkRowData(const ExpectRowData& root_rdata) {
   checkRowData(*root_rdata.subitems, QModelIndex());
 }
 
-void TreeItemQModelTestBase::checkRowData(
+template <typename T>
+void TreeItemQModelTestBase<T>::checkRowData(
     const std::vector<ExpectRowData>& row_data,
     const QModelIndex& parent_index) {
   int row = 0;
@@ -491,8 +587,9 @@ std::ostream& operator<<(std::ostream& os, const QModelIndex& index) {
   return os;
 }
 
-void TreeItemQModelTestBase::checkIndexData(const QModelIndex& index,
-                                            const ExpectRowData& expect_data) {
+template <typename T>
+void TreeItemQModelTestBase<T>::checkIndexData(
+    const QModelIndex& index, const ExpectRowData& expect_data) {
   auto q_display_text = index.data(Qt::DisplayRole).toString();
   auto actual_display_text = QStringToU8String(q_display_text);
   ASSERT_EQ(expect_data.text, actual_display_text)
@@ -543,43 +640,15 @@ void TreeItemQModelTestBase::checkIndexData(const QModelIndex& index,
       << " (text: " << expect_data.text << ")";
 }
 
-void TreeItemQModelTestBase::
-    should_provider_BeginFilter_emit_modelAboutToReset() {  // NOLINT
-  QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelAboutToBeReset()));
-
-  // Exercise system
-  providerBeginFilter();
-
-  // Verify results
-  ASSERT_EQ(1, sigspy.count());
-}
-
-void TreeItemQModelTestBase::should_provider_FinishFilter_emit_modelReset() {
-  // Setup fixture
-  // check before reset
-  CUSTOM_ASSERT(checkRowData());
-
-  providerBeginFilter();
-
-  QSignalSpy sigspy(qmodel->qmodel(), SIGNAL(modelReset()));
-
-  // Exercise system
-  providerFinishFilter();
-
-  // Verify results
-  ASSERT_EQ(1, sigspy.count());
-
-  item_provider.fillRowData(&root_row_data_after_reset);
-  CUSTOM_ASSERT(checkRowData(root_row_data_after_reset));
-}
-
-void TreeItemQModelTestBase::expandToLevel(int level) {
-  level = adjustLevel(level);
+template <typename T>
+void TreeItemQModelTestBase<T>::expandToLevel(int level) {
+  level = adjustLevel<T>(level);
   expandToLevel(level, QModelIndex());
 }
 
-void TreeItemQModelTestBase::expandToLevel(int level,
-                                           const QModelIndex& parent_index) {
+template <typename T>
+void TreeItemQModelTestBase<T>::expandToLevel(int level,
+                                              const QModelIndex& parent_index) {
   int row_count = qmodel->qmodel()->rowCount(parent_index);
 
   if (level == 0) return;
@@ -591,7 +660,8 @@ void TreeItemQModelTestBase::expandToLevel(int level,
   }
 }
 
-void TreeItemQModelTestBase::addItemUnderLevel1Item1(
+template <typename T>
+void TreeItemQModelTestBase<T>::addItemUnderLevel1Item1(
     ITreeItem** parent_item_ret) {  // NOLINT
   auto new_item_name = xtestutils::genRandomString();
   TreeItemTestStub new_item{new_item_name, false};
@@ -622,14 +692,51 @@ void TreeItemQModelTestBase::addItemUnderLevel1Item1(
   level2_row_data.pop_back();
 }
 
-void TreeItemQModelTestBase::test_add_item_to_not_visible_parent_item() {
+TYPED_TEST(TreeItemQModelTestBase, check_row_data) {  // NOLINT
+  CUSTOM_ASSERT(TestFixture::checkRowData());
+}
+
+TYPED_TEST(TreeItemQModelTestBase,
+           should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
+  QSignalSpy sigspy(this->qmodel->qmodel(), SIGNAL(modelAboutToBeReset()));
+
+  // Exercise system
+  this->providerBeginFilter();
+
+  // Verify results
+  ASSERT_EQ(1, sigspy.count());
+}
+
+TYPED_TEST(TreeItemQModelTestBase,
+           should_provider_FinishFilter_emit_modelReset) {  // NOLINT
+  // Setup fixture
+  // check before reset
+  CUSTOM_ASSERT(TestFixture::checkRowData());
+
+  this->providerBeginFilter();
+
+  QSignalSpy sigspy(this->qmodel->qmodel(), SIGNAL(modelReset()));
+
+  // Exercise system
+  this->providerFinishFilter();
+
+  // Verify results
+  ASSERT_EQ(1, sigspy.count());
+
+  this->item_provider.fillRowData(&root_row_data_after_reset);
+  CUSTOM_ASSERT(TestFixture::checkRowData(root_row_data_after_reset));
+}
+
+template <typename T>
+void TreeItemQModelTestBase<T>::test_add_item_to_not_visible_parent_item() {
   // NOTE: initally all items are not pupulated
 
   QSignalSpy begin_insert_sigspy(
-      qmodel->qmodel(),
+      this->qmodel->qmodel(),
       SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
   QSignalSpy end_insert_sigspy(
-      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
+      this->qmodel->qmodel(),
+      SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   CUSTOM_ASSERT(addItemUnderLevel1Item1());
 
@@ -638,34 +745,41 @@ void TreeItemQModelTestBase::test_add_item_to_not_visible_parent_item() {
   ASSERT_EQ(0, end_insert_sigspy.count());
 }
 
-void TreeItemQModelTestBase::
-    test_add_item_to_visible_but_children_not_populated_item() {  // NOLINT
-  // ensure "Level1 Item1" is visible, but children not populated
-  expandToLevel(1);
-
-  // the result is same as not visible items
-  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
+TYPED_TEST(TreeItemQModelTestBase,
+           test_add_item_to_not_visible_parent_item) {  // NOLINT
+  CUSTOM_ASSERT(TestFixture::test_add_item_to_not_visible_parent_item());
 }
 
-void TreeItemQModelTestBase::
-    test_add_item_to_children_populated_parent_item() {  // NOLINT
-  expandToLevel(2);
+TYPED_TEST(
+    TreeItemQModelTestBase,
+    test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
+  // ensure "Level1 Item1" is visible, but children not populated
+  TestFixture::expandToLevel(1);
+
+  // the result is same as not visible items
+  CUSTOM_ASSERT(TestFixture::test_add_item_to_not_visible_parent_item());
+}
+
+TYPED_TEST(TreeItemQModelTestBase,
+           test_add_item_to_children_populated_parent_item) {  // NOLINT
+  TestFixture::expandToLevel(2);
 
   QSignalSpy begin_insert_sigspy(
-      qmodel->qmodel(),
+      this->qmodel->qmodel(),
       SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
   QSignalSpy end_insert_sigspy(
-      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
+      this->qmodel->qmodel(),
+      SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   // Exercise system
   ITreeItem* parent_item;
-  CUSTOM_ASSERT(addItemUnderLevel1Item1(&parent_item));
+  CUSTOM_ASSERT(TestFixture::addItemUnderLevel1Item1(&parent_item));
 
   // Verify result
   // new row is inserted at pos 1
   QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
   auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
-  ASSERT_EQ(parent_item, qmodel->indexToItem(parent_idx));
+  ASSERT_EQ(parent_item, this->qmodel->indexToItem(parent_idx));
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
@@ -673,7 +787,8 @@ void TreeItemQModelTestBase::
   ASSERT_EQ(1, insert_row_last);
 }
 
-void TreeItemQModelTestBase::addItemUnderRootItem() {
+template <typename T>
+void TreeItemQModelTestBase<T>::addItemUnderRootItem() {
   auto new_item_name = xtestutils::genRandomString();
   TreeItemTestStub new_item{new_item_name, false};
 
@@ -710,15 +825,17 @@ void TreeItemQModelTestBase::addItemUnderRootItem() {
   }
 }
 
-void TreeItemQModelTestBase::test_add_item_to_unexpanded_root_item() {
+TYPED_TEST(TreeItemQModelTestBase,
+           test_add_item_to_unexpanded_root_item) {  // NOLINT
   QSignalSpy begin_insert_sigspy(
-      qmodel->qmodel(),
+      this->qmodel->qmodel(),
       SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
   QSignalSpy end_insert_sigspy(
-      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
+      this->qmodel->qmodel(),
+      SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   // Exercise system
-  CUSTOM_ASSERT(addItemUnderRootItem());
+  CUSTOM_ASSERT(TestFixture::addItemUnderRootItem());
 
   // Verify result
   // should not insert rows
@@ -726,24 +843,26 @@ void TreeItemQModelTestBase::test_add_item_to_unexpanded_root_item() {
   ASSERT_EQ(0, end_insert_sigspy.count());
 }
 
-void TreeItemQModelTestBase::test_add_item_to_expanded_root_item() {
-  expandToLevel(0);
+TYPED_TEST(TreeItemQModelTestBase,
+           test_add_item_to_expanded_root_item) {  // NOLINT
+  TestFixture::expandToLevel(0);
 
   int expect_insert_row = 0;
   for (auto& row_data : level0_row_data) {
     if (row_data.text == ADD_MORE_ROW_TEXT) break;
 
-    if (shouldRowVisible(row_data)) ++expect_insert_row;
+    if (TestFixture::shouldRowVisible(row_data)) ++expect_insert_row;
   }
 
   QSignalSpy begin_insert_sigspy(
-      qmodel->qmodel(),
+      this->qmodel->qmodel(),
       SIGNAL(rowsAboutToBeInserted(const QModelIndex&, int, int)));
   QSignalSpy end_insert_sigspy(
-      qmodel->qmodel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)));
+      this->qmodel->qmodel(),
+      SIGNAL(rowsInserted(const QModelIndex&, int, int)));
 
   // Exercise system
-  CUSTOM_ASSERT(addItemUnderRootItem());
+  CUSTOM_ASSERT(TestFixture::addItemUnderRootItem());
 
   // Verify result
   ASSERT_EQ(1, begin_insert_sigspy.count());
@@ -751,7 +870,7 @@ void TreeItemQModelTestBase::test_add_item_to_expanded_root_item() {
 
   QList<QVariant> arguments = begin_insert_sigspy.takeFirst();
   auto parent_idx = qvariant_cast<QModelIndex>(arguments.at(0));
-  ASSERT_EQ(nullptr, qmodel->indexToItem(parent_idx));
+  ASSERT_EQ(nullptr, this->qmodel->indexToItem(parent_idx));
 
   int insert_row_first = qvariant_cast<int>(arguments.at(1));
   int insert_row_last = qvariant_cast<int>(arguments.at(2));
@@ -759,186 +878,34 @@ void TreeItemQModelTestBase::test_add_item_to_expanded_root_item() {
   ASSERT_EQ(expect_insert_row, insert_row_last);
 }
 
-TEST_F(TreeItemQModelTestBase, check_row_data) {  // NOLINT
-  CUSTOM_ASSERT(checkRowData());
-}
+class TreeItemQModelTest_TreeItemQModel
+    : public TreeItemQModelTestBase<TreeItemQModel> {};
 
-TEST_F(TreeItemQModelTestBase,
-       should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
-  CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
-}
-
-TEST_F(TreeItemQModelTestBase,
-       should_provider_FinishFilter_emit_modelReset) {  // NOLINT
-  CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
-}
-
-TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_not_visible_parent_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
-}
-
-TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
-}
-
-TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_children_populated_parent_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
-}
-
-TEST_F(TreeItemQModelTestBase,
-       test_add_item_to_unexpanded_root_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
-}
-
-TEST_F(TreeItemQModelTestBase, test_add_item_to_expanded_root_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
-}
-
-TEST_F(TreeItemQModelTestBase,
+TEST_F(TreeItemQModelTest_TreeItemQModel,
        should_null_item_to_index_got_invalid_root_idx) {  // NOLINT
-  QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
+  QModelIndex item_to_index = this->qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
   ASSERT_EQ(expect_index, item_to_index)
       << "null item_ptr should got root invalid index in completion mode";
 }
 
-class TreeItemQModelWithClearAndAddMoreRowTest : public TreeItemQModelTestBase {
- protected:
-  void SetUp() override {
-    TreeItemQModelTestBase::SetUp();
-
-    show_clear_row = true;
-    show_add_more_row = true;
-  }
-
-  std::shared_ptr<TreeItemQModel> createQModel() override {
-    return std::make_shared<TreeItemQModelWithClearAndAddMoreRow>();
-  }
-};
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest, check_row_data) {  // NOLINT
-  CUSTOM_ASSERT(checkRowData());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
-  CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       should_provider_FinishFilter_emit_modelReset) {  // NOLINT
-  CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_not_visible_parent_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_children_populated_parent_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_unexpanded_root_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
-}
-
-TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
-       test_add_item_to_expanded_root_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
-}
+class TreeItemQModelWithClearAndAddMoreRowTest
+    : public TreeItemQModelTestBase<TreeItemQModelWithClearAndAddMoreRow> {};
 
 TEST_F(TreeItemQModelWithClearAndAddMoreRowTest,
        should_null_item_to_index_got_invalid_root_idx) {  // NOLINT
-  QModelIndex item_to_index = qmodel->itemToIndex(nullptr);
+  QModelIndex item_to_index = this->qmodel->itemToIndex(nullptr);
   auto expect_index = QModelIndex();
 
   ASSERT_EQ(expect_index, item_to_index)
       << "null item_ptr should got root invalid index in completion mode";
 }
 
-class TreeItemQModelWithProviderItemTest : public TreeItemQModelTestBase {
- protected:
-  void SetUp() override {
-    TreeItemQModelTestBase::SetUp();
+class TreeItemQModelWithProviderRootTest
+    : public TreeItemQModelTestBase<TreeItemQModelWithProviderRoot> {};
 
-    always_selectable = true;
-
-    show_clear_row = false;
-    show_add_more_row = false;
-
-    root_row_data.subitems = &provider_row_data;
-    root_row_data_after_reset.subitems = &provider_row_data_after_reset;
-
-    ASSERT_EQ(&level0_row_data, provider_row_data[0].subitems);
-  }
-
-  void TearDown() override {
-    root_row_data.subitems = &level0_row_data;
-    root_row_data_after_reset.subitems = &level0_row_data_after_reset;
-
-    TreeItemQModelTestBase::TearDown();
-  }
-
-  std::shared_ptr<TreeItemQModel> createQModel() override {
-    return std::make_shared<TreeItemQModelWithProviderRoot>();
-  }
-
-  int adjustLevel(int level) override { return level + 1; }
-};
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       should_display_the_provider_name_as_a_visible_root_item) {  // NOLINT
-  CUSTOM_ASSERT(checkRowData());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       should_provider_BeginFilter_emit_modelAboutToReset) {  // NOLINT
-  CUSTOM_ASSERT(should_provider_BeginFilter_emit_modelAboutToReset());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       should_provider_FinishFilter_emit_modelReset) {  // NOLINT
-  CUSTOM_ASSERT(should_provider_FinishFilter_emit_modelReset());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_not_visible_parent_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_not_visible_parent_item());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_visible_but_children_not_populated_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_visible_but_children_not_populated_item());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_children_populated_parent_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_children_populated_parent_item());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_unexpanded_root_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_unexpanded_root_item());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
-       test_add_item_to_expanded_root_item) {  // NOLINT
-  CUSTOM_ASSERT(test_add_item_to_expanded_root_item());
-}
-
-TEST_F(TreeItemQModelWithProviderItemTest,
+TEST_F(TreeItemQModelWithProviderRootTest,
        should_null_item_to_index_got_provider_item) {  // NOLINT
   // Setup fixture
   auto expect_index = qmodel->qmodel()->index(0, 0, QModelIndex());
