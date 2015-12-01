@@ -63,34 +63,34 @@ class KbNodeAttributeStateSet {
   KbNodeHelper& kbNodeHelper() { return state_.get<1>(); }
 
  private:
-  TextFixtureStateSet<SupplierTestHelper, KbNodeHelper> state_;
+  xtestutils::TextFixtureStateSet<SupplierTestHelper, KbNodeHelper> state_;
 };
 
-class KbNodeAttributeFixture : public TestFixture {
+class KbNodeAttributeFixture : public xtestutils::TestFixture {
  public:
   std::unique_ptr<KbNodeAttributeStateSet> state_;
 
  public:
   explicit KbNodeAttributeFixture(
       std::unique_ptr<KbNodeAttributeStateSet> state)
-      : TestFixture{},
+      : xtestutils::TestFixture{},
         state_{std::move(state)},
         attr_{state_->supplierHelper().supplier_.get()} {
     attr_.setKbNode(state_->kbNodeHelper().kbnode_.get());
   }
 
   KbNodeAttributeFixture(const KbNodeAttributeFixture& rhs)
-      : TestFixture{rhs},
+      : xtestutils::TestFixture{rhs},
         state_{new KbNodeAttributeStateSet{*rhs.state_}},
         attr_{rhs.attr_} {}
 
   KbNodeAttributeFixture(KbNodeAttributeFixture&& rhs)
-      : TestFixture{std::move(rhs)},
+      : xtestutils::TestFixture{std::move(rhs)},
         state_{new KbNodeAttributeStateSet{std::move(*rhs.state_)}},
         attr_{std::move(rhs.attr_)} {}
 
   KbNodeAttributeFixture& operator=(const KbNodeAttributeFixture& rhs) {
-    TestFixture::operator=(rhs);
+    xtestutils::TestFixture::operator=(rhs);
     *state_ = *rhs.state_;
 
     R_EXPECT_CALL(*state_->supplierHelper().supplier_,
@@ -101,7 +101,7 @@ class KbNodeAttributeFixture : public TestFixture {
   }
 
   KbNodeAttributeFixture& operator=(KbNodeAttributeFixture&& rhs) {
-    TestFixture::operator=(std::move(rhs));
+    xtestutils::TestFixture::operator=(std::move(rhs));
     *state_ = std::move(*rhs.state_);
 
     R_EXPECT_CALL(*state_->supplierHelper().supplier_,
@@ -143,20 +143,19 @@ class NonEmptyKbNodeAttributeFixtureFactory {
   }
 };
 
-using FixtureHelperGenerator =
-    CopyMoveFixtureHelperGenerator<KbNodeAttributeFixture,
-                                   EmptyKbNodeAttributeFixtureFactory,
-                                   NonEmptyKbNodeAttributeFixtureFactory>;
+using FixtureHelperGenerator = xtestutils::CopyMoveFixtureHelperGenerator<
+    KbNodeAttributeFixture, EmptyKbNodeAttributeFixtureFactory,
+    NonEmptyKbNodeAttributeFixtureFactory>;
 
 using EmptyCopyMoveFixtureHelper =
-    CopyMoveFixtureHelper<KbNodeAttributeFixture,
-                          EmptyKbNodeAttributeFixtureFactory>;
+    xtestutils::CopyMoveFixtureHelper<KbNodeAttributeFixture,
+                                      EmptyKbNodeAttributeFixtureFactory>;
 
-class EmptyKbNodeAttributeTest
-    : public ErrorVerbosityTestWithParam<EmptyCopyMoveFixtureHelper*> {
+class EmptyKbNodeAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
+                                     EmptyCopyMoveFixtureHelper*> {
  private:
-  FixtureLoaderFromHelper<KbNodeAttributeFixture, EmptyKbNodeAttributeTest>
-      fixture_;
+  xtestutils::FixtureLoaderFromHelper<KbNodeAttributeFixture,
+                                      EmptyKbNodeAttributeTest> fixture_;
 
  public:
   EmptyKbNodeAttributeTest()
@@ -253,14 +252,15 @@ TEST_P(EmptyKbNodeAttributeTest,
 }
 
 using NonEmptyCopyMoveFixtureHelper =
-    CopyMoveFixtureHelper<KbNodeAttributeFixture,
-                          NonEmptyKbNodeAttributeFixtureFactory>;
+    xtestutils::CopyMoveFixtureHelper<KbNodeAttributeFixture,
+                                      NonEmptyKbNodeAttributeFixtureFactory>;
 
 class NonEmptyKbNodeAttributeTest
-    : public ErrorVerbosityTestWithParam<NonEmptyCopyMoveFixtureHelper*> {
+    : public xtestutils::ErrorVerbosityTestWithParam<
+          NonEmptyCopyMoveFixtureHelper*> {
  private:
-  FixtureLoaderFromHelper<KbNodeAttributeFixture, NonEmptyKbNodeAttributeTest>
-      fixture_;
+  xtestutils::FixtureLoaderFromHelper<KbNodeAttributeFixture,
+                                      NonEmptyKbNodeAttributeTest> fixture_;
 
  public:
   NonEmptyKbNodeAttributeTest()
@@ -351,49 +351,72 @@ TEST_P(NonEmptyKbNodeAttributeTest,
 
 ////////////////////////////////////////////////
 
-class KbNodeAttributeSupplierTest : public ::testing::Test {
+class KbNodeHelperAutoPrepare : public KbNodeHelper {
+ public:
+  KbNodeHelperAutoPrepare() : KbNodeHelper{} { prepareKbNode(); }
+};
+
+class KbNodeAttrSupplierFixture : public xtestutils::TestFixture {
+ public:
+  KbNodeAttrSupplierFixture()
+      : xtestutils::TestFixture{},
+        kbnode_helper_{},
+        max_attrs_{xtestutils::randomIntInRange(3, 5)},
+        attr_supplier_{rootKbNode(), max_attrs_} {
+    std::cout << "max_attrs_ " << max_attrs_ << std::endl;
+  }
+
+  void validateSupplier() {
+    ASSERT_EQ(kbnode_helper_.kbnode_name_, attr_supplier_.name());
+    ASSERT_EQ(max_attrs_, attr_supplier_.max_attrs());
+    ASSERT_EQ(rootKbNode(), attr_supplier_.getRootKbNode());
+  }
+
+  void checkSetup() {
+    verify();
+    validateSupplier();
+  }
+
+  KbNodeAttributeSupplier* attrSupplier() { return &attr_supplier_; }
+  int max_attrs() { return max_attrs_; }
+
+ private:
+  SNAIL_DISABLE_COPY(KbNodeAttrSupplierFixture);
+
+  IKbNode* rootKbNode() { return kbnode_helper_.kbnode_.get(); }
+
+  KbNodeHelperAutoPrepare kbnode_helper_;
+  int max_attrs_;
+  KbNodeAttributeSupplier attr_supplier_;
+};
+
+class KbNodeAttributeSupplierTest : public xtestutils::ErrorVerbosityTest {
  protected:
-  KbNodeAttributeSupplierTest() {
-    // const string saved_flag = GMOCK_FLAG(verbose);
-    GMOCK_FLAG(verbose) = kErrorVerbosity;
-  }
+  KbNodeAttributeSupplierTest()
+      : ErrorVerbosityTest(), attr_supplier{fixture_->attrSupplier()} {}
   // ~KbNodeAttributeSupplierTest() { }
-  virtual void SetUp() {
-    expect_max_attrs = std::rand();
-
-    EXPECT_CALL(root_kbnode, name()).WillRepeatedly(Return(root_kbnode_name));
-
-    attr_supplier = utils::make_unique<KbNodeAttributeSupplier>(
-        &root_kbnode, expect_max_attrs);
-
-    ASSERT_EQ(root_kbnode_name, attr_supplier->name());
-    ASSERT_EQ(expect_max_attrs, attr_supplier->max_attrs());
-    ASSERT_EQ(&root_kbnode, attr_supplier->getRootKbNode());
-  }
+  // virtual void SetUp() {}
   // virtual void TearDown() { }
 
-  // region: objects test subject depends on
-  MockKbNode root_kbnode;
-  utils::U8String root_kbnode_name;
-  int expect_max_attrs;
-  // endregion
+  int max_attrs() { return fixture_->max_attrs(); }
 
-  // region: test subject
-  std::unique_ptr<fto::KbNodeAttributeSupplier> attr_supplier;
-  // endregion
+ private:
+  xtestutils::TestFixtureLoader<KbNodeAttrSupplierFixture> fixture_;
+
+ protected:
+  KbNodeAttributeSupplier* attr_supplier;
 };
 
 TEST_F(
     KbNodeAttributeSupplierTest,
     should_createAttribute_create_KbNodeAttribute_instance_with_this_as_the_supplier) {  // NOLINT
-  // Exercise system
   auto new_attr = attr_supplier->addAttribute();
 
   // Verify results
   auto actual_attr = dynamic_cast<fto::KbNodeAttribute*>(new_attr);
   ASSERT_NE(nullptr, actual_attr);
 
-  ASSERT_EQ(attr_supplier.get(), actual_attr->supplier());
+  ASSERT_EQ(attr_supplier, actual_attr->supplier());
 }
 
 }  // namespace tests

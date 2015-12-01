@@ -13,6 +13,8 @@
 
 #include "utils/basic_utils.h"
 
+namespace xtestutils {
+
 class QModelIndexGenerator : public QAbstractTableModel {
  public:
   QModelIndexGenerator() {}
@@ -40,5 +42,7 @@ class QModelIndexGenerator : public QAbstractTableModel {
  private:
   SNAIL_DISABLE_COPY(QModelIndexGenerator)
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_QMODELINDEX_GENERATOR_H_

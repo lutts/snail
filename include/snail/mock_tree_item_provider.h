@@ -30,7 +30,8 @@ class MockTreeItemProvider : public ITreeItemProvider {
       childItems, std::unique_ptr<IChildItemIterator>(ITreeItem* parent_item));
 };
 
-class TreeItemProviderListener : public SimpleMockListener<ITreeItemProvider> {
+class TreeItemProviderListener
+    : public xtestutils::SimpleMockListener<ITreeItemProvider> {
  public:
   SNAIL_MOCK_LISTENER0(TreeItemProviderListener, BeginFilter, void());
   SNAIL_MOCK_LISTENER0(TreeItemProviderListener, FinishFilter, void());

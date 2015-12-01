@@ -12,6 +12,8 @@
 #include <memory>
 #include <list>
 
+namespace xtestutils {
+
 class IModelViewPair {
  public:
   virtual ~IModelViewPair() = default;
@@ -82,5 +84,7 @@ class ModelViewMockGenerator {
 
   std::list<std::shared_ptr<IModelViewPair> > mvpair_list;
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_MODEL_VIEW_MOCK_GENERATOR_H_

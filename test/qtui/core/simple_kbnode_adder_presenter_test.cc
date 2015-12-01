@@ -116,7 +116,7 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
 
   MockTreeItemProvider kbnode_provider;
   std::shared_ptr<MockTreeItemQModel> kbnode_qmodel;
-  QModelIndexGenerator index_generator;
+  xtestutils::QModelIndexGenerator index_generator;
 
   MockPfTriadManager triad_manager;
   // endregion
@@ -126,19 +126,21 @@ class SimpleKbNodeAdderPresenterTestBase : public TestBase {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<ISimpleKbNodeAdderView::UserSelectIndexSlotType> userSelectIndex;
+  xtestutils::SlotCatcher<ISimpleKbNodeAdderView::UserSelectIndexSlotType>
+      userSelectIndex;
 
   using NewKbNodeNameChangedSlotType =
       ISimpleKbNodeAdderView::NewKbNodeNameChangedSlotType;
-  SlotCatcher<NewKbNodeNameChangedSlotType> newKbNodeNameChanged;
+  xtestutils::SlotCatcher<NewKbNodeNameChangedSlotType> newKbNodeNameChanged;
 
   using UserClickAddButtonSlotType =
       ISimpleKbNodeAdderView::UserClickAddButtonSlotType;
-  SlotCatcher<UserClickAddButtonSlotType> userClickAddButton;
+  xtestutils::SlotCatcher<UserClickAddButtonSlotType> userClickAddButton;
 
   using UserToggleCategoryCheckboxSlotType =
       ISimpleKbNodeAdderView::UserToggleCategoryCheckboxSlotType;
-  SlotCatcher<UserToggleCategoryCheckboxSlotType> userToggleCategoryCheckbox;
+  xtestutils::SlotCatcher<UserToggleCategoryCheckboxSlotType>
+      userToggleCategoryCheckbox;
   // endregion
 };
 

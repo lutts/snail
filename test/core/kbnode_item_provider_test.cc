@@ -73,7 +73,7 @@ TEST_F(KbNodeItemProviderTest,
   ASSERT_EQ(root_kbnode_name_, kbnode_provider_->name());
 }
 
-class MockListener : public SimpleMockListener<ITreeItemProvider> {
+class MockListener : public xtestutils::SimpleMockListener<ITreeItemProvider> {
  public:
   SNAIL_MOCK_LISTENER0(MockListener, BeginFilter, void());
   SNAIL_MOCK_LISTENER0(MockListener, FinishFilter, void());

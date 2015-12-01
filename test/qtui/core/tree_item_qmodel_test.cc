@@ -393,7 +393,7 @@ class TreeItemQModelTestBase : public ::testing::Test {
 
   // region: objects test subject depends on
   TreeItemProviderTestStub item_provider;
-  QModelIndexGenerator index_generator;
+  xtestutils::QModelIndexGenerator index_generator;
 
   bool always_selectable{false};
   bool show_clear_row{false};
@@ -406,13 +406,13 @@ class TreeItemQModelTestBase : public ::testing::Test {
 
   // region: object depends on test subject
   using BeginFilterSlotType = ITreeItemProvider::BeginFilterSlotType;
-  SlotCatcher<BeginFilterSlotType> providerBeginFilter;
+  xtestutils::SlotCatcher<BeginFilterSlotType> providerBeginFilter;
 
   using FinishFilterSlotType = ITreeItemProvider::FinishFilterSlotType;
-  SlotCatcher<FinishFilterSlotType> providerFinishFilter;
+  xtestutils::SlotCatcher<FinishFilterSlotType> providerFinishFilter;
 
   using ItemAddedSlotType = ITreeItemProvider::ItemAddedSlotType;
-  SlotCatcher<ItemAddedSlotType> itemAdded;
+  xtestutils::SlotCatcher<ItemAddedSlotType> itemAdded;
   // endregion
 };
 

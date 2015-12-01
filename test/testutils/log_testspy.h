@@ -14,6 +14,8 @@
 
 enum class LogSeverityLevel;
 
+namespace xtestutils {
+
 class LogTestSpy {
  public:
   struct Message {
@@ -42,5 +44,7 @@ class LogTestSpy {
 };
 
 std::ostream& operator<<(std::ostream& s, const LogTestSpy::Message& msg);
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_LOG_TESTSPY_H_

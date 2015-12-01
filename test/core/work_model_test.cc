@@ -45,7 +45,7 @@ class WorkModelTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<fto::Work::NameChangedSlotType> workNameChanged;
+  xtestutils::SlotCatcher<fto::Work::NameChangedSlotType> workNameChanged;
   // endregion
 };
 

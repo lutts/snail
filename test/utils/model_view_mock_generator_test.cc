@@ -42,7 +42,8 @@ class ModelViewMockGeneratorTest : public ::testing::Test {
   virtual void SetUp() {}
   // virtual void TearDown() { }
 
-  ModelViewMockGenerator<MockDummyModel, MockDummyView> mvmock_generator;
+  xtestutils::ModelViewMockGenerator<MockDummyModel, MockDummyView>
+      mvmock_generator;
 };
 
 TEST_F(
@@ -186,7 +187,7 @@ TEST_F(ModelViewMockGeneratorTest,
 }
 
 template <typename TModel, typename TView>
-class MockMVPair : public IModelViewPair {
+class MockMVPair : public xtestutils::IModelViewPair {
  public:
   ~MockMVPair() { destruct(); }
 
@@ -196,7 +197,8 @@ class MockMVPair : public IModelViewPair {
 TEST_F(ModelViewMockGeneratorTest,
        should_destruct_all_mvpair_when_mvmock_generator_destruct) {  // NOLINT
   // Setup fixture
-  ModelViewMockGenerator<MockDummyModel, MockDummyView, MockMVPair> l_generator;
+  xtestutils::ModelViewMockGenerator<MockDummyModel, MockDummyView, MockMVPair>
+      l_generator;
 
   auto mvpair1 = l_generator.make_mvpair();
   auto mvpair2 = l_generator.make_mvpair();

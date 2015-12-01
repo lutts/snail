@@ -92,10 +92,12 @@ class MainWindowPresenterTest : public ::testing::Test {
   // region: object depends on test subject
   using WindowTitleChangedSlotType =
       snailcore::IMainWindowModel::WindowTitleChangedSlotType;
-  SlotCatcher<WindowTitleChangedSlotType> windowTitleChanged;
+  xtestutils::SlotCatcher<WindowTitleChangedSlotType> windowTitleChanged;
 
-  SlotCatcher<IMainWindowView::UserClickAddWorkSlotType> userClickAddWork;
-  SlotCatcher<IMainWindowView::RequestCloseSlotType> userCloseWindow;
+  xtestutils::SlotCatcher<IMainWindowView::UserClickAddWorkSlotType>
+      userClickAddWork;
+  xtestutils::SlotCatcher<IMainWindowView::RequestCloseSlotType>
+      userCloseWindow;
   // endregion
 };
 

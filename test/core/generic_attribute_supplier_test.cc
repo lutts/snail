@@ -39,7 +39,7 @@ class MockGenericAttributeSupplier
 };
 
 class GenericAttrSupplierListener
-    : public SimpleMockListener<MockGenericAttributeSupplier> {
+    : public xtestutils::SimpleMockListener<MockGenericAttributeSupplier> {
  public:
   SNAIL_MOCK_LISTENER1(GenericAttrSupplierListener, AttributeChanged,
                        void(IAttribute* attr));

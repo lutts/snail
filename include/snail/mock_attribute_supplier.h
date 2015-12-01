@@ -35,7 +35,8 @@ class MockAttributeSupplier : public IAttributeSupplier {
   MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 };
 
-class AttrSupplierListener : public SimpleMockListener<IAttributeSupplier> {
+class AttrSupplierListener
+    : public xtestutils::SimpleMockListener<IAttributeSupplier> {
  public:
   SNAIL_MOCK_LISTENER1(AttrSupplierListener, AttributeChanged,
                        void(IAttribute* attr));

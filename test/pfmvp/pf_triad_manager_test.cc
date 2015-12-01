@@ -127,7 +127,7 @@ TEST_F(PfTriadManagerTest,
 
   // Expectations
   auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
-  CheckPointType check;
+  xtestutils::CheckPointType check;
 
   expectationsOnSingleTriadDestroy(mvp_triad, mockListener.get(), &check);
 
@@ -145,7 +145,7 @@ TEST_F(PfTriadManagerTest, should_be_able_to_destroy_triad_by_view) {  // NOLINT
 
   // Expectations
   auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
-  CheckPointType check;
+  xtestutils::CheckPointType check;
 
   expectationsOnSingleTriadDestroy(mvp_triad, mockListener.get(), &check);
 
@@ -201,7 +201,7 @@ TEST_F(
 #define dont_monitor_request_remove false
   auto mockListener = MockListener::attachTo(triad_manager.get(), model, view,
                                              dont_monitor_request_remove);
-  CheckPointType check;
+  xtestutils::CheckPointType check;
   expectationsOnSingleTriadDestroy(mvp_triad, mockListener.get(), &check);
 
   // Exercise system
@@ -221,7 +221,7 @@ TEST_F(PfTriadManagerTest,
 
   // Expectations
   auto mockListener = MockListener::attachTo(triad_manager.get(), model, view);
-  CheckPointType check;
+  xtestutils::CheckPointType check;
   {
     Sequence s1;
 
@@ -321,7 +321,7 @@ TEST_F(PfTriadManagerTest,
   ::Mock::VerifyAndClear(mockListener1.get());
   ::Mock::VerifyAndClear(mockListener2.get());
 
-  CheckPointType check;
+  xtestutils::CheckPointType check;
   // Expectations on remove view2
   expectationsOnSingleTriadDestroy(make_xxx_triad(model, view2, presenter2),
                                    mockListener2.get(), &check);
@@ -362,7 +362,7 @@ TEST_F(PfTriadManagerTest,
   auto mockListener2 =
       MockListener::attachStrictTo(triad_manager.get(), model, view2);
 
-  CheckPointType check;
+  xtestutils::CheckPointType check;
   // Expectations
   expectationsOnTwoTriadDestroy(
       make_xxx_triad(model, view1, presenter1), mockListener1.get(),
@@ -478,7 +478,7 @@ TEST_F(PfTriadManagerTest, should_be_able_to_delete_by_triad_self) {  // NOLINT
   createTestTriadAndListener<MockXXXViewFactory>(&mvpl_tuple);
 
   // Expectations
-  CheckPointType check;
+  xtestutils::CheckPointType check;
   expectationsOnSingleTriadDestroy(&mvpl_tuple, &check);
 
   // Exercise system

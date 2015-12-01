@@ -73,10 +73,10 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  void createValueAttributeView(MockObjectRecorder* mock_recorder);
-  void initLinkTypeDropDownList(MockObjectRecorder* mock_recorder);
+  void createValueAttributeView(xtestutils::MockObjectRecorder* mock_recorder);
+  void initLinkTypeDropDownList(xtestutils::MockObjectRecorder* mock_recorder);
   void checkCreateAttrSetViewArgs();
-  void createLinkAttributesView(MockObjectRecorder* mock_recorder);
+  void createLinkAttributesView(xtestutils::MockObjectRecorder* mock_recorder);
 
   // region: objects test subject depends on
   std::shared_ptr<MockKbNodeLinkAttributePopupEditorModel> model;
@@ -87,7 +87,7 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
   PfCreateViewArgs create_attr_set_view_args;
 
   std::shared_ptr<MockTreeItemQModel> link_type_qmodel;
-  QModelIndexGenerator index_generator;
+  xtestutils::QModelIndexGenerator index_generator;
   // endregion
 
   // region: test subject
@@ -97,19 +97,19 @@ class KbNodeLinkAttributePopupEditorPresenterTest : public ::testing::Test {
   // region: object depends on test subject
   using UserSelectLinkTypeSlotType =
       IKbNodeLinkAttributePopupEditorView::UserSelectLinkTypeSlotType;
-  SlotCatcher<UserSelectLinkTypeSlotType> userSelectLinkType;
+  xtestutils::SlotCatcher<UserSelectLinkTypeSlotType> userSelectLinkType;
 
   using LinkTypeChangedSlotType =
       IKbNodeLinkAttributePopupEditorModel::LinkTypeChangedSlotType;
-  SlotCatcher<LinkTypeChangedSlotType> linkTypeChanged;
+  xtestutils::SlotCatcher<LinkTypeChangedSlotType> linkTypeChanged;
 
   using UserClickDoneSlotType =
       IKbNodeLinkAttributePopupEditorView::UserClickDoneSlotType;
-  SlotCatcher<UserClickDoneSlotType> userClickDone;
+  xtestutils::SlotCatcher<UserClickDoneSlotType> userClickDone;
 
   using ValidateCompleteSlotType =
       IKbNodeLinkAttributePopupEditorModel::ValidateCompleteSlotType;
-  SlotCatcher<ValidateCompleteSlotType> validateComplete;
+  xtestutils::SlotCatcher<ValidateCompleteSlotType> validateComplete;
   // endregion
 };
 
@@ -119,8 +119,8 @@ void KbNodeLinkAttributePopupEditorPresenterTest::checkCreateAttrSetViewArgs() {
 }
 
 void KbNodeLinkAttributePopupEditorPresenterTest::createValueAttributeView(
-    MockObjectRecorder* mock_recorder) {
-  MockObjectRecorder& mock_obj_recorder = *mock_recorder;
+    xtestutils::MockObjectRecorder* mock_recorder) {
+  xtestutils::MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
   xtestutils::RandomString value_attr_name;
   R_EXPECT_CALL(*model, valueAttrName())
@@ -139,8 +139,8 @@ void KbNodeLinkAttributePopupEditorPresenterTest::createValueAttributeView(
 }
 
 void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
-    MockObjectRecorder* mock_recorder) {
-  MockObjectRecorder& mock_obj_recorder = *mock_recorder;
+    xtestutils::MockObjectRecorder* mock_recorder) {
+  xtestutils::MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
   auto link_type_provider = xtestutils::genDummyPointer<ITreeItemProvider>();
   R_EXPECT_CALL(*model, getLinkTypeItemProvider())
@@ -162,8 +162,8 @@ void KbNodeLinkAttributePopupEditorPresenterTest::initLinkTypeDropDownList(
 }
 
 void KbNodeLinkAttributePopupEditorPresenterTest::createLinkAttributesView(
-    MockObjectRecorder* mock_recorder) {
-  MockObjectRecorder& mock_obj_recorder = *mock_recorder;
+    xtestutils::MockObjectRecorder* mock_recorder) {
+  xtestutils::MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
   auto attr_set_model = std::make_shared<MockAttributeSetModel>();
   std::shared_ptr<IPfModel> attr_set_pfmodel = attr_set_model;

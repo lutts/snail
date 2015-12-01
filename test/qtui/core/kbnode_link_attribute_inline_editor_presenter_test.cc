@@ -25,7 +25,7 @@ using namespace pfmvp::tests;      // NOLINT
 
 class KbNodeLinkAttributeInlineEditorPresenterTest;
 
-class UpdateValueTestFixture : public TestFixture {
+class UpdateValueTestFixture : public xtestutils::TestFixture {
  public:
   UpdateValueTestFixture(
       const utils::U8String& name,
@@ -77,14 +77,15 @@ class KbNodeLinkAttributeInlineEditorPresenterTest : public ::testing::Test {
   // region: object depends on test subject
   using UserClickShowPopupEditorSlotType =
       IKbNodeLinkAttributeInlineEditorView::UserClickShowPopupEditorSlotType;
-  SlotCatcher<UserClickShowPopupEditorSlotType> userClickShowPopupEditor;
+  xtestutils::SlotCatcher<UserClickShowPopupEditorSlotType>
+      userClickShowPopupEditor;
   // endregion
 };
 
 UpdateValueTestFixture::UpdateValueTestFixture(
     const utils::U8String& name,
     KbNodeLinkAttributeInlineEditorPresenterTest* test_case)
-    : TestFixture(name) {
+    : xtestutils::TestFixture(name) {
   xtestutils::RandomString attr_value_text;
   R_EXPECT_CALL(*(test_case->model), valueText())
       .WillOnce(Return(attr_value_text.ustr()));

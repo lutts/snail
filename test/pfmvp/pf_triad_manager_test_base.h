@@ -175,7 +175,8 @@ class MockPfViewFactory : public IPfViewFactory {
 DEFINE_TEST_CLASSES(XXX)
 DEFINE_TEST_CLASSES(YYY)
 
-class MockListener : public SharedMockListener<MockListener, IPfTriadManager> {
+class MockListener
+    : public xtestutils::SharedMockListener<MockListener, IPfTriadManager> {
  public:
   MockListener(IPfModel* model, IPfView* view,
                bool monitor_request_remove = true)
@@ -314,19 +315,20 @@ class PfTriadManagerTestBase {
       std::vector<TestYYY_MVP_Triad>* all_mvp_triad = nullptr);
 
   template <typename TriadT>
-  void expectationsOnSingleTriadDestroy(TriadT triad, MockListener* listener,
-                                        CheckPointType* checker = nullptr,
-                                        Sequence* seq = nullptr, int times = 1);
+  void expectationsOnSingleTriadDestroy(
+      TriadT triad, MockListener* listener,
+      xtestutils::CheckPointType* checker = nullptr, Sequence* seq = nullptr,
+      int times = 1);
   template <typename MVPLTuple>
-  void expectationsOnSingleTriadDestroy(MVPLTuple* triad_and_listener,
-                                        CheckPointType* checker = nullptr,
-                                        Sequence* seq = nullptr, int times = 1);
-  void expectationsOnTwoTriadDestroy(TestXXX_MVP_Triad triad1,
-                                     MockListener* listener1,
-                                     TestXXX_MVP_Triad triad2,
-                                     MockListener* listener2,
-                                     CheckPointType* checker = nullptr,
-                                     Sequence* seq = nullptr, int times = 1);
+  void expectationsOnSingleTriadDestroy(
+      MVPLTuple* triad_and_listener,
+      xtestutils::CheckPointType* checker = nullptr, Sequence* seq = nullptr,
+      int times = 1);
+  void expectationsOnTwoTriadDestroy(
+      TestXXX_MVP_Triad triad1, MockListener* listener1,
+      TestXXX_MVP_Triad triad2, MockListener* listener2,
+      xtestutils::CheckPointType* checker = nullptr, Sequence* seq = nullptr,
+      int times = 1);
 
   void expectationsOnNotDestroyTriad(TestXXX_MVP_Triad triad,
                                      MockListener* listener);
@@ -463,7 +465,7 @@ void PfTriadManagerTestBase::createTestYYYTriads(
 
 template <typename TriadT>
 void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
-    TriadT triad, MockListener* listener, CheckPointType* checker,
+    TriadT triad, MockListener* listener, xtestutils::CheckPointType* checker,
     Sequence* seq, int times) {
   auto model = std::get<0>(triad);
   auto view = std::get<1>(triad);
@@ -524,8 +526,8 @@ void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
 
 template <typename MVPLTuple>
 void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
-    MVPLTuple* triad_and_listener, CheckPointType* checker, Sequence* seq,
-    int times) {
+    MVPLTuple* triad_and_listener, xtestutils::CheckPointType* checker,
+    Sequence* seq, int times) {
   auto triad = std::make_tuple(std::get<0>(*triad_and_listener),
                                std::get<1>(*triad_and_listener),
                                std::get<2>(*triad_and_listener));
@@ -535,7 +537,7 @@ void PfTriadManagerTestBase::expectationsOnSingleTriadDestroy(
 
 void PfTriadManagerTestBase::expectationsOnTwoTriadDestroy(
     TestXXX_MVP_Triad triad1, MockListener* listener1, TestXXX_MVP_Triad triad2,
-    MockListener* listener2, CheckPointType* checker, Sequence* seq,
+    MockListener* listener2, xtestutils::CheckPointType* checker, Sequence* seq,
     int times) {
   auto model1 = std::get<0>(triad1);
   auto view1 = std::get<1>(triad1);

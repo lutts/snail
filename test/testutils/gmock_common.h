@@ -40,6 +40,8 @@ using ::testing::_;
 using namespace testing;            // NOLINT
 using namespace testing::internal;  // NOLINT
 
+namespace xtestutils {
+
 class ErrorVerbosityTest : public ::testing::Test {
  public:
   ErrorVerbosityTest() {
@@ -122,7 +124,8 @@ class MockObjectRecorder {
   std::vector<void*> mock_objs;
 };
 
-#define RECORD_USED_MOCK_OBJECTS_SETUP MockObjectRecorder mock_obj_recorder
+#define RECORD_USED_MOCK_OBJECTS_SETUP \
+  xtestutils::MockObjectRecorder mock_obj_recorder
 #define VERIFY_RECORDED_MOCK_OBJECTS mock_obj_recorder.verify()
 #define CLEAR_RECORDED_MOCK_OBJECTS mock_obj_recorder.clear()
 
@@ -348,5 +351,7 @@ class TestFixtureLoader {
 
   F fixture_;
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_GMOCK_COMMON_H_

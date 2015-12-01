@@ -39,7 +39,8 @@ class AttributeSetModelTest : public ::testing::Test {
   void switchToDisplayMode();
   void checkCreateAttributeModel(
       std::shared_ptr<MockAttributeModel> attr_model,
-      SlotCatcher<IAttributeModel::ValidateCompleteSlotType>* validateComplete);
+      xtestutils::SlotCatcher<IAttributeModel::ValidateCompleteSlotType>*
+          validateComplete);
 
   // region: objects test subject depends on
   std::vector<std::unique_ptr<MockAttrSupplierTestStub> > attr_suppliers_up;
@@ -55,7 +56,7 @@ class AttributeSetModelTest : public ::testing::Test {
   // endregion
 };
 
-class MockListener : public SimpleMockListener<IAttributeSetModel> {
+class MockListener : public xtestutils::SimpleMockListener<IAttributeSetModel> {
  public:
   SNAIL_MOCK_LISTENER0(MockListener, SwitchToEditMode, void());
   SNAIL_MOCK_LISTENER0(MockListener, SwitchToDisplayMode, void());
@@ -97,9 +98,10 @@ void AttributeSetModelTest::switchToEditMode() {
   auto max_1_attr_0_supplier = attr_suppliers_up[max_1_attr_0_idx].get();
 
   // Expectations
-  // use ComplexReturnValue to ensure only this supplier's addAttributed called
+  // use xtestutils::ComplexReturnValue to ensure only this supplier's
+  // addAttributed called
   EXPECT_CALL(*max_1_attr_0_supplier, addAttributeCalled(_))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
 
   MockListener mock_listener(model.get());
   EXPECT_CALL(mock_listener, SwitchToEditMode());
@@ -133,7 +135,7 @@ TEST_F(AttributeSetModelTest, test_switch_to_display_mode) {  // NOLINT
   auto max_gt_1_attr_0_supplier = attr_suppliers_up[max_gt_1_attr_0_idx].get();
 
   EXPECT_CALL(*max_gt_1_attr_0_supplier, addAttributeCalled(_))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
   auto newly_added_attr_empty = max_gt_1_attr_0_supplier->addAttribute();
 
   // mannually added attr, but has valid value setted
@@ -142,7 +144,7 @@ TEST_F(AttributeSetModelTest, test_switch_to_display_mode) {  // NOLINT
   auto max_gt_1_attr_eq_max_minus_2_supplier =
       attr_suppliers_up[max_gt_1_attr_eq_max_minus_2_idx].get();
   EXPECT_CALL(*max_gt_1_attr_eq_max_minus_2_supplier, addAttributeCalled(_))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
   auto newly_added_attr_not_empty = static_cast<AttributeTestStub*>(
       max_gt_1_attr_eq_max_minus_2_supplier->addAttribute());
   newly_added_attr_not_empty->setValueText(xtestutils::genRandomString());
@@ -158,14 +160,14 @@ TEST_F(AttributeSetModelTest, test_switch_to_display_mode) {  // NOLINT
   // Expectations
   EXPECT_CALL(*max_1_attr_0_supplier,
               attributeRemoved(automatically_added_attr))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
 
   EXPECT_CALL(*max_gt_1_attr_0_supplier,
               attributeRemoved(newly_added_attr_empty))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
 
   EXPECT_CALL(*max_gt_1_attr_eq_max_supplier, attributeRemoved(cleared_attr))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
 
   MockListener mock_listener(model.get());
   EXPECT_CALL(mock_listener, SwitchToDisplayMode());
@@ -180,7 +182,7 @@ void AttributeSetModelTest::switchToDisplayMode() {
       MockAttrSupplierTestStub::kIdx_Supplier_Max_Eq_1_AttrCount_Eq_0;
   auto max_1_attr_0_supplier = attr_suppliers_up[max_1_attr_0_idx].get();
   EXPECT_CALL(*max_1_attr_0_supplier, attributeRemoved(_))
-      .WillOnce(Return(ComplexReturnValue(0)));
+      .WillOnce(Return(xtestutils::ComplexReturnValue(0)));
 
   model->switchMode();
 
@@ -190,7 +192,8 @@ void AttributeSetModelTest::switchToDisplayMode() {
 
 void AttributeSetModelTest::checkCreateAttributeModel(
     std::shared_ptr<MockAttributeModel> attr_model,
-    SlotCatcher<IAttributeModel::ValidateCompleteSlotType>* validateComplete) {
+    xtestutils::SlotCatcher<IAttributeModel::ValidateCompleteSlotType>*
+        validateComplete) {
   // Setup fixture
   IAttribute* attr = xtestutils::genDummyPointer<IAttribute>();
   std::shared_ptr<utils::ITrackable> null_trackobj;
@@ -212,7 +215,8 @@ void AttributeSetModelTest::checkCreateAttributeModel(
 TEST_F(AttributeSetModelTest,
        should_be_able_to_create_AttributeModel_for_attr) {  // NOLINT
   auto attr_model = std::make_shared<MockAttributeModel>();
-  SlotCatcher<IAttributeModel::ValidateCompleteSlotType> validateComplete;
+  xtestutils::SlotCatcher<IAttributeModel::ValidateCompleteSlotType>
+      validateComplete;
 
   CUSTOM_ASSERT(checkCreateAttributeModel(attr_model, &validateComplete));
 }
@@ -235,13 +239,16 @@ class AttributeSetModelTest_AttrEditorTriadTests
   }
 
   std::shared_ptr<MockAttributeModel> attr_model1;
-  SlotCatcher<IAttributeModel::ValidateCompleteSlotType> validateComplete1;
+  xtestutils::SlotCatcher<IAttributeModel::ValidateCompleteSlotType>
+      validateComplete1;
 
   std::shared_ptr<MockAttributeModel> attr_model2;
-  SlotCatcher<IAttributeModel::ValidateCompleteSlotType> validateComplete2;
+  xtestutils::SlotCatcher<IAttributeModel::ValidateCompleteSlotType>
+      validateComplete2;
 
   std::shared_ptr<MockAttributeModel> attr_model3;
-  SlotCatcher<IAttributeModel::ValidateCompleteSlotType> validateComplete3;
+  xtestutils::SlotCatcher<IAttributeModel::ValidateCompleteSlotType>
+      validateComplete3;
 };
 
 TEST_F(AttributeSetModelTest_AttrEditorTriadTests,

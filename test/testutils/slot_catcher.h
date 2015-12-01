@@ -8,6 +8,8 @@
 #ifndef TEST_TESTUTILS_SLOT_CATCHER_H_
 #define TEST_TESTUTILS_SLOT_CATCHER_H_
 
+namespace xtestutils {
+
 template <typename SlotType>
 class SlotCatcher {
  public:
@@ -41,5 +43,7 @@ class SlotCatcher {
   unsigned char raw_data[sizeof(SlotType)];
   SlotType* slot_{nullptr};
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_SLOT_CATCHER_H_

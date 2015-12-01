@@ -50,7 +50,7 @@ class LogTest : public ::testing::TestWithParam<LogSeverityLevel> {
 
   void emitAllPossibleLevelLogs();
 
-  const std::vector<LogTestSpy::Message> buildExpectMessagesByLevel(
+  const std::vector<xtestutils::LogTestSpy::Message> buildExpectMessagesByLevel(
       LogSeverityLevel lvl);
 };
 
@@ -113,11 +113,11 @@ TEST_F(LogTest, logShouldDisabledAfterDisableLogCalled) {  // NOLINT
 
 TEST_F(LogTest, nothingWillOutputWhenLogDisabled) {  // NOLINT
   // Setup fixture
-  LogTestSpy logSpy;
+  xtestutils::LogTestSpy logSpy;
   logSpy.start();
   disableLog();
 
-  std::vector<LogTestSpy::Message> empty_messages;
+  std::vector<xtestutils::LogTestSpy::Message> empty_messages;
 
   // Exercise system
   emitAllPossibleLevelLogs();
@@ -126,21 +126,21 @@ TEST_F(LogTest, nothingWillOutputWhenLogDisabled) {  // NOLINT
   ASSERT_EQ(empty_messages, logSpy.actual_messages);
 }
 
-#define ALOGX_TEST(logger, lvl, msg)                   \
-  TEST_F(LogTest, logger##_ShouldEmit##msg) {          \
-    /* Setup fixture */                                \
-    LogTestSpy logSpy;                                 \
-    logSpy.start();                                    \
-                                                       \
-    /* expectations */                                 \
-    std::vector<LogTestSpy::Message> expect_message;   \
-    expect_message.emplace_back(lvl, msg);             \
-                                                       \
-    /* Exercise system */                              \
-    logger << msg;                                     \
-                                                       \
-    /* Verify results */                               \
-    ASSERT_EQ(expect_message, logSpy.actual_messages); \
+#define ALOGX_TEST(logger, lvl, msg)                             \
+  TEST_F(LogTest, logger##_ShouldEmit##msg) {                    \
+    /* Setup fixture */                                          \
+    xtestutils::LogTestSpy logSpy;                               \
+    logSpy.start();                                              \
+                                                                 \
+    /* expectations */                                           \
+    std::vector<xtestutils::LogTestSpy::Message> expect_message; \
+    expect_message.emplace_back(lvl, msg);                       \
+                                                                 \
+    /* Exercise system */                                        \
+    logger << msg;                                               \
+                                                                 \
+    /* Verify results */                                         \
+    ASSERT_EQ(expect_message, logSpy.actual_messages);           \
   }
 
 ALOGX_TEST(ALOGV, LogSeverityLevel::verbose, kVerboseMsg)
@@ -159,9 +159,9 @@ void LogTest::emitAllPossibleLevelLogs() {
   ALOGU << kUserMsg;
 }
 
-const std::vector<LogTestSpy::Message> LogTest::buildExpectMessagesByLevel(
-    LogSeverityLevel lvl) {
-  std::vector<LogTestSpy::Message> expect_messages;
+const std::vector<xtestutils::LogTestSpy::Message>
+LogTest::buildExpectMessagesByLevel(LogSeverityLevel lvl) {
+  std::vector<xtestutils::LogTestSpy::Message> expect_messages;
 
   if (!isLogEnabled()) return expect_messages;  // return empty vector
 
@@ -195,13 +195,13 @@ const std::vector<LogTestSpy::Message> LogTest::buildExpectMessagesByLevel(
 
 TEST_P(LogTest, setLogLevelShouldBlockUnderLevelMessages) {
   // Setup fixture
-  LogTestSpy logSpy;
+  xtestutils::LogTestSpy logSpy;
   logSpy.start();
 
   LogSeverityLevel saved_lvl = getLogLevel();
 
   // expectations
-  const std::vector<LogTestSpy::Message> expect_messages =
+  const std::vector<xtestutils::LogTestSpy::Message> expect_messages =
       buildExpectMessagesByLevel(GetParam());
 
   // Exercise system
@@ -218,14 +218,14 @@ TEST_P(LogTest, setLogLevelShouldBlockUnderLevelMessages) {
 #define IF_ALOGX_TEST(logger, lvl)                                            \
   TEST_F(LogTest, logger##_ShouldReturnTrueWhenLevelAllowed) {                \
     /* Setup fixture */                                                       \
-    LogTestSpy logSpy;                                                        \
+    xtestutils::LogTestSpy logSpy;                                            \
     logSpy.start();                                                           \
                                                                               \
     LogSeverityLevel saved_lvl = getLogLevel();                               \
     LogSeverityLevel test_lvl = lvl;                                          \
                                                                               \
     /* expectations */                                                        \
-    const std::vector<LogTestSpy::Message> expect_messages =                  \
+    const std::vector<xtestutils::LogTestSpy::Message> expect_messages =      \
         buildExpectMessagesByLevel(test_lvl);                                 \
                                                                               \
     /* Exercise system */                                                     \
@@ -243,14 +243,14 @@ TEST_P(LogTest, setLogLevelShouldBlockUnderLevelMessages) {
                                                                               \
   TEST_F(LogTest, logger##_ShouldReturnFalseWhenLevelNotAllowed) {            \
     /* Setup fixture */                                                       \
-    LogTestSpy logSpy;                                                        \
+    xtestutils::LogTestSpy logSpy;                                            \
     logSpy.start();                                                           \
                                                                               \
     LogSeverityLevel saved_lvl = getLogLevel();                               \
     LogSeverityLevel test_lvl = lvl;                                          \
                                                                               \
     /* expectations */                                                        \
-    const std::vector<LogTestSpy::Message> empty_messages;                    \
+    const std::vector<xtestutils::LogTestSpy::Message> empty_messages;        \
                                                                               \
     /* Exercise system */                                                     \
     using LevelUnderlyingType = std::underlying_type<LogSeverityLevel>::type; \
@@ -276,48 +276,48 @@ IF_ALOGX_TEST(IF_ALOGW, LogSeverityLevel::warning)
 IF_ALOGX_TEST(IF_ALOGE, LogSeverityLevel::error)
 IF_ALOGX_TEST(IF_ALOGU, LogSeverityLevel::user)
 
-#define ALOGX_IF_TEST(logger, lvl, msg)                          \
-  TEST_F(LogTest, logger##_ShouldEmit##msg##WhenConditionTrue) { \
-    /* Setup fixture */                                          \
-    LogTestSpy logSpy;                                           \
-    logSpy.start();                                              \
-                                                                 \
-    LogSeverityLevel saved_lvl = getLogLevel();                  \
-    setLogLevel(LogSeverityLevel::verbose);                      \
-                                                                 \
-    /* expectations */                                           \
-    std::vector<LogTestSpy::Message> expect_messages;            \
-    expect_messages.emplace_back(lvl, msg);                      \
-                                                                 \
-    /* Exercise system */                                        \
-    logger(true) << msg;                                         \
-                                                                 \
-    /* Verify results */                                         \
-    ASSERT_EQ(expect_messages, logSpy.actual_messages);          \
-                                                                 \
-    /* Teardown fixture */                                       \
-    setLogLevel(saved_lvl);                                      \
-  }                                                              \
-                                                                 \
-  TEST_F(LogTest, logger##_ShouldNotAnyMsgWhenConditionFalse) {  \
-    /* Setup fixture */                                          \
-    LogTestSpy logSpy;                                           \
-    logSpy.start();                                              \
-                                                                 \
-    LogSeverityLevel saved_lvl = getLogLevel();                  \
-    setLogLevel(LogSeverityLevel::verbose);                      \
-                                                                 \
-    /* expectations */                                           \
-    const std::vector<LogTestSpy::Message> empty_messages;       \
-                                                                 \
-    /* Exercise system */                                        \
-    logger(false) << msg;                                        \
-                                                                 \
-    /* Verify results */                                         \
-    ASSERT_EQ(empty_messages, logSpy.actual_messages);           \
-                                                                 \
-    /* Teardown fixture */                                       \
-    setLogLevel(saved_lvl);                                      \
+#define ALOGX_IF_TEST(logger, lvl, msg)                                \
+  TEST_F(LogTest, logger##_ShouldEmit##msg##WhenConditionTrue) {       \
+    /* Setup fixture */                                                \
+    xtestutils::LogTestSpy logSpy;                                     \
+    logSpy.start();                                                    \
+                                                                       \
+    LogSeverityLevel saved_lvl = getLogLevel();                        \
+    setLogLevel(LogSeverityLevel::verbose);                            \
+                                                                       \
+    /* expectations */                                                 \
+    std::vector<xtestutils::LogTestSpy::Message> expect_messages;      \
+    expect_messages.emplace_back(lvl, msg);                            \
+                                                                       \
+    /* Exercise system */                                              \
+    logger(true) << msg;                                               \
+                                                                       \
+    /* Verify results */                                               \
+    ASSERT_EQ(expect_messages, logSpy.actual_messages);                \
+                                                                       \
+    /* Teardown fixture */                                             \
+    setLogLevel(saved_lvl);                                            \
+  }                                                                    \
+                                                                       \
+  TEST_F(LogTest, logger##_ShouldNotAnyMsgWhenConditionFalse) {        \
+    /* Setup fixture */                                                \
+    xtestutils::LogTestSpy logSpy;                                     \
+    logSpy.start();                                                    \
+                                                                       \
+    LogSeverityLevel saved_lvl = getLogLevel();                        \
+    setLogLevel(LogSeverityLevel::verbose);                            \
+                                                                       \
+    /* expectations */                                                 \
+    const std::vector<xtestutils::LogTestSpy::Message> empty_messages; \
+                                                                       \
+    /* Exercise system */                                              \
+    logger(false) << msg;                                              \
+                                                                       \
+    /* Verify results */                                               \
+    ASSERT_EQ(empty_messages, logSpy.actual_messages);                 \
+                                                                       \
+    /* Teardown fixture */                                             \
+    setLogLevel(saved_lvl);                                            \
   }
 
 ALOGX_IF_TEST(ALOGV_IF, LogSeverityLevel::verbose, kVerboseMsg)
@@ -330,11 +330,11 @@ ALOGX_IF_TEST(ALOGU_IF, LogSeverityLevel::user, kUserMsg)
 TEST_F(LogTest,
        UserLogTestSpyShouldOnlySnifferUserLevelMessagesOnly) {  // NOLINT
   // Setup fixture
-  UserLogTestSpy logSpy;
+  xtestutils::UserLogTestSpy logSpy;
   logSpy.start();
 
   // expectations
-  std::vector<LogTestSpy::Message> expect_messages;
+  std::vector<xtestutils::LogTestSpy::Message> expect_messages;
   expect_messages.emplace_back(LogSeverityLevel::user, kUserMsg);
 
   // Exercise system

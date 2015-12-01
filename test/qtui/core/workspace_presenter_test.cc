@@ -24,9 +24,9 @@ using namespace pfmvp;             // NOLINT
 using namespace pfmvp::tests;      // NOLINT
 
 using AboutToDestroyModelSlot =
-    SlotCatcher<IPfTriadManager::AboutToDestroyModelSlotType>;
+    xtestutils::SlotCatcher<IPfTriadManager::AboutToDestroyModelSlotType>;
 using AboutToDestroyViewSlot =
-    SlotCatcher<IPfTriadManager::AboutToDestroyViewSlotType>;
+    xtestutils::SlotCatcher<IPfTriadManager::AboutToDestroyViewSlotType>;
 
 class WorkSpacePresenterTest : public ::testing::Test {
  protected:
@@ -84,7 +84,8 @@ class WorkSpacePresenterTest : public ::testing::Test {
   std::shared_ptr<MockWorkSpaceView> view;
   MockPfTriadManager triad_manager;
 
-  ModelViewMockGenerator<MockWorkModel, MockWorkView> work_mv_generator;
+  xtestutils::ModelViewMockGenerator<MockWorkModel, MockWorkView>
+      work_mv_generator;
   // endregion
 
   // region: test subject
@@ -92,14 +93,16 @@ class WorkSpacePresenterTest : public ::testing::Test {
   // endregion
 
   // region: object depends on test subject
-  SlotCatcher<IWorkSpaceView::UserClickAddWorkSlotType> userClickAddWork;
-  SlotCatcher<IWorkSpaceView::UserCloseWorkSlotType> userCloseWork;
+  xtestutils::SlotCatcher<IWorkSpaceView::UserClickAddWorkSlotType>
+      userClickAddWork;
+  xtestutils::SlotCatcher<IWorkSpaceView::UserCloseWorkSlotType> userCloseWork;
 
-  SlotCatcher<IWorkSpaceModel::WorkModelAddedSlotType> workModelAdded;
-  SlotCatcher<IWorkSpaceModel::ActiveWorkModelChangedSlotType>
+  xtestutils::SlotCatcher<IWorkSpaceModel::WorkModelAddedSlotType>
+      workModelAdded;
+  xtestutils::SlotCatcher<IWorkSpaceModel::ActiveWorkModelChangedSlotType>
       activeWorkModelChanged;
 
-  SlotCatcher<IWorkSpaceModel::WorkModelActivelyRemovedSlotType>
+  xtestutils::SlotCatcher<IWorkSpaceModel::WorkModelActivelyRemovedSlotType>
       workModelActivelyRemoved;
   // endregion
 };

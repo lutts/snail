@@ -66,7 +66,7 @@ class WorkPresenterTest : public ::testing::Test {
   }
   // virtual void TearDown() { }
 
-  void createAttributeSetView(MockObjectRecorder* mock_recorder);
+  void createAttributeSetView(xtestutils::MockObjectRecorder* mock_recorder);
 
   // region: objects test subject depends on
   std::shared_ptr<MockWorkModel> model;
@@ -82,13 +82,13 @@ class WorkPresenterTest : public ::testing::Test {
 
   // region: object depends on test subject
   using UserSetWorkNameSlotType = IWorkView::UserSetWorkNameSlotType;
-  SlotCatcher<UserSetWorkNameSlotType> userSetWorkName;
+  xtestutils::SlotCatcher<UserSetWorkNameSlotType> userSetWorkName;
   // endregion
 };
 
 void WorkPresenterTest::createAttributeSetView(
-    MockObjectRecorder* mock_recorder) {
-  MockObjectRecorder& mock_obj_recorder = *mock_recorder;
+    xtestutils::MockObjectRecorder* mock_recorder) {
+  xtestutils::MockObjectRecorder& mock_obj_recorder = *mock_recorder;
 
   auto attr_set_model = std::make_shared<MockAttributeSetModel>();
   auto attr_set_view = std::make_shared<MockAttributeSetView>();

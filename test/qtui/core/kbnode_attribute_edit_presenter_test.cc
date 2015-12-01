@@ -103,7 +103,7 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   std::shared_ptr<MockTreeItemQModel> kbnode_qmodel;
 
   MockPfTriadManager triad_manager;
-  QModelIndexGenerator index_generator;
+  xtestutils::QModelIndexGenerator index_generator;
   // endregion
 
   // region: test subject
@@ -113,19 +113,19 @@ class KbNodeAttributeEditPresenterTest : public ::testing::Test {
   // region: object depends on test subject
   using UserClickedIndexSlotType =
       IKbNodeAttributeEditView::UserClickedIndexSlotType;
-  SlotCatcher<UserClickedIndexSlotType> userClickedIndex;
+  xtestutils::SlotCatcher<UserClickedIndexSlotType> userClickedIndex;
 
   using FilterPatternChangedSlotType =
       IKbNodeAttributeEditView::FilterPatternChangedSlotType;
-  SlotCatcher<FilterPatternChangedSlotType> filterPatternChanged;
+  xtestutils::SlotCatcher<FilterPatternChangedSlotType> filterPatternChanged;
 
   using EditingFinishedSlotType =
       IKbNodeAttributeEditView::EditingFinishedSlotType;
-  SlotCatcher<EditingFinishedSlotType> editingFinished;
+  xtestutils::SlotCatcher<EditingFinishedSlotType> editingFinished;
 
   using UserClickAddKbNodeSlotType =
       IKbNodeAttributeEditView::UserClickAddKbNodeSlotType;
-  SlotCatcher<UserClickAddKbNodeSlotType> userClickAddKbNode;
+  xtestutils::SlotCatcher<UserClickAddKbNodeSlotType> userClickAddKbNode;
   // endregion
 };
 

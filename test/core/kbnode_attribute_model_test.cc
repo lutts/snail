@@ -93,7 +93,7 @@ TEST_F(KbNodeAttributeModelTest,
   ASSERT_EQ(expect_name, actual_name);
 }
 
-class MockListener : public SimpleMockListener<IAttributeModel> {
+class MockListener : public xtestutils::SimpleMockListener<IAttributeModel> {
  public:
   SNAIL_MOCK_LISTENER0(MockListener, ValidateComplete, void());
 

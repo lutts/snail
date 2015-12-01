@@ -20,7 +20,7 @@ class QModelIndexGeneratorTest : public ::testing::Test {
   // virtual void TearDown() { }
 
   // region: test subject
-  QModelIndexGenerator generator;
+  xtestutils::QModelIndexGenerator generator;
   // endregion
 };
 

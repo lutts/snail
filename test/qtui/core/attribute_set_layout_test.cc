@@ -485,7 +485,8 @@ void AttributeSetLayoutTest::switchToDisplayMode() {
   CUSTOM_ASSERT(checkLayoutData(expect_on_display_mode, false));
 }
 
-class MockListener : public SimpleMockListener<fto::AttributeSetLayout> {
+class MockListener
+    : public xtestutils::SimpleMockListener<fto::AttributeSetLayout> {
  public:
   SNAIL_MOCK_LISTENER1(MockListener, CreateAttrEditor,
                        IAttributeEditorView*(snailcore::IAttribute* attr));
@@ -574,7 +575,7 @@ void AttributeSetLayoutTest::testAddAttribute(
 
   EXPECT_CALL(*supplier, addAttributeCalled(_))
       .Times(add_times)
-      .WillRepeatedly(Return(ComplexReturnValue(0)));
+      .WillRepeatedly(Return(xtestutils::ComplexReturnValue(0)));
 
   fillExistingAttrEditorViews(expect_layout_datas);
 
@@ -615,7 +616,7 @@ void AttributeSetLayoutTest::testAddAttribute(
   }
   auto attrs = supplier->attributes();
   EXPECT_CALL(*supplier, attributeRemoved(_))
-      .WillRepeatedly(Return(ComplexReturnValue(0)));
+      .WillRepeatedly(Return(xtestutils::ComplexReturnValue(0)));
   supplier->removeAttribute(attrs[attrs.size() - 1]);
   if (double_add) {
     supplier->removeAttribute(attrs[attrs.size() - 2]);

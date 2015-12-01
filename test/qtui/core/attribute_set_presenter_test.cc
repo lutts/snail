@@ -108,25 +108,25 @@ class AttributeSetPresenterTest : public ::testing::Test {
 
   // region: object depends on test subject
   using UserSwitchModeSlotType = IAttributeSetView::UserSwitchModeSlotType;
-  SlotCatcher<UserSwitchModeSlotType> userSwitchMode;
+  xtestutils::SlotCatcher<UserSwitchModeSlotType> userSwitchMode;
 
   using CreateAttrEditorSlotType =
       fto::AttributeSetLayout::CreateAttrEditorSlotType;
-  SlotCatcher<CreateAttrEditorSlotType> createAttrEditor;
+  xtestutils::SlotCatcher<CreateAttrEditorSlotType> createAttrEditor;
 
   using CloseAttributeEditorsSlotType =
       fto::AttributeSetLayout::CloseAttributeEditorsSlotType;
-  SlotCatcher<CloseAttributeEditorsSlotType> closeAttributeEditors;
+  xtestutils::SlotCatcher<CloseAttributeEditorsSlotType> closeAttributeEditors;
 
   using SwitchToEditModeSlotType = IAttributeSetModel::SwitchToEditModeSlotType;
-  SlotCatcher<SwitchToEditModeSlotType> switchToEditMode;
+  xtestutils::SlotCatcher<SwitchToEditModeSlotType> switchToEditMode;
 
   using SwitchToDisplayModeSlotType =
       IAttributeSetModel::SwitchToDisplayModeSlotType;
-  SlotCatcher<SwitchToDisplayModeSlotType> switchToDisplayMode;
+  xtestutils::SlotCatcher<SwitchToDisplayModeSlotType> switchToDisplayMode;
 
   using ValidateCompleteSlotType = IAttributeSetModel::ValidateCompleteSlotType;
-  SlotCatcher<ValidateCompleteSlotType> validateComplete;
+  xtestutils::SlotCatcher<ValidateCompleteSlotType> validateComplete;
   // endregion
 };
 

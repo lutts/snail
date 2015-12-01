@@ -109,7 +109,7 @@ TEST_P(
   auto& root_tuple = triad_vec[0];
 
   // Expectations
-  CheckPointType check;
+  xtestutils::CheckPointType check;
   Sequence s1;
 
   for (auto iter = triad_vec.rbegin(); iter != triad_vec.rend(); ++iter) {
@@ -135,7 +135,7 @@ TEST_P(
     auto& root_tuple = triad_vec[0];
 
     // Expectations
-    CheckPointType check;
+    xtestutils::CheckPointType check;
     Sequence s1;
 
     expectationsOnSingleTriadDestroy(&root_tuple, &check, &s1);

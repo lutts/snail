@@ -92,8 +92,9 @@ class AttrSupplierTestStub : public IAttributeSupplier {
 
   void attributeChanged(IAttribute* attr) override;
 
-  virtual ComplexReturnValue addAttributeCalled(IAttribute* new_attr) = 0;
-  virtual ComplexReturnValue attributeRemoved(IAttribute* attr) = 0;
+  virtual xtestutils::ComplexReturnValue addAttributeCalled(
+      IAttribute* new_attr) = 0;
+  virtual xtestutils::ComplexReturnValue attributeRemoved(IAttribute* attr) = 0;
 
  public:
   SNAIL_SIGSLOT_NONVIRTUAL(AttributeChanged, void(IAttribute* attr));
@@ -118,8 +119,10 @@ class MockAttrSupplierTestStub : public AttrSupplierTestStub {
       : AttrSupplierTestStub(name, max_attrs) {}
   virtual ~MockAttrSupplierTestStub() = default;
 
-  MOCK_METHOD1(addAttributeCalled, ComplexReturnValue(IAttribute* new_attr));
-  MOCK_METHOD1(attributeRemoved, ComplexReturnValue(IAttribute* attr));
+  MOCK_METHOD1(addAttributeCalled,
+               xtestutils::ComplexReturnValue(IAttribute* new_attr));
+  MOCK_METHOD1(attributeRemoved,
+               xtestutils::ComplexReturnValue(IAttribute* attr));
 
   MOCK_CONST_METHOD0(clone, IAttributeSupplier*());
 

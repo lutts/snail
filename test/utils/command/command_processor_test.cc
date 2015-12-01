@@ -16,7 +16,7 @@
 namespace utils {
 namespace tests {
 
-class MockListener : public SimpleMockListener<ICommandProcessor> {
+class MockListener : public xtestutils::SimpleMockListener<ICommandProcessor> {
  public:
   SNAIL_MOCK_LISTENER1(MockListener, CanUndoChanged, void(bool canUndo));
   SNAIL_MOCK_LISTENER1(MockListener, CanRedoChanged, void(bool canRedo));

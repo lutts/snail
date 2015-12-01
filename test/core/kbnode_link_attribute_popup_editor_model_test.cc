@@ -73,11 +73,11 @@ class KbNodeLinkAttributePopupEditorModelTest : public ::testing::Test {
   // endregion
 };
 
-class CreateAttrModelFixture : public TestFixture {
+class CreateAttrModelFixture : public xtestutils::TestFixture {
  public:
   CreateAttrModelFixture(const utils::U8String& name,
                          KbNodeLinkAttributePopupEditorModelTest* test_case)
-      : TestFixture(name) {
+      : xtestutils::TestFixture(name) {
     attr_model = std::make_shared<MockAttributeModel>();
     R_EXPECT_CALL(test_case->attr_model_factory,
                   createAttributeModel(test_case->value_attr_copy))
@@ -91,7 +91,7 @@ class CreateAttrModelFixture : public TestFixture {
   std::shared_ptr<MockAttributeModel> attr_model;
 
   using ValidateCompleteSlotType = IAttributeModel::ValidateCompleteSlotType;
-  SlotCatcher<ValidateCompleteSlotType> validateComplete;
+  xtestutils::SlotCatcher<ValidateCompleteSlotType> validateComplete;
 };
 
 TEST_F(KbNodeLinkAttributePopupEditorModelTest,
@@ -138,11 +138,11 @@ TEST_F(KbNodeLinkAttributePopupEditorModelTest,
   ASSERT_EQ(expect_proto_link_type, actual_proto_link_type_again);
 }
 
-class CreateAttrSetModelFixture : public TestFixture {
+class CreateAttrSetModelFixture : public xtestutils::TestFixture {
  public:
   CreateAttrSetModelFixture(const utils::U8String& name,
                             KbNodeLinkAttributePopupEditorModelTest* test_case)
-      : TestFixture(name) {
+      : xtestutils::TestFixture(name) {
     auto attr_suppliers = createDummyAttrSuppliers();
     R_EXPECT_CALL(*(test_case->link_type_copy), attributeSuppliers())
         .WillOnce(Return(attr_suppliers));
@@ -161,7 +161,7 @@ class CreateAttrSetModelFixture : public TestFixture {
   std::shared_ptr<MockAttributeSetModel> attr_set_model;
 
   using ValidateCompleteSlotType = IAttributeSetModel::ValidateCompleteSlotType;
-  SlotCatcher<ValidateCompleteSlotType> validateComplete;
+  xtestutils::SlotCatcher<ValidateCompleteSlotType> validateComplete;
 
  private:
   std::vector<IAttributeSupplier*> createDummyAttrSuppliers() {
@@ -187,8 +187,8 @@ TEST_F(
   ASSERT_EQ(fixture.attr_set_model, actual_attr_set_model);
 }
 
-class MockListener
-    : public SimpleMockListener<IKbNodeLinkAttributePopupEditorModel> {
+class MockListener : public xtestutils::SimpleMockListener<
+                         IKbNodeLinkAttributePopupEditorModel> {
  public:
   SNAIL_MOCK_LISTENER2(
       MockListener, LinkTypeChanged,

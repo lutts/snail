@@ -17,6 +17,8 @@
 
 using ::testing::StrictMock;
 
+namespace xtestutils {
+
 template <typename ListenerType, typename SubjectType>
 class SharedMockListener : public utils::ITrackable {
  public:
@@ -66,6 +68,8 @@ class SharedMockListener : public utils::ITrackable {
       std::shared_ptr<utils::ITrackable> trackObject, SubjectType* subject) = 0;
 };
 
+}  // namespace xtestutils
+
 #define BIND_SIGNAL0(sigName, RetType) \
   subject->when##sigName([this]() -> RetType { return sigName(); }, trackObject)
 
@@ -89,7 +93,8 @@ class SharedMockListener : public utils::ITrackable {
       trackObject)
 
 #define BEGIN_MOCK_LISTENER_DEF(ClassName, SubjectType) \
-  struct ClassName : public SharedMockListener<ClassName, SubjectType> {
+  struct ClassName                                      \
+      : public xtestutils::SharedMockListener<ClassName, SubjectType> {
 // }
 
 // clang-format off

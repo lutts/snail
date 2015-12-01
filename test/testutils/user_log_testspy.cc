@@ -14,6 +14,8 @@
 namespace logging = boost::log;
 namespace expr = boost::log::expressions;
 
+namespace xtestutils {
+
 UserLogTestSpy::UserLogTestSpy() {}
 
 void UserLogTestSpy::beforeEnableLogHook() {
@@ -22,3 +24,5 @@ void UserLogTestSpy::beforeEnableLogHook() {
 }
 
 UserLogTestSpy::~UserLogTestSpy() { logging::core::get()->reset_filter(); }
+
+}  // namespace xtestutils

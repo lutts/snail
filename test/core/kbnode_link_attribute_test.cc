@@ -47,7 +47,7 @@ MockKbNodeLinkAttributeSupplier& linkAttrSupplier() {
   return LinkAttrTestSharedState::getInstance().link_attr_supplier_;
 }
 
-class LinkAttrSupplierTestHelper : public TestFixture {
+class LinkAttrSupplierTestHelper : public xtestutils::TestFixture {
  public:
   LinkAttrSupplierTestHelper()
       : link_type_{new MockLinkType()},
@@ -76,7 +76,7 @@ class LinkAttrSupplierTestHelper : public TestFixture {
   }
 
   LinkAttrSupplierTestHelper(const LinkAttrSupplierTestHelper& rhs)
-      : TestFixture{rhs},
+      : xtestutils::TestFixture{rhs},
         link_type_{new MockLinkType()},
         value_attr_supplier_{new MockKbNodeAttributeSupplier} {
     R_EXPECT_CALL(*rhs.link_type_, clone()).WillOnce(Return(link_type_));
@@ -106,19 +106,21 @@ class LinkAttrSupplierTestHelper : public TestFixture {
 
   // slot catchers (not copyied, not moved)
   using LinkUpdatedSlotType = fto::LinkType::LinkUpdatedSlotType;
-  SlotCatcher<LinkUpdatedSlotType> linkUpdated_;
+  xtestutils::SlotCatcher<LinkUpdatedSlotType> linkUpdated_;
 
   using ValueAttrChangedSlotType = IAttributeSupplier::AttributeChangedSlotType;
-  SlotCatcher<ValueAttrChangedSlotType> valueAttrChanged_;
+  xtestutils::SlotCatcher<ValueAttrChangedSlotType> valueAttrChanged_;
 };
 
-class KbNodeLinkAttrFixture : public TestFixture {
+class KbNodeLinkAttrFixture : public xtestutils::TestFixture {
  public:
   KbNodeLinkAttrFixture()
-      : TestFixture{}, state_{}, link_attr_{&linkAttrSupplier()} {}
+      : xtestutils::TestFixture{}, state_{}, link_attr_{&linkAttrSupplier()} {}
 
   KbNodeLinkAttrFixture(const KbNodeLinkAttrFixture& rhs)
-      : TestFixture{rhs}, state_{rhs.state_}, link_attr_{rhs.link_attr_} {}
+      : xtestutils::TestFixture{rhs},
+        state_{rhs.state_},
+        link_attr_{rhs.link_attr_} {}
 
   KbNodeLinkAttribute* linkAttr() { return &link_attr_; }
   LinkAttrSupplierTestHelper* state() { return &state_; }
@@ -141,14 +143,15 @@ class KbNodeLinkAttrFixtureFactory {
 };
 
 using FixtureHelperGenerator =
-    CopyMoveFixtureHelperGenerator<KbNodeLinkAttrFixture,
-                                   KbNodeLinkAttrFixtureFactory>;
+    xtestutils::CopyMoveFixtureHelperGenerator<KbNodeLinkAttrFixture,
+                                               KbNodeLinkAttrFixtureFactory>;
 
 using LinkAttrCopyMoveFixtureHelper =
-    CopyMoveFixtureHelper<KbNodeLinkAttrFixture, KbNodeLinkAttrFixtureFactory>;
+    xtestutils::CopyMoveFixtureHelper<KbNodeLinkAttrFixture,
+                                      KbNodeLinkAttrFixtureFactory>;
 
-class KbNodeLinkAttributeTest
-    : public ErrorVerbosityTestWithParam<LinkAttrCopyMoveFixtureHelper*> {
+class KbNodeLinkAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
+                                    LinkAttrCopyMoveFixtureHelper*> {
  public:
   KbNodeLinkAttributeTest()
       : ErrorVerbosityTestWithParam{},
@@ -169,8 +172,8 @@ class KbNodeLinkAttributeTest
 
  private:
   LinkAttrTestSharedState shared_state;
-  FixtureLoaderFromHelper<KbNodeLinkAttrFixture, KbNodeLinkAttributeTest>
-      fixture_;
+  xtestutils::FixtureLoaderFromHelper<KbNodeLinkAttrFixture,
+                                      KbNodeLinkAttributeTest> fixture_;
 
  protected:
   KbNodeLinkAttribute* link_attr;
@@ -232,11 +235,11 @@ TEST_P(KbNodeLinkAttributeTest,
   updateLinkType();
 }
 
-class ValueAttrFixture : public TestFixture {
+class ValueAttrFixture : public xtestutils::TestFixture {
  public:
   ValueAttrFixture(const utils::U8String& name,
                    KbNodeLinkAttributeTest* test_case)
-      : TestFixture(name) {
+      : xtestutils::TestFixture(name) {
     R_EXPECT_CALL(test_case->valueAttrSupplier(), addAttribute())
         .WillOnce(Return(&value_attr_));
   }

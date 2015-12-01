@@ -13,6 +13,8 @@
 #include "test/testutils/log_testspy.h"
 #include "utils/u8string.h"
 
+namespace xtestutils {
+
 class UserLogTestSpy : public LogTestSpy {
  public:
   UserLogTestSpy();
@@ -31,5 +33,7 @@ class UserLogTestSpy : public LogTestSpy {
 
   void beforeEnableLogHook() override;
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_USER_LOG_TESTSPY_H_

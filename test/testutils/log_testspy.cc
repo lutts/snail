@@ -25,6 +25,8 @@ namespace expr = boost::log::expressions;
 
 BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", LogSeverityLevel)
 
+namespace xtestutils {
+
 LogTestSpy::LogTestSpy() {}
 
 void LogTestSpy::start() {
@@ -58,3 +60,5 @@ std::ostream &operator<<(std::ostream &s, const LogTestSpy::Message &msg) {
 
   return s;
 }
+
+}  // namespace xtestutils

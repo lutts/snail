@@ -19,10 +19,10 @@ namespace tests {
 
 class LinkTypeTest;
 
-class FormatterFixture : public TestFixture {
+class FormatterFixture : public xtestutils::TestFixture {
  public:
   FormatterFixture()
-      : TestFixture{},
+      : xtestutils::TestFixture{},
         formatter_factory_(MockNamedStringFormatterFactory::getInstance()) {
     Mock::VerifyAndClearExpectations(formatter_factory_.get());
 
@@ -32,14 +32,14 @@ class FormatterFixture : public TestFixture {
   }
 
   FormatterFixture(const FormatterFixture& rhs)
-      : TestFixture(rhs),
+      : xtestutils::TestFixture(rhs),
         formatter_factory_{rhs.formatter_factory_},
         formatter_{new MockNamedStringFormatter()} {
     R_EXPECT_CALL(*rhs.formatter_, clone()).WillOnce(Return(formatter_));
   }
 
   FormatterFixture(FormatterFixture&& rhs)
-      : TestFixture(std::move(rhs)),
+      : xtestutils::TestFixture(std::move(rhs)),
         formatter_factory_(std::move(rhs.formatter_factory_)),
         formatter_(rhs.formatter_) {
     rhs.formatter_ = nullptr;
@@ -51,7 +51,7 @@ class FormatterFixture : public TestFixture {
   }
 
   void swap(FormatterFixture& rhs) {
-    TestFixture::swap(rhs);
+    xtestutils::TestFixture::swap(rhs);
     std::swap(formatter_factory_, rhs.formatter_factory_);
     std::swap(formatter_, rhs.formatter_);
   }
@@ -67,9 +67,9 @@ class FormatterFixture : public TestFixture {
 
 void swap(FormatterFixture& v1, FormatterFixture& v2) { v1.swap(v2); }
 
-class AttrSupplierFixture : public TestFixture {
+class AttrSupplierFixture : public xtestutils::TestFixture {
  public:
-  AttrSupplierFixture() : TestFixture{} {
+  AttrSupplierFixture() : xtestutils::TestFixture{} {
     constexpr int TEST_ATTR_SUPPLIER_COUNT = 3;
 
     for (int i = 0; i < TEST_ATTR_SUPPLIER_COUNT; ++i) {
@@ -83,7 +83,8 @@ class AttrSupplierFixture : public TestFixture {
     }
   }
 
-  AttrSupplierFixture(const AttrSupplierFixture& rhs) : TestFixture(rhs) {
+  AttrSupplierFixture(const AttrSupplierFixture& rhs)
+      : xtestutils::TestFixture(rhs) {
     for (auto& supplier : rhs.mock_attr_suppliers_) {
       auto cloned_supplier = new MockAttrSupplierTestStub;
       R_EXPECT_CALL(*supplier, clone()).WillOnce(Return(cloned_supplier));
@@ -94,7 +95,7 @@ class AttrSupplierFixture : public TestFixture {
   }
 
   AttrSupplierFixture(AttrSupplierFixture&& rhs)
-      : TestFixture(std::move(rhs)),
+      : xtestutils::TestFixture(std::move(rhs)),
         attr_suppliers_(std::move(rhs.attr_suppliers_)),
         mock_attr_suppliers_(std::move(rhs.mock_attr_suppliers_)),
         attr_suppliers_up_(std::move(rhs.attr_suppliers_up_)),
@@ -106,7 +107,7 @@ class AttrSupplierFixture : public TestFixture {
   }
 
   void swap(AttrSupplierFixture& rhs) {
-    TestFixture::swap(rhs);
+    xtestutils::TestFixture::swap(rhs);
     std::swap(attr_suppliers_, rhs.attr_suppliers_);
     std::swap(mock_attr_suppliers_, rhs.mock_attr_suppliers_);
     std::swap(attr_suppliers_up_, rhs.attr_suppliers_up_);
@@ -134,7 +135,7 @@ class AttrSupplierFixture : public TestFixture {
 
 void swap(AttrSupplierFixture& v1, AttrSupplierFixture& v2) { v1.swap(v2); }
 
-class MockListener : public SimpleMockListener<LinkType> {
+class MockListener : public xtestutils::SimpleMockListener<LinkType> {
  public:
   SNAIL_MOCK_LISTENER0(MockListener, LinkUpdated, void());
 
@@ -207,11 +208,11 @@ class LinkTypeState {
   LinkType* prototype_{nullptr};
 };
 
-class LinkTypeFixture : public TestFixture {
+class LinkTypeFixture : public xtestutils::TestFixture {
  public:
   LinkTypeFixture() : LinkTypeFixture{"GlobalFixture", nullptr} {}
   LinkTypeFixture(const utils::U8String& fixture_name, LinkTypeTest* test_case)
-      : TestFixture{fixture_name},
+      : xtestutils::TestFixture{fixture_name},
         link_type_state{},
         link_type{link_type_state.name_, link_type_state.is_group_only_},
         mock_listener_{&link_type} {
@@ -223,20 +224,20 @@ class LinkTypeFixture : public TestFixture {
   }
 
   LinkTypeFixture(const LinkTypeFixture& rhs)
-      : TestFixture{rhs},
+      : xtestutils::TestFixture{rhs},
         link_type_state{rhs.link_type_state},
         link_type{rhs.link_type},
         mock_listener_{&link_type} {}
 
   LinkTypeFixture(LinkTypeFixture&& rhs)
-      : TestFixture(std::move(rhs)),
+      : xtestutils::TestFixture(std::move(rhs)),
         link_type_state{std::move(rhs.link_type_state)},
         link_type(std::move(rhs.link_type)),
         mock_listener_(&link_type) {}
 
   // NOTE: do NOT use copy-and-swap, we are testing copy assignment
   LinkTypeFixture& operator=(const LinkTypeFixture& rhs) {
-    TestFixture::operator=(rhs);
+    xtestutils::TestFixture::operator=(rhs);
     link_type_state = rhs.link_type_state;
 
     R_EXPECT_CALL(mock_listener_, LinkUpdated());
@@ -250,7 +251,7 @@ class LinkTypeFixture : public TestFixture {
 
   // NOTE: do NOT use copy-and-swap, we are testing move assignment
   LinkTypeFixture& operator=(LinkTypeFixture&& rhs) {
-    TestFixture::operator=(std::move(rhs));
+    xtestutils::TestFixture::operator=(std::move(rhs));
     link_type_state = std::move(rhs.link_type_state);
 
     R_EXPECT_CALL(mock_listener_, LinkUpdated());
@@ -305,15 +306,16 @@ class LinkTypeFixtureFactory {
 };
 
 using FixtureHelperGenerator =
-    CopyMoveFixtureHelperGenerator<LinkTypeFixture, LinkTypeFixtureFactory>;
+    xtestutils::CopyMoveFixtureHelperGenerator<LinkTypeFixture,
+                                               LinkTypeFixtureFactory>;
 
 using LinkTypeCopyMoveFixtureHelper =
-    CopyMoveFixtureHelper<LinkTypeFixture, LinkTypeFixtureFactory>;
+    xtestutils::CopyMoveFixtureHelper<LinkTypeFixture, LinkTypeFixtureFactory>;
 
-class LinkTypeTest
-    : public ErrorVerbosityTestWithParam<LinkTypeCopyMoveFixtureHelper*> {
+class LinkTypeTest : public xtestutils::ErrorVerbosityTestWithParam<
+                         LinkTypeCopyMoveFixtureHelper*> {
  private:
-  FixtureLoaderFromHelper<LinkTypeFixture, LinkTypeTest> fixture_;
+  xtestutils::FixtureLoaderFromHelper<LinkTypeFixture, LinkTypeTest> fixture_;
 
  public:
   LinkTypeTest()

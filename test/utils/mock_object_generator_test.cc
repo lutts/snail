@@ -34,13 +34,13 @@ class MockObjectGeneratorTest : public ::testing::Test {
   }
   // ~MockObjectGeneratorTest() { }
   virtual void SetUp() {
-    generator = new MockObjectGenerator<MockDummy>();
+    generator = new xtestutils::MockObjectGenerator<MockDummy>();
     mock_obj1 = generator->generate();
     mock_obj2 = generator->generate();
   }
   virtual void TearDown() { delete generator; }
 
-  MockObjectGenerator<MockDummy>* generator{nullptr};
+  xtestutils::MockObjectGenerator<MockDummy>* generator{nullptr};
   MockDummy* mock_obj1{nullptr};
   MockDummy* mock_obj2{nullptr};
 };

@@ -16,6 +16,8 @@
 #include "utils/basic_utils.h"
 #include "test/function_signature_extracter.h"
 
+namespace xtestutils {
+
 /**
  * Mock listeners should not be tracked in theory, because if mock listeners
  * are destroyed, it means that we do not expect any signals anymore. this
@@ -70,6 +72,8 @@ class SimpleMockListener {
  private:
   SNAIL_DISABLE_COPY(SimpleMockListener)
 };
+
+}  // namespace xtestutils
 
 #define SNAIL_MOCK_LISTENER_VARIABLE(Name) Name##Listener_
 #define SNAIL_MOCK_LISTENER_REGISTER(Name, THIS)             \

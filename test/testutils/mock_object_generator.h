@@ -10,6 +10,8 @@
 
 #include <vector>
 
+namespace xtestutils {
+
 template <typename T>
 class MockObjectGenerator {
  public:
@@ -43,5 +45,7 @@ class MockObjectGenerator {
 
   std::vector<T*> mock_objs;
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_MOCK_OBJECT_GENERATOR_H_

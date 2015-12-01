@@ -8,6 +8,8 @@
 #ifndef TEST_TESTUTILS_COPY_MOVE_TEST_HELPER_H_
 #define TEST_TESTUTILS_COPY_MOVE_TEST_HELPER_H_
 
+namespace xtestutils {
+
 /*
  * The Meaning of Copy
  *   * Equivalence
@@ -304,5 +306,7 @@ class FixtureLoaderFromHelper {
 
   std::unique_ptr<F> fixture_;
 };
+
+}  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_COPY_MOVE_TEST_HELPER_H_
