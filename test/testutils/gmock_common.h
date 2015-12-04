@@ -240,7 +240,7 @@ class TestFixture {
    */
   virtual void checkSetup() {}
 
-  void verify() {
+  virtual void verify() {
     if (!mock_obj_recorder.verify()) {
       std::cerr << fixture_name_ << ": fixture verify failed." << std::endl;
     }
