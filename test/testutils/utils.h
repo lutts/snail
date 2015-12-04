@@ -43,6 +43,19 @@ T* genDifferentDummyPointer(T* ref_ptr) {
   return ptr;
 }
 
+template <typename T, typename C>
+T randomElementInContainer(const C& container) {
+  int min_idx = 0;
+  int max_idx = static_cast<int>(container.size());
+
+  int rand_idx = randomIntInRange(min_idx, max_idx - 1);
+
+  auto vi = container.begin();
+  std::advance(vi, rand_idx);
+
+  return *vi;
+}
+
 }  // namespace xtestutils
 
 #endif  // TEST_TESTUTILS_UTILS_H_
