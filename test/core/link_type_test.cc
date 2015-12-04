@@ -309,11 +309,10 @@ using FixtureHelperGenerator =
     xtestutils::CopyMoveFixtureHelperGenerator<LinkTypeFixture,
                                                LinkTypeFixtureFactory>;
 
-using LinkTypeCopyMoveFixtureHelper =
-    xtestutils::CopyMoveFixtureHelper<LinkTypeFixture, LinkTypeFixtureFactory>;
+using LinkTypeFixtureHelper = xtestutils::TestFixtureHelper<LinkTypeFixture>;
 
-class LinkTypeTest : public xtestutils::ErrorVerbosityTestWithParam<
-                         LinkTypeCopyMoveFixtureHelper*> {
+class LinkTypeTest
+    : public xtestutils::ErrorVerbosityTestWithParam<LinkTypeFixtureHelper*> {
  private:
   xtestutils::FixtureLoaderFromHelper<LinkTypeFixture, LinkTypeTest> fixture_;
 

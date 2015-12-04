@@ -71,19 +71,27 @@ namespace xtestutils {
 #include <vector>
 #include <type_traits>
 
-template <typename FixtureType, typename BaseFactory>
-class CopyMoveFixtureHelper {
+template <typename FixtureType>
+class TestFixtureHelper {
  public:
-  virtual FixtureType* createFixture() { return BaseFactory::createFixture(); }
+  virtual FixtureType* createTestFixture() = 0;
+};
+
+template <typename FixtureType, typename BaseFactory>
+class CopyMoveFixtureHelper : public TestFixtureHelper<FixtureType> {
+ public:
+  virtual FixtureType* createTestFixture() {
+    return BaseFactory::createFixture();
+  }
 };
 
 template <typename FixtureType, typename BaseFactory>
 class CopyConstructFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
-  FixtureType* createFixture() override {
+  FixtureType* createTestFixture() override {
     std::unique_ptr<FixtureType> base_fixture{
-        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createFixture()};
+        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
     auto fixture = new FixtureType(*base_fixture);
     fixture->setup();
@@ -96,9 +104,9 @@ template <typename FixtureType, typename BaseFactory,
 class CopyAssignmentFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
-  FixtureType* createFixture() override {
+  FixtureType* createTestFixture() override {
     std::unique_ptr<FixtureType> base_fixture{
-        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createFixture()};
+        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
     auto fixture = CopyTargetFactory::createFixture();
     *fixture = *base_fixture;
@@ -111,9 +119,9 @@ template <typename FixtureType, typename BaseFactory>
 class MoveConstructFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
-  FixtureType* createFixture() override {
+  FixtureType* createTestFixture() override {
     std::unique_ptr<FixtureType> base_fixture{
-        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createFixture()};
+        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
     auto fixture = new FixtureType(std::move(*base_fixture));
     fixture->setup();
@@ -126,9 +134,9 @@ template <typename FixtureType, typename BaseFactory,
 class MoveAssignmentFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
-  FixtureType* createFixture() override {
+  FixtureType* createTestFixture() override {
     std::unique_ptr<FixtureType> base_fixture{
-        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createFixture()};
+        CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
     auto fixture = MoveTargetFactory::createFixture();
     *fixture = std::move(*base_fixture);
@@ -146,9 +154,9 @@ template <typename FixtureType, typename... Factories>
 class CopyMoveFixtureHelperGenerator {
  public:
   template <typename BaseFactory>
-  static std::vector<CopyMoveFixtureHelper<FixtureType, BaseFactory>*>
-  fixtureHelpers(unsigned int enabled_tests = 0u) {
-    std::vector<CopyMoveFixtureHelper<FixtureType, BaseFactory>*> helpers;
+  static std::vector<TestFixtureHelper<FixtureType>*> fixtureHelpers(
+      unsigned int enabled_tests = 0u) {
+    std::vector<TestFixtureHelper<FixtureType>*> helpers;
     helpers.reserve(1 + 1 + 1 + 2 * sizeof...(Factories));
 
     helpers.push_back(getBaseHelper<BaseFactory>());
@@ -298,12 +306,15 @@ class FixtureLoaderFromHelper {
         ::testing::UnitTest::GetInstance()->current_test_info();
     if (test_info->value_param()) {
       auto fixture_factory = test_case->GetParam();
-      fixture_.reset(fixture_factory->createFixture());
+      fixture_.reset(fixture_factory->createTestFixture());
     }
   }
 
+  F* get() { return fixture_.get(); }
+  F* release() { return fixture_.release(); }
   F* operator->() { return fixture_.get(); }
 
+ private:
   std::unique_ptr<F> fixture_;
 };
 
