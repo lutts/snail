@@ -331,10 +331,13 @@ class KbNodeLinkAttrSupplierFixture : public GenericAttributeSupplierFixture {
         default_proto_link_type_{xtestutils::genDummyPointer<fto::LinkType>()},
         root_kbnode_{xtestutils::genDummyPointer<IKbNode>()},
         attr_supplier_{link_item_provider_, default_proto_link_type_,
-                       root_kbnode_, max_attrs()} {
-    GenericAttributeSupplierFixture::set_attr_supplier(&attr_supplier_);
-    GenericAttributeSupplierFixture::set_attr_factory_fixture(
-        &attr_factory_fixture_);
+                       root_kbnode_, max_attrs()} {}
+
+  IAttributeSupplier* getAttributeSupplier() override {
+    return &attr_supplier_;
+  }
+  GenericAttributeFactoryFixture* getAttributeFactory() override {
+    return &attr_factory_fixture_;
   }
 
   // region: checkers

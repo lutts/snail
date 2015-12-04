@@ -366,12 +366,17 @@ class KbNodeAttrSupplierFixture : public GenericAttributeSupplierFixture {
  public:
   KbNodeAttrSupplierFixture()
       : GenericAttributeSupplierFixture{},
-        attr_supplier_{rootKbNode(), max_attrs()} {
-    GenericAttributeSupplierFixture::set_supplier_name(
-        root_kbnode_helper_.kbnode_name_);
-    GenericAttributeSupplierFixture::set_attr_supplier(&attr_supplier_);
-    GenericAttributeSupplierFixture::set_attr_factory_fixture(
-        &attr_factory_fixture_);
+        attr_supplier_{rootKbNode(), max_attrs()} {}
+
+  utils::U8String getSupplierName() override {
+    return root_kbnode_helper_.kbnode_name_;
+  }
+
+  IAttributeSupplier* getAttributeSupplier() override {
+    return &attr_supplier_;
+  }
+  GenericAttributeFactoryFixture* getAttributeFactory() override {
+    return &attr_factory_fixture_;
   }
 
   // region: checkers

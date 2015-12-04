@@ -48,42 +48,35 @@ class GenericAttributeSupplierFixture : public xtestutils::TestFixture {
 
   // region: setter/getters
   int max_attrs() { return max_attrs_; }
-  utils::U8String supplier_name() { return supplier_name_; }
-  void set_supplier_name(const utils::U8String& name) { supplier_name_ = name; }
 
-  void set_attr_supplier(IAttributeSupplier* attr_supplier) {
-    attr_supplier_ = attr_supplier;
-  }
-
-  void set_attr_factory_fixture(
-      GenericAttributeFactoryFixture* attr_factory_fixture) {
-    attr_factory_fixture_ = attr_factory_fixture;
-  }
+  virtual utils::U8String getSupplierName() { return ""; }
+  virtual IAttributeSupplier* getAttributeSupplier() = 0;
+  virtual GenericAttributeFactoryFixture* getAttributeFactory() = 0;
 
   void prepareCreateMockAttrs(int count) {
-    attr_factory_fixture_->prepareCreateMockAttrs(count);
+    getAttributeFactory()->prepareCreateMockAttrs(count);
   }
 
   std::vector<IAttribute*>& expect_attrs() {
-    return attr_factory_fixture_->created_attributes();
+    return getAttributeFactory()->created_attributes();
   }
   // endregion: setter/getters
 
   // region: checkers
   void verify() override {
     xtestutils::TestFixture::verify();
-    attr_factory_fixture_->verify();
+    getAttributeFactory()->verify();
   }
 
   virtual void validateState() {
-    ASSERT_EQ(supplier_name_, attr_supplier_->name());
-    ASSERT_EQ(max_attrs_, attr_supplier_->max_attrs());
+    ASSERT_EQ(getSupplierName(), getAttributeSupplier()->name());
+    ASSERT_EQ(max_attrs_, getAttributeSupplier()->max_attrs());
 
     auto expect_attr_count = expect_attrs().size();
-    ASSERT_EQ(expect_attr_count, attr_supplier_->attr_count())
+    ASSERT_EQ(expect_attr_count, getAttributeSupplier()->attr_count())
         << "attr_count should be the attribute count currently created";
 
-    ASSERT_EQ(expect_attrs(), attr_supplier_->attributes())
+    ASSERT_EQ(expect_attrs(), getAttributeSupplier()->attributes())
         << "attributes() should be a collection of the attributes currently "
            "created";
   }
@@ -93,17 +86,13 @@ class GenericAttributeSupplierFixture : public xtestutils::TestFixture {
   void fillAttributes() {
     prepareCreateMockAttrs(max_attrs_);
     for (int i = 0; i < max_attrs_; ++i) {
-      attr_supplier_->addAttribute();
+      getAttributeSupplier()->addAttribute();
     }
   }
   // endregion: additional state setup
 
  private:
-  utils::U8String supplier_name_{""};
   int max_attrs_;
-
-  GenericAttributeFactoryFixture* attr_factory_fixture_;
-  IAttributeSupplier* attr_supplier_{nullptr};
 
   friend class GenericAttributeSupplierFixtureWrapper;
 };
@@ -112,7 +101,7 @@ class GenericAttributeSupplierFixtureWrapper {
  public:
   void setFixture(GenericAttributeSupplierFixture* fixture) {
     fixture_.reset(fixture);
-    attr_supplier_ = fixture_->attr_supplier_;
+    attr_supplier_ = fixture_->getAttributeSupplier();
   }
 
   void prepareCreateMockAttrs(int count) {
