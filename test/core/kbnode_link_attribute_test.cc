@@ -15,6 +15,8 @@
 
 #include "core/mock_attribute_visitor.h"
 
+#include "test/core/generic_attribute_supplier_test.h"
+
 namespace snailcore {
 namespace tests {
 
@@ -146,12 +148,11 @@ using FixtureHelperGenerator =
     xtestutils::CopyMoveFixtureHelperGenerator<KbNodeLinkAttrFixture,
                                                KbNodeLinkAttrFixtureFactory>;
 
-using LinkAttrCopyMoveFixtureHelper =
-    xtestutils::CopyMoveFixtureHelper<KbNodeLinkAttrFixture,
-                                      KbNodeLinkAttrFixtureFactory>;
+using KbNodeLinkAttrFixtureHelper =
+    xtestutils::TestFixtureHelper<KbNodeLinkAttrFixture>;
 
 class KbNodeLinkAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
-                                    LinkAttrCopyMoveFixtureHelper*> {
+                                    KbNodeLinkAttrFixtureHelper*> {
  public:
   KbNodeLinkAttributeTest()
       : ErrorVerbosityTestWithParam{},
@@ -311,18 +312,102 @@ TEST_P(KbNodeLinkAttributeTest,
   changeValueAttr();
 }
 
-TEST(KbNodeLinkAttributeSupplierTest,
-     should_get_back_components_passed_in_constructor) {  // NOLINT
-  auto link_item_provider = xtestutils::genDummyPointer<ITreeItemProvider>();
-  auto default_proto_link_type = xtestutils::genDummyPointer<fto::LinkType>();
-  auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
+////////////////////////////////////////////////
 
-  KbNodeLinkAttributeSupplier attr_supplier(
-      link_item_provider, default_proto_link_type, root_kbnode, std::rand());
-  ASSERT_EQ(link_item_provider, attr_supplier.getLinkTypeItemProvider());
-  ASSERT_EQ(default_proto_link_type, attr_supplier.getDefaultProtoLinkType());
-  ASSERT_EQ(root_kbnode, attr_supplier.getRootKbNode());
-}
+class MockKbNodeLinkAttrFactory : public KbNodeLinkAttributeFactory {
+ public:
+  MOCK_CONST_METHOD0(createAttribute, fto::KbNodeLinkAttribute*());
+};
+
+using KbNodeLinkAttributeFactoryFixture =
+    AttributeFactoryFixtureTemplate<MockKbNodeLinkAttrFactory,
+                                    MockKbNodeLinkAttribute>;
+
+class KbNodeLinkAttrSupplierFixture : public GenericAttributeSupplierFixture {
+ public:
+  KbNodeLinkAttrSupplierFixture()
+      : GenericAttributeSupplierFixture{},
+        link_item_provider_{xtestutils::genDummyPointer<ITreeItemProvider>()},
+        default_proto_link_type_{xtestutils::genDummyPointer<fto::LinkType>()},
+        root_kbnode_{xtestutils::genDummyPointer<IKbNode>()},
+        attr_supplier_{link_item_provider_, default_proto_link_type_,
+                       root_kbnode_, max_attrs()} {
+    GenericAttributeSupplierFixture::set_attr_supplier(&attr_supplier_);
+    GenericAttributeSupplierFixture::set_attr_factory_fixture(
+        &attr_factory_fixture_);
+  }
+
+  // region: checkers
+  void checkSetup() {
+    verify();
+    validateState();
+  }
+
+  void validateState() override {
+    GenericAttributeSupplierFixture::validateState();
+
+    ASSERT_EQ(link_item_provider_, attr_supplier_.getLinkTypeItemProvider());
+    ASSERT_EQ(default_proto_link_type_,
+              attr_supplier_.getDefaultProtoLinkType());
+    ASSERT_EQ(root_kbnode_, attr_supplier_.getRootKbNode());
+  }
+  // endregion: checkers
+
+  void enableMockAttrFactory() {
+    attr_supplier_.setAttributeFactory(attr_factory_fixture_.attr_factory());
+  }
+
+ private:
+  SNAIL_DISABLE_COPY(KbNodeLinkAttrSupplierFixture);
+
+  ITreeItemProvider* link_item_provider_;
+  fto::LinkType* default_proto_link_type_;
+  IKbNode* root_kbnode_;
+
+  KbNodeLinkAttributeSupplier attr_supplier_;
+
+  KbNodeLinkAttributeFactoryFixture attr_factory_fixture_;
+};
+
+class KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory {
+ public:
+  static KbNodeLinkAttrSupplierFixture* createFixture() {
+    auto fixture = new KbNodeLinkAttrSupplierFixture();
+    fixture->enableMockAttrFactory();
+    return fixture;
+  }
+};
+
+class KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory {
+ public:
+  static KbNodeLinkAttrSupplierFixture* createFixture() {
+    auto fixture = new KbNodeLinkAttrSupplierFixture();
+    fixture->enableMockAttrFactory();
+    fixture->fillAttributes();
+    return fixture;
+  }
+};
+
+using WithMockAttrFactoryFixtureCopyMoveHelper =
+    xtestutils::CopyMoveFixtureHelper<
+        GenericAttributeSupplierFixture,
+        KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory>;
+static WithMockAttrFactoryFixtureCopyMoveHelper with_factory_fixture_helper;
+
+INSTANTIATE_TEST_CASE_P(
+    FixtureSetup, GenericAttributeSupplierWithMockAttrFactoryTest,
+    ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
+        &with_factory_fixture_helper)));
+
+using FilledWithAttrsFixtureCopyMoveHelper = xtestutils::CopyMoveFixtureHelper<
+    GenericAttributeSupplierFixture,
+    KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
+static FilledWithAttrsFixtureCopyMoveHelper
+    filled_with_attributes_fixture_helper;
+INSTANTIATE_TEST_CASE_P(
+    FixtureSetup, GenericAttributeSupplierFilledWithAttrsTest,
+    ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
+        &filled_with_attributes_fixture_helper)));
 
 }  // namespace tests
 }  // namespace snailcore

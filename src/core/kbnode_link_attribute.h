@@ -21,6 +21,13 @@ namespace snailcore {
 class IKbNode;
 class ITreeItemProvider;
 
+class KbNodeLinkAttributeFactory {
+ public:
+  virtual ~KbNodeLinkAttributeFactory() = default;
+
+  virtual fto::KbNodeLinkAttribute* createAttribute() const = 0;
+};
+
 class KbNodeLinkAttributeSupplierPrivate;
 
 class KbNodeLinkAttributeSupplier
@@ -56,6 +63,8 @@ class KbNodeLinkAttributeSupplier
   }
 
   IKbNode* getRootKbNode() const { return root_kbnode_; }
+
+  void setAttributeFactory(KbNodeLinkAttributeFactory* attr_factory);
 
  public:
   SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);

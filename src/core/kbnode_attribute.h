@@ -22,6 +22,15 @@ class IKbNode;
 
 class KbNodeAttributeSupplierPrivate;
 
+class KbNodeAttribute;
+
+class KbNodeAttributeFactory {
+ public:
+  virtual ~KbNodeAttributeFactory() = default;
+
+  virtual fto::KbNodeAttribute* createAttribute() const = 0;
+};
+
 class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
  public:
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
@@ -41,6 +50,8 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
   KbNodeAttributeSupplier* clone() const override { return nullptr; }
 
   IKbNode* getRootKbNode() const;
+
+  void setAttributeFactory(KbNodeAttributeFactory* attr_factory);
 
  public:
   SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);

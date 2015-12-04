@@ -11,7 +11,6 @@ add_gmock_unit_test(work)
 add_gmock_unit_test(attribute_set_model
   ${PROJECT_SOURCE_DIR}/test/core/attribute_test_stub.cc)
 
-add_gmock_unit_test(generic_attribute_supplier)
 add_gmock_unit_test(kbnode_attribute_model)
 add_gmock_unit_test(simple_kbnode_adder_model)
 add_gmock_unit_test(kbnode_item_provider)

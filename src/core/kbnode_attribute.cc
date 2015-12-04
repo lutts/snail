@@ -11,6 +11,7 @@
 #include "src/core/generic_attribute_supplier.h"
 #include "core/i_kbnode.h"
 #include "core/i_attribute_visitor.h"
+#include "utils/compiler.h"
 
 namespace snailcore {
 
@@ -73,20 +74,32 @@ void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
 }
 
 //////////////// KbNodeAttributeSupplier ////////////////
-
 class KbNodeAttributeSupplierPrivate
-    : public GenericAttributeSupplier<KbNodeAttributeSupplier,
-                                      KbNodeAttribute> {
+    : public GenericAttributeSupplier<fto::KbNodeAttribute,
+                                      KbNodeAttributeSupplierPrivate> {
  public:
   KbNodeAttributeSupplierPrivate(KbNodeAttributeSupplier* q_ptr,
                                  IKbNode* root_kbnode, int max_attrs)
-      : GenericAttributeSupplier{q_ptr, root_kbnode->name(), max_attrs},
+      : GenericAttributeSupplier{root_kbnode->name(), max_attrs, *this},
+        q_ptr_{q_ptr},
         root_kbnode_{root_kbnode} {}
 
   IKbNode* getRootKbNode() const { return root_kbnode_; }
 
+  fto::KbNodeAttribute* createAttribute() const {
+    if (unlikely(attr_factory_)) {
+      return attr_factory_->createAttribute();
+    } else {
+      return new KbNodeAttribute(q_ptr_);
+    }
+  }
+
  private:
+  KbNodeAttributeSupplier* q_ptr_;
   IKbNode* root_kbnode_;
+  KbNodeAttributeFactory* attr_factory_{nullptr};
+
+  friend class KbNodeAttributeSupplier;
 };
 
 KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
@@ -95,6 +108,11 @@ KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
           this, root_kbnode, max_attrs)) {}
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;
+
+void KbNodeAttributeSupplier::setAttributeFactory(
+    KbNodeAttributeFactory* attr_factory) {
+  impl_->attr_factory_ = attr_factory;
+}
 
 SNAIL_SIGSLOT_DELEGATE(KbNodeAttributeSupplier, AttributeChanged, impl_);
 

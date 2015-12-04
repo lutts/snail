@@ -19,12 +19,12 @@ namespace snailcore {
 
 class IAttribute;
 
-template <typename SuppT, typename AttrT>
+template <typename AttrT, typename AttrF>
 class GenericAttributeSupplier {
  public:
-  GenericAttributeSupplier(SuppT* actual_supplier, const utils::U8String& name,
-                           int max_attrs)
-      : actual_supplier_(actual_supplier), name_(name), max_attrs_(max_attrs) {}
+  GenericAttributeSupplier(const utils::U8String& name, int max_attrs,
+                           const AttrF& attr_factory)
+      : name_(name), max_attrs_(max_attrs), attr_factory_(attr_factory) {}
   virtual ~GenericAttributeSupplier() = default;
 
   utils::U8String name() const { return name_; }
@@ -48,7 +48,7 @@ class GenericAttributeSupplier {
     // currently not, because the UI will ensure this will not happen
     if (attrs_.size() == static_cast<size_t>(max_attrs_)) return nullptr;
 
-    auto attr = createAttribute(actual_supplier_);
+    auto attr = attr_factory_.createAttribute();
     if (attr) attrs_.push_back(std::unique_ptr<AttrT>(attr));
 
     return attr;
@@ -69,19 +69,13 @@ class GenericAttributeSupplier {
  public:
   SNAIL_SIGSLOT_PIMPL(IAttributeSupplier, AttributeChanged);
 
- protected:
-  // For mocks
-  virtual AttrT* createAttribute(SuppT* actual_supplier) {
-    return new AttrT(actual_supplier);
-  }
-
  private:
   SNAIL_DISABLE_COPY(GenericAttributeSupplier);
 
  private:
-  SuppT* actual_supplier_;
   utils::U8String name_;
   int max_attrs_;
+  const AttrF& attr_factory_;
   std::vector<std::unique_ptr<AttrT> > attrs_;
 };
 

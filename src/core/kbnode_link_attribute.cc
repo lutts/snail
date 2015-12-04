@@ -8,6 +8,7 @@
 
 #include <vector>
 
+#include "utils/compiler.h"
 #include "src/core/generic_attribute_supplier.h"
 #include "core/i_attribute_visitor.h"
 
@@ -16,8 +17,8 @@ namespace snailcore {
 KbNodeLinkAttribute::KbNodeLinkAttribute(
     fto::KbNodeLinkAttributeSupplier* link_attr_supplier)
     : link_attr_supplier_(link_attr_supplier),
-      link_type_(*link_attr_supplier->getDefaultProtoLinkType()),
-      value_attr_supplier_(link_attr_supplier->getRootKbNode(), 1) {
+      link_type_(*link_attr_supplier_->getDefaultProtoLinkType()),
+      value_attr_supplier_(link_attr_supplier_->getRootKbNode(), 1) {
   connectSignals();
 }
 
@@ -109,14 +110,26 @@ fto::LinkType* KbNodeLinkAttribute::linkType() { return link_type_.self(); }
 //////////////// KbNodeLinkAttributeSupplier impls ////////////////
 
 class KbNodeLinkAttributeSupplierPrivate
-    : public GenericAttributeSupplier<KbNodeLinkAttributeSupplier,
-                                      KbNodeLinkAttribute> {
+    : public GenericAttributeSupplier<fto::KbNodeLinkAttribute,
+                                      KbNodeLinkAttributeSupplierPrivate> {
  public:
   KbNodeLinkAttributeSupplierPrivate(KbNodeLinkAttributeSupplier* q_ptr,
                                      int max_attrs)
-      : GenericAttributeSupplier{q_ptr, "", max_attrs} {}
+      : GenericAttributeSupplier{"", max_attrs, *this}, q_ptr_{q_ptr} {}
+
+  fto::KbNodeLinkAttribute* createAttribute() const {
+    if (unlikely(attr_factory_)) {
+      return attr_factory_->createAttribute();
+    } else {
+      return new KbNodeLinkAttribute(q_ptr_);
+    }
+  }
 
  private:
+  KbNodeLinkAttributeSupplier* q_ptr_;
+  KbNodeLinkAttributeFactory* attr_factory_{nullptr};
+
+  friend class KbNodeLinkAttributeSupplier;
 };
 
 KbNodeLinkAttributeSupplier::KbNodeLinkAttributeSupplier(
@@ -130,6 +143,11 @@ KbNodeLinkAttributeSupplier::KbNodeLinkAttributeSupplier(
       root_kbnode_(root_kbnode) {}
 
 KbNodeLinkAttributeSupplier::~KbNodeLinkAttributeSupplier() = default;
+
+void KbNodeLinkAttributeSupplier::setAttributeFactory(
+    KbNodeLinkAttributeFactory* attr_factory) {
+  impl_->attr_factory_ = attr_factory;
+}
 
 SNAIL_SIGSLOT_DELEGATE(KbNodeLinkAttributeSupplier, AttributeChanged, impl_);
 
