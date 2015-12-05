@@ -70,6 +70,7 @@ namespace xtestutils {
 #include <memory>
 #include <vector>
 #include <type_traits>
+#include <iostream>  // NOLINT
 
 template <typename FixtureType>
 class TestFixtureHelper {
@@ -90,11 +91,14 @@ class CopyConstructFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
   FixtureType* createTestFixture() override {
+    std::cout << "test copy construct......" << std::endl;
+
     std::unique_ptr<FixtureType> base_fixture{
         CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
     auto fixture = new FixtureType(*base_fixture);
     fixture->setup();
+
     return fixture;
   }
 };
@@ -105,6 +109,8 @@ class CopyAssignmentFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
   FixtureType* createTestFixture() override {
+    std::cout << "test copy assignment......" << std::endl;
+
     std::unique_ptr<FixtureType> base_fixture{
         CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
@@ -120,11 +126,14 @@ class MoveConstructFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
   FixtureType* createTestFixture() override {
+    std::cout << "test move construct......" << std::endl;
+
     std::unique_ptr<FixtureType> base_fixture{
         CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
     auto fixture = new FixtureType(std::move(*base_fixture));
     fixture->setup();
+
     return fixture;
   }
 };
@@ -135,6 +144,8 @@ class MoveAssignmentFixtureHelper
     : public CopyMoveFixtureHelper<FixtureType, BaseFactory> {
  public:
   FixtureType* createTestFixture() override {
+    std::cout << "test move assignment......" << std::endl;
+
     std::unique_ptr<FixtureType> base_fixture{
         CopyMoveFixtureHelper<FixtureType, BaseFactory>::createTestFixture()};
 
