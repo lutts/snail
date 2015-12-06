@@ -13,12 +13,12 @@ check-build: FORCE
 # TODO(lutts): should not use BUILD_SHARED_LIBS here, pls find a solution
 debug-prepare:
 	-mkdir build
-	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
+	cd build && cmake -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
 
 check-prepare:
 	/bin/rm -rf build
 	mkdir build
-	cd build && scan-build cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
+	cd build && scan-build cmake -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_SHARED_LIBS=true ..
 
 #	cd build && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 

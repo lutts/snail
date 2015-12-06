@@ -18,7 +18,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 include(CommonUtils)
 
 # activate C++ 11
-add_definitions(-std=c++11 -g)
+add_definitions(-std=c++11)
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DNDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNDEBUG")
+# message("CMAKE_CXX_FLAGS_DEBUG = ${CMAKE_CXX_FLAGS_DEBUG}")
 # add_definitions(-DDISABLE_TEST_CODE)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
