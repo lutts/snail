@@ -323,6 +323,17 @@ class TextFixtureStateSet {
     utils::tuple_for_each(state_set_, f);
   }
 
+  template <typename Func>
+  void applyPairwise(TextFixtureStateSet& other, Func f) {  // NOLINT
+    utils::tuple_for_each_pair(state_set_, other.state_set_, f);
+  }
+
+  template <typename Func>
+  void applyPairwise(const TextFixtureStateSet& other, Func f) {
+    utils::tuple_for_each_pair(
+        state_set_, const_cast<TextFixtureStateSet&>(other.state_set_), f);
+  }
+
  private:
   StateSetTuple state_set_;
 };
