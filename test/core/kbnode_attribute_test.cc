@@ -34,6 +34,11 @@ class SupplierTestHelper {
     EXPECT_CALL(*supplier_, name()).WillRepeatedly(Return(attr_supplier_name_));
   }
 
+  void copyExceptSupplier(const SupplierTestHelper& rhs) {
+    (void)rhs;
+    // as the name suggested, supplier is not copied
+  }
+
   utils::U8String attr_supplier_name_;
   std::shared_ptr<MockKbNodeAttributeSupplier> supplier_;
 };
@@ -56,17 +61,17 @@ class KbNodeHelper {
     ASSERT_EQ(kbnode_name_, attr.valueText());
   }
 
+  void copyExceptSupplier(const KbNodeHelper& rhs) { this->operator=(rhs); }
+
   utils::U8String kbnode_name_;
   std::shared_ptr<MockKbNode> kbnode_;
 };
 
-class KbNodeAttributeStateSet {
+class KbNodeAttributeStateSet
+    : public xtestutils::TextFixtureStateSet<SupplierTestHelper, KbNodeHelper> {
  public:
-  SupplierTestHelper& supplierHelper() { return state_.get<0>(); }
-  KbNodeHelper& kbNodeHelper() { return state_.get<1>(); }
-
- private:
-  xtestutils::TextFixtureStateSet<SupplierTestHelper, KbNodeHelper> state_;
+  SupplierTestHelper& supplierHelper() { return get<0>(); }
+  KbNodeHelper& kbNodeHelper() { return get<1>(); }
 };
 
 class KbNodeAttributeFixture : public xtestutils::TestFixture {
@@ -114,6 +119,13 @@ class KbNodeAttributeFixture : public xtestutils::TestFixture {
     return *this;
   }
 
+  void copyExceptSupplier(const KbNodeAttributeFixture& rhs) {
+    xtestutils::TestFixture::operator=(rhs);
+
+    state_->applyPairwise(*rhs.state_, CopyExceptSupplierFunctor());
+    attr_.copyExceptSupplier(rhs.attr_);
+  }
+
   void checkSetup() override {
     verify();
     validateAttr();
@@ -150,11 +162,23 @@ using FixtureHelperGenerator = xtestutils::CopyMoveFixtureHelperGenerator<
     KbNodeAttributeFixture, EmptyKbNodeAttributeFixtureFactory,
     NonEmptyKbNodeAttributeFixtureFactory>;
 
-using KbNodeAttributeFixtureFactory =
+template <typename BaseFactory, typename TargetFactory,
+          typename ConcreteFixtureType>
+class CopyExceptSupplierFixtureHelper
+    : public FixtureHelperGenerator::GenericCustomFixtureHelper<
+          CopyExceptSupplierFixtureHelper, BaseFactory, TargetFactory,
+          ConcreteFixtureType> {
+  void doCustomOperation(ConcreteFixtureType* target_fixture,
+                         ConcreteFixtureType* base_fixture) {
+    target_fixture->copyExceptSupplier(*base_fixture);
+  }
+};
+
+using KbNodeAttributeFixtureHelper =
     xtestutils::TestFixtureHelper<KbNodeAttributeFixture>;
 
 class EmptyKbNodeAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
-                                     KbNodeAttributeFixtureFactory*> {
+                                     KbNodeAttributeFixtureHelper*> {
  private:
   xtestutils::FixtureLoaderFromHelper<KbNodeAttributeFixture,
                                       EmptyKbNodeAttributeTest> fixture_;
@@ -182,7 +206,8 @@ auto empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
     FixtureHelperGenerator::CopyConstructFixtureHelper,
     FixtureHelperGenerator::CopyAssignmentFixtureHelper,
     FixtureHelperGenerator::MoveConstructFixtureHelper,
-    FixtureHelperGenerator::MoveAssignmentFixtureHelper>();
+    FixtureHelperGenerator::MoveAssignmentFixtureHelper,
+    CopyExceptSupplierFixtureHelper>();
 INSTANTIATE_TEST_CASE_P(FixtureSetup, EmptyKbNodeAttributeTest,
                         ::testing::ValuesIn(empty_test_fixture_helpers));
 
@@ -257,7 +282,7 @@ TEST_P(EmptyKbNodeAttributeTest,
 
 class NonEmptyKbNodeAttributeTest
     : public xtestutils::ErrorVerbosityTestWithParam<
-          KbNodeAttributeFixtureFactory*> {
+          KbNodeAttributeFixtureHelper*> {
  private:
   xtestutils::FixtureLoaderFromHelper<KbNodeAttributeFixture,
                                       NonEmptyKbNodeAttributeTest> fixture_;
@@ -287,7 +312,8 @@ auto non_empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
     FixtureHelperGenerator::CopyConstructFixtureHelper,
     FixtureHelperGenerator::CopyAssignmentFixtureHelper,
     FixtureHelperGenerator::MoveConstructFixtureHelper,
-    FixtureHelperGenerator::MoveAssignmentFixtureHelper>();
+    FixtureHelperGenerator::MoveAssignmentFixtureHelper,
+    CopyExceptSupplierFixtureHelper>();
 
 INSTANTIATE_TEST_CASE_P(FixtureSetup, NonEmptyKbNodeAttributeTest,
                         ::testing::ValuesIn(non_empty_test_fixture_helpers));
@@ -372,6 +398,12 @@ class KbNodeAttrSupplierFixture : public GenericAttributeSupplierFixture {
       : GenericAttributeSupplierFixture{},
         attr_supplier_{rootKbNode(), max_attrs()} {}
 
+  KbNodeAttrSupplierFixture(const KbNodeAttrSupplierFixture& rhs)
+      : GenericAttributeSupplierFixture{rhs},
+        root_kbnode_helper_{rhs.root_kbnode_helper_},
+        attr_factory_fixture_{rhs.attr_factory_fixture_},
+        attr_supplier_{rhs.attr_supplier_} {}
+
   utils::U8String getSupplierName() override {
     return root_kbnode_helper_.kbnode_name_;
   }
@@ -402,20 +434,11 @@ class KbNodeAttrSupplierFixture : public GenericAttributeSupplierFixture {
   }
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeAttrSupplierFixture);
-
   IKbNode* rootKbNode() { return root_kbnode_helper_.kbnode_.get(); }
 
   RootKbNodeHelper root_kbnode_helper_;
   KbNodeAttributeFactoryFixture attr_factory_fixture_;
   KbNodeAttributeSupplier attr_supplier_;
-};
-
-class KbNodeAttrSupplierNoAttrFactoryFixtureFactory {
- public:
-  static KbNodeAttrSupplierFixture* createFixture() {
-    return new KbNodeAttrSupplierFixture();
-  }
 };
 
 class KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory {
@@ -437,31 +460,17 @@ class KbNodeAttrSupplierFilledWithAttrsFixtureFactory {
   }
 };
 
-using SupplierFixtureHelperGenerator =
-    xtestutils::CopyMoveFixtureHelperGenerator<
-        KbNodeAttrSupplierFixture,
-        KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory,
-        KbNodeAttrSupplierFilledWithAttrsFixtureFactory>;
+INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(
+    KbNodeAttrSupplierFixture,
+    KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory,
+    KbNodeAttrSupplierFilledWithAttrsFixtureFactory);
 
-using WithMockAttrFactoryFixtureCopyMoveHelper =
-    SupplierFixtureHelperGenerator::BasicFixtureHelper<
-        KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory>;
-static WithMockAttrFactoryFixtureCopyMoveHelper with_factory_fixture_helper;
-
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, GenericAttributeSupplierWithMockAttrFactoryTest,
-    ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
-        &with_factory_fixture_helper)));
-
-using FilledWithAttrsFixtureCopyMoveHelper =
-    SupplierFixtureHelperGenerator::BasicFixtureHelper<
-        KbNodeAttrSupplierFilledWithAttrsFixtureFactory>;
-static FilledWithAttrsFixtureCopyMoveHelper
-    filled_with_attributes_fixture_helper;
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, GenericAttributeSupplierFilledWithAttrsTest,
-    ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
-        &filled_with_attributes_fixture_helper)));
+class KbNodeAttrSupplierNoAttrFactoryFixtureFactory {
+ public:
+  static KbNodeAttrSupplierFixture* createFixture() {
+    return new KbNodeAttrSupplierFixture();
+  }
+};
 
 class KbNodeAttributeSupplierNoMockAttrFactoryTest
     : public xtestutils::ErrorVerbosityTest,

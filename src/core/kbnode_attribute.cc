@@ -4,6 +4,9 @@
 // Author: Lutts Cao <<lutts.cao@gmail.com>>
 //
 // [Desc]
+
+#include <boost/polymorphic_cast.hpp>
+
 #include <algorithm>
 #include <vector>
 
@@ -42,6 +45,12 @@ KbNodeAttribute& KbNodeAttribute::swap(KbNodeAttribute& rhs) {
   return *this;
 }
 
+void KbNodeAttribute::copyExceptSupplier(const fto::KbNodeAttribute& other) {
+  const KbNodeAttribute* rhs =
+      boost::polymorphic_downcast<const KbNodeAttribute*>(&other);
+  kbnode_ = rhs->kbnode_;
+}
+
 // IAttribute
 utils::U8String KbNodeAttribute::displayName() const {
   return attr_supplier_->name();
@@ -75,18 +84,20 @@ void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
 
 //////////////// KbNodeAttributeSupplier ////////////////
 class KbNodeAttributeSupplierPrivate
-    : public GenericAttributeSupplier<fto::KbNodeAttribute,
-                                      KbNodeAttributeSupplierPrivate> {
+    : public GenericAttributeSupplier<fto::KbNodeAttribute> {
  public:
-  KbNodeAttributeSupplierPrivate(KbNodeAttributeSupplier* q_ptr,
-                                 IKbNode* root_kbnode, int max_attrs)
-      : GenericAttributeSupplier{root_kbnode->name(), max_attrs, *this},
-        q_ptr_{q_ptr},
+  KbNodeAttributeSupplierPrivate(IKbNode* root_kbnode, int max_attrs)
+      : GenericAttributeSupplier{root_kbnode->name(), max_attrs},
         root_kbnode_{root_kbnode} {}
+
+  KbNodeAttributeSupplierPrivate(const KbNodeAttributeSupplierPrivate& rhs)
+      : GenericAttributeSupplier{rhs},
+        root_kbnode_{rhs.root_kbnode_},
+        attr_factory_{rhs.attr_factory_} {}
 
   IKbNode* getRootKbNode() const { return root_kbnode_; }
 
-  fto::KbNodeAttribute* createAttribute() const {
+  fto::KbNodeAttribute* createAttribute() const override {
     if (unlikely(attr_factory_)) {
       return attr_factory_->createAttribute();
     } else {
@@ -104,8 +115,17 @@ class KbNodeAttributeSupplierPrivate
 
 KbNodeAttributeSupplier::KbNodeAttributeSupplier(IKbNode* root_kbnode,
                                                  int max_attrs)
-    : impl_(utils::make_unique<KbNodeAttributeSupplierPrivate>(
-          this, root_kbnode, max_attrs)) {}
+    : impl_(utils::make_unique<KbNodeAttributeSupplierPrivate>(root_kbnode,
+                                                               max_attrs)) {
+  impl_->q_ptr_ = this;
+}
+
+KbNodeAttributeSupplier::KbNodeAttributeSupplier(
+    const KbNodeAttributeSupplier& rhs)
+    : impl_(utils::make_unique<KbNodeAttributeSupplierPrivate>(*rhs.impl_)) {
+  impl_->q_ptr_ = this;
+  impl_->cloneAttributes(*rhs.impl_);
+}
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;
 

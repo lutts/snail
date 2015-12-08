@@ -30,7 +30,6 @@ class LinkAttrTestSharedState {
  public:
   MockLinkType default_proto_link_type_;
   MockKbNodeAttributeSupplierFactory value_attr_supplier_factory_;
-  MockKbNodeLinkAttributeSupplier link_attr_supplier_;
 
   static LinkAttrTestSharedState* sInstance;
 };
@@ -45,30 +44,31 @@ MockKbNodeAttributeSupplierFactory& valueAttrSupplierFactory() {
   return LinkAttrTestSharedState::getInstance().value_attr_supplier_factory_;
 }
 
-MockKbNodeLinkAttributeSupplier& linkAttrSupplier() {
-  return LinkAttrTestSharedState::getInstance().link_attr_supplier_;
-}
-
 class LinkAttrSupplierTestHelper : public xtestutils::TestFixture {
  public:
   LinkAttrSupplierTestHelper()
-      : link_type_{new MockLinkType()},
+      : link_attr_supplier_{new MockKbNodeLinkAttributeSupplier()},
+        link_type_{new MockLinkType()},
         value_attr_supplier_{new MockKbNodeAttributeSupplier} {
-    // setup link type
-    R_EXPECT_CALL(linkAttrSupplier(), getDefaultProtoLinkType())
+    setupLinkType();
+    setupValueAttr();
+  }
+
+  void setupLinkType() {
+    R_EXPECT_CALL(*link_attr_supplier_, getDefaultProtoLinkType())
         .WillOnce(Return(&defaultProtoLinkType()));
 
     R_EXPECT_CALL(defaultProtoLinkType(), clone()).WillOnce(Return(link_type_));
 
     R_EXPECT_CALL(*link_type_, whenLinkUpdated(_, _))
         .WillOnce(DoAll(SaveArg<0>(&linkUpdated_), Return(SignalConnection())));
+  }
 
-    // setup value attr
+  void setupValueAttr() {
     auto root_kbnode = xtestutils::genDummyPointer<IKbNode>();
-    R_EXPECT_CALL(linkAttrSupplier(), getRootKbNode())
+    R_EXPECT_CALL(*link_attr_supplier_, getRootKbNode())
         .WillOnce(Return(root_kbnode));
 
-    ;
     R_EXPECT_CALL(valueAttrSupplierFactory(), createInstance(root_kbnode, 1))
         .WillOnce(Return(value_attr_supplier_));
 
@@ -79,20 +79,33 @@ class LinkAttrSupplierTestHelper : public xtestutils::TestFixture {
 
   LinkAttrSupplierTestHelper(const LinkAttrSupplierTestHelper& rhs)
       : xtestutils::TestFixture{rhs},
-        link_type_{new MockLinkType()},
-        value_attr_supplier_{new MockKbNodeAttributeSupplier} {
+        link_attr_supplier_{rhs.link_attr_supplier_} {
+    copyConstructLinkType(rhs);
+    copyConstructValueAttr(rhs);
+  }
+
+  void copyConstructLinkType(const LinkAttrSupplierTestHelper& rhs) {
+    link_type_ = new MockLinkType();
     R_EXPECT_CALL(*rhs.link_type_, clone()).WillOnce(Return(link_type_));
-    R_EXPECT_CALL(*rhs.value_attr_supplier_, clone())
-        .WillOnce(Return(value_attr_supplier_));
 
     R_EXPECT_CALL(*link_type_, whenLinkUpdated(_, _))
         .WillOnce(DoAll(SaveArg<0>(&linkUpdated_), Return(SignalConnection())));
+  }
+
+  void copyConstructValueAttr(const LinkAttrSupplierTestHelper& rhs) {
+    value_attr_supplier_ = new MockKbNodeAttributeSupplier;
+
+    R_EXPECT_CALL(*rhs.value_attr_supplier_, clone())
+        .WillOnce(Return(value_attr_supplier_));
 
     R_EXPECT_CALL(*value_attr_supplier_, whenAttributeChanged(_, _))
         .WillOnce(
             DoAll(SaveArg<0>(&valueAttrChanged_), Return(SignalConnection())));
   }
 
+  MockKbNodeLinkAttributeSupplier* link_attr_supplier() {
+    return link_attr_supplier_.get();
+  }
   MockLinkType& linkType() { return *link_type_; }
   MockKbNodeAttributeSupplier& valueAttrSupplier() {
     return *value_attr_supplier_;
@@ -103,6 +116,7 @@ class LinkAttrSupplierTestHelper : public xtestutils::TestFixture {
   void changeValueAttr() { valueAttrChanged_(nullptr); }
 
  private:
+  std::shared_ptr<MockKbNodeLinkAttributeSupplier> link_attr_supplier_;
   MockLinkType* link_type_;
   MockKbNodeAttributeSupplier* value_attr_supplier_;
 
@@ -117,7 +131,9 @@ class LinkAttrSupplierTestHelper : public xtestutils::TestFixture {
 class KbNodeLinkAttrFixture : public xtestutils::TestFixture {
  public:
   KbNodeLinkAttrFixture()
-      : xtestutils::TestFixture{}, state_{}, link_attr_{&linkAttrSupplier()} {}
+      : xtestutils::TestFixture{},
+        state_{},
+        link_attr_{state_.link_attr_supplier()} {}
 
   KbNodeLinkAttrFixture(const KbNodeLinkAttrFixture& rhs)
       : xtestutils::TestFixture{rhs},
@@ -158,9 +174,10 @@ class KbNodeLinkAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
       : ErrorVerbosityTestWithParam{},
         fixture_{this},
         link_attr{fixture_->linkAttr()} {}
-  // ~KbNodeLinkAttributeTest() { }
-  // void SetUp() override {}
-  // void TearDown() override { }
+
+  MockKbNodeLinkAttributeSupplier& linkAttrSupplier() {
+    return *fixture_->state()->link_attr_supplier();
+  }
 
   MockLinkType& linkType() { return fixture_->state()->linkType(); }
 
@@ -333,6 +350,14 @@ class KbNodeLinkAttrSupplierFixture : public GenericAttributeSupplierFixture {
         attr_supplier_{link_item_provider_, default_proto_link_type_,
                        root_kbnode_, max_attrs()} {}
 
+  KbNodeLinkAttrSupplierFixture(const KbNodeLinkAttrSupplierFixture& rhs)
+      : GenericAttributeSupplierFixture{rhs},
+        link_item_provider_{rhs.link_item_provider_},
+        default_proto_link_type_{rhs.default_proto_link_type_},
+        root_kbnode_{rhs.root_kbnode_},
+        attr_factory_fixture_{rhs.attr_factory_fixture_},
+        attr_supplier_{rhs.attr_supplier_} {}
+
   IAttributeSupplier* getAttributeSupplier() override {
     return &attr_supplier_;
   }
@@ -361,15 +386,13 @@ class KbNodeLinkAttrSupplierFixture : public GenericAttributeSupplierFixture {
   }
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeLinkAttrSupplierFixture);
-
   ITreeItemProvider* link_item_provider_;
   fto::LinkType* default_proto_link_type_;
   IKbNode* root_kbnode_;
 
-  KbNodeLinkAttributeSupplier attr_supplier_;
-
   KbNodeLinkAttributeFactoryFixture attr_factory_fixture_;
+
+  KbNodeLinkAttributeSupplier attr_supplier_;
 };
 
 class KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory {
@@ -391,31 +414,10 @@ class KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory {
   }
 };
 
-using SupplierFixtureHelperGenerator =
-    xtestutils::CopyMoveFixtureHelperGenerator<
-        KbNodeLinkAttrSupplierFixture,
-        KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory,
-        KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
-
-using WithMockAttrFactoryFixtureCopyMoveHelper =
-    SupplierFixtureHelperGenerator::BasicFixtureHelper<
-        KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory>;
-static WithMockAttrFactoryFixtureCopyMoveHelper with_factory_fixture_helper;
-
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, GenericAttributeSupplierWithMockAttrFactoryTest,
-    ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
-        &with_factory_fixture_helper)));
-
-using FilledWithAttrsFixtureCopyMoveHelper =
-    SupplierFixtureHelperGenerator::BasicFixtureHelper<
-        KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
-static FilledWithAttrsFixtureCopyMoveHelper
-    filled_with_attributes_fixture_helper;
-INSTANTIATE_TEST_CASE_P(
-    FixtureSetup, GenericAttributeSupplierFilledWithAttrsTest,
-    ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
-        &filled_with_attributes_fixture_helper)));
+INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(
+    KbNodeLinkAttrSupplierFixture,
+    KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory,
+    KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory);
 
 }  // namespace tests
 }  // namespace snailcore

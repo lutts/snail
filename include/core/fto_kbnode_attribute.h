@@ -56,9 +56,12 @@ class KbNodeAttributeSupplierFactory {
   KbNodeAttributeSupplierFactory_METHODS
 };
 
+class KbNodeAttribute;
+
 #define KbNodeAttribute_METHODS                                      \
   SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeAttributeSupplier*()); \
-  SNAIL_INTERFACE1(setKbNode, void(IKbNode * kbnode));
+  SNAIL_INTERFACE1(setKbNode, void(IKbNode * kbnode));               \
+  SNAIL_INTERFACE1(copyExceptSupplier, void(const KbNodeAttribute& other));
 
 class KbNodeAttribute : public IAttribute {
  public:

@@ -52,10 +52,13 @@ class KbNodeLinkAttributeSupplier : public IAttributeSupplier {
   KbNodeLinkAttributeSupplier_METHODS
 };
 
+class KbNodeLinkAttribute;
+
 #define KbNodeLinkAttribute_METHODS                                      \
   SNAIL_CONST_INTERFACE0(supplier, fto::KbNodeLinkAttributeSupplier*()); \
   SNAIL_INTERFACE0(valueAttr, fto::KbNodeAttribute*());                  \
-  SNAIL_INTERFACE0(linkType, fto::LinkType*());
+  SNAIL_INTERFACE0(linkType, fto::LinkType*());                          \
+  SNAIL_INTERFACE1(copyExceptSupplier, void(const KbNodeLinkAttribute& other));
 
 class KbNodeLinkAttribute : public IAttribute {
  public:

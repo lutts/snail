@@ -19,12 +19,15 @@ namespace snailcore {
 
 class IAttribute;
 
-template <typename AttrT, typename AttrF>
+template <typename AttrT>
 class GenericAttributeSupplier {
  public:
-  GenericAttributeSupplier(const utils::U8String& name, int max_attrs,
-                           const AttrF& attr_factory)
-      : name_(name), max_attrs_(max_attrs), attr_factory_(attr_factory) {}
+  GenericAttributeSupplier(const utils::U8String& name, int max_attrs)
+      : name_(name), max_attrs_(max_attrs) {}
+
+  GenericAttributeSupplier(const GenericAttributeSupplier& rhs)
+      : name_{rhs.name_}, max_attrs_{rhs.max_attrs_} {}
+
   virtual ~GenericAttributeSupplier() = default;
 
   utils::U8String name() const { return name_; }
@@ -48,8 +51,8 @@ class GenericAttributeSupplier {
     // currently not, because the UI will ensure this will not happen
     if (attrs_.size() == static_cast<size_t>(max_attrs_)) return nullptr;
 
-    auto attr = attr_factory_.createAttribute();
-    if (attr) attrs_.push_back(std::unique_ptr<AttrT>(attr));
+    auto attr = createAttribute();
+    attrs_.push_back(std::unique_ptr<AttrT>(attr));
 
     return attr;
   }
@@ -64,18 +67,27 @@ class GenericAttributeSupplier {
     }
   }
 
+  void cloneAttributes(const GenericAttributeSupplier<AttrT>& rhs) {
+    size_t attr_count = rhs.attrs_.size();
+    attrs_.reserve(attr_count);
+
+    for (auto& src_attr : rhs.attrs_) {
+      std::unique_ptr<AttrT> new_attr(createAttribute());
+      new_attr->copyExceptSupplier(*src_attr);
+      attrs_.push_back(std::move(new_attr));
+    }
+  }
+
   void attributeChanged(IAttribute* attr) { AttributeChanged(attr); }
 
  public:
   SNAIL_SIGSLOT_PIMPL(IAttributeSupplier, AttributeChanged);
 
  private:
-  SNAIL_DISABLE_COPY(GenericAttributeSupplier);
+  virtual AttrT* createAttribute() const = 0;
 
- private:
   utils::U8String name_;
   int max_attrs_;
-  const AttrF& attr_factory_;
   std::vector<std::unique_ptr<AttrT> > attrs_;
 };
 

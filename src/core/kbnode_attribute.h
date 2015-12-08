@@ -34,6 +34,7 @@ class KbNodeAttributeFactory {
 class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
  public:
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
+  KbNodeAttributeSupplier(const KbNodeAttributeSupplier& rhs);
   virtual ~KbNodeAttributeSupplier();
 
   utils::U8String name() const override;
@@ -57,8 +58,6 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
   SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeAttributeSupplier);
-
   std::unique_ptr<KbNodeAttributeSupplierPrivate> impl_;
   friend class KbNodeAttributeSupplierPrivate;
 };
@@ -71,6 +70,8 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
   KbNodeAttribute(const KbNodeAttribute& rhs);
   KbNodeAttribute(KbNodeAttribute&& rhs);
   KbNodeAttribute& operator=(KbNodeAttribute rhs);
+
+  void copyExceptSupplier(const fto::KbNodeAttribute& other);
 
   // IAttribute
   utils::U8String displayName() const override;

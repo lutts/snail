@@ -29,6 +29,12 @@ KbNodeLinkAttribute::KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs)
   connectSignals();
 }
 
+// TODO(lutts): impl copy except supplier for KbNodeLinkAttribute
+void KbNodeLinkAttribute::copyExceptSupplier(
+    const fto::KbNodeLinkAttribute& other) {
+  (void)other;
+}
+
 KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
 
 void KbNodeLinkAttribute::connectSignals() {
@@ -110,14 +116,12 @@ fto::LinkType* KbNodeLinkAttribute::linkType() { return link_type_.self(); }
 //////////////// KbNodeLinkAttributeSupplier impls ////////////////
 
 class KbNodeLinkAttributeSupplierPrivate
-    : public GenericAttributeSupplier<fto::KbNodeLinkAttribute,
-                                      KbNodeLinkAttributeSupplierPrivate> {
+    : public GenericAttributeSupplier<fto::KbNodeLinkAttribute> {
  public:
-  KbNodeLinkAttributeSupplierPrivate(KbNodeLinkAttributeSupplier* q_ptr,
-                                     int max_attrs)
-      : GenericAttributeSupplier{"", max_attrs, *this}, q_ptr_{q_ptr} {}
+  KbNodeLinkAttributeSupplierPrivate(int max_attrs)
+      : GenericAttributeSupplier{"", max_attrs} {}
 
-  fto::KbNodeLinkAttribute* createAttribute() const {
+  fto::KbNodeLinkAttribute* createAttribute() const override {
     if (unlikely(attr_factory_)) {
       return attr_factory_->createAttribute();
     } else {
@@ -136,13 +140,24 @@ KbNodeLinkAttributeSupplier::KbNodeLinkAttributeSupplier(
     ITreeItemProvider* link_type_item_provider,
     const fto::LinkType* default_proto_link_type, IKbNode* root_kbnode,
     int max_attrs)
-    : impl_(utils::make_unique<KbNodeLinkAttributeSupplierPrivate>(this,
-                                                                   max_attrs)),
+    : impl_(utils::make_unique<KbNodeLinkAttributeSupplierPrivate>(max_attrs)),
       link_type_item_provider_(link_type_item_provider),
       default_proto_link_type_(default_proto_link_type),
-      root_kbnode_(root_kbnode) {}
+      root_kbnode_(root_kbnode) {
+  impl_->q_ptr_ = this;
+}
 
 KbNodeLinkAttributeSupplier::~KbNodeLinkAttributeSupplier() = default;
+
+KbNodeLinkAttributeSupplier::KbNodeLinkAttributeSupplier(
+    const KbNodeLinkAttributeSupplier& rhs)
+    : impl_{utils::make_unique<KbNodeLinkAttributeSupplierPrivate>(*rhs.impl_)},
+      link_type_item_provider_(rhs.link_type_item_provider_),
+      default_proto_link_type_(rhs.default_proto_link_type_),
+      root_kbnode_(rhs.root_kbnode_) {
+  impl_->q_ptr_ = this;
+  impl_->cloneAttributes(*rhs.impl_);
+}
 
 void KbNodeLinkAttributeSupplier::setAttributeFactory(
     KbNodeLinkAttributeFactory* attr_factory) {

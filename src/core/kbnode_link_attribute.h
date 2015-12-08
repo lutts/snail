@@ -36,6 +36,7 @@ class KbNodeLinkAttributeSupplier
   KbNodeLinkAttributeSupplier(ITreeItemProvider* link_type_item_provider,
                               const fto::LinkType* default_proto_link_type,
                               IKbNode* root_kbnode, int max_attrs);
+  KbNodeLinkAttributeSupplier(const KbNodeLinkAttributeSupplier& rhs);
 
   virtual ~KbNodeLinkAttributeSupplier();
 
@@ -70,8 +71,6 @@ class KbNodeLinkAttributeSupplier
   SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
 
  private:
-  SNAIL_DISABLE_COPY(KbNodeLinkAttributeSupplier);
-
   std::unique_ptr<KbNodeLinkAttributeSupplierPrivate> impl_;
 
   ITreeItemProvider* link_type_item_provider_;
@@ -86,6 +85,8 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
   virtual ~KbNodeLinkAttribute();
 
   KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs);
+
+  void copyExceptSupplier(const fto::KbNodeLinkAttribute& other);
 
   // IAttribute
   utils::U8String displayName() const override;

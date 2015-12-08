@@ -8,6 +8,8 @@
 #ifndef GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
 #define GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
 
+#include <memory>
+
 #include "test/testutils/gmock_common.h"
 
 namespace snailcore {
@@ -22,29 +24,72 @@ class GenericAttributeFactoryFixture : public xtestutils::TestFixture {
 template <typename F, typename M>
 class AttributeFactoryFixtureTemplate : public GenericAttributeFactoryFixture {
  public:
+  AttributeFactoryFixtureTemplate() : attr_factory_{std::make_shared<F>()} {}
+
+  AttributeFactoryFixtureTemplate(const AttributeFactoryFixtureTemplate& rhs)
+      : attr_factory_{rhs.attr_factory_} {
+    size_t attr_count = rhs.mock_attr_vec_.size();
+
+    if (attr_count != 0) {
+      mock_attr_vec_.reserve(attr_count);
+      attr_vec_.reserve(attr_count);
+
+      {
+        InSequence seq;
+
+        for (size_t i = 0; i < attr_count; ++i) {
+          auto attr = new M();
+          mock_attr_vec_.push_back(attr);
+          attr_vec_.push_back(attr);
+
+          R_EXPECT_CALL(*attr_factory_, createAttribute())
+              .WillOnce(Return(attr));
+        }
+      }
+
+      for (size_t i = 0; i < attr_count; ++i) {
+        auto new_mock_attr = mock_attr_vec_[i];
+        auto old_mock_attr = rhs.mock_attr_vec_[i];
+        R_EXPECT_CALL(*new_mock_attr, copyExceptSupplier(Ref(*old_mock_attr)));
+      }
+    }
+  }
+
   void prepareCreateMockAttrs(int count) override {
     // Expectations
-    R_EXPECT_CALL(attr_factory_, createAttribute())
+    R_EXPECT_CALL(*attr_factory_, createAttribute())
         .Times(count)
         .WillRepeatedly(Invoke([this]() {
           auto attr = new M();
+          mock_attr_vec_.push_back(attr);
           attr_vec_.push_back(attr);
           return attr;
         }));
   }
 
   std::vector<IAttribute*>& created_attributes() { return attr_vec_; }
-  F* attr_factory() { return &attr_factory_; }
+  F* attr_factory() { return attr_factory_.get(); }
 
  private:
-  F attr_factory_;
+  std::shared_ptr<F> attr_factory_;
   std::vector<IAttribute*> attr_vec_;
+  std::vector<M*> mock_attr_vec_;
+};
+
+struct CopyExceptSupplierFunctor {
+  template <typename F>
+  void operator()(F& lhs, const F& rhs) {  // NOLINT
+    lhs.copyExceptSupplier(rhs);
+  }
 };
 
 class GenericAttributeSupplierFixture : public xtestutils::TestFixture {
  public:
   GenericAttributeSupplierFixture()
       : max_attrs_{xtestutils::randomIntInRange(3, 5)} {}
+
+  GenericAttributeSupplierFixture(const GenericAttributeSupplierFixture& rhs)
+      : max_attrs_{rhs.max_attrs_} {}
 
   // region: setter/getters
   int max_attrs() { return max_attrs_; }
@@ -206,6 +251,31 @@ TEST_P(GenericAttributeSupplierFilledWithAttrsTest,
   // Exercise system
   attr_supplier_->attributeChanged(attr);
 }
+
+#define INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(                          \
+    FixtureType, WithMockAttrFactoryFixture, FilledWithAttrsFixture, ...) \
+  using GenericSupplierFixtureHelperGenerator =                           \
+      xtestutils::CopyMoveFixtureHelperGenerator<                         \
+          GenericAttributeSupplierFixture, WithMockAttrFactoryFixture,    \
+          FilledWithAttrsFixture, ##__VA_ARGS__>;                         \
+                                                                          \
+  static auto empty_generic_supplier_fixture_helpers =                    \
+      GenericSupplierFixtureHelperGenerator::fixtureHelpers<              \
+          WithMockAttrFactoryFixture, FixtureType,                        \
+          GenericSupplierFixtureHelperGenerator::                         \
+              CopyConstructFixtureHelper>();                              \
+  INSTANTIATE_TEST_CASE_P(                                                \
+      FixtureSetup, GenericAttributeSupplierWithMockAttrFactoryTest,      \
+      ::testing::ValuesIn(empty_generic_supplier_fixture_helpers));       \
+                                                                          \
+  static auto generic_filled_with_attributes_fixture_helper =             \
+      GenericSupplierFixtureHelperGenerator::fixtureHelpers<              \
+          FilledWithAttrsFixture, FixtureType,                            \
+          GenericSupplierFixtureHelperGenerator::                         \
+              CopyConstructFixtureHelper>();                              \
+  INSTANTIATE_TEST_CASE_P(                                                \
+      FixtureSetup, GenericAttributeSupplierFilledWithAttrsTest,          \
+      ::testing::ValuesIn(generic_filled_with_attributes_fixture_helper));
 
 }  // namespace tests
 }  // namespace snailcore
