@@ -64,7 +64,10 @@ namespace fto {
 
 class LinkTypeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(LinkType);
-  TEST_PROXY_ENABLE_COPY(LinkType);
+  TEST_PROXY_ENABLE_COPY_CONSTRUCT(LinkType);
+  TEST_PROXY_ENABLE_COPY_ASSIGNMENT(LinkType);
+  TEST_PROXY_ENABLE_MOVE_CONSTRUCT(LinkType);
+  TEST_PROXY_ENABLE_MOVE_ASSIGNMENT(LinkType);
 
  public:
   utils::U8String name() const { return self_->name(); }

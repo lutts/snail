@@ -92,7 +92,10 @@ namespace fto {
 
 class NamedStringFormatterTestProxy {
   TEST_PROXY_BASE(NamedStringFormatter);
-  TEST_PROXY_ENABLE_COPY(NamedStringFormatter);
+  TEST_PROXY_ENABLE_COPY_CONSTRUCT(NamedStringFormatter);
+  TEST_PROXY_ENABLE_COPY_ASSIGNMENT(NamedStringFormatter);
+  TEST_PROXY_ENABLE_MOVE_CONSTRUCT(NamedStringFormatter);
+  TEST_PROXY_ENABLE_MOVE_ASSIGNMENT(NamedStringFormatter);
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(NamedStringFormatter);
 
  public:

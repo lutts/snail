@@ -28,7 +28,25 @@
     owned_ = owned;                                      \
   }                                                      \
                                                          \
+  void swap(RealClass##TestProxy& rhs) {                 \
+    std::swap(self_, rhs.self_);                         \
+    std::swap(owned_, rhs.owned_);                       \
+  }                                                      \
+                                                         \
+  friend inline void swap(RealClass##TestProxy& v1,      \
+                          RealClass##TestProxy& v2) {    \
+    v1.swap(v2);                                         \
+  }                                                      \
+                                                         \
  private:                                                \
+  void cloneObj(const RealClass& obj) {                  \
+    if (owned_) {                                        \
+      delete self_;                                      \
+    }                                                    \
+                                                         \
+    self_ = obj.clone();                                 \
+    owned_ = true;                                       \
+  }                                                      \
   RealClass* self_{nullptr};                             \
   bool owned_{true};
 
@@ -60,66 +78,59 @@
     }                                                                      \
   }
 
-#define TEST_PROXY_ENABLE_COPY(RealClass)                                    \
- public:                                                                     \
-  RealClass##TestProxy(const RealClass##TestProxy& rhs) {                    \
-    cloneObj(*(rhs.self_));                                                  \
-  }                                                                          \
-                                                                             \
-  RealClass##TestProxy(RealClass##TestProxy&& rhs) { /* NOLINT */            \
-    swap(rhs);                                                               \
-  }                                                                          \
-                                                                             \
-  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) {         \
-    cloneObj(*(rhs.self_));                                                  \
-    return *this;                                                            \
-  }                                                                          \
-                                                                             \
+#define TEST_PROXY_ENABLE_COPY_CONSTRUCT(RealClass)             \
+ public:                                                        \
+  RealClass##TestProxy(const RealClass##TestProxy& rhs) {       \
+    cloneObj(*(rhs.self_));                                     \
+  }                                                             \
+  RealClass##TestProxy(const RealClass& rhs) { cloneObj(rhs); } \
+                                                                \
+  RealClass##TestProxy* clone() const {                         \
+    return new RealClass##TestProxy(*this);                     \
+  }
+
+#define TEST_PROXY_DISABLE_COPY_CONSTRUCT(RealClass)              \
+ private:                                                         \
+  RealClass##TestProxy(const RealClass##TestProxy& rhs) = delete; \
+  RealClass##TestProxy(const RealClass& rhs);
+
+#define TEST_PROXY_ENABLE_COPY_ASSIGNMENT(RealClass)                 \
+ public:                                                             \
+  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) { \
+    cloneObj(*(rhs.self_));                                          \
+    return *this;                                                    \
+  }
+
+#define TEST_PROXY_DISABLE_COPY_ASSIGNMENT(RealClass)                        \
+ private:                                                                    \
+  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) = delete; \
+  RealClass##TestProxy& operator=(const RealClass& rhs);
+
+#define TEST_PROXY_ENABLE_MOVE_CONSTRUCT(RealClass)               \
+ public:                                                          \
+  RealClass##TestProxy(RealClass##TestProxy&& rhs) { /* NOLINT */ \
+    swap(rhs);                                                    \
+  }
+
+#define TEST_PROXY_DISABLE_MOVE_CONSTRUCT(RealClass) \
+ private:                                            \
+  RealClass##TestProxy(RealClass##TestProxy&& rhs) = delete; /* NOLINT */
+
+#define TEST_PROXY_ENABLE_MOVE_ASSIGNMENT(RealClass)                         \
   RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) { /* NOLINT */ \
     swap(rhs);                                                               \
     return *this;                                                            \
   }                                                                          \
                                                                              \
-  RealClass##TestProxy(const RealClass& rhs) { cloneObj(rhs); }              \
-                                                                             \
   RealClass##TestProxy& operator=(const RealClass& rhs) {                    \
     cloneObj(rhs);                                                           \
     return *this;                                                            \
-  }                                                                          \
-                                                                             \
-  void swap(RealClass##TestProxy& rhs) {                                     \
-    std::swap(self_, rhs.self_);                                             \
-    std::swap(owned_, rhs.owned_);                                           \
-  }                                                                          \
-                                                                             \
-  friend inline void swap(RealClass##TestProxy& v1,                          \
-                          RealClass##TestProxy& v2) {                        \
-    v1.swap(v2);                                                             \
-  }                                                                          \
-                                                                             \
-  RealClass##TestProxy* clone() const {                                      \
-    return new RealClass##TestProxy(*this);                                  \
-  }                                                                          \
-                                                                             \
- private:                                                                    \
-  void cloneObj(const RealClass& obj) {                                      \
-    if (owned_) {                                                            \
-      delete self_;                                                          \
-    }                                                                        \
-                                                                             \
-    self_ = obj.clone();                                                     \
-    owned_ = true;                                                           \
   }
 
-#define TEST_PROXY_DISABLE_COPY(RealClass)                                   \
+#define TEST_PROXY_DISABLE_MOVE_ASSIGNMENT(RealClass)                        \
  private:                                                                    \
-  RealClass##TestProxy(const RealClass##TestProxy& rhs) = delete;            \
-  RealClass##TestProxy(RealClass##TestProxy&& rhs) = delete; /* NOLINT */    \
-  RealClass##TestProxy& operator=(const RealClass##TestProxy& rhs) = delete; \
   RealClass##TestProxy& operator=(RealClass##TestProxy&& rhs) /* NOLINT */ = \
-      delete;                                                                \
-  RealClass##TestProxy(const RealClass& rhs);                                \
-  RealClass##TestProxy& operator=(const RealClass& rhs);
+      delete;
 
 // if the default constructor of real object is allowed, use this macro instead
 #define TEST_PROXY_WITH_DEFAULT_CONSTRUCTOR(RealClass) \
