@@ -177,10 +177,12 @@ class EmptyKbNodeAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
   KbNodeAttribute* attr_;
 };
 
-auto empty_test_fixture_helpers =
-    FixtureHelperGenerator::fixtureHelpers<EmptyKbNodeAttributeFixtureFactory>(
-        TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
-        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST);
+auto empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
+    EmptyKbNodeAttributeFixtureFactory, KbNodeAttributeFixture,
+    FixtureHelperGenerator::CopyConstructFixtureHelper,
+    FixtureHelperGenerator::CopyAssignmentFixtureHelper,
+    FixtureHelperGenerator::MoveConstructFixtureHelper,
+    FixtureHelperGenerator::MoveAssignmentFixtureHelper>();
 INSTANTIATE_TEST_CASE_P(FixtureSetup, EmptyKbNodeAttributeTest,
                         ::testing::ValuesIn(empty_test_fixture_helpers));
 
@@ -281,9 +283,11 @@ class NonEmptyKbNodeAttributeTest
 };
 
 auto non_empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
-    NonEmptyKbNodeAttributeFixtureFactory>(
-    TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
-    TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST);
+    NonEmptyKbNodeAttributeFixtureFactory, KbNodeAttributeFixture,
+    FixtureHelperGenerator::CopyConstructFixtureHelper,
+    FixtureHelperGenerator::CopyAssignmentFixtureHelper,
+    FixtureHelperGenerator::MoveConstructFixtureHelper,
+    FixtureHelperGenerator::MoveAssignmentFixtureHelper>();
 
 INSTANTIATE_TEST_CASE_P(FixtureSetup, NonEmptyKbNodeAttributeTest,
                         ::testing::ValuesIn(non_empty_test_fixture_helpers));
@@ -433,9 +437,14 @@ class KbNodeAttrSupplierFilledWithAttrsFixtureFactory {
   }
 };
 
+using SupplierFixtureHelperGenerator =
+    xtestutils::CopyMoveFixtureHelperGenerator<
+        KbNodeAttrSupplierFixture,
+        KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory,
+        KbNodeAttrSupplierFilledWithAttrsFixtureFactory>;
+
 using WithMockAttrFactoryFixtureCopyMoveHelper =
-    xtestutils::CopyMoveFixtureHelper<
-        GenericAttributeSupplierFixture,
+    SupplierFixtureHelperGenerator::BasicFixtureHelper<
         KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory>;
 static WithMockAttrFactoryFixtureCopyMoveHelper with_factory_fixture_helper;
 
@@ -444,9 +453,9 @@ INSTANTIATE_TEST_CASE_P(
     ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
         &with_factory_fixture_helper)));
 
-using FilledWithAttrsFixtureCopyMoveHelper = xtestutils::CopyMoveFixtureHelper<
-    GenericAttributeSupplierFixture,
-    KbNodeAttrSupplierFilledWithAttrsFixtureFactory>;
+using FilledWithAttrsFixtureCopyMoveHelper =
+    SupplierFixtureHelperGenerator::BasicFixtureHelper<
+        KbNodeAttrSupplierFilledWithAttrsFixtureFactory>;
 static FilledWithAttrsFixtureCopyMoveHelper
     filled_with_attributes_fixture_helper;
 INSTANTIATE_TEST_CASE_P(

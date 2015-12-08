@@ -345,10 +345,12 @@ class LinkTypeTest
   LinkType* link_type_;
 };
 
-auto link_type_test_fixture_helpers =
-    FixtureHelperGenerator::fixtureHelpers<LinkTypeFixtureFactory>(
-        TEST_ENABLE_COPY_CONSTRUCT_TEST | TEST_ENABLE_COPY_ASSIGNMENT_TEST |
-        TEST_ENABLE_MOVE_CONSTRUCT_TEST | TEST_ENABLE_MOVE_ASSIGNMENT_TEST);
+auto link_type_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
+    LinkTypeFixtureFactory, LinkTypeFixture,
+    FixtureHelperGenerator::CopyConstructFixtureHelper,
+    FixtureHelperGenerator::CopyAssignmentFixtureHelper,
+    FixtureHelperGenerator::MoveConstructFixtureHelper,
+    FixtureHelperGenerator::MoveAssignmentFixtureHelper>();
 INSTANTIATE_TEST_CASE_P(FixtureSetup, LinkTypeTest,
                         ::testing::ValuesIn(link_type_test_fixture_helpers));
 

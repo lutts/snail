@@ -180,9 +180,9 @@ class KbNodeLinkAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
   KbNodeLinkAttribute* link_attr;
 };
 
-auto link_attr_test_fixture_helpers =
-    FixtureHelperGenerator::fixtureHelpers<KbNodeLinkAttrFixtureFactory>(
-        TEST_ENABLE_COPY_CONSTRUCT_TEST);
+auto link_attr_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
+    KbNodeLinkAttrFixtureFactory, KbNodeLinkAttrFixture,
+    FixtureHelperGenerator::CopyConstructFixtureHelper>();
 INSTANTIATE_TEST_CASE_P(FixtureSetup, KbNodeLinkAttributeTest,
                         ::testing::ValuesIn((link_attr_test_fixture_helpers)));
 
@@ -391,9 +391,14 @@ class KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory {
   }
 };
 
+using SupplierFixtureHelperGenerator =
+    xtestutils::CopyMoveFixtureHelperGenerator<
+        KbNodeLinkAttrSupplierFixture,
+        KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory,
+        KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
+
 using WithMockAttrFactoryFixtureCopyMoveHelper =
-    xtestutils::CopyMoveFixtureHelper<
-        GenericAttributeSupplierFixture,
+    SupplierFixtureHelperGenerator::BasicFixtureHelper<
         KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory>;
 static WithMockAttrFactoryFixtureCopyMoveHelper with_factory_fixture_helper;
 
@@ -402,9 +407,9 @@ INSTANTIATE_TEST_CASE_P(
     ::testing::Values((GenericAttributeSupplierFixtureFactory*)(
         &with_factory_fixture_helper)));
 
-using FilledWithAttrsFixtureCopyMoveHelper = xtestutils::CopyMoveFixtureHelper<
-    GenericAttributeSupplierFixture,
-    KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
+using FilledWithAttrsFixtureCopyMoveHelper =
+    SupplierFixtureHelperGenerator::BasicFixtureHelper<
+        KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
 static FilledWithAttrsFixtureCopyMoveHelper
     filled_with_attributes_fixture_helper;
 INSTANTIATE_TEST_CASE_P(

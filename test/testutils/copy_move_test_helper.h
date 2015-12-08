@@ -78,241 +78,182 @@ class TestFixtureHelper {
   virtual FixtureType* createTestFixture() = 0;
 };
 
-template <typename FixtureType, typename BaseFactory>
-class CopyMoveFixtureHelper : public TestFixtureHelper<FixtureType> {
- public:
-  virtual FixtureType* createTestFixture() {
-    return BaseFactory::createFixture();
-  }
-};
-
-template <typename FixtureType, typename BaseFactory,
-          typename ConcreteFixtureType = FixtureType>
-class CopyConstructFixtureHelper : public TestFixtureHelper<FixtureType> {
- public:
-  FixtureType* createTestFixture() override {
-    std::cout << "test copy construct......" << std::endl;
-
-    std::unique_ptr<ConcreteFixtureType> base_fixture{
-        BaseFactory::createFixture()};
-
-    auto fixture = new ConcreteFixtureType(*base_fixture);
-    fixture->setup();
-
-    return fixture;
-  }
-};
-
-template <typename FixtureType, typename BaseFactory,
-          typename CopyTargetFactory,
-          typename ConcreteFixtureType = FixtureType>
-class CopyAssignmentFixtureHelper : public TestFixtureHelper<FixtureType> {
- public:
-  FixtureType* createTestFixture() override {
-    std::cout << "test copy assignment......" << std::endl;
-
-    std::unique_ptr<ConcreteFixtureType> base_fixture{
-        BaseFactory::createFixture()};
-
-    auto fixture = CopyTargetFactory::createFixture();
-    *fixture = *base_fixture;
-    fixture->checkSetup();
-    return fixture;
-  }
-};
-
-template <typename FixtureType, typename BaseFactory,
-          typename ConcreteFixtureType = FixtureType>
-class MoveConstructFixtureHelper : public TestFixtureHelper<FixtureType> {
- public:
-  FixtureType* createTestFixture() override {
-    std::cout << "test move construct......" << std::endl;
-
-    std::unique_ptr<ConcreteFixtureType> base_fixture{
-        BaseFactory::createFixture()};
-
-    auto fixture = new ConcreteFixtureType(std::move(*base_fixture));
-    fixture->setup();
-
-    return fixture;
-  }
-};
-
-template <typename FixtureType, typename BaseFactory,
-          typename MoveTargetFactory,
-          typename ConcreteFixtureType = FixtureType>
-class MoveAssignmentFixtureHelper : public TestFixtureHelper<FixtureType> {
- public:
-  FixtureType* createTestFixture() override {
-    std::cout << "test move assignment......" << std::endl;
-
-    std::unique_ptr<ConcreteFixtureType> base_fixture{
-        BaseFactory::createFixture()};
-
-    auto fixture = MoveTargetFactory::createFixture();
-    *fixture = std::move(*base_fixture);
-    fixture->checkSetup();
-    return fixture;
-  }
-};
-
-#define TEST_ENABLE_COPY_CONSTRUCT_TEST (1 << 0)
-#define TEST_ENABLE_COPY_ASSIGNMENT_TEST (1 << 1)
-#define TEST_ENABLE_MOVE_CONSTRUCT_TEST (1 << 2)
-#define TEST_ENABLE_MOVE_ASSIGNMENT_TEST (1 << 3)
-
 template <typename FixtureType, typename... Factories>
 class CopyMoveFixtureHelperGenerator {
  public:
-  template <typename BaseFactory, typename ConcreteFixtureType = FixtureType>
-  static std::vector<TestFixtureHelper<FixtureType>*> fixtureHelpers(
-      unsigned int enabled_tests = 0u) {
+  template <typename BaseFactory>
+  class BasicFixtureHelper : public TestFixtureHelper<FixtureType> {
+   public:
+    FixtureType* createTestFixture() override {
+      return BaseFactory::createFixture();
+    }
+
+    static TestFixtureHelper<FixtureType>* getInstance() {
+      static BasicFixtureHelper<BaseFactory> helper;
+      return &helper;
+    }
+  };
+
+  template <template <typename, typename, typename> class DerivedT,
+            typename BaseFactory, typename TargetFactory,
+            typename ConcreteFixtureType>
+  class GenericCustomFixtureHelper : public TestFixtureHelper<FixtureType> {
+   public:
+    FixtureType* createTestFixture() override {
+      std::unique_ptr<ConcreteFixtureType> base_fixture{
+          BaseFactory::createFixture()};
+
+      auto fixture = TargetFactory::createFixture();
+
+      doCustomOperation(fixture, base_fixture.get());
+
+      fixture->checkSetup();
+      return fixture;
+    }
+
+    static constexpr bool shouldTestForEachTargetFactory() { return true; }
+
+    static TestFixtureHelper<FixtureType>* getInstance() {
+      static DerivedT<BaseFactory, TargetFactory, ConcreteFixtureType> helper;
+      return &helper;
+    }
+
+   private:
+    virtual void doCustomOperation(ConcreteFixtureType* target_fixture,
+                                   ConcreteFixtureType* base_fixture) = 0;
+  };
+
+  template <typename BaseFactory, typename unusedT,
+            typename ConcreteFixtureType>
+  class CopyConstructFixtureHelper : public TestFixtureHelper<FixtureType> {
+   public:
+    FixtureType* createTestFixture() override {
+      std::cout << "test copy construct......" << std::endl;
+
+      std::unique_ptr<ConcreteFixtureType> base_fixture{
+          BaseFactory::createFixture()};
+
+      auto fixture = new ConcreteFixtureType(*base_fixture);
+      fixture->setup();
+
+      return fixture;
+    }
+
+    static constexpr bool shouldTestForEachTargetFactory() { return false; }
+
+    static TestFixtureHelper<FixtureType>* getInstance() {
+      static CopyConstructFixtureHelper<BaseFactory, unusedT,
+                                        ConcreteFixtureType> helper;
+      return &helper;
+    }
+  };
+
+  template <typename BaseFactory, typename CopyTargetFactory,
+            typename ConcreteFixtureType>
+  class CopyAssignmentFixtureHelper
+      : public GenericCustomFixtureHelper<CopyAssignmentFixtureHelper,
+                                          BaseFactory, CopyTargetFactory,
+                                          ConcreteFixtureType> {
+   private:
+    void doCustomOperation(ConcreteFixtureType* target_fixture,
+                           ConcreteFixtureType* base_fixture) {
+      std::cout << "test copy assignment......" << std::endl;
+      *target_fixture = *base_fixture;
+    }
+  };
+
+  template <typename BaseFactory, typename unusedT,
+            typename ConcreteFixtureType>
+  class MoveConstructFixtureHelper : public TestFixtureHelper<FixtureType> {
+   public:
+    FixtureType* createTestFixture() override {
+      std::cout << "test move construct......" << std::endl;
+
+      std::unique_ptr<ConcreteFixtureType> base_fixture{
+          BaseFactory::createFixture()};
+
+      auto fixture = new ConcreteFixtureType(std::move(*base_fixture));
+      fixture->setup();
+
+      return fixture;
+    }
+
+    static constexpr bool shouldTestForEachTargetFactory() { return false; }
+
+    static TestFixtureHelper<FixtureType>* getInstance() {
+      static MoveConstructFixtureHelper<BaseFactory, unusedT,
+                                        ConcreteFixtureType> helper;
+      return &helper;
+    }
+  };
+
+  template <typename BaseFactory, typename MoveTargetFactory,
+            typename ConcreteFixtureType>
+  class MoveAssignmentFixtureHelper
+      : public GenericCustomFixtureHelper<MoveAssignmentFixtureHelper,
+                                          BaseFactory, MoveTargetFactory,
+                                          ConcreteFixtureType> {
+   private:
+    void doCustomOperation(ConcreteFixtureType* target_fixture,
+                           ConcreteFixtureType* base_fixture) {
+      std::cout << "test move assignment......" << std::endl;
+
+      *target_fixture = std::move(*base_fixture);
+    }
+  };
+
+  template <typename BaseFactory, typename ConcreteFixtureType = FixtureType,
+            template <typename, typename, typename> class... Helpers>
+  static std::vector<TestFixtureHelper<FixtureType>*> fixtureHelpers() {
     std::vector<TestFixtureHelper<FixtureType>*> helpers;
-    helpers.reserve(1 + 1 + 1 + 2 * sizeof...(Factories));
 
-    helpers.push_back(getBaseHelper<BaseFactory>());
+    constexpr int num_base_helpers = 1;
+    constexpr int num_helpers = sizeof...(Helpers) * sizeof...(Factories);
+    helpers.reserve(num_base_helpers + num_helpers);
 
-    if (enabled_tests & TEST_ENABLE_COPY_CONSTRUCT_TEST) {
-      helpers.push_back(
-          getCopyConstructHelper<BaseFactory, ConcreteFixtureType>());
-    }
+    helpers.push_back(BasicFixtureHelper<BaseFactory>::getInstance());
 
-    if (enabled_tests & TEST_ENABLE_COPY_ASSIGNMENT_TEST) {
-      auto copy_assign_helpers =
-          getCopyAssignHelpers<BaseFactory, ConcreteFixtureType>();
-      helpers.insert(helpers.end(), copy_assign_helpers.begin(),
-                     copy_assign_helpers.end());
-    }
-
-    if (enabled_tests & TEST_ENABLE_MOVE_CONSTRUCT_TEST) {
-      helpers.push_back(
-          getMoveConstructHelper<BaseFactory, ConcreteFixtureType>());
-    }
-
-    if (enabled_tests & TEST_ENABLE_MOVE_ASSIGNMENT_TEST) {
-      auto move_assign_helpers =
-          getMoveAssignHelpers<BaseFactory, ConcreteFixtureType>();
-      helpers.insert(helpers.end(), move_assign_helpers.begin(),
-                     move_assign_helpers.end());
-    }
+    getHelpers<BaseFactory, ConcreteFixtureType, Helpers...>(&helpers);
 
     return helpers;
-  }
-
-  template <typename BaseFactory>
-  static CopyMoveFixtureHelper<FixtureType, BaseFactory>* getBaseHelper() {
-    static CopyMoveFixtureHelper<FixtureType, BaseFactory> base_helper;
-    return &base_helper;
-  }
-
-  // copy construct
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static TestFixtureHelper<typename std::enable_if<
-      std::is_copy_constructible<ConcreteFixtureType>::value,
-      FixtureType>::type>*
-  getCopyConstructHelper() {
-    static CopyConstructFixtureHelper<FixtureType, BaseFactory,
-                                      ConcreteFixtureType> copy_helper;
-    return &copy_helper;
-  }
-
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static TestFixtureHelper<typename std::enable_if<
-      !std::is_copy_constructible<ConcreteFixtureType>::value,
-      FixtureType>::type>*
-  getCopyConstructHelper() {
-    throw std::logic_error(
-        "copy construct test enabled, but fixture does not allow copy "
-        "construct");
-    return nullptr;
-  }
-
-  // move construct
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static TestFixtureHelper<typename std::enable_if<
-      std::is_move_constructible<ConcreteFixtureType>::value,
-      FixtureType>::type>*
-  getMoveConstructHelper() {
-    static MoveConstructFixtureHelper<FixtureType, BaseFactory,
-                                      ConcreteFixtureType> move_helper;
-    return &move_helper;
-  }
-
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static TestFixtureHelper<typename std::enable_if<
-      !std::is_move_constructible<ConcreteFixtureType>::value,
-      FixtureType>::type>*
-  getMoveConstructHelper() {
-    throw std::logic_error(
-        "move construct test enabled, but fixture does not allow move "
-        "construct");
-    return nullptr;
-  }
-
-  // copy assign
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static std::vector<TestFixtureHelper<typename std::enable_if<
-      std::is_copy_assignable<ConcreteFixtureType>::value, FixtureType>::type>*>
-  getCopyAssignHelpers() {
-    return getCopyMoveAssignHelpers<CopyAssignmentFixtureHelper,
-                                    ConcreteFixtureType, BaseFactory,
-                                    Factories...>();
-  }
-
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static std::vector<TestFixtureHelper<typename std::enable_if<
-      !std::is_copy_assignable<ConcreteFixtureType>::value,
-      FixtureType>::type>*>
-  getCopyAssignHelpers() {
-    throw std::logic_error(
-        "copy assign test enabled, but fixture does not allow copy assign");
-    return std::vector<TestFixtureHelper<FixtureType>*>();
-  }
-
-  // move assign
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static std::vector<TestFixtureHelper<typename std::enable_if<
-      std::is_move_assignable<ConcreteFixtureType>::value, FixtureType>::type>*>
-  getMoveAssignHelpers() {
-    return getCopyMoveAssignHelpers<MoveAssignmentFixtureHelper,
-                                    ConcreteFixtureType, BaseFactory,
-                                    Factories...>();
-  }
-
-  template <typename BaseFactory, typename ConcreteFixtureType>
-  static std::vector<TestFixtureHelper<typename std::enable_if<
-      !std::is_move_assignable<ConcreteFixtureType>::value,
-      FixtureType>::type>*>
-  getMoveAssignHelpers() {
-    throw std::logic_error(
-        "move assign test enabled, but fixture does not allow move assign");
-    return std::vector<TestFixtureHelper<FixtureType>*>();
   }
 
  private:
-  template <template <typename, typename, typename, typename> class H,
-            typename ConcreteFixtureType, typename BaseFactory,
-            typename TargetFactory, typename... OtherF>
-  static std::vector<TestFixtureHelper<FixtureType>*>
-  getCopyMoveAssignHelpers() {
-    static H<FixtureType, BaseFactory, TargetFactory, ConcreteFixtureType>
-        helper;
-
-    std::vector<TestFixtureHelper<FixtureType>*> helpers;
-    helpers.push_back(&helper);
-
-    auto other_helpers = getCopyMoveAssignHelpers<H, ConcreteFixtureType,
-                                                  BaseFactory, OtherF...>();
-    helpers.insert(helpers.end(), other_helpers.begin(), other_helpers.end());
-
-    return helpers;
+  template <typename BaseFactory, typename ConcreteFixtureType>
+  static void getHelpers(
+      std::vector<TestFixtureHelper<FixtureType>*>* helpers) {
+    (void)helpers;
   }
 
-  template <template <typename, typename, typename, typename> class H,
-            typename ConcreteFixtureType, typename BaseFactory>
-  static std::vector<TestFixtureHelper<FixtureType>*>
-  getCopyMoveAssignHelpers() {
-    return std::vector<TestFixtureHelper<FixtureType>*>();
+  template <typename BaseFactory, typename ConcreteFixtureType,
+            template <typename, typename, typename> class Helper,
+            template <typename, typename, typename> class... OtherHelpers>
+  static void getHelpers(
+      std::vector<TestFixtureHelper<FixtureType>*>* helpers) {
+    getHelpersImpl<BaseFactory, ConcreteFixtureType, Helper, Factories...>(
+        helpers);
+
+    getHelpers<BaseFactory, ConcreteFixtureType, OtherHelpers...>(helpers);
+  }
+
+  template <typename BaseFactory, typename ConcreteFixtureType,
+            template <typename, typename, typename> class Helper,
+            typename TargetFactory, typename... OtherF>
+  static void getHelpersImpl(
+      std::vector<TestFixtureHelper<FixtureType>*>* helpers) {
+    using HelperType = Helper<BaseFactory, TargetFactory, ConcreteFixtureType>;
+    helpers->push_back(HelperType::getInstance());
+    if (HelperType::shouldTestForEachTargetFactory()) {
+      getHelpersImpl<BaseFactory, ConcreteFixtureType, Helper, OtherF...>(
+          helpers);
+    }
+  }
+
+  template <typename BaseFactory, typename ConcreteFixtureType,
+            template <typename, typename, typename> class Helper>
+  static void getHelpersImpl(
+      std::vector<TestFixtureHelper<FixtureType>*>* helpers) {
+    (void)helpers;
   }
 };
 
