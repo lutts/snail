@@ -239,4 +239,38 @@ class TestProxyLogger {
   RealClass##TestProxy() = default;                    \
   TEST_PROXY_BASE(RealClass)
 
+// impl helpers
+#define TEST_PROXY_CLONE_INTERFACE(Cls) SNAIL_CONST_INTERFACE0(clone, Cls*())
+#define TEST_PROXY_CLONE_MOCK(Cls) TEST_PROXY_CLONE_INTERFACE(Cls)
+
+#define TEST_PROXY_COPY_ASSIGN_INTERFACE(Cls) \
+  virtual Cls& operator=(const Cls& rhs) = 0
+
+#define TEST_PROXY_COPY_ASSIGN_MOCK(Cls)    \
+  Cls& operator=(const Cls& rhs) override { \
+    copy_assignment(rhs);                   \
+    return *this;                           \
+  }                                         \
+                                            \
+  MOCK_METHOD1(copy_assignment, void(const Cls& rhs));
+
+#define TEST_PROXY_MOVE_CLONE_INTERFACE(Cls) SNAIL_INTERFACE0(moveClone, Cls*())
+#define TEST_PROXY_MOVE_CLONE_MOCK(Cls) TEST_PROXY_MOVE_CLONE_INTERFACE(Cls)
+
+#define TEST_PROXY_MOVE_ASSIGN_INTERFACE(Cls) \
+  virtual Cls& operator=(Cls&& rhs) = 0
+
+#define TEST_PROXY_MOVE_ASSIGN_MOCK(Cls) \
+  Cls& operator=(Cls&& rhs) override {   \
+    move_assignment(rhs);                \
+    return *this;                        \
+  }                                      \
+                                         \
+  MOCK_METHOD1(move_assignment, void(Cls & rhs));
+
+#define TEST_PROXY_SWAP_INTERFACE(Cls) \
+  SNAIL_INTERFACE1(swap_with, void(Cls & rhs))
+
+#define TEST_PROXY_SWAP_MOCK(Cls) TEST_PROXY_SWAP_INTERFACE(Cls)
+
 #endif  // INCLUDE_TEST_TEST_PROXY_H_

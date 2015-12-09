@@ -20,17 +20,10 @@ namespace tests {
 
 class MockNamedStringFormatter : public fto::NamedStringFormatter {
  public:
-  SNAIL_CONST_INTERFACE0(clone, fto::NamedStringFormatter*());
-  SNAIL_INTERFACE0(moveClone, fto::NamedStringFormatter*());
-  fto::NamedStringFormatter& operator=(
-      fto::NamedStringFormatter&& rhs) override {
-    move_assignment(rhs);
-    return *this;
-  }
-
-  MOCK_METHOD1(move_assignment, void(fto::NamedStringFormatter& rhs));
-
-  SNAIL_INTERFACE1(swap_with, void(fto::NamedStringFormatter& rhs));
+  TEST_PROXY_CLONE_MOCK(fto::NamedStringFormatter);
+  TEST_PROXY_MOVE_CLONE_MOCK(fto::NamedStringFormatter);
+  TEST_PROXY_MOVE_ASSIGN_MOCK(fto::NamedStringFormatter);
+  TEST_PROXY_SWAP_MOCK(fto::NamedStringFormatter);
 
   NamedStringFormatter_METHODS
 };

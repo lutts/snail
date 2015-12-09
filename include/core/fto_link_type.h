@@ -39,9 +39,9 @@ class LinkType : public ITreeItem {
 
   SNAIL_SIGSLOT_PURE_VIRTUAL(LinkUpdated, void());
 
-  SNAIL_CONST_INTERFACE0(clone, LinkType*());
-  virtual LinkType& operator=(const LinkType& rhs) = 0;
-  virtual LinkType& operator=(LinkType&& rhs) = 0;
+  TEST_PROXY_CLONE_INTERFACE(LinkType);
+  TEST_PROXY_COPY_ASSIGN_INTERFACE(LinkType);
+  TEST_PROXY_MOVE_ASSIGN_INTERFACE(LinkType);
 
   LinkType_METHODS
 };

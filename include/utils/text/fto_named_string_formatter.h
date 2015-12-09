@@ -12,6 +12,7 @@
 
 #include "include/config.h"
 #include "utils/u8string.h"
+#include "test/test_proxy.h"
 
 namespace utils {
 namespace text {
@@ -43,11 +44,10 @@ class NamedStringFormatter {
  public:
   virtual ~NamedStringFormatter() = default;
 
-  SNAIL_CONST_INTERFACE0(clone, fto::NamedStringFormatter*());
-  SNAIL_INTERFACE0(moveClone, fto::NamedStringFormatter*());
-  virtual fto::NamedStringFormatter& operator=(
-      fto::NamedStringFormatter&& rhs) = 0;
-  SNAIL_INTERFACE1(swap_with, void(fto::NamedStringFormatter& rhs));
+  TEST_PROXY_CLONE_INTERFACE(NamedStringFormatter);
+  TEST_PROXY_MOVE_CLONE_INTERFACE(NamedStringFormatter);
+  TEST_PROXY_MOVE_ASSIGN_INTERFACE(NamedStringFormatter);
+  TEST_PROXY_SWAP_INTERFACE(NamedStringFormatter);
 
   NamedStringFormatter_METHODS
 };
