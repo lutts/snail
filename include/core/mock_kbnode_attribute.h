@@ -39,6 +39,7 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
   COMMON_ATTR_SUPPLIER_MOCKS;
 
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
+  TEST_PROXY_COPY_ASSIGN_MOCK(KbNodeAttributeSupplier);
 
   KbNodeAttributeSupplier_METHODS
 };

@@ -6,6 +6,8 @@
 // [Desc]
 #include "src/core/kbnode_link_attribute.h"
 
+#include <boost/polymorphic_cast.hpp>
+
 #include <vector>
 
 #include "utils/compiler.h"
@@ -29,10 +31,12 @@ KbNodeLinkAttribute::KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs)
   connectSignals();
 }
 
-// TODO(lutts): impl copy except supplier for KbNodeLinkAttribute
 void KbNodeLinkAttribute::copyExceptSupplier(
     const fto::KbNodeLinkAttribute& other) {
-  (void)other;
+  const KbNodeLinkAttribute* rhs =
+      boost::polymorphic_downcast<const KbNodeLinkAttribute*>(&other);
+  value_attr_supplier_ = rhs->value_attr_supplier_;
+  link_type_ = rhs->link_type_;
 }
 
 KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;

@@ -26,6 +26,8 @@ class IKbNode;
 
 #ifndef DISABLE_TEST_CODE
 
+#include "test/test_proxy.h"
+
 #define INTERFACE_DEFINITION_PHASE
 #include "test/interface.h"
 
@@ -40,6 +42,7 @@ class KbNodeAttributeSupplier : public IAttributeSupplier {
   virtual ~KbNodeAttributeSupplier() = default;
 
   SNAIL_CONST_INTERFACE0(clone, KbNodeAttributeSupplier*());
+  TEST_PROXY_COPY_ASSIGN_INTERFACE(KbNodeAttributeSupplier);
 
   KbNodeAttributeSupplier_METHODS
 };
@@ -96,8 +99,6 @@ class KbNodeAttribute : public IAttribute {};
 // region: TestProxy
 #ifndef DISABLE_TEST_CODE
 
-#include "test/test_proxy.h"
-
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
 
@@ -107,7 +108,7 @@ namespace fto {
 class KbNodeAttributeSupplierTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttributeSupplier);
   TEST_PROXY_ENABLE_COPY_CONSTRUCT(KbNodeAttributeSupplier);
-  TEST_PROXY_DISABLE_COPY_ASSIGNMENT(KbNodeAttributeSupplier);
+  TEST_PROXY_ENABLE_COPY_ASSIGNMENT(KbNodeAttributeSupplier);
   TEST_PROXY_DISABLE_MOVE_CONSTRUCT(KbNodeAttributeSupplier);
   TEST_PROXY_DISABLE_MOVE_ASSIGNMENT(KbNodeAttributeSupplier);
   TEST_PROXY_DISABLE_SWAP(KbNodeAttributeSupplier);

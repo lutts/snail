@@ -35,6 +35,11 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
  public:
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   KbNodeAttributeSupplier(const KbNodeAttributeSupplier& rhs);
+  // TODO(lutts): impl KbNodeAttributeSupplier copy assignment
+  KbNodeAttributeSupplier& operator=(const KbNodeAttributeSupplier& rhs) {
+    (void)rhs;
+    return *this;
+  }
   virtual ~KbNodeAttributeSupplier();
 
   utils::U8String name() const override;
@@ -47,12 +52,16 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
 
   void attributeChanged(IAttribute* attr) override;
 
-  // TODO(lutts): KbNodeAttributeSupplier clone impl
-  KbNodeAttributeSupplier* clone() const override { return nullptr; }
-
   IKbNode* getRootKbNode() const;
 
   void setAttributeFactory(KbNodeAttributeFactory* attr_factory);
+
+  // TODO(lutts): KbNodeAttributeSupplier clone impl
+  // region: Test proxy requirement
+  KbNodeAttributeSupplier* self() { return this; }
+  TEST_ONLY_COPY_CONSTRUCT(KbNodeAttributeSupplier);
+  TEST_ONLY_COPY_ASSIGNMENT(KbNodeAttributeSupplier);
+  // endregion: Test proxy requirement
 
  public:
   SNAIL_SIGSLOT_OVERRIDE(AttributeChanged);
