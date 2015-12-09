@@ -1,8 +1,8 @@
-// stacktrace.h (c) 2008, Timo Bingmann from http://idlebox.net/
+// Copyright (c) 2008, Timo Bingmann from http://idlebox.net/
 // published under the WTFPL v2.0
 
-#ifndef _STACKTRACE_H_
-#define _STACKTRACE_H_
+#ifndef INCLUDE_UTILS_STACKTRACE_H_
+#define INCLUDE_UTILS_STACKTRACE_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,12 +17,10 @@ class Stacktrace {
     saved_segment_fault_handler_ = signal(SIGSEGV, segment_fault_handler);
   }
 
-  ~Stacktrace() {
-    signal(SIGSEGV, saved_segment_fault_handler_);
-  }
+  ~Stacktrace() { signal(SIGSEGV, saved_segment_fault_handler_); }
 
  private:
-  sighandler_t saved_segment_fault_handler_ { SIG_DFL };
+  sighandler_t saved_segment_fault_handler_{SIG_DFL};
 
  public:
   static void segment_fault_handler(int sig) {
@@ -53,7 +51,7 @@ class Stacktrace {
 
     // allocate string which will be filled with the demangled function name
     size_t funcnamesize = 512;
-    char *funcname = (char *)malloc(funcnamesize);
+    char *funcname = static_cast<char *>(malloc(funcnamesize));
 
     // iterate over the returned symbol lines. skip the first, it is the
     // address of this function.
@@ -67,24 +65,24 @@ class Stacktrace {
       // find parentheses and +address offset surrounding the mangled name:
       // ./module(function+0x15c) [0x8048a6d]
       for (char *p = symbollist[i]; *p; ++p) {
-        if (*p == '(')
+        if (*p == '(') {
           begin_name = p;
-        else if (*p == '+')
+        } else if (*p == '+') {
           begin_offset = p;
-        else if (*p == ')' && begin_offset)
+        } else if (*p == ')' && begin_offset) {
           end_offset = p;
-        else if (*p == '[')
+        } else if (*p == '[') {
           begin_addr = p;
-        else if (*p == ']' && begin_addr) {
+        } else if (*p == ']' && begin_addr) {
           end_addr = p;
           break;
         }
       }
 
-      if (begin_name)
-        *begin_name++ = '\0';
+      if (begin_name) *begin_name++ = '\0';
 
-      if (begin_name && begin_offset && end_offset && begin_name < begin_offset) {
+      if (begin_name && begin_offset && end_offset &&
+          begin_name < begin_offset) {
         *begin_offset++ = '\0';
         *end_offset = '\0';
 
@@ -101,8 +99,7 @@ class Stacktrace {
         } else {
           // demangling failed. Output function name as a C function with
           // no arguments.
-          fprintf(out, "  #%d : %s()+%s\n", seqno, begin_name,
-                  begin_offset);
+          fprintf(out, "  #%d : %s()+%s\n", seqno, begin_name, begin_offset);
         }
       } else {
         // couldn't parse the line? print the whole line.
@@ -113,10 +110,10 @@ class Stacktrace {
         *begin_addr++ = '\0';
         *end_addr = '\0';
 
-        char* file_path = funcname;
+        char *file_path = funcname;
         int lineno;
-        int found = getFileAndLine(symbollist[i], begin_addr,
-                                   file_path, funcnamesize, &lineno);
+        int found = getFileAndLine(symbollist[i], begin_addr, file_path,
+                                   funcnamesize, &lineno);
         if (found) {
           // emacs friendly
           fprintf(out, "%s:%d: %s\n", file_path, lineno, begin_addr);
@@ -128,25 +125,26 @@ class Stacktrace {
     free(symbollist);
   }
 
-  static int getFileAndLine(char* exec_path, char* addr,
-                            char *file_path, size_t flen, int* line) {
-    static char buf[512];
+  static int getFileAndLine(char *exec_path, char *addr, char *file_path,
+                            size_t flen, int *line) {
+    static const int kBufferSize = 512;
+    static char buf[kBufferSize];
 
     // prepare command to be executed
     // our program need to be passed after the -e parameter
-    sprintf (buf, "addr2line -C -e %s -f -i %s", exec_path, addr);
-    FILE* f = popen (buf, "r");
+    snprintf(buf, kBufferSize, "addr2line -C -e %s -f -i %s", exec_path, addr);
+    FILE *f = popen(buf, "r");
 
     if (f == NULL) {
-      perror (buf);
+      perror(buf);
       return 0;
     }
 
     // get function name
-    fgets (buf, 512, f);
+    fgets(buf, 512, f);
 
     // get file and line
-    fgets (buf, 512, f);
+    fgets(buf, 512, f);
 
     if (buf[0] != '?') {
       char *p = buf;
@@ -159,11 +157,11 @@ class Stacktrace {
       *p++ = 0;
       // after file name follows line number
       strncpy(file_path, buf, flen);
-      sscanf (p,"%d", line);
+      sscanf(p, "%d", line);
 
       return 1;
     } else {
-      strncpy (file_path, "unkown", sizeof("unkown"));
+      strncpy(file_path, "unkown", sizeof("unkown"));
       *line = 0;
 
       return 0;
@@ -173,4 +171,4 @@ class Stacktrace {
   }
 };
 
-#endif  // _STACKTRACE_H_
+#endif  // INCLUDE_UTILS_STACKTRACE_H_

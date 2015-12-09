@@ -48,16 +48,16 @@ void tuple_for_each(Tuple& t, Func f) {  // NOLINT
 
 // tuple_for_each_pair
 template <typename Tuple, size_t Pos, typename Func>
-void tuple_for_each_pair(Tuple& t1, Tuple& t2, TupleElementPos<Pos>,
-                         Func f) {  // NOLINT
+void tuple_for_each_pair(Tuple& t1, Tuple& t2, TupleElementPos<Pos>,  // NOLINT
+                         Func f) {
   f(std::get<std::tuple_size<Tuple>::value - Pos>(t1),
     std::get<std::tuple_size<Tuple>::value - Pos>(t2));
   tuple_for_each_pair(t1, t2, TupleElementPos<Pos - 1>(), f);
 }
 
 template <typename Tuple, typename Func>
-void tuple_for_each_pair(Tuple& t1, Tuple& t2, TupleElementPos<1>,
-                         Func f) {  // NOLINT
+void tuple_for_each_pair(Tuple& t1, Tuple& t2, TupleElementPos<1>,  // NOLINT
+                         Func f) {
   f(std::get<std::tuple_size<Tuple>::value - 1>(t1),
     std::get<std::tuple_size<Tuple>::value - 1>(t2));
 }

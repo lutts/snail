@@ -303,11 +303,6 @@ TEST_F(
   EXPECT_CALL(link_attr, valueAttr()).WillRepeatedly(Return(&value_attr));
   EXPECT_CALL(link_attr, linkType()).WillRepeatedly(Return(&link_type));
 
-  std::cout << "value_attr = " << (void*)(&value_attr)
-            << ", value_attr_copy  =" << value_attr_copy << std::endl;
-  std::cout << "link_type = " << (void*)(&link_type)
-            << ", link_type_copy = " << link_type_copy << std::endl;
-
   // Expectations
   EXPECT_CALL(value_attr, move_assignment(Ref(*value_attr_copy)));
   EXPECT_CALL(link_type, move_assignment(Ref(*link_type_copy)));

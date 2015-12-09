@@ -14,8 +14,6 @@
 #include "snail/i_attribute_model.h"
 #include "snail/i_attribute_set_model.h"
 
-#include <iostream>
-
 namespace snailcore {
 
 class KbNodeLinkAttributePopupEditorModelSignalHelper {
@@ -102,15 +100,8 @@ void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
 }
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {
-  LINE_TRACE;
-  std::cout << "value_attr = " << attr_->valueAttr()
-            << ", value_attr_copy  =" << value_attr_copy_.self() << std::endl;
-  std::cout << "link_type = " << attr_->linkType()
-            << ", link_type_copy = " << link_type_copy_.self() << std::endl;
   *(attr_->valueAttr()) = std::move(*value_attr_copy_.self());
-  LINE_TRACE;
   *(attr_->linkType()) = std::move(*link_type_copy_.self());
-  LINE_TRACE;
 }
 
 }  // namespace snailcore

@@ -122,7 +122,7 @@ fto::LinkType* KbNodeLinkAttribute::linkType() { return link_type_.self(); }
 class KbNodeLinkAttributeSupplierPrivate
     : public GenericAttributeSupplier<fto::KbNodeLinkAttribute> {
  public:
-  KbNodeLinkAttributeSupplierPrivate(int max_attrs)
+  explicit KbNodeLinkAttributeSupplierPrivate(int max_attrs)
       : GenericAttributeSupplier{"", max_attrs} {}
 
   fto::KbNodeLinkAttribute* createAttribute() const override {

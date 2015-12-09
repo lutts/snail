@@ -16,7 +16,7 @@
 
 class TestProxyLogger {
  public:
-  TestProxyLogger(bool en) {
+  explicit TestProxyLogger(bool en) {
     saved_enabled_ = enabled_();
     enabled_() = en;
   }
@@ -266,10 +266,10 @@ class TestProxyLogger {
     return *this;                        \
   }                                      \
                                          \
-  MOCK_METHOD1(move_assignment, void(Cls & rhs));
+  MOCK_METHOD1(move_assignment, void(Cls & rhs)); /* NOLINT */
 
 #define TEST_PROXY_SWAP_INTERFACE(Cls) \
-  SNAIL_INTERFACE1(swap_with, void(Cls & rhs))
+  SNAIL_INTERFACE1(swap_with, void(Cls & rhs)) /* NOLINT */
 
 #define TEST_PROXY_SWAP_MOCK(Cls) TEST_PROXY_SWAP_INTERFACE(Cls)
 

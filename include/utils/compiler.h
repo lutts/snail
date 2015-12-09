@@ -5,10 +5,10 @@
 //
 // [Desc]
 
-#ifndef LIKELY_UNLIKELY_H_
-#define LIKELY_UNLIKELY_H_
+#ifndef INCLUDE_UTILS_COMPILER_H_
+#define INCLUDE_UTILS_COMPILER_H_
 
 #define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
-#endif  // LIKELY_UNLIKELY_H_
+#endif  // INCLUDE_UTILS_COMPILER_H_

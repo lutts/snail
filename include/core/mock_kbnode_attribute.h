@@ -29,7 +29,7 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
     return *this;
   }
 
-  MOCK_METHOD1(move_assignment, void(fto::KbNodeAttribute& rhs));
+  MOCK_METHOD1(move_assignment, void(fto::KbNodeAttribute& rhs));  // NOLINT
 
   KbNodeAttribute_METHODS
 };

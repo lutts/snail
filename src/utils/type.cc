@@ -7,9 +7,10 @@
 #include "src/utils/type.h"
 
 #ifdef __GNUG__
+#include <cxxabi.h>
+
 #include <cstdlib>
 #include <memory>
-#include <cxxabi.h>
 
 namespace utils {
 

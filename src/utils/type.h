@@ -5,8 +5,8 @@
 //
 // [Desc]
 
-#ifndef TYPE_H_
-#define TYPE_H_
+#ifndef SRC_UTILS_TYPE_H_
+#define SRC_UTILS_TYPE_H_
 
 #include <string>
 #include <typeinfo>
@@ -26,4 +26,4 @@ std::string type(const T& t) {
 
 }  // namespace utils
 
-#endif  // TYPE_H_
+#endif  // SRC_UTILS_TYPE_H_

@@ -5,10 +5,11 @@
 //
 // [Desc]
 
-#ifndef GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
-#define GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
+#ifndef TEST_CORE_GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
+#define TEST_CORE_GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
 
 #include <memory>
+#include <vector>
 
 #include "test/testutils/gmock_common.h"
 
@@ -280,4 +281,4 @@ TEST_P(GenericAttributeSupplierFilledWithAttrsTest,
 }  // namespace tests
 }  // namespace snailcore
 
-#endif  // GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_
+#endif  // TEST_CORE_GENERIC_ATTRIBUTE_SUPPLIER_TEST_H_

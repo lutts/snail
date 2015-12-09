@@ -12,7 +12,6 @@
 
 #include "include/config.h"
 #include "utils/u8string.h"
-#include "test/test_proxy.h"
 
 namespace utils {
 namespace text {
@@ -27,6 +26,8 @@ class VariableResolver;
 // region: Interface
 
 #ifndef DISABLE_TEST_CODE
+
+#include "test/test_proxy.h"
 
 #define INTERFACE_DEFINITION_PHASE
 #include "test/interface.h"
@@ -85,8 +86,6 @@ class NamedStringFormatter {};
 
 // region: TestProxy
 #ifndef DISABLE_TEST_CODE
-
-#include "test/test_proxy.h"
 
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
