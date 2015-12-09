@@ -56,7 +56,6 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
 
   void setAttributeFactory(KbNodeAttributeFactory* attr_factory);
 
-  // TODO(lutts): KbNodeAttributeSupplier clone impl
   // region: Test proxy requirement
   KbNodeAttributeSupplier* self() { return this; }
   TEST_ONLY_COPY_CONSTRUCT(KbNodeAttributeSupplier);
