@@ -107,6 +107,11 @@ namespace fto {
 class KbNodeAttributeSupplierTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttributeSupplier);
   TEST_PROXY_ENABLE_COPY_CONSTRUCT(KbNodeAttributeSupplier);
+  TEST_PROXY_DISABLE_COPY_ASSIGNMENT(KbNodeAttributeSupplier);
+  TEST_PROXY_DISABLE_MOVE_CONSTRUCT(KbNodeAttributeSupplier);
+  TEST_PROXY_DISABLE_MOVE_ASSIGNMENT(KbNodeAttributeSupplier);
+  TEST_PROXY_DISABLE_SWAP(KbNodeAttributeSupplier);
+
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(KbNodeAttributeSupplier);
 
  public:
@@ -130,9 +135,10 @@ class KbNodeAttributeSupplierTestProxy {
 class KbNodeAttributeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(KbNodeAttribute);
   TEST_PROXY_ENABLE_COPY_CONSTRUCT(KbNodeAttribute);
-  TEST_PROXY_ENABLE_COPY_ASSIGNMENT(KbNodeAttribute);
-  TEST_PROXY_ENABLE_MOVE_CONSTRUCT(KbNodeAttribute);
+  TEST_PROXY_DISABLE_COPY_ASSIGNMENT(KbNodeAttribute);
+  TEST_PROXY_DISABLE_MOVE_CONSTRUCT(KbNodeAttribute);
   TEST_PROXY_ENABLE_MOVE_ASSIGNMENT(KbNodeAttribute);
+  TEST_PROXY_DISABLE_SWAP(KbNodeAttribute);
 
  public:
   utils::U8String displayName() const { return self_->displayName(); }

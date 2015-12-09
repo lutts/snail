@@ -44,6 +44,11 @@ class NamedStringFormatter {
   virtual ~NamedStringFormatter() = default;
 
   SNAIL_CONST_INTERFACE0(clone, fto::NamedStringFormatter*());
+  SNAIL_INTERFACE0(moveClone, fto::NamedStringFormatter*());
+  virtual fto::NamedStringFormatter& operator=(
+      fto::NamedStringFormatter&& rhs) = 0;
+  SNAIL_INTERFACE1(swap_with, void(fto::NamedStringFormatter& rhs));
+
   NamedStringFormatter_METHODS
 };
 
@@ -93,9 +98,10 @@ namespace fto {
 class NamedStringFormatterTestProxy {
   TEST_PROXY_BASE(NamedStringFormatter);
   TEST_PROXY_ENABLE_COPY_CONSTRUCT(NamedStringFormatter);
-  TEST_PROXY_ENABLE_COPY_ASSIGNMENT(NamedStringFormatter);
+  TEST_PROXY_DISABLE_COPY_ASSIGNMENT(NamedStringFormatter);
   TEST_PROXY_ENABLE_MOVE_CONSTRUCT(NamedStringFormatter);
-  TEST_PROXY_ENABLE_MOVE_ASSIGNMENT(NamedStringFormatter);
+  TEST_PROXY_DISABLE_MOVE_ASSIGNMENT(NamedStringFormatter);
+  TEST_PROXY_ENABLE_SWAP(NamedStringFormatter);
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(NamedStringFormatter);
 
  public:

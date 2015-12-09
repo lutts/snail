@@ -54,6 +54,8 @@ class LinkType : public FTO_NAMESPACE::LinkType,
   LinkType* self() { return this; }
   fto::LinkType* clone() const { return new LinkType(*this); }
   TEST_ONLY_MOVE_ASSIGNMENT(LinkType);
+  TEST_ONLY_COPY_ASSIGNMENT(LinkType);
+  TEST_ONLY_SWAP(LinkType);
 
  public:
   SNAIL_SIGSLOT_NONVIRTUAL(LinkUpdated, void());

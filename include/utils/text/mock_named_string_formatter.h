@@ -21,6 +21,17 @@ namespace tests {
 class MockNamedStringFormatter : public fto::NamedStringFormatter {
  public:
   SNAIL_CONST_INTERFACE0(clone, fto::NamedStringFormatter*());
+  SNAIL_INTERFACE0(moveClone, fto::NamedStringFormatter*());
+  fto::NamedStringFormatter& operator=(
+      fto::NamedStringFormatter&& rhs) override {
+    move_assignment(rhs);
+    return *this;
+  }
+
+  MOCK_METHOD1(move_assignment, void(fto::NamedStringFormatter& rhs));
+
+  SNAIL_INTERFACE1(swap_with, void(fto::NamedStringFormatter& rhs));
+
   NamedStringFormatter_METHODS
 };
 

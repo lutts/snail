@@ -40,6 +40,7 @@ class LinkType : public ITreeItem {
   SNAIL_SIGSLOT_PURE_VIRTUAL(LinkUpdated, void());
 
   SNAIL_CONST_INTERFACE0(clone, LinkType*());
+  virtual LinkType& operator=(const LinkType& rhs) = 0;
   virtual LinkType& operator=(LinkType&& rhs) = 0;
 
   LinkType_METHODS
@@ -66,8 +67,9 @@ class LinkTypeTestProxy {
   TEST_PROXY_WITHOUT_DEFAULT_CONSTRUCTOR(LinkType);
   TEST_PROXY_ENABLE_COPY_CONSTRUCT(LinkType);
   TEST_PROXY_ENABLE_COPY_ASSIGNMENT(LinkType);
-  TEST_PROXY_ENABLE_MOVE_CONSTRUCT(LinkType);
+  TEST_PROXY_DISABLE_MOVE_CONSTRUCT(LinkType);
   TEST_PROXY_ENABLE_MOVE_ASSIGNMENT(LinkType);
+  TEST_PROXY_DISABLE_SWAP(LinkType);
 
  public:
   utils::U8String name() const { return self_->name(); }

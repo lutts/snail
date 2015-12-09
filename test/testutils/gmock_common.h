@@ -90,7 +90,10 @@ class MockObjectRecorder {
     swap(rhs);
     return *this;
   }
-  void swap(MockObjectRecorder& rhs) { std::swap(mock_objs, rhs.mock_objs); }
+  void swap(MockObjectRecorder& rhs) {
+    using std::swap;
+    swap(mock_objs, rhs.mock_objs);
+  }
   friend inline void swap(MockObjectRecorder& v1, MockObjectRecorder& v2) {
     v1.swap(v2);
   }
@@ -213,8 +216,9 @@ class TestFixture {
   }
 
   void swap(TestFixture& rhs) {
-    std::swap(fixture_name_, rhs.fixture_name_);
-    std::swap(mock_obj_recorder, rhs.mock_obj_recorder);
+    using std::swap;
+    swap(fixture_name_, rhs.fixture_name_);
+    swap(mock_obj_recorder, rhs.mock_obj_recorder);
   }
 
   friend inline void swap(TestFixture& v1, TestFixture& v2) { v1.swap(v2); }
@@ -307,7 +311,10 @@ class TextFixtureStateSet {
     return *this;
   }
 
-  void swap(TextFixtureStateSet& rhs) { std::swap(state_set_, rhs.state_set_); }
+  void swap(TextFixtureStateSet& rhs) {
+    using std::swap;
+    swap(state_set_, rhs.state_set_);
+  }
 
   friend inline void swap(TextFixtureStateSet& v1, TextFixtureStateSet& v2) {
     v1.swap(v2);

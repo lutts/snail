@@ -6,6 +6,7 @@
 // [Desc]
 #include <algorithm>
 #include <vector>
+#include <iostream>
 
 #include "src/core/link_type.h"
 #include "snail/i_attribute.h"
@@ -80,12 +81,14 @@ LinkType& LinkType::operator=(LinkType rhs) {
 
 // NOTE: signals not changed
 void LinkType::swap(LinkType& rhs) noexcept {
-  std::swap(name_, rhs.name_);
-  std::swap(is_group_only_, rhs.is_group_only_);
-  std::swap(prototype_, rhs.prototype_);
-  std::swap(attr_suppliers_, rhs.attr_suppliers_);
-  std::swap(link_phrase_, rhs.link_phrase_);
-  std::swap(named_string_formatter_, rhs.named_string_formatter_);
+  using std::swap;
+
+  swap(name_, rhs.name_);
+  swap(is_group_only_, rhs.is_group_only_);
+  swap(prototype_, rhs.prototype_);
+  swap(attr_suppliers_, rhs.attr_suppliers_);
+  swap(link_phrase_, rhs.link_phrase_);
+  swap(named_string_formatter_, rhs.named_string_formatter_);
 
   resetConnections();
   rhs.resetConnections();

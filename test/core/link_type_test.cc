@@ -12,6 +12,8 @@
 #include "utils/text/variable_resolver.h"
 #include "utils/text/mock_named_string_formatter.h"
 
+#include "utils/stacktrace.h"
+
 using namespace utils::text::tests;  // NOLINT
 
 namespace snailcore {
@@ -41,8 +43,8 @@ class FormatterFixture : public xtestutils::TestFixture {
   FormatterFixture(FormatterFixture&& rhs)
       : xtestutils::TestFixture(std::move(rhs)),
         formatter_factory_(std::move(rhs.formatter_factory_)),
-        formatter_(rhs.formatter_) {
-    rhs.formatter_ = nullptr;
+        formatter_(new MockNamedStringFormatter()) {
+    R_EXPECT_CALL(*rhs.formatter_, moveClone()).WillOnce(Return(formatter_));
   }
 
   FormatterFixture& operator=(FormatterFixture rhs) {
@@ -52,8 +54,13 @@ class FormatterFixture : public xtestutils::TestFixture {
 
   void swap(FormatterFixture& rhs) {
     xtestutils::TestFixture::swap(rhs);
-    std::swap(formatter_factory_, rhs.formatter_factory_);
-    std::swap(formatter_, rhs.formatter_);
+    using std::swap;
+    swap(formatter_factory_, rhs.formatter_factory_);
+    R_EXPECT_CALL(*formatter_, swap_with(Ref(*rhs.formatter_)));
+  }
+
+  friend inline void swap(FormatterFixture& v1, FormatterFixture& v2) {
+    v1.swap(v2);
   }
 
   virtual ~FormatterFixture() = default;
@@ -64,8 +71,6 @@ class FormatterFixture : public xtestutils::TestFixture {
  public:
   MockNamedStringFormatter* formatter_;
 };
-
-void swap(FormatterFixture& v1, FormatterFixture& v2) { v1.swap(v2); }
 
 class AttrSupplierFixture : public xtestutils::TestFixture {
  public:
@@ -108,10 +113,16 @@ class AttrSupplierFixture : public xtestutils::TestFixture {
 
   void swap(AttrSupplierFixture& rhs) {
     xtestutils::TestFixture::swap(rhs);
-    std::swap(attr_suppliers_, rhs.attr_suppliers_);
-    std::swap(mock_attr_suppliers_, rhs.mock_attr_suppliers_);
-    std::swap(attr_suppliers_up_, rhs.attr_suppliers_up_);
-    std::swap(supplier_to_attr_values, rhs.supplier_to_attr_values);
+
+    using std::swap;
+    swap(attr_suppliers_, rhs.attr_suppliers_);
+    swap(mock_attr_suppliers_, rhs.mock_attr_suppliers_);
+    swap(attr_suppliers_up_, rhs.attr_suppliers_up_);
+    swap(supplier_to_attr_values, rhs.supplier_to_attr_values);
+  }
+
+  friend inline void swap(AttrSupplierFixture& v1, AttrSupplierFixture& v2) {
+    v1.swap(v2);
   }
 
   virtual ~AttrSupplierFixture() = default;
@@ -132,8 +143,6 @@ class AttrSupplierFixture : public xtestutils::TestFixture {
   std::map<utils::U8String, std::vector<utils::U8String>>
       supplier_to_attr_values;
 };
-
-void swap(AttrSupplierFixture& v1, AttrSupplierFixture& v2) { v1.swap(v2); }
 
 class MockListener : public xtestutils::SimpleMockListener<LinkType> {
  public:
@@ -172,18 +181,18 @@ class LinkTypeState {
         prototype_(std::move(rhs.prototype_)) {}
 
   LinkTypeState& operator=(LinkTypeState rhs) {
-    rhs.swap(*this);
-    std::cout << "LinkTypeState unified assigned" << std::endl;
+    swap(rhs);
     return *this;
   }
 
   void swap(LinkTypeState& rhs) {
-    std::swap(formatter_fixture_, rhs.formatter_fixture_);
-    std::swap(attr_supplier_fixture_, rhs.attr_supplier_fixture_);
-    std::swap(name_, rhs.name_);
-    std::swap(is_group_only_, rhs.is_group_only_);
-    std::swap(link_phrase_, rhs.link_phrase_);
-    std::swap(prototype_, rhs.prototype_);
+    using std::swap;
+    swap(formatter_fixture_, rhs.formatter_fixture_);
+    swap(attr_supplier_fixture_, rhs.attr_supplier_fixture_);
+    swap(name_, rhs.name_);
+    swap(is_group_only_, rhs.is_group_only_);
+    swap(link_phrase_, rhs.link_phrase_);
+    swap(prototype_, rhs.prototype_);
   }
 
   void validate(const LinkType& link_type) {
@@ -388,6 +397,7 @@ TEST_F(
   fixture_cloned.checkSetup();
 
   // Expectations
+  // return to prototype state
   fixture_cloned.link_type_state = proto_fixture.link_type_state;
   EXPECT_CALL(fixture_cloned.mock_listener_, LinkUpdated());
 

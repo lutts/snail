@@ -12,6 +12,7 @@ endforeach()
 
 set(utils_SRCS ${utils_SRCS}
   utils.cc
+  type.cc
   log/log.cc
 )
 

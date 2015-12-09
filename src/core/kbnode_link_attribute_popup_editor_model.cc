@@ -14,6 +14,8 @@
 #include "snail/i_attribute_model.h"
 #include "snail/i_attribute_set_model.h"
 
+#include <iostream>
+
 namespace snailcore {
 
 class KbNodeLinkAttributePopupEditorModelSignalHelper {
@@ -31,7 +33,7 @@ KbNodeLinkAttributePopupEditorModel::KbNodeLinkAttributePopupEditorModel(
     fto::KbNodeLinkAttribute* attr, IAttributeModelFactory* attr_model_factory,
     IAttributeSetModelFactory* attr_set_model_factory)
     : signal_helper_(utils::make_unique<
-          KbNodeLinkAttributePopupEditorModelSignalHelper>()),
+                     KbNodeLinkAttributePopupEditorModelSignalHelper>()),
       attr_(attr),
       value_attr_copy_(*attr_->valueAttr()),
       link_type_copy_(*attr_->linkType()),
@@ -52,11 +54,9 @@ KbNodeLinkAttributePopupEditorModel::createValueAttrModel() {
 
   auto attr_model_raw = attr_model.get();
   attr_model->whenValidateComplete([this, attr_model_raw]() {
-                                     attr_model_valid_ =
-                                         attr_model_raw->isValid();
-                                     validateComplete();
-                                   },
-                                   nullptr);
+    attr_model_valid_ = attr_model_raw->isValid();
+    validateComplete();
+  }, nullptr);
 
   return attr_model;
 }
@@ -79,10 +79,9 @@ KbNodeLinkAttributePopupEditorModel::getCurrentLinkAttrSetModel() {
   curr_attr_set_model_ = attr_set_model.get();
 
   attr_set_model->whenValidateComplete([this](bool result) {
-                                         attr_set_model_valid_ = result;
-                                         validateComplete();
-                                       },
-                                       nullptr);
+    attr_set_model_valid_ = result;
+    validateComplete();
+  }, nullptr);
 
   return attr_set_model;
 }
@@ -97,15 +96,21 @@ void KbNodeLinkAttributePopupEditorModel::setProtoLinkType(
   auto proto_link_type = static_cast<fto::LinkType*>(proto_link_type_item);
 
   link_type_copy_ = *(proto_link_type);
-
   auto old_attr_set_model = curr_attr_set_model_;
   signal_helper_->emitLinkTypeChanged(getCurrentLinkAttrSetModel(),
                                       old_attr_set_model);
 }
 
 void KbNodeLinkAttributePopupEditorModel::editFinished() {
+  LINE_TRACE;
+  std::cout << "value_attr = " << attr_->valueAttr()
+            << ", value_attr_copy  =" << value_attr_copy_.self() << std::endl;
+  std::cout << "link_type = " << attr_->linkType()
+            << ", link_type_copy = " << link_type_copy_.self() << std::endl;
   *(attr_->valueAttr()) = std::move(*value_attr_copy_.self());
+  LINE_TRACE;
   *(attr_->linkType()) = std::move(*link_type_copy_.self());
+  LINE_TRACE;
 }
 
 }  // namespace snailcore

@@ -23,12 +23,13 @@ class MockKbNodeAttribute : public fto::KbNodeAttribute {
   COMMON_ATTRIBUTE_MOCKS
 
   SNAIL_CONST_INTERFACE0(clone, fto::KbNodeAttribute*());
-  fto::KbNodeAttribute& operator=(
-      fto::KbNodeAttribute&& rhs) override {  // NOLINT
-    moveFrom(rhs);
+
+  KbNodeAttribute& operator=(KbNodeAttribute&& rhs) override {
+    move_assignment(rhs);
     return *this;
   }
-  MOCK_METHOD1(moveFrom, void(fto::KbNodeAttribute& rhs));  // NOLINT
+
+  MOCK_METHOD1(move_assignment, void(fto::KbNodeAttribute& rhs));
 
   KbNodeAttribute_METHODS
 };

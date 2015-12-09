@@ -218,11 +218,7 @@ TEST_F(
   }
 
   MockLinkType new_proto_link_type;
-  MockLinkType* proto_link_type_copy = new MockLinkType();
-  EXPECT_CALL(new_proto_link_type, clone())
-      .WillOnce(Return(proto_link_type_copy));
-
-  link_type_copy = proto_link_type_copy;
+  EXPECT_CALL(*link_type_copy, copy_assignment(Ref(new_proto_link_type)));
 
   FixtureHelper(CreateAttrSetModelFixture, create_attr_model_fixture);
   std::shared_ptr<IAttributeSetModel> new_attr_set_model =
@@ -237,7 +233,7 @@ TEST_F(
   model->setProtoLinkType(&new_proto_link_type);
 
   // Verify results
-  EXPECT_CALL(*proto_link_type_copy, prototype())
+  EXPECT_CALL(*link_type_copy, prototype())
       .WillOnce(Return(&new_proto_link_type));
 
   auto curr_link_type = model->getCurrentProtoLinkType();
@@ -304,12 +300,17 @@ TEST_F(
     KbNodeLinkAttributePopupEditorModelTest,
     should_sync_local_value_attr_and_link_type_copy_to_link_attr_when_edit_finished) {  // NOLINT
   // Setup fixture
-  EXPECT_CALL(link_attr, valueAttr()).WillOnce(Return(&value_attr));
-  EXPECT_CALL(link_attr, linkType()).WillOnce(Return(&link_type));
+  EXPECT_CALL(link_attr, valueAttr()).WillRepeatedly(Return(&value_attr));
+  EXPECT_CALL(link_attr, linkType()).WillRepeatedly(Return(&link_type));
+
+  std::cout << "value_attr = " << (void*)(&value_attr)
+            << ", value_attr_copy  =" << value_attr_copy << std::endl;
+  std::cout << "link_type = " << (void*)(&link_type)
+            << ", link_type_copy = " << link_type_copy << std::endl;
 
   // Expectations
-  EXPECT_CALL(value_attr, moveFrom(Ref(*value_attr_copy)));
-  EXPECT_CALL(link_type, moveFrom(Ref(*link_type_copy)));
+  EXPECT_CALL(value_attr, move_assignment(Ref(*value_attr_copy)));
+  EXPECT_CALL(link_type, move_assignment(Ref(*link_type_copy)));
 
   // Exercise system
   model->editFinished();

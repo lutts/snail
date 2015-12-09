@@ -26,11 +26,20 @@ class MockLinkType : public fto::LinkType {
   SNAIL_MOCK_SLOT(LinkUpdated);
 
   SNAIL_CONST_INTERFACE0(clone, fto::LinkType*());
-  fto::LinkType& operator=(fto::LinkType&& rhs) override {  // NOLINT
-    moveFrom(rhs);
+
+  fto::LinkType& operator=(const fto::LinkType& rhs) override {
+    copy_assignment(rhs);
     return *this;
   }
-  MOCK_METHOD1(moveFrom, void(fto::LinkType& rhs));  // NOLINT
+
+  MOCK_METHOD1(copy_assignment, void(const fto::LinkType& rhs));
+
+  fto::LinkType& operator=(fto::LinkType&& rhs) override {
+    move_assignment(rhs);
+    return *this;
+  }
+
+  MOCK_METHOD1(move_assignment, void(fto::LinkType& rhs));
 
   LinkType_METHODS
 };

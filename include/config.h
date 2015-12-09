@@ -8,6 +8,8 @@
 #ifndef INCLUDE_CONFIG_H_
 #define INCLUDE_CONFIG_H_
 
+#include <boost/polymorphic_cast.hpp>
+
 /** Why we need a fto namespace when there's already a tests namespace?
  *
  *  Because we have decided that some_namespace::fto:XXX and its impl
@@ -37,11 +39,28 @@
 
 #define TEST_PROXY(RealClass) fto::RealClass##TestProxy
 
-#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)              \
-  fto::Cls& operator=(fto::Cls&& rhs) { /* NOLINT*/ \
-    Cls& data = static_cast<Cls&>(rhs);             \
-    this->swap(data);                               \
-    return *this;                                   \
+#define TEST_ONLY_COPY_CONSTRUCT(Cls) \
+  fto::Cls* clone() const { return new Cls(*this); }
+
+#define TEST_ONLY_COPY_ASSIGNMENT(Cls)                                   \
+  fto::Cls& operator=(const fto::Cls& rhs) {                             \
+    const Cls* real_rhs = boost::polymorphic_downcast<const Cls*>(&rhs); \
+    return this->operator=(*real_rhs);                                   \
+  }
+
+#define TEST_ONLY_MOVE_CONSTRUCT(Cls) \
+  fto::Cls* moveClone() { return new Cls(std::move(*this)); }
+
+#define TEST_ONLY_MOVE_ASSIGNMENT(Cls)                       \
+  fto::Cls& operator=(fto::Cls&& rhs) { /* NOLINT*/          \
+    Cls* real_rhs = boost::polymorphic_downcast<Cls*>(&rhs); \
+    return this->operator=(std::move(*real_rhs));            \
+  }
+
+#define TEST_ONLY_SWAP(Cls)                                  \
+  void swap_with(fto::Cls& rhs) {                            \
+    Cls* real_rhs = boost::polymorphic_downcast<Cls*>(&rhs); \
+    return this->swap(*real_rhs);                            \
   }
 
 #else  // DISABLE_TEST_CODE
@@ -50,7 +69,11 @@
 #define FTO_END_NAMESPACE
 
 #define TEST_PROXY(RealClass) RealClass
+#define TEST_ONLY_COPY_CONSTRUCT(Cls)
+#define TEST_ONLY_COPY_ASSIGNMENT(Cls)
+#define TEST_ONLY_MOVE_CONSTRUCT(Cls)
 #define TEST_ONLY_MOVE_ASSIGNMENT(Cls)
+#define TEST_ONLY_SWAP(Cls)
 
 #endif
 
