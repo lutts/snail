@@ -297,26 +297,26 @@ struct TestFixtureSetNameHelper {
 };
 
 template <typename... T>
-class TextFixtureStateSet {
+class TestFixtureStateSet {
  public:
   using StateSetTuple = std::tuple<T...>;
 
-  TextFixtureStateSet() = default;
-  TextFixtureStateSet(const TextFixtureStateSet& rhs)
+  TestFixtureStateSet() = default;
+  TestFixtureStateSet(const TestFixtureStateSet& rhs)
       : state_set_{rhs.state_set_} {}
-  TextFixtureStateSet(TextFixtureStateSet&& rhs)
+  TestFixtureStateSet(TestFixtureStateSet&& rhs)
       : state_set_{std::move(rhs.state_set_)} {}
-  TextFixtureStateSet& operator=(TextFixtureStateSet rhs) {
+  TestFixtureStateSet& operator=(TestFixtureStateSet rhs) {
     swap(rhs);
     return *this;
   }
 
-  void swap(TextFixtureStateSet& rhs) {
+  void swap(TestFixtureStateSet& rhs) {
     using std::swap;
     swap(state_set_, rhs.state_set_);
   }
 
-  friend inline void swap(TextFixtureStateSet& v1, TextFixtureStateSet& v2) {
+  friend inline void swap(TestFixtureStateSet& v1, TestFixtureStateSet& v2) {
     v1.swap(v2);
   }
 
@@ -331,14 +331,14 @@ class TextFixtureStateSet {
   }
 
   template <typename Func>
-  void applyPairwise(TextFixtureStateSet& other, Func f) {  // NOLINT
+  void applyPairwise(TestFixtureStateSet& other, Func f) {  // NOLINT
     utils::tuple_for_each_pair(state_set_, other.state_set_, f);
   }
 
   template <typename Func>
-  void applyPairwise(const TextFixtureStateSet& other, Func f) {
+  void applyPairwise(const TestFixtureStateSet& other, Func f) {
     utils::tuple_for_each_pair(
-        state_set_, const_cast<TextFixtureStateSet&>(other.state_set_), f);
+        state_set_, const_cast<TestFixtureStateSet&>(other.state_set_), f);
   }
 
  private:

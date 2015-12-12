@@ -68,7 +68,7 @@ class KbNodeHelper {
 };
 
 class KbNodeAttributeStateSet
-    : public xtestutils::TextFixtureStateSet<SupplierTestHelper, KbNodeHelper> {
+    : public xtestutils::TestFixtureStateSet<SupplierTestHelper, KbNodeHelper> {
  public:
   SupplierTestHelper& supplierHelper() { return get<0>(); }
   KbNodeHelper& kbNodeHelper() { return get<1>(); }
