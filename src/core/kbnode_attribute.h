@@ -42,6 +42,10 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
   }
   virtual ~KbNodeAttributeSupplier();
 
+  KbNodeAttributeSupplier* clone() const {
+    return new KbNodeAttributeSupplier(*this);
+  }
+
   utils::U8String name() const override;
   int attr_count() const override;
   std::vector<IAttribute*> attributes() const override;
@@ -58,7 +62,6 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
 
   // region: Test proxy requirement
   KbNodeAttributeSupplier* self() { return this; }
-  TEST_ONLY_COPY_CONSTRUCT(KbNodeAttributeSupplier);
   TEST_ONLY_COPY_ASSIGNMENT(KbNodeAttributeSupplier);
   // endregion: Test proxy requirement
 

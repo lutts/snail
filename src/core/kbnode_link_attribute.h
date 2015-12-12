@@ -40,6 +40,10 @@ class KbNodeLinkAttributeSupplier
 
   virtual ~KbNodeLinkAttributeSupplier();
 
+  KbNodeLinkAttributeSupplier* clone() const override {
+    return new KbNodeLinkAttributeSupplier(*this);
+  }
+
   // IAttributeSupplier impls
   utils::U8String name() const override;
   int attr_count() const override;
@@ -50,9 +54,6 @@ class KbNodeLinkAttributeSupplier
   void removeAttribute(IAttribute* attr) override;
 
   void attributeChanged(IAttribute* attr) override;
-
-  // TODO(lutts): KbNodeLinkAttributeSupplier clone impl
-  KbNodeLinkAttributeSupplier* clone() const override { return nullptr; }
 
   // self impls
   ITreeItemProvider* getLinkTypeItemProvider() const {
