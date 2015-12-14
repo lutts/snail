@@ -34,7 +34,7 @@ class SupplierTestHelper {
     EXPECT_CALL(*supplier_, name()).WillRepeatedly(Return(attr_supplier_name_));
   }
 
-  void copyExceptSupplier(const SupplierTestHelper& rhs) {
+  void copyData(const SupplierTestHelper& rhs) {
     (void)rhs;
     // as the name suggested, supplier is not copied
   }
@@ -61,7 +61,7 @@ class KbNodeHelper {
     ASSERT_EQ(kbnode_name_, attr.valueText());
   }
 
-  void copyExceptSupplier(const KbNodeHelper& rhs) { this->operator=(rhs); }
+  void copyData(const KbNodeHelper& rhs) { this->operator=(rhs); }
 
   utils::U8String kbnode_name_;
   std::shared_ptr<MockKbNode> kbnode_;
@@ -119,11 +119,11 @@ class KbNodeAttributeFixture : public xtestutils::TestFixture {
     return *this;
   }
 
-  void copyExceptSupplier(const KbNodeAttributeFixture& rhs) {
+  void copyData(const KbNodeAttributeFixture& rhs) {
     xtestutils::TestFixture::operator=(rhs);
 
-    state_->applyPairwise(*rhs.state_, CopyExceptSupplierFunctor());
-    attr_.copyExceptSupplier(rhs.attr_);
+    state_->applyPairwise(*rhs.state_, CopyDataFunctor());
+    attr_.copyData(rhs.attr_);
   }
 
   void checkSetup() override {
@@ -164,13 +164,13 @@ using FixtureHelperGenerator = xtestutils::CopyMoveFixtureHelperGenerator<
 
 template <typename BaseFactory, typename TargetFactory,
           typename ConcreteFixtureType>
-class CopyExceptSupplierFixtureHelper
+class CopyDataFixtureHelper
     : public FixtureHelperGenerator::GenericCustomFixtureHelper<
-          CopyExceptSupplierFixtureHelper, BaseFactory, TargetFactory,
+          CopyDataFixtureHelper, BaseFactory, TargetFactory,
           ConcreteFixtureType> {
   void doCustomOperation(ConcreteFixtureType* target_fixture,
                          ConcreteFixtureType* base_fixture) {
-    target_fixture->copyExceptSupplier(*base_fixture);
+    target_fixture->copyData(*base_fixture);
   }
 };
 
@@ -207,7 +207,7 @@ auto empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
     FixtureHelperGenerator::CopyAssignmentFixtureHelper,
     FixtureHelperGenerator::MoveConstructFixtureHelper,
     FixtureHelperGenerator::MoveAssignmentFixtureHelper,
-    CopyExceptSupplierFixtureHelper>();
+    CopyDataFixtureHelper>();
 INSTANTIATE_TEST_CASE_P(FixtureSetup, EmptyKbNodeAttributeTest,
                         ::testing::ValuesIn(empty_test_fixture_helpers));
 
@@ -313,7 +313,7 @@ auto non_empty_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
     FixtureHelperGenerator::CopyAssignmentFixtureHelper,
     FixtureHelperGenerator::MoveConstructFixtureHelper,
     FixtureHelperGenerator::MoveAssignmentFixtureHelper,
-    CopyExceptSupplierFixtureHelper>();
+    CopyDataFixtureHelper>();
 
 INSTANTIATE_TEST_CASE_P(FixtureSetup, NonEmptyKbNodeAttributeTest,
                         ::testing::ValuesIn(non_empty_test_fixture_helpers));

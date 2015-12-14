@@ -80,7 +80,7 @@ class GenericAttributeSupplier {
 
     for (auto& src_attr : rhs.attrs_) {
       std::unique_ptr<AttrT> new_attr(createAttribute());
-      new_attr->copyExceptSupplier(*src_attr);
+      new_attr->copyData(*src_attr);
       attrs_.push_back(std::move(new_attr));
     }
   }

@@ -109,7 +109,7 @@ class LinkAttrTestHelper : public xtestutils::TestFixture {
             DoAll(SaveArg<0>(&valueAttrChanged_), Return(SignalConnection())));
   }
 
-  void copyExceptSupplier(const LinkAttrTestHelper& rhs) {
+  void copyData(const LinkAttrTestHelper& rhs) {
     R_EXPECT_CALL(*link_type_, copy_assignment(Ref(*rhs.link_type_)));
     R_EXPECT_CALL(*value_attr_supplier_,
                   copy_assignment(Ref(*rhs.value_attr_supplier_)));
@@ -153,10 +153,10 @@ class KbNodeLinkAttrFixture : public xtestutils::TestFixture {
         state_{rhs.state_},
         link_attr_{rhs.link_attr_} {}
 
-  void copyExceptSupplier(const KbNodeLinkAttrFixture& rhs) {
+  void copyData(const KbNodeLinkAttrFixture& rhs) {
     xtestutils::TestFixture::operator=(rhs);
-    state_.copyExceptSupplier(rhs.state_);
-    link_attr_.copyExceptSupplier(rhs.link_attr_);
+    state_.copyData(rhs.state_);
+    link_attr_.copyData(rhs.link_attr_);
   }
 
   KbNodeLinkAttribute* linkAttr() { return &link_attr_; }
@@ -185,13 +185,13 @@ using FixtureHelperGenerator =
 
 template <typename BaseFactory, typename TargetFactory,
           typename ConcreteFixtureType>
-class CopyExceptSupplierFixtureHelper
+class CopyDataFixtureHelper
     : public FixtureHelperGenerator::GenericCustomFixtureHelper<
-          CopyExceptSupplierFixtureHelper, BaseFactory, TargetFactory,
+          CopyDataFixtureHelper, BaseFactory, TargetFactory,
           ConcreteFixtureType> {
   void doCustomOperation(ConcreteFixtureType* target_fixture,
                          ConcreteFixtureType* base_fixture) {
-    target_fixture->copyExceptSupplier(*base_fixture);
+    target_fixture->copyData(*base_fixture);
   }
 };
 
@@ -231,7 +231,7 @@ class KbNodeLinkAttributeTest : public xtestutils::ErrorVerbosityTestWithParam<
 auto link_attr_test_fixture_helpers = FixtureHelperGenerator::fixtureHelpers<
     KbNodeLinkAttrFixtureFactory, KbNodeLinkAttrFixture,
     FixtureHelperGenerator::CopyConstructFixtureHelper,
-    CopyExceptSupplierFixtureHelper>();
+    CopyDataFixtureHelper>();
 INSTANTIATE_TEST_CASE_P(FixtureSetup, KbNodeLinkAttributeTest,
                         ::testing::ValuesIn((link_attr_test_fixture_helpers)));
 
@@ -290,8 +290,22 @@ class ValueAttrFixture : public xtestutils::TestFixture {
   ValueAttrFixture(const utils::U8String& name,
                    KbNodeLinkAttributeTest* test_case)
       : xtestutils::TestFixture(name) {
-    R_EXPECT_CALL(test_case->valueAttrSupplier(), addAttribute())
-        .WillOnce(Return(&value_attr_));
+    auto& value_attr_supplier = test_case->valueAttrSupplier();
+
+    {
+      InSequence seq;
+
+      R_EXPECT_CALL(value_attr_supplier, attr_count()).WillOnce(Return(0));
+      R_EXPECT_CALL(value_attr_supplier, addAttribute())
+          .WillOnce(Return(&value_attr_));
+      R_EXPECT_CALL(value_attr_supplier, attr_count())
+          .WillRepeatedly(Return(1));
+
+      std::vector<IAttribute*> attrs;
+      attrs.push_back(&value_attr_);
+      R_EXPECT_CALL(value_attr_supplier, attributes())
+          .WillRepeatedly(Return(attrs));
+    }
   }
 
   MockKbNodeAttribute value_attr_;

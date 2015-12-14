@@ -16,40 +16,13 @@
 
 namespace snailcore {
 
-KbNodeLinkAttribute::KbNodeLinkAttribute(
-    fto::KbNodeLinkAttributeSupplier* link_attr_supplier)
-    : link_attr_supplier_(link_attr_supplier),
-      link_type_(*link_attr_supplier_->getDefaultProtoLinkType()),
-      value_attr_supplier_(link_attr_supplier_->getRootKbNode(), 1) {
-  connectSignals();
+KbNodeLinkAttributeData::KbNodeLinkAttributeData(
+    const fto::LinkType& proto_link_type, IKbNode* root_kbnode)
+    : link_type_{proto_link_type}, value_attr_supplier_{root_kbnode, 1} {
+  value_attr_supplier_.addAttribute();
 }
 
-KbNodeLinkAttribute::KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs)
-    : link_attr_supplier_{rhs.link_attr_supplier_},
-      link_type_{rhs.link_type_},
-      value_attr_supplier_{rhs.value_attr_supplier_} {
-  connectSignals();
-}
-
-void KbNodeLinkAttribute::copyExceptSupplier(
-    const fto::KbNodeLinkAttribute& other) {
-  const KbNodeLinkAttribute* rhs =
-      boost::polymorphic_downcast<const KbNodeLinkAttribute*>(&other);
-  value_attr_supplier_ = rhs->value_attr_supplier_;
-  link_type_ = rhs->link_type_;
-}
-
-KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
-
-void KbNodeLinkAttribute::connectSignals() {
-  link_type_.whenLinkUpdated([this]() { linkUpdated(); }, nullptr);
-  value_attr_supplier_.whenAttributeChanged([this](IAttribute* attr) {
-    (void)attr;
-    emitAttributeChanged();
-  }, nullptr);
-}
-
-utils::U8String KbNodeLinkAttribute::displayName() const {
+utils::U8String KbNodeLinkAttributeData::displayName() const {
   auto link_name = link_type_.toString();
   if (link_name.empty())
     return value_attr_supplier_.name();
@@ -57,37 +30,85 @@ utils::U8String KbNodeLinkAttribute::displayName() const {
     return link_name;
 }
 
-void KbNodeLinkAttribute::emitAttributeChanged() {
-  link_attr_supplier_->attributeChanged(this);
+fto::KbNodeAttribute* KbNodeLinkAttributeData::value_attr() const {
+  IAttribute* attr{nullptr};
+
+  if (value_attr_supplier_.attr_count() == 0) {
+    auto that = const_cast<KbNodeLinkAttributeData*>(this);
+    attr = that->value_attr_supplier_.addAttribute();
+  } else {
+    attr = value_attr_supplier_.attributes()[0];
+  }
+
+  return static_cast<fto::KbNodeAttribute*>(attr);
 }
 
-void KbNodeLinkAttribute::linkUpdated() { emitAttributeChanged(); }
-
-utils::U8String KbNodeLinkAttribute::valueText() const {
-  auto that = const_cast<KbNodeLinkAttribute*>(this);
-  that->initValueAttr();
-
-  if (value_attr_)
-    return value_attr_->valueText();
+utils::U8String KbNodeLinkAttributeData::valueText() const {
+  auto attr = value_attr();
+  if (attr)
+    return attr->valueText();
   else
     return "";
 }
 
-bool KbNodeLinkAttribute::isEmpty() const {
-  auto that = const_cast<KbNodeLinkAttribute*>(this);
-  that->initValueAttr();
-
-  if (value_attr_)
-    return value_attr_->isEmpty();
+bool KbNodeLinkAttributeData::isEmpty() const {
+  auto attr = value_attr();
+  if (attr)
+    return attr->isEmpty();
   else
     return true;
 }
 
-void KbNodeLinkAttribute::clear() {
-  if (value_attr_) value_attr_->clear();
+void KbNodeLinkAttributeData::clear() {
+  auto attr = value_attr();
+  if (attr) attr->clear();
   link_type_.clear();
 }
 
+void KbNodeLinkAttributeData::connectSignals(KbNodeLinkAttribute* owner) {
+  link_type_.whenLinkUpdated([owner]() { owner->emitAttributeChanged(); },
+                             nullptr);
+  value_attr_supplier_.whenAttributeChanged([owner](IAttribute* attr) {
+    (void)attr;
+    owner->emitAttributeChanged();
+  }, nullptr);
+}
+
+KbNodeLinkAttribute::KbNodeLinkAttribute(
+    fto::KbNodeLinkAttributeSupplier* link_attr_supplier)
+    : link_attr_supplier_(link_attr_supplier),
+      data_{*link_attr_supplier_->getDefaultProtoLinkType(),
+            link_attr_supplier_->getRootKbNode()} {
+  data_.connectSignals(this);
+}
+
+KbNodeLinkAttribute::KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs)
+    : link_attr_supplier_{rhs.link_attr_supplier_}, data_{rhs.data_} {
+  data_.connectSignals(this);
+}
+
+void KbNodeLinkAttribute::copyData(const fto::KbNodeLinkAttribute& other) {
+  const KbNodeLinkAttribute* rhs =
+      boost::polymorphic_downcast<const KbNodeLinkAttribute*>(&other);
+  data_ = rhs->data_;
+}
+
+KbNodeLinkAttribute::~KbNodeLinkAttribute() = default;
+
+utils::U8String KbNodeLinkAttribute::displayName() const {
+  return data_.displayName();
+}
+
+utils::U8String KbNodeLinkAttribute::valueText() const {
+  return data_.valueText();
+}
+
+void KbNodeLinkAttribute::emitAttributeChanged() {
+  link_attr_supplier_->attributeChanged(this);
+}
+
+bool KbNodeLinkAttribute::isEmpty() const { return data_.isEmpty(); }
+void KbNodeLinkAttribute::clear() { data_.clear(); }
 void KbNodeLinkAttribute::accept(IAttributeVisitor* visitor) {
   visitor->visit(this);
 }
@@ -96,26 +117,11 @@ fto::KbNodeLinkAttributeSupplier* KbNodeLinkAttribute::supplier() const {
   return link_attr_supplier_;
 }
 
-void KbNodeLinkAttribute::initValueAttr() {
-  if (value_attr_) return;
-
-  IAttribute* attr;
-  if (value_attr_supplier_.attr_count() == 0) {
-    attr = value_attr_supplier_.addAttribute();
-  } else {
-    auto attrs = value_attr_supplier_.attributes();
-    attr = attrs[0];
-  }
-
-  value_attr_ = static_cast<fto::KbNodeAttribute*>(attr);
-}
-
 fto::KbNodeAttribute* KbNodeLinkAttribute::valueAttr() {
-  initValueAttr();
-  return value_attr_;
+  return data_.value_attr();
 }
 
-fto::LinkType* KbNodeLinkAttribute::linkType() { return link_type_.self(); }
+fto::LinkType* KbNodeLinkAttribute::linkType() { return data_.link_type(); }
 
 //////////////// KbNodeLinkAttributeSupplier impls ////////////////
 

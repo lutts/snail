@@ -70,6 +70,24 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
   friend class KbNodeAttributeSupplierPrivate;
 };
 
+struct KbNodeAttributeData {
+  IKbNode* kbnode_{nullptr};
+
+  utils::U8String valueText() const;
+
+  bool isEmpty() const { return kbnode_ == nullptr; }
+
+  bool setKbNode(IKbNode* kbnode) {
+    if (kbnode_ != kbnode) {
+      kbnode_ = kbnode;
+      return true;
+    }
+
+    return false;
+  }
+  void clear() { kbnode_ = nullptr; }
+};
+
 class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
  public:
   explicit KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier);
@@ -79,7 +97,7 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
   KbNodeAttribute(KbNodeAttribute&& rhs);
   KbNodeAttribute& operator=(KbNodeAttribute rhs);
 
-  void copyExceptSupplier(const fto::KbNodeAttribute& other);
+  void copyData(const fto::KbNodeAttribute& other);
 
   // IAttribute
   utils::U8String displayName() const override;
@@ -90,7 +108,6 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
 
   fto::KbNodeAttributeSupplier* supplier() const;
   void setKbNode(IKbNode* kbnode);
-  IKbNode* getKbNode() const { return kbnode_; }
 
   // Test proxy requirement
   KbNodeAttribute* self() { return this; }
@@ -102,7 +119,7 @@ class KbNodeAttribute final : public FTO_NAMESPACE::KbNodeAttribute {
   KbNodeAttribute& swap(KbNodeAttribute& rhs);
 
   fto::KbNodeAttributeSupplier* attr_supplier_;
-  IKbNode* kbnode_{nullptr};
+  KbNodeAttributeData data_;
 };
 
 }  // namespace snailcore

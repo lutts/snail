@@ -65,7 +65,7 @@ class AttributeFactoryFixtureTemplate : public GenericAttributeFactoryFixture {
       for (size_t i = 0; i < attr_count; ++i) {
         auto new_mock_attr = mock_attr_vec_[i];
         auto old_mock_attr = rhs.mock_attr_vec_[i];
-        R_EXPECT_CALL(*new_mock_attr, copyExceptSupplier(Ref(*old_mock_attr)));
+        R_EXPECT_CALL(*new_mock_attr, copyData(Ref(*old_mock_attr)));
       }
     }
   }
@@ -91,10 +91,10 @@ class AttributeFactoryFixtureTemplate : public GenericAttributeFactoryFixture {
   std::vector<M*> mock_attr_vec_;
 };
 
-struct CopyExceptSupplierFunctor {
+struct CopyDataFunctor {
   template <typename F>
   void operator()(F& lhs, const F& rhs) {  // NOLINT
-    lhs.copyExceptSupplier(rhs);
+    lhs.copyData(rhs);
   }
 };
 

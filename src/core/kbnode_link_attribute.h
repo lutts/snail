@@ -79,6 +79,30 @@ class KbNodeLinkAttributeSupplier
   IKbNode* root_kbnode_;
 };
 
+class KbNodeLinkAttribute;
+
+class KbNodeLinkAttributeData {
+ public:
+  KbNodeLinkAttributeData(const fto::LinkType& proto_link_type,
+                          IKbNode* root_kbnode);
+
+  void connectSignals(KbNodeLinkAttribute* owner);
+
+  fto::KbNodeAttribute* value_attr() const;
+  fto::LinkType* link_type() const { return link_type_.self(); }
+  utils::U8String displayName() const;
+  utils::U8String valueText() const;
+  bool isEmpty() const;
+  void clear();
+
+ private:
+  void connectSignals();
+
+  TEST_PROXY(LinkType) link_type_;
+  TEST_PROXY(KbNodeAttributeSupplier) value_attr_supplier_;
+  fto::KbNodeAttribute* value_attr_{nullptr};
+};
+
 class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
  public:
   explicit KbNodeLinkAttribute(
@@ -87,7 +111,7 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
 
   KbNodeLinkAttribute(const KbNodeLinkAttribute& rhs);
 
-  void copyExceptSupplier(const fto::KbNodeLinkAttribute& other);
+  void copyData(const fto::KbNodeLinkAttribute& other);
 
   // IAttribute
   utils::U8String displayName() const override;
@@ -101,16 +125,12 @@ class KbNodeLinkAttribute : public FTO_NAMESPACE::KbNodeLinkAttribute {
   fto::LinkType* linkType();
 
  private:
-  void connectSignals();
-  void linkUpdated();
-  void initValueAttr();
   void emitAttributeChanged();
 
   fto::KbNodeLinkAttributeSupplier* link_attr_supplier_;
-  TEST_PROXY(LinkType) link_type_;
+  KbNodeLinkAttributeData data_;
 
-  TEST_PROXY(KbNodeAttributeSupplier) value_attr_supplier_;
-  fto::KbNodeAttribute* value_attr_{nullptr};
+  friend class KbNodeLinkAttributeData;
 };
 
 }  // namespace snailcore

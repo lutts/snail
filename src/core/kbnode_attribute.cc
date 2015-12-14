@@ -19,17 +19,17 @@
 namespace snailcore {
 
 KbNodeAttribute::KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier)
-    : attr_supplier_(attr_supplier) {}
+    : attr_supplier_{attr_supplier} {}
 
 KbNodeAttribute::~KbNodeAttribute() = default;
 
 KbNodeAttribute::KbNodeAttribute(const KbNodeAttribute& rhs)
-    : attr_supplier_(rhs.attr_supplier_), kbnode_(rhs.kbnode_) {}
+    : attr_supplier_{rhs.attr_supplier_}, data_{rhs.data_} {}
 
 KbNodeAttribute::KbNodeAttribute(KbNodeAttribute&& rhs)
-    : attr_supplier_(rhs.attr_supplier_), kbnode_(rhs.kbnode_) {
+    : attr_supplier_{rhs.attr_supplier_}, data_{rhs.data_} {
   rhs.attr_supplier_ = nullptr;
-  rhs.kbnode_ = nullptr;
+  rhs.data_.clear();
 }
 
 KbNodeAttribute& KbNodeAttribute::operator=(KbNodeAttribute rhs) {
@@ -38,17 +38,17 @@ KbNodeAttribute& KbNodeAttribute::operator=(KbNodeAttribute rhs) {
 
 KbNodeAttribute& KbNodeAttribute::swap(KbNodeAttribute& rhs) {
   std::swap(attr_supplier_, rhs.attr_supplier_);
-  std::swap(kbnode_, rhs.kbnode_);
+  std::swap(data_, rhs.data_);
 
   attr_supplier_->attributeChanged(this);
 
   return *this;
 }
 
-void KbNodeAttribute::copyExceptSupplier(const fto::KbNodeAttribute& other) {
+void KbNodeAttribute::copyData(const fto::KbNodeAttribute& other) {
   const KbNodeAttribute* rhs =
       boost::polymorphic_downcast<const KbNodeAttribute*>(&other);
-  kbnode_ = rhs->kbnode_;
+  data_ = rhs->data_;
 }
 
 // IAttribute
@@ -56,13 +56,17 @@ utils::U8String KbNodeAttribute::displayName() const {
   return attr_supplier_->name();
 }
 
-utils::U8String KbNodeAttribute::valueText() const {
-  if (isEmpty()) return "";
-
+utils::U8String KbNodeAttributeData::valueText() const {
   return kbnode_->name();
 }
 
-bool KbNodeAttribute::isEmpty() const { return kbnode_ == nullptr; }
+utils::U8String KbNodeAttribute::valueText() const {
+  if (isEmpty()) return "";
+
+  return data_.valueText();
+}
+
+bool KbNodeAttribute::isEmpty() const { return data_.isEmpty(); }
 
 void KbNodeAttribute::clear() { setKbNode(nullptr); }
 
@@ -76,8 +80,7 @@ fto::KbNodeAttributeSupplier* KbNodeAttribute::supplier() const {
 }
 
 void KbNodeAttribute::setKbNode(IKbNode* kbnode) {
-  if (kbnode_ != kbnode) {
-    kbnode_ = kbnode;
+  if (data_.setKbNode(kbnode)) {
     attr_supplier_->attributeChanged(this);
   }
 }
