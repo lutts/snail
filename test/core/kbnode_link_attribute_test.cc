@@ -446,6 +446,12 @@ class KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory {
   }
 };
 
+using GenericSupplierFixtureHelperGenerator =
+    xtestutils::CopyMoveFixtureHelperGenerator<
+        GenericAttributeSupplierFixture,
+        KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory,
+        KbNodeLinkAttrSupplierFilledWithAttrsFixtureFactory>;
+
 INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(
     KbNodeLinkAttrSupplierFixture,
     KbNodeLinkAttrSupplierWithMockAttrFactoryFixtureFactory,

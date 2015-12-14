@@ -29,6 +29,20 @@ class AttributeFactoryFixtureTemplate : public GenericAttributeFactoryFixture {
 
   AttributeFactoryFixtureTemplate(const AttributeFactoryFixtureTemplate& rhs)
       : attr_factory_{rhs.attr_factory_} {
+    cloneAttributes(rhs);
+  }
+
+  AttributeFactoryFixtureTemplate& operator=(
+      const AttributeFactoryFixtureTemplate& rhs) {
+    attr_factory_ = rhs.attr_factory_;
+    attr_vec_.clear();
+    mock_attr_vec_.clear();
+    cloneAttributes(rhs);
+
+    return *this;
+  }
+
+  void cloneAttributes(const AttributeFactoryFixtureTemplate& rhs) {
     size_t attr_count = rhs.mock_attr_vec_.size();
 
     if (attr_count != 0) {
@@ -91,6 +105,12 @@ class GenericAttributeSupplierFixture : public xtestutils::TestFixture {
 
   GenericAttributeSupplierFixture(const GenericAttributeSupplierFixture& rhs)
       : max_attrs_{rhs.max_attrs_} {}
+
+  GenericAttributeSupplierFixture& operator=(
+      const GenericAttributeSupplierFixture& rhs) {
+    max_attrs_ = rhs.max_attrs_;
+    return *this;
+  }
 
   // region: setter/getters
   int max_attrs() { return max_attrs_; }
@@ -253,29 +273,24 @@ TEST_P(GenericAttributeSupplierFilledWithAttrsTest,
   attr_supplier_->attributeChanged(attr);
 }
 
-#define INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(                          \
-    FixtureType, WithMockAttrFactoryFixture, FilledWithAttrsFixture, ...) \
-  using GenericSupplierFixtureHelperGenerator =                           \
-      xtestutils::CopyMoveFixtureHelperGenerator<                         \
-          GenericAttributeSupplierFixture, WithMockAttrFactoryFixture,    \
-          FilledWithAttrsFixture, ##__VA_ARGS__>;                         \
-                                                                          \
-  static auto empty_generic_supplier_fixture_helpers =                    \
-      GenericSupplierFixtureHelperGenerator::fixtureHelpers<              \
-          WithMockAttrFactoryFixture, FixtureType,                        \
-          GenericSupplierFixtureHelperGenerator::                         \
-              CopyConstructFixtureHelper>();                              \
-  INSTANTIATE_TEST_CASE_P(                                                \
-      FixtureSetup, GenericAttributeSupplierWithMockAttrFactoryTest,      \
-      ::testing::ValuesIn(empty_generic_supplier_fixture_helpers));       \
-                                                                          \
-  static auto generic_filled_with_attributes_fixture_helper =             \
-      GenericSupplierFixtureHelperGenerator::fixtureHelpers<              \
-          FilledWithAttrsFixture, FixtureType,                            \
-          GenericSupplierFixtureHelperGenerator::                         \
-              CopyConstructFixtureHelper>();                              \
-  INSTANTIATE_TEST_CASE_P(                                                \
-      FixtureSetup, GenericAttributeSupplierFilledWithAttrsTest,          \
+#define INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(                             \
+    FixtureType, WithMockAttrFactoryFixture, FilledWithAttrsFixture, ...)    \
+  static auto empty_generic_supplier_fixture_helpers =                       \
+      GenericSupplierFixtureHelperGenerator::fixtureHelpers<                 \
+          WithMockAttrFactoryFixture, FixtureType,                           \
+          GenericSupplierFixtureHelperGenerator::CopyConstructFixtureHelper, \
+          ##__VA_ARGS__>();                                                  \
+  INSTANTIATE_TEST_CASE_P(                                                   \
+      FixtureSetup, GenericAttributeSupplierWithMockAttrFactoryTest,         \
+      ::testing::ValuesIn(empty_generic_supplier_fixture_helpers));          \
+                                                                             \
+  static auto generic_filled_with_attributes_fixture_helper =                \
+      GenericSupplierFixtureHelperGenerator::fixtureHelpers<                 \
+          FilledWithAttrsFixture, FixtureType,                               \
+          GenericSupplierFixtureHelperGenerator::CopyConstructFixtureHelper, \
+          ##__VA_ARGS__>();                                                  \
+  INSTANTIATE_TEST_CASE_P(                                                   \
+      FixtureSetup, GenericAttributeSupplierFilledWithAttrsTest,             \
       ::testing::ValuesIn(generic_filled_with_attributes_fixture_helper));
 
 }  // namespace tests

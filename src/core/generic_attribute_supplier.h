@@ -28,6 +28,13 @@ class GenericAttributeSupplier {
   GenericAttributeSupplier(const GenericAttributeSupplier& rhs)
       : name_{rhs.name_}, max_attrs_{rhs.max_attrs_} {}
 
+  GenericAttributeSupplier& operator=(const GenericAttributeSupplier& rhs) {
+    name_ = rhs.name_;
+    max_attrs_ = rhs.max_attrs_;
+
+    return *this;
+  }
+
   virtual ~GenericAttributeSupplier() = default;
 
   utils::U8String name() const { return name_; }
@@ -77,6 +84,8 @@ class GenericAttributeSupplier {
       attrs_.push_back(std::move(new_attr));
     }
   }
+
+  void clearAttributes() { attrs_.clear(); }
 
   void attributeChanged(IAttribute* attr) { AttributeChanged(attr); }
 

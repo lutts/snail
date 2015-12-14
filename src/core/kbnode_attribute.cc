@@ -95,6 +95,15 @@ class KbNodeAttributeSupplierPrivate
         root_kbnode_{rhs.root_kbnode_},
         attr_factory_{rhs.attr_factory_} {}
 
+  KbNodeAttributeSupplierPrivate& operator=(
+      const KbNodeAttributeSupplierPrivate& rhs) {
+    GenericAttributeSupplier::operator=(rhs);
+    root_kbnode_ = rhs.root_kbnode_;
+    attr_factory_ = rhs.attr_factory_;
+    // q_ptr_ is not changed
+    return *this;
+  }
+
   IKbNode* getRootKbNode() const { return root_kbnode_; }
 
   fto::KbNodeAttribute* createAttribute() const override {
@@ -125,6 +134,15 @@ KbNodeAttributeSupplier::KbNodeAttributeSupplier(
     : impl_(utils::make_unique<KbNodeAttributeSupplierPrivate>(*rhs.impl_)) {
   impl_->q_ptr_ = this;
   impl_->cloneAttributes(*rhs.impl_);
+}
+
+KbNodeAttributeSupplier& KbNodeAttributeSupplier::operator=(
+    const KbNodeAttributeSupplier& rhs) {
+  *impl_ = *rhs.impl_;
+  impl_->clearAttributes();
+  impl_->cloneAttributes(*rhs.impl_);
+
+  return *this;
 }
 
 KbNodeAttributeSupplier::~KbNodeAttributeSupplier() = default;

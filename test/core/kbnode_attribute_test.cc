@@ -404,6 +404,16 @@ class KbNodeAttrSupplierFixture : public GenericAttributeSupplierFixture {
         attr_factory_fixture_{rhs.attr_factory_fixture_},
         attr_supplier_{rhs.attr_supplier_} {}
 
+  KbNodeAttrSupplierFixture& operator=(const KbNodeAttrSupplierFixture& rhs) {
+    GenericAttributeSupplierFixture::operator=(rhs);
+    root_kbnode_helper_ = rhs.root_kbnode_helper_;
+    attr_factory_fixture_ = rhs.attr_factory_fixture_;
+
+    attr_supplier_ = rhs.attr_supplier_;
+
+    return *this;
+  }
+
   utils::U8String getSupplierName() override {
     return root_kbnode_helper_.kbnode_name_;
   }
@@ -460,10 +470,17 @@ class KbNodeAttrSupplierFilledWithAttrsFixtureFactory {
   }
 };
 
+using GenericSupplierFixtureHelperGenerator =
+    xtestutils::CopyMoveFixtureHelperGenerator<
+        GenericAttributeSupplierFixture,
+        KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory,
+        KbNodeAttrSupplierFilledWithAttrsFixtureFactory>;
+
 INSTANTIATE_GENERIC_ATTR_SUPPLIER_TESTS(
     KbNodeAttrSupplierFixture,
     KbNodeAttrSupplierWithMockAttrFactoryFixtureFactory,
-    KbNodeAttrSupplierFilledWithAttrsFixtureFactory);
+    KbNodeAttrSupplierFilledWithAttrsFixtureFactory,
+    GenericSupplierFixtureHelperGenerator::CopyAssignmentFixtureHelper);
 
 class KbNodeAttrSupplierNoAttrFactoryFixtureFactory {
  public:

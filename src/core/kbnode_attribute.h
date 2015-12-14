@@ -36,10 +36,7 @@ class KbNodeAttributeSupplier : public FTO_NAMESPACE::KbNodeAttributeSupplier {
   KbNodeAttributeSupplier(IKbNode* root_kbnode, int max_attrs);
   KbNodeAttributeSupplier(const KbNodeAttributeSupplier& rhs);
   // TODO(lutts): impl KbNodeAttributeSupplier copy assignment
-  KbNodeAttributeSupplier& operator=(const KbNodeAttributeSupplier& rhs) {
-    (void)rhs;
-    return *this;
-  }
+  KbNodeAttributeSupplier& operator=(const KbNodeAttributeSupplier& rhs);
   virtual ~KbNodeAttributeSupplier();
 
   KbNodeAttributeSupplier* clone() const {
