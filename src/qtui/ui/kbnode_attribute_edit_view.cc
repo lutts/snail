@@ -33,8 +33,8 @@ KbNodeAttributeEditView::KbNodeAttributeEditView() {
 
   QObject::connect(completer, &QtCompleter::filterPatternChanged,
                    [this](const QString& filter_pattern) {
-    FilterPatternChanged(filter_pattern);
-  });
+                     FilterPatternChanged(filter_pattern);
+                   });
 
   QObject::connect(filter_widget_, &QLineEdit::editingFinished,
                    [this]() { EditingFinished(filter_widget_->text()); });
@@ -58,6 +58,7 @@ KbNodeAttributeEditView::~KbNodeAttributeEditView() = default;
 
 void KbNodeAttributeEditView::setKbNodeName(const QString& kbnode_name) {
   filter_widget_->setText(kbnode_name);
+  filter_widget_->clearFilterText();
 }
 
 void KbNodeAttributeEditView::setKbNodeTreeQModel(

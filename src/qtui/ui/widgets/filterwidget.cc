@@ -9,6 +9,7 @@
 #include <QIcon>
 #include <QToolButton>
 #include <QWidgetAction>
+#include <QDebug>
 
 #include "src/qtui/ui/widgets/filterwidget.h"
 #include "src/qtui/ui/widgets/qtcompleter.h"
@@ -90,13 +91,16 @@ void FilterWidget::slot_show_completer_popup() {
       this, new QEvent(static_cast<QEvent::Type>(kShowCompletionEvent)));
 }
 
-void FilterWidget::on_textEdited(const QString& text) { complete(text); }
+void FilterWidget::clearFilterText() { filter_text_.clear(); }
 
-void FilterWidget::complete() { complete(text()); }
+void FilterWidget::on_textEdited(const QString& text) {
+  filter_text_ = text;
+  complete();
+}
 
-void FilterWidget::complete(const QString& filter_pattern) {
+void FilterWidget::complete() {
   if (!completer_ || isReadOnly() || echoMode() != QLineEdit::Normal) return;
 
-  completer_->setFilterPattern(filter_pattern);
+  completer_->setFilterPattern(filter_text_);
   completer_->complete();
 }

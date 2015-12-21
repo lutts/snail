@@ -24,6 +24,8 @@ class FilterWidget : public QLineEdit {
   void setQtCompleter(QtCompleter* completer);
   QtCompleter* qtcompleter();
 
+  void clearFilterText();
+
  private slots:
   void on_textEdited(const QString& text);
   void slot_show_completer_popup();
@@ -41,10 +43,9 @@ class FilterWidget : public QLineEdit {
   void customEvent(QEvent* e);
   void mayShowCompleterOnEmptyContent();
 
-  void complete(const QString& filter_pattern);
-
   QtCompleter* completer_{nullptr};
   QTimer timer;
+  QString filter_text_;
 };
 
 #endif  // SRC_QTUI_UI_WIDGETS_FILTERWIDGET_H_
