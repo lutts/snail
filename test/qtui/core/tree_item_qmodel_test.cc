@@ -276,12 +276,8 @@ class TreeItemProviderTestStub : public ITreeItemProvider {
 
   MOCK_METHOD1(setFilterPattern, void(const utils::U8String& filter_pattern));
   MOCK_CONST_METHOD0(getFilterPattern, utils::U8String());
-  MOCK_METHOD1(incRef, void(ITreeItem* item));
 
   MOCK_CONST_METHOD0(getRootItem, ITreeItem*());
-
-  MOCK_METHOD1(findItemByName,
-               std::vector<ITreeItem*>(const utils::U8String& name));
 
  private:
   SNAIL_DISABLE_COPY(TreeItemProviderTestStub);
