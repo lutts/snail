@@ -70,7 +70,7 @@ void KbNodeManagerTest::setupTestKbNodes() {
   // culpa qui officia deserunt mollit anim id est laborum.
 
   // has search string, but if search use tree as parent, it is not included
-  IKbNode* tree = kbnode_manager_->addKbNode("lutts tree", nullptr);
+  IKbNode* tree = kbnode_manager_->addKbNode("lutts tree", nullptr, false);
   top_level_node_ = tree;
   all_nodes.push_back(tree);
 
@@ -83,8 +83,8 @@ void KbNodeManagerTest::setupTestKbNodes() {
     kbnode_to_subnodes[tree].push_back(tree_category1);
 
     {  // subnodes
-      IKbNode* tree_subnode1_subnode1 =
-          kbnode_manager_->addKbNode("empor lutts incididunt", tree_category1);
+      IKbNode* tree_subnode1_subnode1 = kbnode_manager_->addKbNode(
+          "empor lutts incididunt", tree_category1, false);
       all_nodes.push_back(tree_subnode1_subnode1);
       kbnode_to_subnodes[tree_category1].push_back(tree_subnode1_subnode1);
       expect_search_result.push_back(tree_subnode1_subnode1);
@@ -94,18 +94,18 @@ void KbNodeManagerTest::setupTestKbNodes() {
   {
     // parent has search str, child also has
     IKbNode* tree_subnode2 =  // no search str
-        kbnode_manager_->addKbNode("dolor sit amet", tree);
+        kbnode_manager_->addKbNode("dolor sit amet", tree, false);
     all_nodes.push_back(tree_subnode2);
     kbnode_to_subnodes[tree].push_back(tree_subnode2);
 
     {  // subnodes
       IKbNode* tree_subnode2_subnode1 =
-          kbnode_manager_->addKbNode("adipiscing elit", tree_subnode2);
+          kbnode_manager_->addKbNode("adipiscing elit", tree_subnode2, false);
       all_nodes.push_back(tree_subnode2_subnode1);
       kbnode_to_subnodes[tree_subnode2].push_back(tree_subnode2_subnode1);
 
-      IKbNode* tree_subnode2_subnode2 =
-          kbnode_manager_->addKbNode("sed do eiusmod lutts", tree_subnode2);
+      IKbNode* tree_subnode2_subnode2 = kbnode_manager_->addKbNode(
+          "sed do eiusmod lutts", tree_subnode2, false);
       all_nodes.push_back(tree_subnode2_subnode2);
       kbnode_to_subnodes[tree_subnode2].push_back(tree_subnode2_subnode2);
       expect_search_result.push_back(tree_subnode2_subnode2);
@@ -115,19 +115,19 @@ void KbNodeManagerTest::setupTestKbNodes() {
   {
     // parent has no search str, child also no search str
     IKbNode* tree_subnode3 =  // no search str
-        kbnode_manager_->addKbNode("consectetur", tree);
+        kbnode_manager_->addKbNode("consectetur", tree, false);
     all_nodes.push_back(tree_subnode3);
     kbnode_to_subnodes[tree].push_back(tree_subnode3);
 
     {  // subnodes
       IKbNode* tree_subnode3_subnode1 =
-          kbnode_manager_->addKbNode("quis nostrud", tree_subnode3);
+          kbnode_manager_->addKbNode("quis nostrud", tree_subnode3, false);
       all_nodes.push_back(tree_subnode3_subnode1);
       kbnode_to_subnodes[tree_subnode3].push_back(tree_subnode3_subnode1);
 
       {  // grand son has search str
         IKbNode* tree_subnode3_subnode1_subnode1 = kbnode_manager_->addKbNode(
-            "est laborum lutts", tree_subnode3_subnode1);
+            "est laborum lutts", tree_subnode3_subnode1, false);
         all_nodes.push_back(tree_subnode3_subnode1_subnode1);
         kbnode_to_subnodes[tree_subnode3_subnode1].push_back(
             tree_subnode3_subnode1_subnode1);
@@ -139,14 +139,14 @@ void KbNodeManagerTest::setupTestKbNodes() {
   {
     // parent has search str, child also has
     IKbNode* tree_subnode4 =  // has search str, and not category
-        kbnode_manager_->addKbNode("voluptate velit lutts", tree);
+        kbnode_manager_->addKbNode("voluptate velit lutts", tree, false);
     all_nodes.push_back(tree_subnode4);
     kbnode_to_subnodes[tree].push_back(tree_subnode4);
     expect_search_result.push_back(tree_subnode4);
 
     {  // sublides
-      IKbNode* tree_subnode4_subnode1 =
-          kbnode_manager_->addKbNode("occaecat lutts cupidatat", tree_subnode4);
+      IKbNode* tree_subnode4_subnode1 = kbnode_manager_->addKbNode(
+          "occaecat lutts cupidatat", tree_subnode4, false);
       all_nodes.push_back(tree_subnode4_subnode1);
       kbnode_to_subnodes[tree_subnode4].push_back(tree_subnode4_subnode1);
       expect_search_result.push_back(tree_subnode4_subnode1);

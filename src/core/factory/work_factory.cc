@@ -23,26 +23,26 @@ std::vector<IKbNode*> addTestKbNodes(fto::KbNodeManager* kbnode_manager) {
 
     auto test_root_kbnode1 =
         kbnode_manager->addKbNode("TestAttr1", nullptr, true);
-    kbnode_manager->addKbNode("just", test_root_kbnode1);
-    kbnode_manager->addKbNode("for", test_root_kbnode1);
-    kbnode_manager->addKbNode("test", test_root_kbnode1);
-    kbnode_manager->addKbNode("only", test_root_kbnode1);
-    kbnode_manager->addKbNode("dummies", test_root_kbnode1);
+    kbnode_manager->addKbNode("just", test_root_kbnode1, false);
+    kbnode_manager->addKbNode("for", test_root_kbnode1, false);
+    kbnode_manager->addKbNode("test", test_root_kbnode1, false);
+    kbnode_manager->addKbNode("only", test_root_kbnode1, false);
+    kbnode_manager->addKbNode("dummies", test_root_kbnode1, false);
 
     test_root_kbnodes.push_back(test_root_kbnode1);
 
     auto test_root_kbnode2 =
         kbnode_manager->addKbNode("TestAttr2", nullptr, true);
-    kbnode_manager->addKbNode("tree test", nullptr);
+    kbnode_manager->addKbNode("tree test", nullptr, false);
     auto test_root_kbnode2_subnode1 =
         kbnode_manager->addKbNode("SubTree1", test_root_kbnode2, true);
-    kbnode_manager->addKbNode("just", test_root_kbnode2_subnode1);
-    kbnode_manager->addKbNode("for", test_root_kbnode2_subnode1);
+    kbnode_manager->addKbNode("just", test_root_kbnode2_subnode1, false);
+    kbnode_manager->addKbNode("for", test_root_kbnode2_subnode1, false);
     auto test_root_kbnode2_subnode2 =
         kbnode_manager->addKbNode("SubTree2", test_root_kbnode2, true);
-    kbnode_manager->addKbNode("test", test_root_kbnode2_subnode2);
-    kbnode_manager->addKbNode("only", test_root_kbnode2_subnode2);
-    kbnode_manager->addKbNode("dummies", test_root_kbnode2_subnode2);
+    kbnode_manager->addKbNode("test", test_root_kbnode2_subnode2, false);
+    kbnode_manager->addKbNode("only", test_root_kbnode2_subnode2, false);
+    kbnode_manager->addKbNode("dummies", test_root_kbnode2_subnode2, false);
 
     test_root_kbnodes.push_back(test_root_kbnode2);
   }

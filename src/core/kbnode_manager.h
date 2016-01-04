@@ -40,7 +40,7 @@ class KbNodeManager : public FTO_NAMESPACE::KbNodeManager {
                                    const IKbNode* parent_kbnode);
   std::vector<IKbNode*> childItems(const IKbNode* parent_node);
   IKbNode* addKbNode(const utils::U8String& name, const IKbNode* parent,
-                     bool is_category = false);
+                     bool is_category);
 
  private:
   SNAIL_DISABLE_COPY(KbNodeManager);
