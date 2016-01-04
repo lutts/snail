@@ -25,7 +25,6 @@ class MockKbNodeManager : public fto::KbNodeManager {
   MOCK_METHOD1(childItems, std::vector<IKbNode*>(const IKbNode* parent_node));
   MOCK_METHOD3(addKbNode, IKbNode*(const utils::U8String& name,
                                    const IKbNode* parent, bool is_category));
-  MOCK_METHOD1(incRef, void(IKbNode* kbnode));
 };
 
 }  // namespace tests

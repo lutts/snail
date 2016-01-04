@@ -19,6 +19,8 @@ class IKbNode : public ITreeItem {
   virtual ~IKbNode() = default;
 
   virtual KbNodeIdType id() const = 0;
+  virtual void incRef() = 0;
+  virtual void decRef() = 0;
 };
 
 }  // namespace snailcore

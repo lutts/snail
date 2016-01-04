@@ -18,6 +18,19 @@
 
 namespace snailcore {
 
+bool KbNodeAttributeData::setKbNode(IKbNode* kbnode) {
+  if (kbnode_ != kbnode) {
+    if (kbnode_) kbnode_->decRef();
+
+    kbnode_ = kbnode;
+
+    if (kbnode_) kbnode_->incRef();
+    return true;
+  }
+
+  return false;
+}
+
 KbNodeAttribute::KbNodeAttribute(fto::KbNodeAttributeSupplier* attr_supplier)
     : attr_supplier_{attr_supplier} {}
 

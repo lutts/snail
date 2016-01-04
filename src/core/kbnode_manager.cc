@@ -114,9 +114,4 @@ IKbNode* KbNodeManager::addKbNode(const utils::U8String& name,
   return kbnode;
 }
 
-void KbNodeManager::incRef(IKbNode* kbnode) {
-  (void)kbnode;
-  // TODO(lutts): currently not implemented
-}
-
 }  // namespace snailcore

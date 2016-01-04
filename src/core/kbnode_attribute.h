@@ -77,14 +77,7 @@ struct KbNodeAttributeData {
 
   bool isEmpty() const { return kbnode_ == nullptr; }
 
-  bool setKbNode(IKbNode* kbnode) {
-    if (kbnode_ != kbnode) {
-      kbnode_ = kbnode;
-      return true;
-    }
-
-    return false;
-  }
+  bool setKbNode(IKbNode* kbnode);
   void clear() { kbnode_ = nullptr; }
 };
 

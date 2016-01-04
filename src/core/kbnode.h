@@ -23,6 +23,10 @@ class KbNode : public IKbNode {
   utils::U8String name() const override { return name_; }
   bool isGroupOnly() const override { return is_category_; }
 
+  // TODO(lutts): impl KbNode incRef and decRef
+  void incRef() override {}
+  void decRef() override {}
+
  private:
   SNAIL_DISABLE_COPY(KbNode);
 

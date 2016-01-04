@@ -62,10 +62,6 @@ utils::U8String KbNodeAttributeModel::getKbNodeName() const {
 
 void KbNodeAttributeModel::setKbNode_(IKbNode* kbnode) {
   kbnode_attr_->setKbNode(kbnode);
-  // quit filter mode
-  // NOTE: the following two statements are not suitable for undo/redo
-  kbnode_manager_->incRef(kbnode);
-
   // if kbnode is nullptr, the validate result is true, but attr will be empty
   validateComplete(true);
 }

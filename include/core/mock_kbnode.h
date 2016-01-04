@@ -18,6 +18,9 @@ class MockKbNode : public IKbNode {
   MOCK_CONST_METHOD0(id, KbNodeIdType());
   MOCK_CONST_METHOD0(name, utils::U8String());
   MOCK_CONST_METHOD0(isGroupOnly, bool());
+
+  MOCK_METHOD0(incRef, void());
+  MOCK_METHOD0(decRef, void());
 };
 
 }  // namespace tests

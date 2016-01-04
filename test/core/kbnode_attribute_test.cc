@@ -84,7 +84,9 @@ class KbNodeAttributeFixture : public xtestutils::TestFixture {
       : xtestutils::TestFixture{},
         state_{std::move(state)},
         attr_{state_->supplierHelper().supplier_.get()} {
-    attr_.setKbNode(state_->kbNodeHelper().kbnode_.get());
+    auto kbnode = state_->kbNodeHelper().kbnode_.get();
+    if (kbnode) EXPECT_CALL(*kbnode, incRef());
+    attr_.setKbNode(kbnode);
   }
 
   KbNodeAttributeFixture(const KbNodeAttributeFixture& rhs)
@@ -217,6 +219,7 @@ TEST_P(
     should_be_able_to_get_back_the_supplier_passed_in_constructor) {  // NOLINT
   ASSERT_EQ(&supplier_, attr_->supplier());
 }
+
 TEST_P(EmptyKbNodeAttributeTest,
        should_attribute_display_name_be_supplier_name) {  // NOLINT
   ASSERT_EQ(attr_supplier_name_, attr_->displayName());
@@ -243,6 +246,9 @@ TEST_P(
   MockKbNode kbnode;
   EXPECT_CALL(kbnode, name()).WillOnce(Return(kbnode_name));
 
+  // Expectations
+  EXPECT_CALL(kbnode, incRef());
+
   // Exercise system
   attr_->setKbNode(&kbnode);
 
@@ -251,13 +257,17 @@ TEST_P(
   ASSERT_EQ(kbnode_name, attr_->valueText());
 }
 
+// empty ---> non empty
 TEST_P(EmptyKbNodeAttributeTest,
        should_set_a_valid_kbnode_emit_attributeChanged) {  // NOLINT
+  MockKbNode kbnode;
+
   // Expectations
+  EXPECT_CALL(kbnode, incRef());
   EXPECT_CALL(supplier_, attributeChanged(attr_));
 
   // Exercise system
-  attr_->setKbNode(xtestutils::genDummyPointer<IKbNode>());
+  attr_->setKbNode(&kbnode);
 }
 
 // empty ---> empty
@@ -327,6 +337,7 @@ TEST_P(NonEmptyKbNodeAttributeTest,
 TEST_P(NonEmptyKbNodeAttributeTest,
        should_set_null_kbnode_becomes_empty) {  // NOLINT
   // Expectations
+  EXPECT_CALL(kbnode_, decRef());
   EXPECT_CALL(supplier_, attributeChanged(attr_));
 
   // Exercise system
@@ -343,11 +354,16 @@ TEST_P(NonEmptyKbNodeAttributeTest,
   KbNodeHelper kbnode_helper;
   kbnode_helper.prepareKbNode();
 
+  auto& old_kbnode = kbnode_;
+  auto new_kbnode = kbnode_helper.kbnode_.get();
+
   // Expectations
+  EXPECT_CALL(old_kbnode, decRef());
+  EXPECT_CALL(*new_kbnode, incRef());
   EXPECT_CALL(supplier_, attributeChanged(attr_));
 
   // Exercise system
-  attr_->setKbNode(kbnode_helper.kbnode_.get());
+  attr_->setKbNode(new_kbnode);
 
   // Verify result
   kbnode_helper.validateAttr(*attr_);
@@ -356,6 +372,8 @@ TEST_P(NonEmptyKbNodeAttributeTest,
 TEST_P(NonEmptyKbNodeAttributeTest,
        should_set_the_same_kbnode_will_not_emit_attributeChanged) {  // NOLINT
   // Expectations
+  EXPECT_CALL(kbnode_, incRef()).Times(0);
+  EXPECT_CALL(kbnode_, decRef()).Times(0);
   EXPECT_CALL(supplier_, attributeChanged(attr_)).Times(0);
 
   // Exercise system

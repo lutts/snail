@@ -35,7 +35,6 @@ class KbNodeManager {
   virtual std::vector<IKbNode*> childItems(const IKbNode* parent_node) = 0;
   virtual IKbNode* addKbNode(const utils::U8String& name, const IKbNode* parent,
                              bool is_category = false) = 0;
-  virtual void incRef(IKbNode* kbnode) = 0;
 };
 
 }  // namespace fto
