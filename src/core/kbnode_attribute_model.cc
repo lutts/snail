@@ -60,18 +60,21 @@ utils::U8String KbNodeAttributeModel::getKbNodeName() const {
   return kbnode_attr_->valueText();
 }
 
+void KbNodeAttributeModel::setKbNode_(IKbNode* kbnode) {
+  kbnode_attr_->setKbNode(kbnode);
+  // quit filter mode
+  // NOTE: the following two statements are not suitable for undo/redo
+  kbnode_manager_->incRef(kbnode);
+
+  // if kbnode is nullptr, the validate result is true, but attr will be empty
+  validateComplete(true);
+}
+
 void KbNodeAttributeModel::setKbNode(ITreeItem* item) {
   getKbNodeProvider();
 
   if (kbnode_provider_) {
-    auto kbnode = static_cast<IKbNode*>(item);
-    kbnode_attr_->setKbNode(kbnode);
-    // quit filter mode
-    kbnode_provider_->setFilterPattern("");
-    kbnode_manager_->incRef(kbnode);
-
-    // if kbnode is nullptr, the validate result is true, but attr will be empty
-    validateComplete(true);
+    setKbNode_(static_cast<IKbNode*>(item));
   }
 }
 
@@ -80,10 +83,6 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
   getKbNodeProvider();
 
   if (name == kbnode_attr_->valueText()) {
-    if (kbnode_provider_) {
-      kbnode_provider_->setFilterPattern("");
-    }
-
     validateComplete(true);
     return kSetKbNodeSuccess;
   } else if (kbnode_provider_) {
@@ -93,12 +92,7 @@ int KbNodeAttributeModel::setKbNodeByName(const utils::U8String& name) {
       validateComplete(false);
       return kSetKbNodeNotFound;
     } else if (kbnodes.size() == 1) {
-      auto kbnode = kbnodes[0];
-      kbnode_attr_->setKbNode(kbnode);
-      kbnode_provider_->setFilterPattern("");
-      kbnode_manager_->incRef(kbnode);
-
-      validateComplete(true);
+      setKbNode_(kbnodes[0]);
       return kSetKbNodeSuccess;
     } else {  // multi match
       validateComplete(false);

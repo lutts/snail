@@ -21,6 +21,7 @@ class KbNodeManager;
 class KbNodeAttribute;
 FTO_END_NAMESPACE
 
+class IKbNode;
 class ISimpleKbNodeAdderModelFactory;
 
 class KbNodeAttributeModelSignalHelper;
@@ -48,6 +49,8 @@ class KbNodeAttributeModel : public IKbNodeAttributeModel {
 
  private:
   SNAIL_DISABLE_COPY(KbNodeAttributeModel);
+
+  void setKbNode_(IKbNode* kbnode);
   void validateComplete(bool result);
 
   std::unique_ptr<KbNodeAttributeModelSignalHelper> signal_helper_;

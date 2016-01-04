@@ -114,7 +114,6 @@ TEST_F(KbNodeAttributeModelTest, test_setKbNode) {  // NOLINT
   // Expectations
   EXPECT_CALL(kbnode_attr, setKbNode(kbnode));
   // quit filter mode
-  EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
   EXPECT_CALL(kbnode_manager, incRef(kbnode));
 
   MockListener mock_listener(model.get());
@@ -135,8 +134,6 @@ TEST_F(KbNodeAttributeModelTest,
 
   // Expectations
   EXPECT_CALL(kbnode_attr, valueText()).WillOnce(Return(expect_name));
-
-  EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
 
   EXPECT_CALL(kbnode_manager, findKbNode(_, _)).Times(0);
   EXPECT_CALL(kbnode_attr, setKbNode(_)).Times(0);
@@ -196,7 +193,6 @@ TEST_F(KbNodeAttributeModelTest,
       .WillOnce(Return(kbnodes));
 
   EXPECT_CALL(kbnode_attr, setKbNode(kbnode));
-  EXPECT_CALL(*kbnode_provider, setFilterPattern(""));
   EXPECT_CALL(kbnode_manager, incRef(kbnode));
 
   MockListener mock_listener(model.get());
