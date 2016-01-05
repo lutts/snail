@@ -22,6 +22,8 @@ add_definitions(-std=c++11)
 # message("CMAKE_CXX_FLAGS_DEBUG = ${CMAKE_CXX_FLAGS_DEBUG}")
 # add_definitions(-DDISABLE_TEST_CODE)
 
+# https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(warnings "-Wall -Wextra -Werror -Wno-error=unused-variable")
@@ -56,6 +58,7 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 
 add_subdirectory(thirdparty)
 include_directories(thirdparty)
+include_directories(thirdparty/loki-0.1.7/include)
 
 add_subdirectory(src)
 add_subdirectory(test)
