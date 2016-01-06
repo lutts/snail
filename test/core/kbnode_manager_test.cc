@@ -144,7 +144,7 @@ void KbNodeManagerTest::setupTestKbNodes() {
     kbnode_to_subnodes[tree].push_back(tree_subnode4);
     expect_search_result.push_back(tree_subnode4);
 
-    {  // sublides
+    {  // subnodes
       IKbNode* tree_subnode4_subnode1 = kbnode_manager_->addKbNode(
           "occaecat lutts cupidatat", tree_subnode4, false);
       all_nodes.push_back(tree_subnode4_subnode1);
