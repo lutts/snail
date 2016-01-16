@@ -29,4 +29,4 @@ add_executable(testmove testmove.cc)
 
 add_subdirectory(log)
 add_subdirectory(command)
-add_subdirectory(loki_demo)
+#add_subdirectory(loki_demo)
