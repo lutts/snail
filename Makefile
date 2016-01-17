@@ -3,7 +3,7 @@
 all: debug-build
 
 debug-build: FORCE
-	make -C build
+	make --no-print-directory -C build
 	cp build/compile_commands.json ./
 
 check-build: FORCE
@@ -53,7 +53,7 @@ index: FORCE
 Makefile:;
 
 %:: FORCE
-	make -C build $@
+	make --no-print-directory -C build $@
 #	cp build/compile_commands.json ./
 
 FORCE:

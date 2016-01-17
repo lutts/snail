@@ -9,6 +9,8 @@ add_subdirectory(testutils)
 
 set(TEST_COMMON_LIBS testutils)
 
+add_custom_target(all_tests)
+
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -rdynamic")
 
 add_subdirectory(utils)

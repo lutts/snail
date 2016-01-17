@@ -76,8 +76,9 @@ endfunction(add_qg_test)
 
 function(add_gmock_test target)
   set(options DONOT_AUTORUN NO_GMOCK_MAIN)
+  set(oneValueArgs TESTSUITE)
   set(multiValueArgs LIBS)
-  cmake_parse_arguments(QGTEST "${options}" "" "${multiValueArgs}" ${ARGN})
+  cmake_parse_arguments(QGTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   # message("LIBS = ${QGTEST_LIBS}")
   # message("UNPARSED_ARGUMENTS = ${QGTEST_UNPARSED_ARGUMENTS}")
@@ -88,7 +89,16 @@ function(add_gmock_test target)
     set(QGTEST_SRCS ${target}.cc)
   endif()
 
+  if ("${QGTEST_TESTSUITE}" STREQUAL "")
+    set(QGTEST_TESTSUITE all_tests)
+  endif()
+
   add_executable(${target} ${QGTEST_SRCS})
+
+  if (TARGET ${QGTEST_TESTSUITE})
+    add_dependencies(${QGTEST_TESTSUITE} ${target})
+  endif()
+
   if (NOT ${QGTEST_NO_GMOCK_MAIN})
     target_link_libraries(${target} ${QGTEST_LIBS} ${GMOCK_BOTH_LIBRARIES} pthread ${TEST_COMMON_LIBS})
   else(NOT ${QGTEST_NO_GMOCK_MAIN})
