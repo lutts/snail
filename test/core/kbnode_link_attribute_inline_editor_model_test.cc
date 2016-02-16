@@ -9,7 +9,7 @@
 
 #include "src/core/kbnode_link_attribute_inline_editor_model.h"
 #include "snail/mock_kbnode_link_attribute_popup_editor_model.h"
-#include "core/mock_kbnode_link_attribute_popup_editor_model_factory.h"
+#include "core/factory/mock_kbnode_link_attribute_popup_editor_model_factory.h"
 #include "core/mock_kbnode_link_attribute.h"
 
 namespace snailcore {

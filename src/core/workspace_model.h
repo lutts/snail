@@ -20,7 +20,7 @@ class WorkSpaceModelSignalHelper;
 class WorkSpaceModel : public IWorkSpaceModel {
  public:
   explicit WorkSpaceModel(IWorkModelFactory* work_model_factory,
-                          IWorkFactory* work_factory);
+                          const IWorkFactory& work_factory);
   virtual ~WorkSpaceModel();
 
   void createWork(const utils::U8String& work_name) override;
@@ -37,7 +37,7 @@ class WorkSpaceModel : public IWorkSpaceModel {
 
   std::unique_ptr<WorkSpaceModelSignalHelper> signal_helper_;
   IWorkModelFactory* work_model_factory_;
-  IWorkFactory* work_factory_;
+  const IWorkFactory& work_factory_;
 };
 
 }  // namespace snailcore

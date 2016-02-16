@@ -12,7 +12,7 @@
 #include "utils/signal_slot_impl.h"
 #include "snail/i_attribute.h"
 #include "snail/i_attribute_supplier.h"
-#include "core/i_attribute_model_factory.h"
+#include "core/factory/i_attribute_model_factory.h"
 #include "snail/i_attribute_model.h"
 
 #include "pfmvp/i_pf_triad_manager.h"

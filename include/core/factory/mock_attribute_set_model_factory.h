@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "core/i_attribute_set_model_factory.h"
+#include "core/factory/i_attribute_set_model_factory.h"
 
 namespace snailcore {
 namespace tests {

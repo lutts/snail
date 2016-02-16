@@ -45,7 +45,7 @@ class MockKbNodeAttributeSupplier : public fto::KbNodeAttributeSupplier {
 };
 
 class MockKbNodeAttributeSupplierFactory
-    : public fto::KbNodeAttributeSupplierFactory {
+    : public KbNodeAttributeSupplierFactory {
  public:
   MockKbNodeAttributeSupplierFactory() {
     fto::KbNodeAttributeSupplierTestProxy::setFactory(this);
@@ -55,7 +55,8 @@ class MockKbNodeAttributeSupplierFactory
     fto::KbNodeAttributeSupplierTestProxy::setFactory(nullptr);
   }
 
-  KbNodeAttributeSupplierFactory_METHODS
+  MOCK_CONST_METHOD2(create, fto::KbNodeAttributeSupplier*(IKbNode* root_kbnode,
+                                                           int max_attrs));
 };
 
 }  // namespace tests

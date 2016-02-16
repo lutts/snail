@@ -21,7 +21,7 @@ class IWorkFactory {
  public:
   virtual ~IWorkFactory() = default;
 
-  virtual fto::Work* createWork(const utils::U8String& work_name) = 0;
+  virtual fto::Work* create(const utils::U8String& work_name) const = 0;
 };
 
 }  // namespace snailcore

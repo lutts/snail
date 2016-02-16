@@ -107,11 +107,11 @@ class TestProxyLogger {
   static const RealClass##Factory* getFactory() { return *getFactory_(); }  \
                                                                             \
   template <class... Args>                                                  \
-  void createInstance(Args&&... args) {                                     \
+  void create(Args&&... args) {                                             \
     if (getFactory()) {                                                     \
-      auto obj = getFactory()->createInstance(std::forward<Args>(args)...); \
+      auto obj = getFactory()->create(std::forward<Args>(args)...);         \
       if (TestProxyLogger::enabled()) {                                     \
-        std::cout << #RealClass "TestProxy: createInstance: obj = " << obj  \
+        std::cout << #RealClass "TestProxy: create: obj = " << obj          \
                   << std::endl;                                             \
       }                                                                     \
       setSelf(obj);                                                         \

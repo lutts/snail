@@ -8,8 +8,8 @@
 
 #include "utils/signal_slot_impl.h"
 #include "core/fto_kbnode_link_attribute.h"
-#include "core/i_attribute_model_factory.h"
-#include "core/i_attribute_set_model_factory.h"
+#include "core/factory/i_attribute_model_factory.h"
+#include "core/factory/i_attribute_set_model_factory.h"
 #include "core/fto_link_type.h"
 #include "snail/i_attribute_model.h"
 #include "snail/i_attribute_set_model.h"

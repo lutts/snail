@@ -51,7 +51,7 @@ std::vector<IKbNode*> addTestKbNodes(fto::KbNodeManager* kbnode_manager) {
 }
 
 std::vector<std::unique_ptr<IAttributeSupplier> > createAttrSuppliers(
-    KbNodeManager* kbnode_manager) {
+    fto::KbNodeManager* kbnode_manager) {
   auto root_kbnodes = addTestKbNodes(kbnode_manager);
 
   std::vector<std::unique_ptr<IAttributeSupplier> > attr_suppliers;
@@ -65,10 +65,10 @@ std::vector<std::unique_ptr<IAttributeSupplier> > createAttrSuppliers(
   return attr_suppliers;
 }
 
-WorkFactory::WorkFactory(KbNodeManager* kbnode_manager)
+WorkFactory::WorkFactory(fto::KbNodeManager* kbnode_manager)
     : kbnode_manager_{kbnode_manager} {}
 
-fto::Work* WorkFactory::createWork(const utils::U8String& work_name) {
+fto::Work* WorkFactory::create(const utils::U8String& work_name) const {
   auto work = new Work;
   work->set_name(work_name);
 

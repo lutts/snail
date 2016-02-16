@@ -8,8 +8,8 @@
 #include "test/testutils/gmock_common.h"
 
 #include "src/core/workspace_model.h"
-#include "core/mock_work_model_factory.h"
-#include "core/mock_work_factory.h"
+#include "core/factory/mock_work_model_factory.h"
+#include "core/factory/mock_work_factory.h"
 #include "snail/mock_work_model.h"
 
 namespace snailcore {
@@ -24,7 +24,7 @@ class WorkSpaceModelTest : public ::testing::Test {
   // ~WorkSpaceModelTest() { }
   virtual void SetUp() {
     workspace_model =
-        utils::make_unique<WorkSpaceModel>(&work_model_factory, &work_factory);
+        utils::make_unique<WorkSpaceModel>(&work_model_factory, work_factory);
   }
   // virtual void TearDown() { }
 
@@ -73,7 +73,7 @@ TEST_F(WorkSpaceModelTest, should_be_able_to_create_work) {  // NOLINT
   auto work_name = xtestutils::genRandomString();
 
   // Expectations
-  EXPECT_CALL(work_factory, createWork(work_name)).WillOnce(Return(work));
+  EXPECT_CALL(work_factory, create(work_name)).WillOnce(Return(work));
   EXPECT_CALL(work_model_factory, createWorkModel())
       .WillOnce(Return(work_model));
   EXPECT_CALL(*work_model, set_work(work));

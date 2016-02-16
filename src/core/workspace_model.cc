@@ -8,9 +8,9 @@
 
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
-#include "core/i_work_model_factory.h"
+#include "core/factory/i_work_model_factory.h"
 #include "snail/i_work_model.h"
-#include "core/i_work_factory.h"
+#include "core/factory/i_work_factory.h"
 
 namespace snailcore {
 
@@ -30,7 +30,7 @@ SNAIL_SIGSLOT_DELEGATE2(WorkSpaceModel, ActiveWorkModelChanged);
 SNAIL_SIGSLOT_DELEGATE2(WorkSpaceModel, WorkModelActivelyRemoved);
 
 WorkSpaceModel::WorkSpaceModel(IWorkModelFactory* work_model_factory,
-                               IWorkFactory* work_factory)
+                               const IWorkFactory& work_factory)
     : signal_helper_(utils::make_unique<WorkSpaceModelSignalHelper>()),
       work_model_factory_(work_model_factory),
       work_factory_(work_factory) {}
@@ -38,7 +38,7 @@ WorkSpaceModel::WorkSpaceModel(IWorkModelFactory* work_model_factory,
 WorkSpaceModel::~WorkSpaceModel() = default;
 
 void WorkSpaceModel::createWork(const utils::U8String& work_name) {
-  auto work = work_factory_->createWork(work_name);
+  auto work = work_factory_.create(work_name);
   auto work_model = work_model_factory_->createWorkModel();
   work_model->set_work(work);
   signal_helper_->emitWorkModelAdded(work_model);

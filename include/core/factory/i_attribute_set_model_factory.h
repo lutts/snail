@@ -9,6 +9,7 @@
 #define INCLUDE_CORE_I_ATTRIBUTE_SET_MODEL_FACTORY_H_
 
 #include <vector>
+#include <memory>
 
 namespace snailcore {
 

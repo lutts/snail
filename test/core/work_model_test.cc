@@ -12,7 +12,7 @@
 #include "core/mock_work.h"
 
 #include "snail/mock_attribute_set_model.h"
-#include "core/mock_attribute_set_model_factory.h"
+#include "core/factory/mock_attribute_set_model_factory.h"
 
 namespace snailcore {
 namespace tests {

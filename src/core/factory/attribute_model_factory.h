@@ -10,7 +10,7 @@
 
 #include "include/config.h"
 #include "utils/basic_utils.h"
-#include "core/i_attribute_model_factory.h"
+#include "core/factory/i_attribute_model_factory.h"
 
 namespace snailcore {
 

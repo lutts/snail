@@ -8,6 +8,8 @@
 #ifndef INCLUDE_CORE_I_SIMPLE_KBNODE_ADDER_MODEL_FACTORY_H_
 #define INCLUDE_CORE_I_SIMPLE_KBNODE_ADDER_MODEL_FACTORY_H_
 
+#include <memory>
+
 namespace snailcore {
 
 class ITreeItemProvider;

@@ -29,7 +29,7 @@ class MockNamedStringFormatter : public fto::NamedStringFormatter {
 };
 
 class MockNamedStringFormatterFactory
-    : public fto::NamedStringFormatterFactory,
+    : public NamedStringFormatterFactory,
       public WeakSingleton<MockNamedStringFormatterFactory> {
  public:
   MockNamedStringFormatterFactory() {
@@ -40,7 +40,7 @@ class MockNamedStringFormatterFactory
     fto::NamedStringFormatterTestProxy::setFactory(nullptr);
   }
 
-  NamedStringFormatterFactory_METHODS
+  MOCK_CONST_METHOD0(create, fto::NamedStringFormatter*());
 };
 
 }  // namespace tests

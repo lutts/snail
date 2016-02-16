@@ -8,14 +8,14 @@
 #ifndef INCLUDE_CORE_MOCK_WORK_FACTORY_H_
 #define INCLUDE_CORE_MOCK_WORK_FACTORY_H_
 
-#include "core/i_work_factory.h"
+#include "core/factory/i_work_factory.h"
 
 namespace snailcore {
 namespace tests {
 
 class MockWorkFactory : public IWorkFactory {
  public:
-  MOCK_METHOD1(createWork, fto::Work*(const utils::U8String& work_name));
+  MOCK_CONST_METHOD1(create, fto::Work*(const utils::U8String& work_name));
 };
 
 }  // namespace tests

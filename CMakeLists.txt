@@ -58,7 +58,7 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 
 add_subdirectory(thirdparty)
 include_directories(thirdparty)
-#include_directories(thirdparty/loki-0.1.7/include)
+include_directories(thirdparty/loki-0.1.7/include)
 
 add_subdirectory(src)
 add_subdirectory(test)

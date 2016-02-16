@@ -29,8 +29,7 @@ class FormatterFixture : public xtestutils::TestFixture {
     Mock::VerifyAndClearExpectations(formatter_factory_.get());
 
     formatter_ = new MockNamedStringFormatter();
-    R_EXPECT_CALL(*formatter_factory_, createInstance())
-        .WillOnce(Return(formatter_));
+    R_EXPECT_CALL(*formatter_factory_, create()).WillOnce(Return(formatter_));
   }
 
   FormatterFixture(const FormatterFixture& rhs)

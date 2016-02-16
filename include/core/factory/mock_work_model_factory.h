@@ -8,7 +8,7 @@
 #ifndef INCLUDE_CORE_MOCK_WORK_MODEL_FACTORY_H_
 #define INCLUDE_CORE_MOCK_WORK_MODEL_FACTORY_H_
 
-#include "core/i_work_model_factory.h"
+#include "core/factory/i_work_model_factory.h"
 
 namespace snailcore {
 namespace tests {

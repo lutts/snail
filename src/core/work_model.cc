@@ -9,7 +9,7 @@
 #include "utils/basic_utils.h"
 #include "utils/signal_slot_impl.h"
 #include "core/fto_work.h"
-#include "core/i_attribute_set_model_factory.h"
+#include "core/factory/i_attribute_set_model_factory.h"
 
 namespace snailcore {
 
@@ -34,9 +34,8 @@ void WorkModel::set_work(fto::Work* work) {
   work_ = work;
 
   work_->whenNameChanged([this](const utils::U8String& new_name) {
-                           signal_helper_->emitNameChanged(new_name);
-                         },
-                         shared_from_this());
+    signal_helper_->emitNameChanged(new_name);
+  }, shared_from_this());
 }
 
 utils::U8String WorkModel::name() const { return work_->name(); }

@@ -47,18 +47,6 @@ class KbNodeAttributeSupplier : public IAttributeSupplier {
   KbNodeAttributeSupplier_METHODS
 };
 
-#define KbNodeAttributeSupplierFactory_METHODS \
-  SNAIL_CONST_INTERFACE2(                      \
-      createInstance,                          \
-      fto::KbNodeAttributeSupplier*(IKbNode * root_kbnode, int max_attrs));
-
-class KbNodeAttributeSupplierFactory {
- public:
-  virtual ~KbNodeAttributeSupplierFactory() = default;
-
-  KbNodeAttributeSupplierFactory_METHODS
-};
-
 class KbNodeAttribute;
 
 #define KbNodeAttribute_METHODS                                      \
@@ -101,6 +89,7 @@ class KbNodeAttribute : public IAttribute {};
 
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
+#include "core/factory/kbnode_attribute_factory.h"
 
 namespace snailcore {
 namespace fto {
@@ -117,7 +106,7 @@ class KbNodeAttributeSupplierTestProxy {
 
  public:
   KbNodeAttributeSupplierTestProxy(IKbNode* root_kbnode, int max_attrs) {
-    createInstance(root_kbnode, max_attrs);
+    create(root_kbnode, max_attrs);
   }
 
   utils::U8String name() const { return self_->name(); }

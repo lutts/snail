@@ -10,7 +10,7 @@
 #include "core/fto_kbnode_attribute.h"
 #include "core/fto_kbnode_manager.h"
 #include "snail/i_tree_item_provider.h"
-#include "core/i_simple_kbnode_adder_model_factory.h"
+#include "core/factory/i_simple_kbnode_adder_model_factory.h"
 #include "core/i_kbnode.h"
 
 namespace snailcore {

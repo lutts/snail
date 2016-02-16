@@ -53,16 +53,6 @@ class NamedStringFormatter {
   NamedStringFormatter_METHODS
 };
 
-#define NamedStringFormatterFactory_METHODS \
-  SNAIL_CONST_INTERFACE0(createInstance, fto::NamedStringFormatter*());
-
-class NamedStringFormatterFactory {
- public:
-  virtual ~NamedStringFormatterFactory() = default;
-
-  NamedStringFormatterFactory_METHODS
-};
-
 }  // namespace fto
 }  // namespace text
 }  // namespace utils
@@ -89,6 +79,7 @@ class NamedStringFormatter {};
 
 #define INTERFACE_TEST_PROXY_PHASE
 #include "test/interface.h"
+#include "core/factory/named_string_formatter_factory.h"
 
 namespace utils {
 namespace text {
@@ -104,7 +95,7 @@ class NamedStringFormatterTestProxy {
   TEST_PROXY_ENABLE_FACTORY_SUPPORT(NamedStringFormatter);
 
  public:
-  NamedStringFormatterTestProxy() { createInstance(); }
+  NamedStringFormatterTestProxy() { create(); }
 
   NamedStringFormatter_METHODS
 };

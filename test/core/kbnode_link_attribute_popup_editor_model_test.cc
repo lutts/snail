@@ -12,8 +12,8 @@
 #include "core/mock_kbnode_attribute.h"
 #include "snail/mock_attribute_model.h"
 #include "snail/mock_attribute_set_model.h"
-#include "core/mock_attribute_model_factory.h"
-#include "core/mock_attribute_set_model_factory.h"
+#include "core/factory/mock_attribute_model_factory.h"
+#include "core/factory/mock_attribute_set_model_factory.h"
 #include "core/mock_link_type.h"
 
 namespace snailcore {

@@ -8,24 +8,26 @@
 #ifndef SRC_CORE_FACTORY_WORK_FACTORY_H_
 #define SRC_CORE_FACTORY_WORK_FACTORY_H_
 
-#include "core/i_work_factory.h"
+#include "core/factory/i_work_factory.h"
 #include "utils/basic_utils.h"
 
 namespace snailcore {
 
+FTO_BEGIN_NAMESPACE
 class KbNodeManager;
+FTO_END_NAMESPACE
 
 class WorkFactory : public IWorkFactory {
  public:
-  explicit WorkFactory(KbNodeManager* kbnode_manager);
+  explicit WorkFactory(fto::KbNodeManager* kbnode_manager);
   virtual ~WorkFactory() = default;
 
-  fto::Work* createWork(const utils::U8String& work_name) override;
+  fto::Work* create(const utils::U8String& work_name) const override;
 
  private:
   SNAIL_DISABLE_COPY(WorkFactory);
 
-  KbNodeManager* kbnode_manager_;
+  fto::KbNodeManager* kbnode_manager_;
 };
 
 }  // namespace snailcore

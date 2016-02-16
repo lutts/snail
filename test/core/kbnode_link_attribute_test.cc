@@ -75,7 +75,7 @@ class LinkAttrTestHelper : public xtestutils::TestFixture {
   void setupValueAttr() {
     value_attr_supplier_ = new MockKbNodeAttributeSupplier;
 
-    R_EXPECT_CALL(valueAttrSupplierFactory(), createInstance(root_kbnode_, 1))
+    R_EXPECT_CALL(valueAttrSupplierFactory(), create(root_kbnode_, 1))
         .WillOnce(Return(value_attr_supplier_));
 
     R_EXPECT_CALL(*value_attr_supplier_, whenAttributeChanged(_, _))

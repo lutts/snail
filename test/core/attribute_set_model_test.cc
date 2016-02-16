@@ -9,7 +9,7 @@
 #include "pfmvp/mock_pf_triad_manager.h"
 
 #include "src/core/attribute_set_model.h"
-#include "core/mock_attribute_model_factory.h"
+#include "core/factory/mock_attribute_model_factory.h"
 #include "snail/mock_attribute_model.h"
 
 #include "test/core/attribute_test_stub.h"

@@ -8,7 +8,7 @@
 #ifndef INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
 #define INCLUDE_CORE_MOCK_KBNODE_LINK_ATTRIBUTE_POPUP_EDITOR_MODEL_FACTORY_H_
 
-#include "core/i_kbnode_link_attribute_popup_editor_model_factory.h"
+#include "core/factory/i_kbnode_link_attribute_popup_editor_model_factory.h"
 
 namespace snailcore {
 namespace tests {
